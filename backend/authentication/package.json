@@ -8,7 +8,7 @@
     "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Poom Chuthamsatid",
+  "author": "",
   "license": "MIT",
   "dependencies": {
     "dotenv": "^16.4.5",
