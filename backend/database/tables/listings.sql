@@ -6,8 +6,8 @@ CREATE TABLE IF NOT EXISTS Listings (
     price DECIMAL(10, 2) NOT NULL,
     location VARCHAR(255) NOT NULL, --not sure whether this should be a foreign key
     status VARCHAR(255) NOT NULL CHECK (status IN ('AVAILABLE', 'SOLD', 'REMOVED')),
-    listed_at DATE NOT NULL DEFAULT CURRENT_DATE,
-    last_updated_at DATE NOT NULL DEFAULT CURRENT_DATE,
+    listed_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     category VARCHAR(255),
     pullLimit INT,
     pageOffset INT
