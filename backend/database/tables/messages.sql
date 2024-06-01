@@ -7,3 +7,5 @@ CREATE TABLE IF NOT EXISTS Messages (
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     chat_id INT NOT NULL
 );
+
+ALTER TABLE Messages ADD CONSTRAINT chat_id_unique UNIQUE (chat_id);
