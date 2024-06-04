@@ -2,7 +2,7 @@ import express from "express";
 import userdata from "./routes/userdata.js";
 import searchhistory from "./routes/searchhistory.js";
 
-const PORT = process.env.PORT || 5500;
+const PORT = process.env.PORT || 5000;
 const app = express();
 
 
