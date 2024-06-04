@@ -1,18 +1,23 @@
 import express from "express";
-import review from "./routes/.js"; //UPDATE PATH
+import userdata from "./routes/userdata.js";
+import searchhistory from "./routes/searchhistory.js";
 
-const PORT = process.env.PORT || 5000;
-const app = express(); 
+const PORT = process.env.PORT || 5500;
+const app = express();
 
-// cution: middleware chain matches the route from top to buttom
 
 app.get("/", (req, res) => {
   res.json({ message: "Hello World" });
 });
 
+app.use(identification);
+app.use("/userdata", userdata);
+app.use("/searchhistory", searchhistory);
 
-app.use("/review", review);
-
+function identification(req, res, next) {
+    console.log("Auth middleware logic here");
+    next();
+}
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
