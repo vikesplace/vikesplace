@@ -11,3 +11,13 @@ services:
       - "5000:5000"
     environment:
       PORT: 5000
+  users:
+    container_name: users
+    build:
+      context: ./users
+    volumes:
+      - ./users:/app
+    ports:
+      - "5000"
+    environment:
+      PORT: 5000
