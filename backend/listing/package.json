@@ -5,5 +5,15 @@
     "express": "^4.19.2",
     "pg": "^8.11.5",
     "sequelize": "^6.37.3"
-  }
+  },
+  "name": "listing",
+  "description": "```bash\r npm install\r ```",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
 }
