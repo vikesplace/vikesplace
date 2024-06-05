@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS Users (
     username VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
-    location VARCHAR(255) NOT NULL,
+    location POINT NOT NULL,
     joining_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     items_sold INT NOT NULL DEFAULT 0,
     items_bought INT NOT NULL DEFAULT 0
@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS Listings (
     buyer_username VARCHAR(255) REFERENCES Users(username) ON DELETE CASCADE,
     title VARCHAR(255) NOT NULL,
     price DECIMAL(10, 2) NOT NULL CHECK (price >= 0),
-    location VARCHAR(255) NOT NULL, --not sure whether this should be a foreign key
+    location POINT NOT NULL, --not sure whether this should be a foreign key
     status VARCHAR(255) NOT NULL CHECK (status IN ('AVAILABLE', 'SOLD', 'REMOVED')),
     listed_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
