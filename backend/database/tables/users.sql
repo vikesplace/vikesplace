@@ -8,3 +8,7 @@ CREATE TABLE IF NOT EXISTS Users (
     items_sold INT NOT NULL DEFAULT 0,
     items_bought INT NOT NULL DEFAULT 0
 );
+
+ALTER TABLE Users ADD CONSTRAINT unique_username UNIQUE (username);
+ALTER TABLE Users ADD CONSTRAINT unique_email UNIQUE (email);
+ALTER TABLE Users ADD CONSTRAINT unique_user_id UNIQUE (user_id);
