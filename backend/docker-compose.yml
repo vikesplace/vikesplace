@@ -12,11 +12,11 @@ services:
     environment:
       PORT: 5000
   ratings:
-    container_name: ratings
+    container_name: ratings_reviews
     build:
-      context: ./ratings
+      context: ./ratings_reviews
     volumes:
-      - ./ratings:/app
+      - ./ratings_reviews:/app
     ports:
       - "5000"
     environment:

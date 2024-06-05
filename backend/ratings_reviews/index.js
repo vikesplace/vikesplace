@@ -7,10 +7,6 @@ const app = express();
 
 // cution: middleware chain matches the route from top to buttom
 
-app.get("/", (req, res) => {
-  res.json({ message: "Hello World" });
-});
-
 app.use(identification);
 app.use("/review", review);
 app.use("/rating", rating);
