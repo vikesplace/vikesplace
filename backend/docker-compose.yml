@@ -1,12 +1,12 @@
 version: "3"
 
 services:
-  authentication:
-    container_name: authentication
+  account:
+    container_name: account
     build:
-      context: ./authentication
+      context: ./account
     volumes:
-      - ./authentication:/app
+      - ./account:/app
     ports:
       - "5000:5000"
     environment:
