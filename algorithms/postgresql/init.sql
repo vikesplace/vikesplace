@@ -26,8 +26,6 @@ CREATE TABLE IF NOT EXISTS Listings (
     listed_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     category VARCHAR(255),
-    pull_limit INT,
-    page_offset INT
 );
 
 -- Insert 20 users with unique usernames and emails
