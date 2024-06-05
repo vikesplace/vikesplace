@@ -8,7 +8,17 @@ services:
     volumes:
       - ./authentication:/app
     ports:
-      - "5000:5000"
+      - "5000"
+    environment:
+      PORT: 5000
+  ratings:
+    container_name: ratings_reviews
+    build:
+      context: ./ratings_reviews
+    volumes:
+      - ./ratings_reviews:/app
+    ports:
+      - "5000"
     environment:
       PORT: 5000
   users:

@@ -47,3 +47,17 @@ Verify the Node.js version
 ```bash
 npm -v
 ```
+
+## 4. Docker Compose to build and Start docker images
+
+Navigate to ./backend folder
+
+To build docker image
+```bash
+docker compose build
+```
+
+To start containers
+```bash
+docker compose up
+```
