@@ -18,10 +18,6 @@ function NavBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
-
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
@@ -42,7 +38,7 @@ function NavBar() {
             variant="h6"
             noWrap
             component="a"
-            href="#nav-bar"
+            href=""
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -55,18 +51,8 @@ function NavBar() {
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
-            >
-            <MenuIcon />
-            </IconButton>
             <Menu
-              id="menu-appbar"
+              id="menu-navbar"
               anchorElNav={anchorElNav}
               anchorOrigin={{
                 vertical: 'bottom',
