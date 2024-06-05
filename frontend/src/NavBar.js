@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -11,12 +12,21 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 
-const pages = ['View Listings', 'Create Listing', 'Manage Listings', 'Messages'];
+const pages = [
+  { name: 'View Listings', path: '/view-listings' },
+  { name: 'Create Listing', path: '/create-listing' },
+  { name: 'Manage Listings', path: '/manage-listings' },
+  { name: 'Messages', path: '/messages' }
+];
 const settings = ['User Profile', 'Logout'];
 
 function NavBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget);
+  };
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
@@ -38,7 +48,7 @@ function NavBar() {
             variant="h6"
             noWrap
             component="a"
-            href=""
+            href="/"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -51,9 +61,19 @@ function NavBar() {
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenNavMenu}
+              color="inherit"
+            >
+              <MenuIcon />
+            </IconButton>
             <Menu
-              id="menu-navbar"
-              anchorElNav={anchorElNav}
+              id="menu-appbar"
+              anchorEl={anchorElNav}
               anchorOrigin={{
                 vertical: 'bottom',
                 horizontal: 'left',
@@ -70,8 +90,8 @@ function NavBar() {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+                <MenuItem key={page.name} onClick={handleCloseNavMenu} component={Link} to={page.path}>
+                  <Typography textAlign="center">{page.name}</Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -80,52 +100,56 @@ function NavBar() {
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
               <Button
-                key={page}
+                key={page.name}
+                component={Link}
+                to={page.path}
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
-                {page}
+                {page.name}
               </Button>
             ))}
           </Box>
 
           <div>
             <IconButton
-            size="large"
-            aria-label="account of current user"
-            aria-controls="menu-appbar"
-            aria-haspopup="true"
-            onClick={handleOpenUserMenu}
-            color="inherit"
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenUserMenu}
+              color="inherit"
             >
-            <AccountCircle />
+              <AccountCircle />
             </IconButton>
             <Menu
-            id="menu-appbar"
-            anchorElUser={anchorElUser}
-            anchorOrigin={{
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
                 vertical: 'top',
                 horizontal: 'right',
-            }}
-            keepMounted
-            transformOrigin={{
+              }}
+              keepMounted
+              transformOrigin={{
                 vertical: 'top',
                 horizontal: 'right',
-            }}
-            open={Boolean(anchorElUser)}
-            onClose={handleCloseUserMenu}
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
             >
-            {settings.map((setting) => (
+              {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}
             </Menu>
-        </div>   
+          </div>
         </Toolbar>
       </Container>
     </AppBar>
   );
 }
+
 export default NavBar;
+
 

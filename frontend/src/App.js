@@ -1,12 +1,23 @@
 import React from 'react';
-import Home from './pages/Home.js';
-import './App.css';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import NavBar from './NavBar';
+import ViewListings from './pages/ViewListings.js';
+import CreateListing from './pages/CreateListing.js';
+import ManageListings from './pages/ManageListings.js';
+import Messages from './pages/Messages.js';
 
 function App() {
   return (
-    <div className="App">
-      <Home></Home>
-    </div>
+    <Router>
+      <NavBar />
+      <Routes>
+        <Route path="/view-listings" element={<ViewListings />} />
+        <Route path="/create-listing" element={<CreateListing />} />
+        <Route path="/manage-listings" element={<ManageListings />} />
+        <Route path="/messages" element={<Messages />} />
+        {/* Add other routes here */}
+      </Routes>
+    </Router>
   );
 }
 

@@ -3,12 +3,12 @@ import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import '../App.css';
 
-function Home() {
+function CreateListing() {
   return (
-    <div className="Home">
+    <div className="CreateListing">
       <Container>
         <Box mt={2}>
-            Home
+          CreateListing
           {/* Add your main content here */}
         </Box>
       </Container>
@@ -16,4 +16,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default CreateListing;
