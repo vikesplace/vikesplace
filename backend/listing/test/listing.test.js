@@ -48,7 +48,7 @@ describe("Listing Routes", () => {
 
   it("should get all listings of a user", async () => {
     const response = await request(app)
-      .get("/listing/user/userxyz");
+      .get("/listing/user/me");
     expect(response.body).toEqual({ message: "Get All Listings of a User" });
   });
 });
