@@ -21,6 +21,12 @@ describe("Listing Routes", () => {
     expect(response.body).toEqual({ message: "Create Listing" });
   });
 
+  it("should get all listings of a user", async () => {
+    const response = await request(app)
+      .get("/listing/me");
+    expect(response.body).toEqual({ message: "Get All Listings of a User" });
+  });
+  
   it("should update a listing", async () => {
     const response = await request(app)
       .patch("/listing/1")
@@ -46,9 +52,5 @@ describe("Listing Routes", () => {
     expect(response.body).toEqual({ message: "Get Listing" });
   });
 
-  it("should get all listings of a user", async () => {
-    const response = await request(app)
-      .get("/listing/user/me");
-    expect(response.body).toEqual({ message: "Get All Listings of a User" });
-  });
+  
 });
