@@ -5,7 +5,5 @@ CREATE TABLE IF NOT EXISTS Messages (
     listing_id INT NOT NULL REFERENCES Listings(listing_id) ON DELETE CASCADE,
     message_content TEXT NOT NULL,
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    chat_id INT NOT NULL
+    chat_id INT NOT NULL UNIQUE
 );
-
-ALTER TABLE Messages ADD CONSTRAINT chat_id_unique UNIQUE (chat_id);
