@@ -3,6 +3,7 @@ import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import '../App.css';
 import ListingCard from '../components/ListingCard.js';
+import SearchBar from '../components/SearchBar.js';
 
 // TODO: GET listings
 
@@ -17,6 +18,7 @@ function ViewListings() {
   return (
     <div className="ViewListings">
       <Container>
+        <SearchBar />
         <Box mt={2}>
           {listings.map((listing) => (
             <div key={'div'+listing.id}>
