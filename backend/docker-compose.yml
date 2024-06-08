@@ -41,3 +41,33 @@ services:
       - "5000"
     environment:
       PORT: 5000
+ listings:
+    container_name: listings
+    build:
+      context: ./listings
+    volumes:
+      - ./listings:/app
+    ports:
+      - "5000"
+    environment:
+      PORT: 5000
+ recommendations:
+    container_name: recommendations
+    build:
+      context: ./recommendations
+    volumes:
+      - ./recommendations:/app
+    ports:
+      - "5000"
+    environment:
+      PORT: 5000
+ searches:
+    container_name: searches
+    build:
+      context: ./searches
+    volumes:
+      - ./searches:/app
+    ports:
+      - "5000"
+    environment:
+      PORT: 5000
