@@ -1,27 +1,23 @@
 import React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import Box from '@mui/material/Box';
-import './App.css';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import NavBar from './NavBar';
+import ViewListings from './pages/ViewListings.js';
+import CreateListing from './pages/CreateListing.js';
+import ManageListings from './pages/ManageListings.js';
+import Messages from './pages/Messages.js';
 
 function App() {
   return (
-    <div className="App">
-      <AppBar position="static" sx={{ backgroundColor: '#1891e6' }}>
-        <Toolbar sx={{ justifyContent: 'flex-start' }}>
-          <Typography variant="h5" component="div" >
-            VikesPlace
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <Container>
-        <Box mt={2}>
-          {/* Add your main content here */}
-        </Box>
-      </Container>
-    </div>
+    <Router>
+      <NavBar />
+      <Routes>
+        <Route path="/view-listings" element={<ViewListings />} />
+        <Route path="/create-listing" element={<CreateListing />} />
+        <Route path="/manage-listings" element={<ManageListings />} />
+        <Route path="/messages" element={<Messages />} />
+        {/* Add other routes here */}
+      </Routes>
+    </Router>
   );
 }
 
