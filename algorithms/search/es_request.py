@@ -7,7 +7,7 @@ def search(title, category=None, status=None):
         basic_auth=("elastic", "a123456")
     )
     must_clauses = [
-        {"match": {"title": {"query": title}}}
+        {"match_phrase_prefix": {"title": {"query": title}}}
     ]
     
     if category:
@@ -24,5 +24,5 @@ def search(title, category=None, status=None):
 
     results = es.search(index="listings", query=query, allow_partial_search_results=True)
     
-    #print(results['hits']['hits'] ) #for debugging
+    #print(results['hits']['hits'])  # for debugging
     return results['hits']['hits']  # Return only the hits
