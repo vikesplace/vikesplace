@@ -20,7 +20,7 @@ def test_search():
     assert response.json() == {
         "status": 200,
         "message": "Search successful",
-        "results": [{'_index': 'listings', '_id': '1', '_score': 3.0, '_source': {'seller_id': 1, 'listing_id': 1, 'buyer_id': None, 'category': 'Sports', 'listed_at': '2024-02-01T10:00:00.000Z', 'status': 'AVAILABLE', 'title': 'Bicycle', 'location': '(-123.3656,48.4284)', 'type': 'listings', 'last_updated_at': '2024-02-01T10:00:00.000Z', 'price': 100.0}}]
+        "results": [{'_index': 'listings', '_id': '1', '_score': 3.0, '_source': {'price': 100, 'buyer_id': None, 'listed_at': '2024-02-01T10:00:00.000Z', 'category': 'Sports', 'last_updated_at': '2024-02-01T10:00:00.000Z', 'seller_id': 1, 'title': 'Bicycle', 'status': 'AVAILABLE', 'type': 'listings', 'location': {'lon': -123.3856, 'lat': 48.4284}, 'listing_id': 1}}]
     }
 
 def test_search_partial_match_prefix():
@@ -35,7 +35,7 @@ def test_search_partial_match_prefix():
     assert response.json() == {
         "status": 200,
         "message": "Search successful",
-        "results": [{'_index': 'listings', '_id': '1', '_score': 3.0, '_source': {'seller_id': 1, 'listing_id': 1, 'buyer_id': None, 'category': 'Sports', 'listed_at': '2024-02-01T10:00:00.000Z', 'status': 'AVAILABLE', 'title': 'Bicycle', 'location': '(-123.3656,48.4284)', 'type': 'listings', 'last_updated_at': '2024-02-01T10:00:00.000Z', 'price': 100.0}}]  
+        "results": [{'_index': 'listings', '_id': '1', '_score': 3.0, '_source': {'price': 100, 'buyer_id': None, 'listed_at': '2024-02-01T10:00:00.000Z', 'category': 'Sports', 'last_updated_at': '2024-02-01T10:00:00.000Z', 'seller_id': 1, 'title': 'Bicycle', 'status': 'AVAILABLE', 'type': 'listings', 'location': {'lon': -123.3856, 'lat': 48.4284}, 'listing_id': 1}}]
     }
 
 def test_search_partial_match_suffix():
@@ -50,7 +50,7 @@ def test_search_partial_match_suffix():
     assert response.json() == {
         "status": 200,
         "message": "Search successful",
-        "results": [{'_index': 'listings', '_id': '1', '_score': 3.0, '_source': {'seller_id': 1, 'listing_id': 1, 'buyer_id': None, 'category': 'Sports', 'listed_at': '2024-02-01T10:00:00.000Z', 'status': 'AVAILABLE', 'title': 'Bicycle', 'location': '(-123.3656,48.4284)', 'type': 'listings', 'last_updated_at': '2024-02-01T10:00:00.000Z', 'price': 100.0}}] 
+        "results": [{'_index': 'listings', '_id': '1', '_score': 3.0, '_source': {'price': 100, 'buyer_id': None, 'listed_at': '2024-02-01T10:00:00.000Z', 'category': 'Sports', 'last_updated_at': '2024-02-01T10:00:00.000Z', 'seller_id': 1, 'title': 'Bicycle', 'status': 'AVAILABLE', 'type': 'listings', 'location': {'lon': -123.3856, 'lat': 48.4284}, 'listing_id': 1}}]
     }
 
 def test_search_empty_wrong_category():
@@ -81,4 +81,38 @@ def test_search_empty_wrong_title():
         "status": 200,
         "message": "Search successful",
         "results": []  # Assuming an empty list for now
+    }
+
+def test_search_item_inside_radius():
+    headers = {"Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"} # Assuming a valid token
+    params = {
+        "title": "Biccle",
+        "category": "Sports",
+        "status": "AVAILABLE",
+        "location": [48.437326, -123.329773]
+    }
+    response = client.get("/search", headers=headers, params=params)
+
+    assert response.status_code == 200
+    response.json() == {
+        "status": 200,
+        "message": "Search successful",
+        "results": [{'_index': 'listings', '_id': '1', '_score': 3.0, '_source': {'price': 100, 'buyer_id': None, 'listed_at': '2024-02-01T10:00:00.000Z', 'category': 'Sports', 'last_updated_at': '2024-02-01T10:00:00.000Z', 'seller_id': 1, 'title': 'Bicycle', 'status': 'AVAILABLE', 'type': 'listings', 'location': {'lon': -123.3856, 'lat': 48.4284}, 'listing_id': 1}}]
+    }
+
+def test_search_item_outside_radius():
+    headers = {"Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"} # Assuming a valid token
+    params = {
+        "title": "Biccle",
+        "category": "Sports",
+        "status": "AVAILABLE",
+        "location": [0.0, 0.0]
+    }
+    response = client.get("/search", headers=headers, params=params)
+    
+    assert response.status_code == 200
+    assert response.json() == {
+        "status": 200,
+        "message": "Search successful",
+        "results": []
     }
