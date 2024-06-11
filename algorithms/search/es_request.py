@@ -1,18 +1,28 @@
 from elasticsearch import Elasticsearch
 
-# get your ca.crt from the Docker container
-# opt1: run the cmd below
-#    docker cp vikesplace-elasticsearch-1:/usr/share/elasticsearch/config/certs/ca/ca.crt ./tmp/.
-# opt2: use the GUI
-#    go to the elasticsearch-1 container
-#    then in the files tab, find /usr/share/elasticsearch/config/certs/ca/ca.crt
-#    save the file somewhere
+def search(title, category=None, status=None):
+    es = Elasticsearch(
+        "https://localhost:9200/",
+        ca_certs=r"./search/ca.crt",
+        basic_auth=("elastic", "a123456")
+    )
+    must_clauses = [
+        {"match_phrase_prefix": {"title": {"query": title}}}
+    ]
+    
+    if category:
+        must_clauses.append({"match": {"category": {"query": category}}})
+        
+    if status:
+        must_clauses.append({"match": {"status": {"query": status}}})
 
-# go to localhost:5601 to generate your API key
+    query = {
+        "bool": {
+            "must": must_clauses
+        }
+    }
 
-es = Elasticsearch("https://localhost:9200/",
-                   ca_certs="path/to/ca.crt",
-                   #    basic_auth=("elastic", "a123456"))
-                   api_key="get api key from Kibana or uncomment line above")
-
-print(es.info())
+    results = es.search(index="listings", query=query, allow_partial_search_results=True)
+    
+    #print(results['hits']['hits'])  # for debugging
+    return results['hits']['hits']  # Return only the hits
