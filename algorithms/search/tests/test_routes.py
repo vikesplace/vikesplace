@@ -82,3 +82,15 @@ def test_search_empty_wrong_title():
         "message": "Search successful",
         "results": []  # Assuming an empty list for now
     }
+
+def test_search_user():
+    headers = {"Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"} # Assuming a valid token
+    params = {"username":"Alice"}
+
+    response = client.get("/search", headers=headers, params=params)
+    assert response.status_code == 200
+    assert response.json() == {
+        "status": 200,
+        "message": "Search successful",
+        "results": []  # Assuming an empty list for now
+    }
