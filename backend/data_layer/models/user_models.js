@@ -26,7 +26,7 @@ User.init(
     },
     location: {
       // should we have a location to be string or a point?
-      type: DataTypes.GEOMETRY('POINT'),
+      type: DataTypes.STRING,
       allowNull: false,
     },
     joining_date: {
