@@ -1,18 +1,83 @@
 from elasticsearch import Elasticsearch
 
-# get your ca.crt from the Docker container
-# opt1: run the cmd below
-#    docker cp vikesplace-elasticsearch-1:/usr/share/elasticsearch/config/certs/ca/ca.crt ./tmp/.
-# opt2: use the GUI
-#    go to the elasticsearch-1 container
-#    then in the files tab, find /usr/share/elasticsearch/config/certs/ca/ca.crt
-#    save the file somewhere
+def search(title, category=None, status=None):
+    es = Elasticsearch(
+        "https://localhost:9200/",
+        ca_certs="./search/ca.crt",
+        basic_auth=("elastic", "a123456")
+    )
 
-# go to localhost:5601 to generate your API key
+    must_clauses = [
+        {
+            "query_string": {
+                "default_field": "title",
+                "query": f"*{title}*"
+            }
+        }
+    ]
+    
+    if category:
+        must_clauses.append({
+            "query_string": {
+                "default_field": "category",
+                "query": f"*{category}*"
+            }
+        })
+        
+    if status:
+        must_clauses.append({
+            "query_string": {
+                "default_field": "status",
+                "query": f"*{status}*"
+            }
+        })
 
-es = Elasticsearch("https://localhost:9200/",
-                   ca_certs="path/to/ca.crt",
-                   #    basic_auth=("elastic", "a123456"))
-                   api_key="get api key from Kibana or uncomment line above")
+    query = {
+        "bool": {
+            "must": must_clauses
+        }
+    }
 
-print(es.info())
+    results = es.search(index="listings", query=query, allow_partial_search_results=True)
+    
+    #print(results['hits']['hits'])  # for debugging
+    print("====================>>>  number of results item:  ",len(results['hits']['hits'] ))
+    print(results['hits']['hits'] )
+    return results['hits']['hits']  # Return only the hits
+
+# Example usage
+#search2("example_title", category="example_category", status="example_status")
+
+
+'''
+from elasticsearch import Elasticsearch
+
+def search(title, category=None, status=None):
+    es = Elasticsearch(
+        "https://localhost:9200/",
+        ca_certs=r"./search/ca.crt",
+        basic_auth=("elastic", "a123456")
+    )
+    must_clauses = [
+        {"wildcard": {"title": f"*{title}*"}}
+    ]
+    
+    if category:
+        must_clauses.append({"match": {"category": {"query": category}}})
+        
+    if status:
+        must_clauses.append({"match": {"status": {"query": status}}})
+
+    query = {
+        "bool": {
+            "must": must_clauses
+        }
+    }
+
+    results = es.search(index="listings", query=query, allow_partial_search_results=True)
+    
+    #print(results['hits']['hits'])  # for debugging
+    return results['hits']['hits']  # Return only the hits
+
+
+'''

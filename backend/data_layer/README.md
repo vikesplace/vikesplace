@@ -38,4 +38,13 @@ DB_PORT=""
 psql -U user -d database -f "name of the .sql file with .sql extension"
 ```
 
+## To Start Data Layer
 
+Production:
+```bash
+npm start
+```
+Dev:
+```bash
+npm run dev
+```
