@@ -40,7 +40,7 @@ listing.init(
       allowNull: false,
     },
     location: {
-      type: DataTypes.STRING,
+      type: DataTypes.POINT,
       allowNull: false,
     },
     status: {

@@ -25,8 +25,7 @@ User.init(
       allowNull: false,
     },
     location: {
-      // should we have a location to be string or a point?
-      type: DataTypes.STRING,
+      type: DataTypes.POINT,
       allowNull: false,
     },
     joining_date: {
