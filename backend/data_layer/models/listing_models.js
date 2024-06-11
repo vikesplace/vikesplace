@@ -1,9 +1,9 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "../config/database.js";
 
-class Listing extends Model {}
+class Listings extends Model {}
 
-Listing.init(
+Listings.init(
   {
     listing_id: {
       type: DataTypes.INTEGER,
@@ -75,4 +75,4 @@ Listing.init(
   }
 );
 
-export default Listing;
+export default Listings;

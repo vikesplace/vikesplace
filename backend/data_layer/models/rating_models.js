@@ -1,9 +1,9 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "../config/database.js";
 
-class Rating extends Model {}
+class Ratings extends Model {}
 
-Rating.init(
+Ratings.init(
   {
     listing_rating_id: {
       type: DataTypes.INTEGER,
@@ -50,5 +50,5 @@ Rating.init(
   }
 );
 
-export default Rating;
+export default Ratings;
   
