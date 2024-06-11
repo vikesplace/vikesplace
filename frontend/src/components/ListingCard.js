@@ -8,7 +8,7 @@ import { CardActionArea, CardHeader } from '@mui/material';
 export default function ActionAreaCard({ id, title, price, location, status }) {
   return (
     <Card>
-      <CardActionArea href={'view-listing/'+{id}}>
+      <CardActionArea href={'/view-listing/'+{id}}>
         <CardHeader title={title} />
         <CardContent>
             <Box sx={{ display: 'flex', alignItems: 'center'}}>
