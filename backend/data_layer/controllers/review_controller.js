@@ -1,7 +1,6 @@
 import Review from "../models/review_models.js";
 
 export const createReview = (req, res) => {
-    console.log("test: ",req.body);
     Review.create({
         reviewed_listing_id: req.body.reviewed_listing_id,
         review_user_id: req.body.review_user_id,

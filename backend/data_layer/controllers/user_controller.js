@@ -1,7 +1,6 @@
 import User from '../models/user_models.js';
 
 export const createUser = (req, res) => {
-    console.log("test: ",req.body);
     User.create({
         username: req.body.username,
         email: req.body.email,

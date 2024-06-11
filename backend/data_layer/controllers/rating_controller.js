@@ -1,7 +1,6 @@
 import Rating from "../models/rating_models.js"
 
 export const createRating = (req, res) => {
-    console.log("test: ",req.body);
     Rating.create({
         rated_listing_id: req.body.rated_listing_id,
         rating_user_id: req.body.rating_user_id,
