@@ -34,6 +34,7 @@ function VerifyAccount() {
             password: data.get('password'),
         });
     }
+    
   return (
     <div className="VerifyAccount">
       <Container>
