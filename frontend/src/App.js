@@ -20,7 +20,7 @@ function App() {
         <Route path="/create-listing" element={<CreateListing />} />
         <Route path="/manage-listings" element={<ManageListings />} />
         <Route path="/messages" element={<Messages />} />
-        <Route path="/verify" element={<VerifyAccount />} />
+        <Route path="/verify" element={<VerifyAccount />} /> {/* TODO: modify /verify to use parameters from email verification*/}
         <Route path="/verified" element={<VerifiedAccount />} />
         <Route path="/history" element={<SearchHistory />} />
         {/* Add other routes here */}
