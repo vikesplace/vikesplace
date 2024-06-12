@@ -7,6 +7,7 @@ function Home() {
   return (
     <div className="Home">
       <Container>
+        <SearchBar />
         <Box mt={2}>
             Home
           {/* Add your main content here */}

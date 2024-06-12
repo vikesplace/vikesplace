@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import NavBar from './NavBar';
 import Home from './pages/Home.js';
 import ViewListings from './pages/ViewListings.js';
@@ -12,6 +8,7 @@ import ManageListings from './pages/ManageListings.js';
 import Messages from './pages/Messages.js';
 import VerifyAccount from './pages/VerifyAccount.js';
 import VerifiedAccount from './pages/VerifiedAccount.js';
+import SearchHistory from './pages/SearchHistory.js';
 
 function App() {  
   return (
@@ -25,6 +22,8 @@ function App() {
         <Route path="/messages" element={<Messages />} />
         <Route path="/verify" element={<VerifyAccount />} />
         <Route path="/verified" element={<VerifiedAccount />} />
+        <Route path="/history" element={<SearchHistory />} />
+        {/* Add other routes here */}
       </Routes>
     </Router>
   );
