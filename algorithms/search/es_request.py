@@ -4,10 +4,10 @@ from elasticsearch import Elasticsearch
 #   downtown victoria; lat = 48.407326, lon = -123.329773
 
 
-def search(title, location, category=None, status=None):
+def search(query, location, category=None, status=None):
     es = Elasticsearch(
         "https://localhost:9200/",
-        ca_certs="./search/ca.crt",
+        ca_certs="./ca.crt",
         basic_auth=("elastic", "a123456")
     )
 
@@ -15,7 +15,7 @@ def search(title, location, category=None, status=None):
         {
             "query_string": {
                 "default_field": "title",
-                "query": f"*{title}*"
+                "query": f"*{query}*"
             }
         }
     ]
@@ -48,21 +48,40 @@ def search(title, location, category=None, status=None):
             }
         })
 
-    query = {
+    query_listings = {
         "bool": {
             "must": must_clauses,
             "filter": filter
         }
     }
-    
-    results = es.search(index="listings", query=query,
-                        allow_partial_search_results=True)
 
-    # print(results['hits']['hits'])  # for debugging
+    query_username = {
+            "bool": {
+                "must": [{"query_string": {
+                    "default_field": "username",
+                    "query": f"*{query}*"
+                }
+                }
+                ]
+            }
+        }
+    
+    results = {}
+
+    results["listings"] = es.search(index="listings", query=query_listings,
+                                allow_partial_search_results=True)['hits']['hits']
+
+    results["users"] = es.search(index="users", query=query_username,
+                             allow_partial_search_results=True)['hits']['hits']
+
     print("====================>>>  number of results item:  ",
-          len(results['hits']['hits']))
-    print(results['hits']['hits'])
-    return results['hits']['hits']  # Return only the hits
+          len(results["listings"]))
+
+    print("====================>>>  number of results users:  ",
+          len(results["users"]))
+
+    print(results)
+    return results  # Return only the hits
 
 # Example usage
 # search2("example_title", category="example_category", status="example_status")
