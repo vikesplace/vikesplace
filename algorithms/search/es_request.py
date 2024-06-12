@@ -1,6 +1,10 @@
 from elasticsearch import Elasticsearch
 
-def search(title, category=None, status=None):
+# default location
+#   downtown victoria; lat = 48.407326, lon = -123.329773
+
+
+def search(title, location, category=None, status=None):
     es = Elasticsearch(
         "https://localhost:9200/",
         ca_certs="./search/ca.crt",
@@ -15,38 +19,53 @@ def search(title, category=None, status=None):
             }
         }
     ]
-    
+
+    filter = [
+        {
+            "geo_distance": {
+                "distance": "5km",
+                "location": {
+                            "lat": location[0],
+                            "lon": location[1]
+                }
+            }
+        }
+    ]
+
+    # Furniture, Electronics, Sports, Appliances, Music
     if category:
-        must_clauses.append({
-            "query_string": {
-                "default_field": "category",
-                "query": f"*{category}*"
+        filter.append({
+            "term": {
+                "category.keyword": f"{category}"
             }
         })
-        
+
+    # AVAILABLE, SOLD, REMOVED
     if status:
-        must_clauses.append({
-            "query_string": {
-                "default_field": "status",
-                "query": f"*{status}*"
+        filter.append({
+            "term": {
+                "status.keyword": f"{status}"
             }
         })
 
     query = {
         "bool": {
-            "must": must_clauses
+            "must": must_clauses,
+            "filter": filter
         }
     }
-
-    results = es.search(index="listings", query=query, allow_partial_search_results=True)
     
-    #print(results['hits']['hits'])  # for debugging
-    print("====================>>>  number of results item:  ",len(results['hits']['hits'] ))
-    print(results['hits']['hits'] )
+    results = es.search(index="listings", query=query,
+                        allow_partial_search_results=True)
+
+    # print(results['hits']['hits'])  # for debugging
+    print("====================>>>  number of results item:  ",
+          len(results['hits']['hits']))
+    print(results['hits']['hits'])
     return results['hits']['hits']  # Return only the hits
 
 # Example usage
-#search2("example_title", category="example_category", status="example_status")
+# search2("example_title", category="example_category", status="example_status")
 
 
 '''

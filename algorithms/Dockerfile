@@ -8,4 +8,6 @@ RUN curl -L -o /usr/share/logstash/logstash-core/lib/jars/postgresql-42.7.3.jar 
 
 COPY ./logstash.conf /usr/share/logstash/pipeline/
 
+COPY ./dynamic-template.json /usr/share/logstash/pipeline/dynamic-template.json
+
 CMD ["logstash", "-f", "/usr/share/logstash/pipeline/logstash.conf"]

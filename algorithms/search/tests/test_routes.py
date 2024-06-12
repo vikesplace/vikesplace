@@ -1,96 +1,304 @@
 from fastapi.testclient import TestClient
 from search.routes import app
+from fastapi import status
 
 client = TestClient(app)
+
 
 def test_read_root():
     response = client.get("/")
     assert response.status_code == 200
     assert response.json() == {"message": "VikesPlace Search Service"}
 
+
 def test_search():
-    headers = {"Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"} # Assuming a valid token
+    # Assuming a valid token
+    headers = {
+        "Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"}
     params = {
         "title": "Bicycle",
         "category": "Sports",
         "status": "AVAILABLE"
     }
     response = client.get("/search", headers=headers, params=params)
-    assert response.status_code == 200
-    assert response.json() == {
-        "status": 200,
-        "message": "Search successful",
-        "results": [{'_index': 'listings', '_id': '1', '_score': 3.0, '_source': {'seller_id': 1, 'listing_id': 1, 'buyer_id': None, 'category': 'Sports', 'listed_at': '2024-02-01T10:00:00.000Z', 'status': 'AVAILABLE', 'title': 'Bicycle', 'location': '(-123.3656,48.4284)', 'type': 'listings', 'last_updated_at': '2024-02-01T10:00:00.000Z', 'price': 100.0}}]
-    }
+    response_obj = response.json()
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response_obj['message'] == "Search successful"
+    assert response_obj['results'][0]['_index'] == 'listings'
+    assert response_obj['results'][0]['_source']['price'] == 100
+    assert response_obj['results'][0]['_source']['buyer_id'] == None
+    assert response_obj['results'][0]['_source']['category'] == 'Sports'
+    assert response_obj['results'][0]['_source']['seller_id'] == 1
+    assert response_obj['results'][0]['_source']['title'] == 'Bicycle'
+    assert response_obj['results'][0]['_source']['status'] == 'AVAILABLE'
+    assert response_obj['results'][0]['_source']['listing_id'] == 1
+    assert response_obj['results'][0]['_source']['type'] == 'listings'
+    assert response_obj['results'][0]['_source']['location']['lat'] == 48.4284
+    assert response_obj['results'][0]['_source']['location']['lon'] == -123.3856
+
 
 def test_search_partial_match_prefix():
-    headers = {"Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"} # Assuming a valid token
+    # Assuming a valid token
+    headers = {
+        "Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"}
     params = {
         "title": "Bicyc",
         "category": "Sports",
         "status": "AVAILABLE"
     }
     response = client.get("/search", headers=headers, params=params)
-    assert response.status_code == 200
-    assert response.json() == {
-        "status": 200,
-        "message": "Search successful",
-        "results": [{'_index': 'listings', '_id': '1', '_score': 3.0, '_source': {'seller_id': 1, 'listing_id': 1, 'buyer_id': None, 'category': 'Sports', 'listed_at': '2024-02-01T10:00:00.000Z', 'status': 'AVAILABLE', 'title': 'Bicycle', 'location': '(-123.3656,48.4284)', 'type': 'listings', 'last_updated_at': '2024-02-01T10:00:00.000Z', 'price': 100.0}}]  
-    }
+    response_obj = response.json()
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response_obj['message'] == "Search successful"
+    assert response_obj['results'][0]['_index'] == 'listings'
+    assert response_obj['results'][0]['_source']['price'] == 100
+    assert response_obj['results'][0]['_source']['buyer_id'] == None
+    assert response_obj['results'][0]['_source']['category'] == 'Sports'
+    assert response_obj['results'][0]['_source']['seller_id'] == 1
+    assert response_obj['results'][0]['_source']['title'] == 'Bicycle'
+    assert response_obj['results'][0]['_source']['status'] == 'AVAILABLE'
+    assert response_obj['results'][0]['_source']['listing_id'] == 1
+    assert response_obj['results'][0]['_source']['type'] == 'listings'
+    assert response_obj['results'][0]['_source']['location']['lat'] == 48.4284
+    assert response_obj['results'][0]['_source']['location']['lon'] == -123.3856
+
 
 def test_search_partial_match_suffix():
-    headers = {"Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"} # Assuming a valid token
+    # Assuming a valid token
+    headers = {
+        "Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"}
     params = {
         "title": "cycle",
         "category": "Sports",
         "status": "AVAILABLE"
     }
     response = client.get("/search", headers=headers, params=params)
-    assert response.status_code == 200
-    assert response.json() == {
-        "status": 200,
-        "message": "Search successful",
-        "results": [{'_index': 'listings', '_id': '1', '_score': 3.0, '_source': {'seller_id': 1, 'listing_id': 1, 'buyer_id': None, 'category': 'Sports', 'listed_at': '2024-02-01T10:00:00.000Z', 'status': 'AVAILABLE', 'title': 'Bicycle', 'location': '(-123.3656,48.4284)', 'type': 'listings', 'last_updated_at': '2024-02-01T10:00:00.000Z', 'price': 100.0}}] 
-    }
+    response_obj = response.json()
 
-def test_search_empty_wrong_category():
-    headers = {"Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"} # Assuming a valid token
-    params = {
-        "title": "Bicycle",
-        "category": "Electronics",
-        "status": "AVAILABLE"
-    }
-    response = client.get("/search", headers=headers, params=params)
-    assert response.status_code == 200
-    assert response.json() == {
-        "status": 200,
-        "message": "Search successful",
-        "results": []  # Assuming an empty list for now
-    }
+    assert response.status_code == status.HTTP_200_OK
+    assert response_obj['message'] == "Search successful"
+    assert response_obj['results'][0]['_index'] == 'listings'
+    assert response_obj['results'][0]['_source']['price'] == 100
+    assert response_obj['results'][0]['_source']['buyer_id'] == None
+    assert response_obj['results'][0]['_source']['category'] == 'Sports'
+    assert response_obj['results'][0]['_source']['seller_id'] == 1
+    assert response_obj['results'][0]['_source']['title'] == 'Bicycle'
+    assert response_obj['results'][0]['_source']['status'] == 'AVAILABLE'
+    assert response_obj['results'][0]['_source']['listing_id'] == 1
+    assert response_obj['results'][0]['_source']['type'] == 'listings'
+    assert response_obj['results'][0]['_source']['location']['lat'] == 48.4284
+    assert response_obj['results'][0]['_source']['location']['lon'] == -123.3856
+
 
 def test_search_empty_wrong_title():
-    headers = {"Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"} # Assuming a valid token
+    # Assuming a valid token
+    headers = {
+        "Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"}
     params = {
         "title": "Biccle",
         "category": "Sports",
         "status": "AVAILABLE"
     }
     response = client.get("/search", headers=headers, params=params)
-    assert response.status_code == 200
-    assert response.json() == {
-        "status": 200,
-        "message": "Search successful",
-        "results": []  # Assuming an empty list for now
-    }
+    response_obj = response.json()
 
-def test_search_user():
+    assert response.status_code == status.HTTP_200_OK
+    assert response_obj['message'] == "Search successful"
+    assert response_obj['results'] == []
+
+
+def test_search_user_history():
     headers = {"Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"} # Assuming a valid token
-    params = {"username":"Alice"}
+    user_id = "userId123"
+    response = client.get(f"/users/{user_id}/searches")
+    response_obj = response.json()
 
-    response = client.get("/search", headers=headers, params=params)
-    assert response.status_code == 200
-    assert response.json() == {
-        "status": 200,
-        "message": "Search successful",
-        "results": []  # Assuming an empty list for now
+    assert response.status_code == status.HTTP_200_OK
+    assert response_obj['results'] == ['action 1', 'action 2', 'action 3']
+    assert response_obj['message'] == "Search history successful"
+
+
+def test_search_invalid_user_history():
+    headers = {"Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"} # Assuming a valid token
+    user_id = "userId129"
+    response = client.get(f"/users/{user_id}/searches")
+    response_obj = response.json()
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response_obj['results'] == None
+    assert response_obj['message'] == "Search history successful"
+
+
+def test_search_item_inside_radius():
+    # Assuming a valid token
+    headers = {
+        "Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"}
+    params = {
+        "title": "Bicycle",
+        "category": "Sports",
+        "status": "AVAILABLE",
+        "location": [48.437326, -123.329773]
     }
+    response = client.get("/search", headers=headers, params=params)
+    response_obj = response.json()
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response_obj['message'] == "Search successful"
+    assert response_obj['results'][0]['_index'] == 'listings'
+    assert response_obj['results'][0]['_source']['price'] == 100
+    assert response_obj['results'][0]['_source']['buyer_id'] == None
+    assert response_obj['results'][0]['_source']['category'] == 'Sports'
+    assert response_obj['results'][0]['_source']['seller_id'] == 1
+    assert response_obj['results'][0]['_source']['title'] == 'Bicycle'
+    assert response_obj['results'][0]['_source']['status'] == 'AVAILABLE'
+    assert response_obj['results'][0]['_source']['listing_id'] == 1
+    assert response_obj['results'][0]['_source']['type'] == 'listings'
+    assert response_obj['results'][0]['_source']['location']['lat'] == 48.4284
+    assert response_obj['results'][0]['_source']['location']['lon'] == -123.3856
+
+
+def test_search_item_outside_radius():
+    # Assuming a valid token
+    headers = {
+        "Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"}
+    params = {
+        "title": "Biccle",
+        "category": "Sports",
+        "status": "AVAILABLE",
+        "location": [0.0, 0.0]
+    }
+    response = client.get("/search", headers=headers, params=params)
+    response_obj = response.json()
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response_obj['message'] == "Search successful"
+    assert response_obj['results'] == []
+
+
+def test_search_filter_category():
+    # Assuming a valid token
+    headers = {
+        "Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"}
+    params = {
+        "title": "Bicycle",
+        "category": "Sports",
+    }
+    response = client.get("/search", headers=headers, params=params)
+    response_obj = response.json()
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response_obj['message'] == "Search successful"
+    assert response_obj['results'][0]['_index'] == 'listings'
+    assert response_obj['results'][0]['_source']['price'] == 100
+    assert response_obj['results'][0]['_source']['buyer_id'] == None
+    assert response_obj['results'][0]['_source']['category'] == 'Sports'
+    assert response_obj['results'][0]['_source']['seller_id'] == 1
+    assert response_obj['results'][0]['_source']['title'] == 'Bicycle'
+    assert response_obj['results'][0]['_source']['status'] == 'AVAILABLE'
+    assert response_obj['results'][0]['_source']['listing_id'] == 1
+    assert response_obj['results'][0]['_source']['type'] == 'listings'
+    assert response_obj['results'][0]['_source']['location']['lat'] == 48.4284
+    assert response_obj['results'][0]['_source']['location']['lon'] == -123.3856
+
+
+def test_search_filter_bad_category():
+    # Assuming a valid token
+    headers = {
+        "Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"}
+    params = {
+        "title": "Bicycle",
+        "category": "bad_category",
+    }
+    response = client.get("/search", headers=headers, params=params)
+    response_obj = response.json()
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response_obj['message'] == "Search successful"
+    assert response_obj['results'] == []
+
+
+def test_search_filter_status():
+    # Assuming a valid token
+    headers = {
+        "Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"}
+    params = {
+        "title": "Bicycle",
+        "status": "AVAILABLE"
+    }
+    response = client.get("/search", headers=headers, params=params)
+    response_obj = response.json()
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response_obj['message'] == "Search successful"
+    assert response_obj['results'][0]['_index'] == 'listings'
+    assert response_obj['results'][0]['_source']['price'] == 100
+    assert response_obj['results'][0]['_source']['buyer_id'] == None
+    assert response_obj['results'][0]['_source']['category'] == 'Sports'
+    assert response_obj['results'][0]['_source']['seller_id'] == 1
+    assert response_obj['results'][0]['_source']['title'] == 'Bicycle'
+    assert response_obj['results'][0]['_source']['status'] == 'AVAILABLE'
+    assert response_obj['results'][0]['_source']['listing_id'] == 1
+    assert response_obj['results'][0]['_source']['type'] == 'listings'
+    assert response_obj['results'][0]['_source']['location']['lat'] == 48.4284
+    assert response_obj['results'][0]['_source']['location']['lon'] == -123.3856
+
+
+def test_search_filter_bad_status():
+    # Assuming a valid token
+    headers = {
+        "Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"}
+    params = {
+        "title": "Bicycle",
+        "status": "bad_status"
+    }
+    response = client.get("/search", headers=headers, params=params)
+    response_obj = response.json()
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response_obj['message'] == "Search successful"
+    assert response_obj['results'] == []
+
+def test_search_filter_category_and_status():
+    # Assuming a valid token
+    headers = {
+        "Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"}
+    params = {
+        "title": "Bicycle",
+        "category": "Sports",
+        "status": "AVAILABLE"
+    }
+    response = client.get("/search", headers=headers, params=params)
+    response_obj = response.json()
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response_obj['message'] == "Search successful"
+    assert response_obj['results'][0]['_index'] == 'listings'
+    assert response_obj['results'][0]['_source']['price'] == 100
+    assert response_obj['results'][0]['_source']['buyer_id'] == None
+    assert response_obj['results'][0]['_source']['category'] == 'Sports'
+    assert response_obj['results'][0]['_source']['seller_id'] == 1
+    assert response_obj['results'][0]['_source']['title'] == 'Bicycle'
+    assert response_obj['results'][0]['_source']['status'] == 'AVAILABLE'
+    assert response_obj['results'][0]['_source']['listing_id'] == 1
+    assert response_obj['results'][0]['_source']['type'] == 'listings'
+    assert response_obj['results'][0]['_source']['location']['lat'] == 48.4284
+    assert response_obj['results'][0]['_source']['location']['lon'] == -123.3856
+
+def test_search_filter_bad_category_and_bad_status():
+    # Assuming a valid token
+    headers = {
+        "Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"}
+    params = {
+        "title": "Bicycle",
+        "category": "bad_category",
+        "status": "bad_status"
+    }
+    response = client.get("/search", headers=headers, params=params)
+    response_obj = response.json()
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response_obj['message'] == "Search successful"
+    assert response_obj['results'] == []
+    
