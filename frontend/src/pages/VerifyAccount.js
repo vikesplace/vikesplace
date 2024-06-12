@@ -10,47 +10,120 @@ import Typography from '@mui/material/Typography';
 
 function VerifyAccount() {
     const [username, setUsername] = useState("");
-    const [usernameError, setUsernameError] = useState(false);
+    const [usernameError, setUsernameError] = useState("");
     const [password, setPassword] = useState("");
     const [passwordError, setPasswordError] = useState(false);
+    const [confirmPass, setConfirmPass] = useState("");
+    const [confirmPassError, setConfirmPassError] = useState(false);
     const [postalCode, setPostalCode] = useState("");
     const [postalCodeError, setPostalCodeError] = useState(false);
     
     const handleUsernameChange = (event) => {
         setUsername(event.target.value);
-        // TODO how to display an error if page returns due to duplicate username?
-        setUsernameError(false);
+    };
+
+    const handleUsernameBlur = (event) => {
+        setUsername(event.target.value);
+        validateUsername();
     };
 
     const handlePasswordChange = (event) => {
         setPassword(event.target.value);
-        if (event.target.validity.patternMismatch) {
-            setPasswordError(true);
-        } else if (password.includes(' ')) {
-            setPasswordError(true);
-        } else {
-            setPasswordError(false);
-        }
+    };
+
+    const handlePasswordBlur = (event) => {
+        setPassword(event.target.value);
+        validatePassword();
+    };
+
+    const handleConfirmPassChange = (event) => {
+        setConfirmPass(event.target.value);
+    };
+
+    const handleConfirmPassBlur = (event) => {
+        setConfirmPass(event.target.value);
+        validateConfirmPassword();
     };
 
     const handlePostalCodeChange = (event) => {
         setPostalCode(event.target.value);
-        if (event.target.validity.patternMismatch) {
+    };
+
+    const handlePostalCodeBlur = (event) => {
+        setPostalCode(event.target.value);
+        validatePostalCode();
+    };
+
+    function validateUsername() {
+        if (!username) {
+            setUsernameError("Username is required");
+            return false;
+        } else if (username.includes(' ')) {
+            setUsernameError("Cannot include spaces");
+            return false;
+        } else if (usernameError === "This username has already been chosen") {
+            return false;
+        } else {
+            setUsernameError("");
+            return true;
+        }
+    }
+
+    function validatePassword() {
+        var format = new RegExp("^(?=.*[0-9])(?=.*[!@#$^&*?<>])(?=.*[a-z])(?=.*[A-Z])(?! ).{8,}$");
+        if (!format.test(password)) {
+            setPasswordError(true);
+            return false;
+        } else if (password.includes(' ')) {
+            setPasswordError(true);
+            return false;
+        } else {
+            setPasswordError(false);
+            return true;
+        }
+    }
+
+    function validateConfirmPassword() {
+        if (confirmPass !== password) {
+            setConfirmPassError(true);
+            return false;
+        } else {
+            setConfirmPassError(false);
+            return true;
+        }
+    }
+
+    function validatePostalCode() {
+        var format = new RegExp("^[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] [0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]$");
+        if (!format.test(postalCode)) {
             setPostalCodeError(true);
+            return false;
         } else {
             setPostalCodeError(false);
+            return true;
         }
-    };
+    }
 
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        // TODO POST 
-        console.log({
-            username: data.get('username'),
-            password: data.get('password'),
-            postalCode: data.get('postalCode'),
-        });
+        
+        var validForm = validateUsername() && validatePassword() && validateConfirmPassword() && validatePostalCode();
+        if (validForm) {
+            // TODO get email from JWT
+            try {
+                // TODO POST 
+                console.log({
+                    username: data.get("username"),
+                    password: data.get("password"),
+                    postalCode: data.get("postalCode"),
+                });
+                // TODO if succeeds direct to /verified page
+            } catch (error) {
+                // TODO check POST response to ensure the error is about username
+                setUsernameError("This username has already been chosen");
+            }
+        }
     }
     
   return (
@@ -59,9 +132,9 @@ function VerifyAccount() {
       <Box
           sx={{
             marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
           }}
         >
             <Typography component="h1" variant="h5">
@@ -79,7 +152,8 @@ function VerifyAccount() {
                         autoComplete="username"
                         value={username}
                         onChange={handleUsernameChange}
-                        error={usernameError}
+                        onBlur={handleUsernameBlur}
+                        error={usernameError !== ""}
                         helperText={usernameError}
                     />
                 </Grid>
@@ -94,13 +168,11 @@ function VerifyAccount() {
                         autoComplete="new-password"
                         value={password}
                         onChange={handlePasswordChange}
+                        onBlur={handlePasswordBlur}
                         error={passwordError}
                         helperText={
                             passwordError ? "Must be 8+ characters, with at least 1 symbol, number, lowercase letter, and uppercase letter" : ""
                         }
-                        inputProps={{
-                            pattern: "(?=.*[0-9])(?=.*[!@#$^&*?<>])(?=.*[a-z])(?=.*[A-Z])(?! ).{8,}",
-                        }}
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -112,6 +184,13 @@ function VerifyAccount() {
                         type="password"
                         id="confirm-password"
                         autoComplete="new-password"
+                        value={confirmPass}
+                        onChange={handleConfirmPassChange}
+                        onBlur={handleConfirmPassBlur}
+                        error={confirmPassError}
+                        helperText={
+                            confirmPassError ? "Must match password" : ""
+                        }
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -124,13 +203,11 @@ function VerifyAccount() {
                         id="postalCode"
                         value={postalCode}
                         onChange={handlePostalCodeChange}
+                        onBlur={handlePostalCodeBlur}
                         error={postalCodeError}
                         helperText={
                             postalCodeError ? "Please enter a valid postal code (format: A1A 1A1)" : ""
                         }
-                        inputProps={{
-                            pattern: "^[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] [0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]$",
-                        }}
                     />
                 </Grid>
                 <Button
