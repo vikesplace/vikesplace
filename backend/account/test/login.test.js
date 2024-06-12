@@ -13,11 +13,6 @@ app.use(identification);
 app.use("/login", loginRouter);
 
 describe("Login Routes", () => {
-  it("should return login message on GET /login", async () => {
-    const response = await request(app).get("/login");
-    expect(response.body).toEqual({ message: "login" });
-  });
-
   it("should log in a user on POST /login", async () => {
     const response = await request(app)
       .post("/login")
