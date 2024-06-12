@@ -1,11 +1,17 @@
 from pymongo import MongoClient
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env file
+load_dotenv()
 
 # MongoDB connection details
-MONGO_HOST = "localhost"
-MONGO_PORT = 27017
-MONGO_USER = "mongoadmin"
-MONGO_PASS = "secret"
-MONGO_DB = "mydatabase"  # Replace with your database name
+MONGO_HOST = os.getenv("MONGO_HOST")
+MONGO_PORT = int(os.getenv("MONGO_PORT"))  # Convert to int if necessary
+MONGO_USER = os.getenv("MONGO_INITDB_ROOT_USERNAME")
+MONGO_PASS = os.getenv("MONGO_INITDB_ROOT_PASSWORD")
+MONGO_DB = os.getenv("MONGO_INITDB_DATABASE")
+
 
 def search_history(user_id):
     # Create a connection to the MongoDB server

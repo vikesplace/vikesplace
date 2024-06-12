@@ -7,7 +7,7 @@ from elasticsearch import Elasticsearch
 def search(title, location, category=None, status=None):
     es = Elasticsearch(
         "https://localhost:9200/",
-        ca_certs="./ca.crt",
+        ca_certs="./search/ca.crt",
         basic_auth=("elastic", "a123456")
     )
 
