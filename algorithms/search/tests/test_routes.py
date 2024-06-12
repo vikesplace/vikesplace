@@ -109,6 +109,28 @@ def test_search_empty_wrong_title():
     assert response_obj['results'] == []
 
 
+def test_search_user_history():
+    headers = {"Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"} # Assuming a valid token
+    user_id = "userId123"
+    response = client.get(f"/users/{user_id}/searches")
+    response_obj = response.json()
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response_obj['results'] == ['action 1', 'action 2', 'action 3']
+    assert response_obj['message'] == "Search history successful"
+
+
+def test_search_invalid_user_history():
+    headers = {"Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"} # Assuming a valid token
+    user_id = "userId129"
+    response = client.get(f"/users/{user_id}/searches")
+    response_obj = response.json()
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response_obj['results'] == None
+    assert response_obj['message'] == "Search history successful"
+
+
 def test_search_item_inside_radius():
     # Assuming a valid token
     headers = {
