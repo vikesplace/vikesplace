@@ -1,6 +1,9 @@
 from fastapi import FastAPI, Path, Query
+from typing import Annotated
+from fastapi.responses import JSONResponse
 import search.es_request as es_request
 import search.mongodb_request as mongodb_request
+import json
 
 app = FastAPI()
 
@@ -11,7 +14,7 @@ async def root():
 @app.get("/search")
 async def search(
     title: str = Query(None),
-    location: list = [48.437326, -123.329773],
+    location: Annotated[list[float], Query(min_length=2, max_length=2)] = [48.437326, -123.329773],
     category: str = Query(None),
     status: str = Query(None)
 ):
