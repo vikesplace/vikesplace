@@ -20,39 +20,41 @@ def search(title, location, category=None, status=None):
         }
     ]
 
+    filter = [
+        {
+            "geo_distance": {
+                "distance": "5km",
+                "location": {
+                            "lat": location[0],
+                            "lon": location[1]
+                }
+            }
+        }
+    ]
+
+    # Furniture, Electronics, Sports, Appliances, Music
     if category:
-        must_clauses.append({
-            "query_string": {
-                "default_field": "category",
-                "query": f"*{category}*"
+        filter.append({
+            "term": {
+                "category.keyword": f"{category}"
             }
         })
 
+    # AVAILABLE, SOLD, REMOVED
     if status:
-        must_clauses.append({
-            "query_string": {
-                "default_field": "status",
-                "query": f"*{status}*"
+        filter.append({
+            "term": {
+                "status.keyword": f"{status}"
             }
         })
 
     query = {
         "bool": {
             "must": must_clauses,
-            "filter": [
-                {
-                    "geo_distance": {
-                        "distance": "5km",
-                        "location": {
-                            "lat": location[0],
-                            "lon": location[1]
-                        }
-                    }
-                }
-            ]
+            "filter": filter
         }
     }
-
+    
     results = es.search(index="listings", query=query,
                         allow_partial_search_results=True)
 
