@@ -11,17 +11,34 @@ import Typography from '@mui/material/Typography';
 function VerifyAccount() {
     const [username, setUsername] = useState("");
     const [usernameError, setUsernameError] = useState(false);
-    // TODO validate password/confirm password
-    // TODO validate address (is a real place?)
+    const [password, setPassword] = useState("");
+    const [passwordError, setPasswordError] = useState(false);
+    const [postalCode, setPostalCode] = useState("");
+    const [postalCodeError, setPostalCodeError] = useState(false);
     
     const handleUsernameChange = (event) => {
         setUsername(event.target.value);
-        // TODO criteria for valid username?
-        // possible to return to this page after form submits and display errors?
-        if (event.target.value.length > 20) {
-            setUsernameError("Username is too long");
+        // TODO how to display an error if page returns due to duplicate username?
+        setUsernameError(false);
+    };
+
+    const handlePasswordChange = (event) => {
+        setPassword(event.target.value);
+        if (event.target.validity.patternMismatch) {
+            setPasswordError(true);
+        } else if (password.includes(' ')) {
+            setPasswordError(true);
         } else {
-            setUsernameError(false);
+            setPasswordError(false);
+        }
+    };
+
+    const handlePostalCodeChange = (event) => {
+        setPostalCode(event.target.value);
+        if (event.target.validity.patternMismatch) {
+            setPostalCodeError(true);
+        } else {
+            setPostalCodeError(false);
         }
     };
 
@@ -32,6 +49,7 @@ function VerifyAccount() {
         console.log({
             username: data.get('username'),
             password: data.get('password'),
+            postalCode: data.get('postalCode'),
         });
     }
     
@@ -74,6 +92,15 @@ function VerifyAccount() {
                         type="password"
                         id="password"
                         autoComplete="new-password"
+                        value={password}
+                        onChange={handlePasswordChange}
+                        error={passwordError}
+                        helperText={
+                            passwordError ? "Must be 8+ characters, with at least 1 symbol, number, lowercase letter, and uppercase letter" : ""
+                        }
+                        inputProps={{
+                            pattern: "(?=.*[0-9])(?=.*[!@#$^&*?<>])(?=.*[a-z])(?=.*[A-Z])(?! ).{8,}",
+                        }}
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -91,11 +118,19 @@ function VerifyAccount() {
                     <TextField
                         required
                         fullWidth
-                        name="address"
-                        label="Address"
-                        type="address"
-                        id="address"
-                        autoComplete="street-address"
+                        name="postalCode"
+                        label="Postal Code"
+                        type="postalCode"
+                        id="postalCode"
+                        value={postalCode}
+                        onChange={handlePostalCodeChange}
+                        error={postalCodeError}
+                        helperText={
+                            postalCodeError ? "Please enter a valid postal code (format: A1A 1A1)" : ""
+                        }
+                        inputProps={{
+                            pattern: "^[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] [0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]$",
+                        }}
                     />
                 </Grid>
                 <Button
