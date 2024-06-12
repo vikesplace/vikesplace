@@ -1,5 +1,6 @@
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Path, Query
 import search.es_request as es_request
+import search.mongodb_request as mongodb_request
 
 app = FastAPI()
 
@@ -20,3 +21,17 @@ async def search(
         "message": "Search successful",
         "results": results
     }
+
+@app.get("/users/{userId}/searches")
+async def search(
+    userId: str = Path(..., description="The ID of the user"),
+):
+    # Assuming es_request.search can handle these parameters
+    results = mongodb_request.search_history(userId)
+    print(results)
+    return {
+        "status": 200,
+        "message": "Search history successful",
+        "results": results 
+    }
+

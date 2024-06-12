@@ -82,3 +82,26 @@ def test_search_empty_wrong_title():
         "message": "Search successful",
         "results": []  # Assuming an empty list for now
     }
+
+def test_search_user_history():
+    headers = {"Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"} # Assuming a valid token
+    user_id = "userId123"
+    response = client.get(f"/users/{user_id}/searches")
+    
+    assert response.json() == {
+        "status": 200,
+        "message": "Search history successful",
+        "results": ['action 1', 'action 2', 'action 3']  # Assuming an empty list for now
+    }
+
+
+def test_search_invalid_user_history():
+    headers = {"Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"} # Assuming a valid token
+    user_id = "userId129"
+    response = client.get(f"/users/{user_id}/searches")
+    
+    assert response.json() == {
+        "status": 200,
+        "message": "Search history successful",
+        "results": None # Assuming an empty list for now
+    }
