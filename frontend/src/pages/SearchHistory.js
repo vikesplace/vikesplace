@@ -3,13 +3,12 @@ import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import '../App.css';
 
-function Home() {
+function SearchHistory() {
   return (
-    <div className="Home">
+    <div className="SearchHistory">
       <Container>
-        <SearchBar />
         <Box mt={2}>
-            Home
+            SearchHistory
           {/* Add your main content here */}
         </Box>
       </Container>
@@ -17,4 +16,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default SearchHistory;
