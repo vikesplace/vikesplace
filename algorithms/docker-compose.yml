@@ -11,6 +11,8 @@ volumes:
     driver: local
   metricbeatdata:
     driver: local
+  mongodbdata:
+    driver: local
 
 networks:
   default:
@@ -220,5 +222,16 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+  mongodb:
+    image: mongo:latest
+    volumes:
+      - mongodbdata:/data/db
+      - ./mongodb/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}  # Replace 'mydatabase' with your desired database name
 
 

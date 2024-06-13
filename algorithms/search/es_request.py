@@ -1,9 +1,13 @@
 from elasticsearch import Elasticsearch
 
-def search(title, category=None, status=None):
+# default location
+#   downtown victoria; lat = 48.407326, lon = -123.329773
+
+
+def search(query, location, category=None, status=None):
     es = Elasticsearch(
         "https://localhost:9200/",
-        ca_certs="./search/ca.crt",
+        ca_certs="./ca.crt",
         basic_auth=("elastic", "a123456")
     )
 
@@ -11,42 +15,76 @@ def search(title, category=None, status=None):
         {
             "query_string": {
                 "default_field": "title",
-                "query": f"*{title}*"
+                "query": f"*{query}*"
             }
         }
     ]
-    
-    if category:
-        must_clauses.append({
-            "query_string": {
-                "default_field": "category",
-                "query": f"*{category}*"
+
+    filter = [
+        {
+            "geo_distance": {
+                "distance": "5km",
+                "location": {
+                            "lat": location[0],
+                            "lon": location[1]
+                }
             }
-        })
-        
-    if status:
-        must_clauses.append({
-            "query_string": {
-                "default_field": "status",
-                "query": f"*{status}*"
+        }
+    ]
+
+    # Furniture, Electronics, Sports, Appliances, Music
+    if category:
+        filter.append({
+            "term": {
+                "category.keyword": f"{category}"
             }
         })
 
-    query = {
+    # AVAILABLE, SOLD, REMOVED
+    if status:
+        filter.append({
+            "term": {
+                "status.keyword": f"{status}"
+            }
+        })
+
+    query_listings = {
         "bool": {
-            "must": must_clauses
+            "must": must_clauses,
+            "filter": filter
         }
     }
 
-    results = es.search(index="listings", query=query, allow_partial_search_results=True)
+    query_username = {
+            "bool": {
+                "must": [{"query_string": {
+                    "default_field": "username",
+                    "query": f"*{query}*"
+                }
+                }
+                ]
+            }
+        }
     
-    #print(results['hits']['hits'])  # for debugging
-    print("====================>>>  number of results item:  ",len(results['hits']['hits'] ))
-    print(results['hits']['hits'] )
-    return results['hits']['hits']  # Return only the hits
+    results = {}
+
+    results["listings"] = es.search(index="listings", query=query_listings,
+                                allow_partial_search_results=True)['hits']['hits']
+
+    results["users"] = es.search(index="users", query=query_username,
+                             allow_partial_search_results=True)['hits']['hits']
+
+    print("====================>>>  number of results item:  ",
+          len(results["listings"]))
+
+    print("====================>>>  number of results users:  ",
+          len(results["users"]))
+
+    print(results)
+    return results  # Return only the hits
 
 # Example usage
-#search2("example_title", category="example_category", status="example_status")
+# search2("example_title", category="example_category", status="example_status")
 
 
 '''
