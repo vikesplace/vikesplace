@@ -1,11 +1,10 @@
 import express from "express";
+import {createListing} from "../controller/create_listing.js";
 
 const router = express.Router();
 
 //Create a listing
-router.post("/", (req, res) => {
-  res.json({ message: "Create Listing" });
-});
+router.post("/", createListing);
 
 //Update a listing
 router.patch("/:listingId", (req, res) => {
