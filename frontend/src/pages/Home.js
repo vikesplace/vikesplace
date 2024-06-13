@@ -1,6 +1,7 @@
 import React from 'react';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
+import SearchBar from '../components/SearchBar.js';
 import '../App.css';
 
 function Home() {
