@@ -1,15 +1,34 @@
 import React from 'react';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
+import OwnListingCard from '../components/OwnListingCard.js';
 import '../App.css';
+
+// TODO GET with jwt
+const listings = [
+  { id: '4', title: 'Test 1', price: '2.00', location: 'V9VW9W', status: 'AVAILABLE' },
+  { id: '10',title: 'Super cool object', price: '3.45', location: 'V9VW9W', status: 'SOLD' },
+  { id: '100',title: 'Buy Me!', price: '1234.56', location: 'V9VW9W', status: 'AVAILABLE' },
+  { id: '3',title: 'Another listings for sale', price: '98765432.10', location: 'V9VW9W', status: 'AVAILABLE' }
+];
 
 function ManageListings() {
   return (
     <div className="ManageListings">
       <Container>
-        <Box mt={2}>
-        ManageListings
-          {/* Add your main content here */}
+      <Box mt={2}>
+          {listings.map((listing) => (
+            <div key={'div'+listing.id}>
+              <OwnListingCard
+                id={listing.id}
+                title={listing.title}
+                price={listing.price}
+                location={listing.location}
+                status={listing.status}          
+              />
+              <br />
+            </div>
+            ))}
         </Box>
       </Container>
     </div>
