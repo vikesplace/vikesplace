@@ -4,7 +4,8 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "pg": "^8.11.5",
-    "sequelize": "^6.37.3"
+    "sequelize": "^6.37.3",
+    "axios": "^1.7.2"
   },
   "name": "listing",
   "description": "```bash\r npm install\r ```",
@@ -15,7 +16,8 @@
     "@babel/preset-react": "^7.24.7",
     "babel-jest": "^29.7.0",
     "jest": "^29.7.0",
-    "supertest": "^7.0.0"
+    "supertest": "^7.0.0",
+    "nodemon": "^3.1.0"
   },
   "scripts": {
     "test": "jest"
@@ -26,5 +28,5 @@
     }
   },
   "author": "",
-  "license": "ISC"
+  "license": "MIT"
 }

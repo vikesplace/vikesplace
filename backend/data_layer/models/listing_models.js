@@ -13,7 +13,6 @@ Listings.init(
     seller_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      unique: true,
       references: {
         model: "users",
         key: "user_id",
