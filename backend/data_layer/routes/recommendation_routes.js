@@ -1,10 +1,10 @@
 import express from 'express';
-import { getRecommendations } from '../controllers/recommendation_controller.js';
+import { makeRecommendation } from '../controllers/recommendation_controller.js';
 
 const router = express.Router();
 
 //Get recommendations
-router.get("/", getRecommendations);
+router.get("/", makeRecommendation);
 
 //Ignore a recommendation
 router.patch("/:recommendationId", (req, res) => {

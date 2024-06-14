@@ -1,5 +1,5 @@
-import express from 'express';
-import { createUser, loginUser } from '../controllers/user_controller.js';
+import express from "express";
+import { createUser } from '../controllers/user_controller.js';
 
 const router = express.Router();
 
@@ -7,7 +7,9 @@ const router = express.Router();
 router.post('/', createUser);
 
 //Login a user
-router.post('/login', loginUser);
+router.post('/login', (req, res) => {
+  res.json({ message: 'login a user' });
+});
 
 //Get all users
 router.get('/', (req, res) => {

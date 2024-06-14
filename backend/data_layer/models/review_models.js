@@ -15,7 +15,7 @@ Reviews.init(
       allowNull: false,
       unique: true,
       references: {
-        model: "listings",
+        model: "Listings",
         key: "listing_id",
       },
       onDelete: "CASCADE",
@@ -25,7 +25,7 @@ Reviews.init(
       allowNull: false,
       unique: true,
       references: {
-        model: "users",
+        model: "Users",
         key: "user_id",
       },
       onDelete: "CASCADE",
@@ -39,7 +39,7 @@ Reviews.init(
       allowNull: false,
       unique: true,
       references: {
-        model: "ratings",
+        model: "Ratings",
         key: "listing_rating_id",
       },
       onDelete: "CASCADE",

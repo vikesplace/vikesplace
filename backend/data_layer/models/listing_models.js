@@ -14,7 +14,7 @@ Listings.init(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: "users",
+        model: "Users",
         key: "user_id",
       },
       onDelete: "CASCADE",
@@ -25,7 +25,7 @@ Listings.init(
       defaultValue: null,
       unique: true,
       references: {
-        model: "users",
+        model: "Users",
         key: "username",
       },
       onDelete: "CASCADE",
@@ -39,7 +39,7 @@ Listings.init(
       allowNull: false,
     },
     location: {
-      type: DataTypes.POINT,
+      type: DataTypes.GEOMETRY('POINT'),
       allowNull: false,
     },
     status: {

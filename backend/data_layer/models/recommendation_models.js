@@ -14,7 +14,7 @@ Recommendations.init(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: "users",
+        model: "Users",
         key: "user_id",
       },
       onDelete: "CASCADE",
@@ -23,7 +23,7 @@ Recommendations.init(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: "listings",
+        model: "Listings",
         key: "listing_id",
       },
       onDelete: "CASCADE",

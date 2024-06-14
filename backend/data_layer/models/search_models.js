@@ -1,4 +1,4 @@
-import { DataTypes, Models } from "sequelize";
+import { DataTypes, Model } from "sequelize";
 import sequelize from "../config/database.js";
 
 class Search extends Model {}
