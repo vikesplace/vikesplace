@@ -41,32 +41,42 @@ services:
       - "5000"
     environment:
       PORT: 5000
-  listings:
-    container_name: listings
+  listing:
+    container_name: listing
     build:
-      context: ./listings
+      context: ./listing
     volumes:
-      - ./listings:/app
+      - ./listing:/app
     ports:
       - "5000"
     environment:
       PORT: 5000
-  recommendations:
-    container_name: recommendations
+  recommendation:
+    container_name: recommendation
     build:
-      context: ./recommendations
+      context: ./recommendation
     volumes:
-      - ./recommendations:/app
+      - ./recommendation:/app
     ports:
       - "5000"
     environment:
       PORT: 5000
-  searches:
-    container_name: searches
+  search:
+    container_name: search
     build:
-      context: ./searches
+      context: ./search
     volumes:
-      - ./searches:/app
+      - ./search:/app
+    ports:
+      - "5000"
+    environment:
+      PORT: 5000
+  data_layer:
+    container_name: data_layer
+    build:
+      context: ./data_layer
+    volumes:
+      - ./data_layer:/app
     ports:
       - "5000"
     environment:
