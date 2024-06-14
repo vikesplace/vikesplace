@@ -1,4 +1,5 @@
 import express from "express";
+import {createListing} from "../controller/create_listing.js";
 
 const router = express.Router();
 
@@ -9,9 +10,7 @@ router.get("/", (req, res) => {
 });
 
 //Create a listing
-router.post("/", (req, res) => {
-  res.json({ message: "Create Listing" });
-});
+router.post("/", createListing);
 
 //Get all listings of a user
 router.get("/me", (req, res) => {
