@@ -25,7 +25,7 @@ Users.init(
       allowNull: false,
     },
     location: {
-      type: DataTypes.POINT,
+      type: DataTypes.GEOMETRY('POINT'),
       allowNull: false,
     },
     joining_date: {
