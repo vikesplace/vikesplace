@@ -9,6 +9,7 @@ import Messages from './pages/Messages.js';
 import VerifyAccount from './pages/VerifyAccount.js';
 import VerifiedAccount from './pages/VerifiedAccount.js';
 import SearchHistory from './pages/SearchHistory.js';
+import Login from './pages/Login.js';
 
 function App() {  
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/create-listing" element={<CreateListing />} />
         <Route path="/manage-listings" element={<ManageListings />} />
         <Route path="/messages" element={<Messages />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/verify" element={<VerifyAccount />} /> {/* TODO: modify /verify to use parameters from email verification*/}
         <Route path="/verified" element={<VerifiedAccount />} />
         <Route path="/history" element={<SearchHistory />} />
