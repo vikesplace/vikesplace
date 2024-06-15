@@ -74,7 +74,7 @@ function ViewListings() {
         <Box mt={2}>
           {listings.map((listing) => (
             <div key={'div' + listing.id} onClick={() => handleListingClick(listing.id)}>
-              <ActionAreaCard
+              <ListingCard
                 id={listing.id}
                 title={listing.title}
                 price={listing.price}
