@@ -10,7 +10,13 @@ In the `./algorithms` folder, run
 1. `pip install -r requirements.txt`
 2. `docker-compose up -d --build`
 3. Using Docker UI, go to `Volumes` and find `vikesplace-certs`
-   1. In the `Data` tab, go to the `ca` folder and copy the  `ca.crt` file into `./algorithms`
+   1. In the `Data` tab, go to the `ca` folder and copy the  `ca.crt` file into `./algorithms/`
+4. Once the data is properly loaded, run the tests using `pytest -vv`
+   1. You can if the data was loaded by going into Kibana, `http://localhost:5601/app/enterprise_search/content/search_indices`
+   2. There should be two indices, `listings` and `users`, each containing 100 and 20 documents, respectively.
+5. Run `uvicorn search.routes:app --port 8000` to start the Search API
+6. Run `uvicorn recommender.routes:app --port 8001` to start the Recommender API
+
 
 ## Where is it Running?
 - PostgreSQL will be running in `localhost:5432`
@@ -21,11 +27,7 @@ In the `./algorithms` folder, run
 - Recommender API: `localhost:8001`
 
 ## Search Engine
-### Running API
-Navigate to `./algorithms/search`, then run the following:
-1. `pytest` -- ensure tests are **passing!!**
-2. `fastapi dev routes.py`
-3. Go to http://localhost:8000/docs to view all endpoints
+View all API endpoints by going to `http://localhost:8000/docs`
 
 ### Search Using Kibana Console
 Use the Kibana console as a sanity checker for your queries - `localhost:5601`
@@ -60,13 +62,10 @@ GET listings/_search
 ```
 
 ## Recommender System
+View all API endpoints by going to `http://localhost:8001/docs`
 
-### Running API
-Navigate to `./recommender/search`, then run the following:
-1. `pytest` -- ensure tests are **passing!!**
-2. `fastapi dev routes.py`
-3. Go to http://localhost:8001/docs to view all endpoints
-
+### Get Recommendations Using Kibana Console
+Use the Kibana console as a sanity checker for your queries - `localhost:5601`
 ```
 GET listings/_search
 { 

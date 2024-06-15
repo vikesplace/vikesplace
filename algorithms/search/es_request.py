@@ -20,7 +20,7 @@ ES_CERT_PATH = os.getenv("ES_CERT_PATH")
 def search(query, location, category=None, status=None):
     es = Elasticsearch(
         f"https://{ES_HOST}:{ES_PORT}/",
-        ca_certs='../ca.crt',
+        ca_certs='./ca.crt',
         basic_auth=(ES_USER, ES_PASS)
     )
 

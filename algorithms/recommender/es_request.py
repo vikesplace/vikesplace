@@ -30,7 +30,7 @@ def recommendation(user_id, user_loc):
 
     es = Elasticsearch(
         f"https://{ES_HOST}:{ES_PORT}/",
-        ca_certs='../ca.crt',
+        ca_certs='./ca.crt',
         basic_auth=(ES_USER, ES_PASS)
     )
 
