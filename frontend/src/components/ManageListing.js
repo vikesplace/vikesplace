@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import '../App.css';
@@ -23,17 +23,15 @@ const statuses = [
     { value: 'SOLD', label: 'SOLD' }
   ];
 
-export default function ManageListing() {
+export default function ManageListing({ listing }) {
 
-    let { id } = useParams();
     let navigate = useNavigate();
-    //TODO use get to get current values of the fields
-    console.log('id = '+id);
-    const currTitle = "Test title here that continues on for a bit";
-    const currPrice = "2.45";
-    const currPostalCode = "V9V 9W9";
-    const currCategory = "Furniture";
-    const currStatus = "AVAILABLE";
+
+    const currTitle = listing.title;
+    const currPrice = listing.price;
+    const currPostalCode = listing.location;
+    const currCategory = listing.category;
+    const currStatus = listing.status;
 
 
     const [title, setTitle] = useState(currTitle);
@@ -44,6 +42,8 @@ export default function ManageListing() {
     const [postalCodeError, setPostalCodeError] = useState(false);
     const [category, setCategory] = useState(currCategory);
     const [status, setStatus] = useState(currStatus);
+    const [buyer, setBuyer] = useState("");
+    const [buyerError, setBuyerError] = useState(false);
 
     const handleTitleChange = (event) => {
         setTitle(event.target.value);
@@ -78,6 +78,18 @@ export default function ManageListing() {
 
     const handleStatusChange = (event) => {
         setStatus(event.target.value);
+        if (status !== 'SOLD' && buyer) {
+            setBuyer("");
+        }
+    };
+
+    const handleBuyerChange = (event) => {
+        setBuyer(event.target.value);
+    };
+
+    const handleBuyerBlur = (event) => {
+        setBuyer(event.target.value);
+        validateBuyer();
     };
 
     function validateTitle() {
@@ -105,7 +117,7 @@ export default function ManageListing() {
     }
 
     function validatePostalCode() {
-        var format = new RegExp("^[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] [0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]$");
+        var format = new RegExp("^[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]$");
         if (!format.test(postalCode)) {
             setPostalCodeError(true);
             return false;
@@ -123,12 +135,25 @@ export default function ManageListing() {
         }
     }
 
+    function validateBuyer() {
+        if ( status !== 'SOLD'|| buyer) {
+            if (buyer.includes(' ')) {
+                setBuyerError(true);
+                return false;
+            }
+            return true;
+        } else {
+            setBuyerError(true);
+            return false;
+        }
+    }
+
     const handleSubmit = (event) => {
         event.preventDefault();
 
         const data = new FormData(event.currentTarget);
 
-        var validForm = validateTitle() && validatePrice() && validatePostalCode() && validateCategory();
+        var validForm = validateTitle() && validatePrice() && validatePostalCode() && validateCategory() && validateBuyer();
 
         if (validForm) {
             try {
@@ -138,9 +163,10 @@ export default function ManageListing() {
                     price: data.get("price"),
                     postalCode: data.get("postalCode"),
                     category: category,
-                    status: status
+                    status: status,
+                    buyer: data.get("buyer")
                 });
-                // TODO if succeeds direct to /manage-listings page
+                navigate(`/manage-listings`);
             } catch (error) {
                 // TODO display error message
                 console.log(error);
@@ -253,6 +279,23 @@ export default function ManageListing() {
                     </Select>
                   </FormControl>
                 </Grid>
+                {status === 'SOLD' && 
+                <Grid item xs={12}>
+                    <TextField
+                        required
+                        fullWidth
+                        id="buyer"
+                        label="Buyer's Username"
+                        name="buyer"
+                        value={buyer}
+                        onChange={handleBuyerChange}
+                        onBlur={handleBuyerBlur}
+                        error={buyerError}
+                        helperText={
+                            buyerError ? "Buyer username is required" : ""
+                        }
+                    />
+                </Grid>}
                 <Button
                     type="submit"
                     name="submit"
