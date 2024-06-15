@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import '../App.css';
-import ActionAreaCard from '../components/ListingCard';
+import ListingCard from '../components/ListingCard';
 import SearchBar from '../components/SearchBar';
 
 const listings = [
@@ -27,7 +27,7 @@ function ViewListings() {
         <Box mt={2}>
           {listings.map((listing) => (
             <div key={'div' + listing.id} onClick={() => handleListingClick(listing.id)}>
-              <ActionAreaCard
+              <ListingCard
                 id={listing.id}
                 title={listing.title}
                 price={listing.price}

@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import { CardActionArea, CardHeader } from '@mui/material';
 import { Link } from 'react-router-dom';
 
-export default function ActionAreaCard({ id, title, price, location, status }) {
+export default function ListingCard({ id, title, price, location, status }) {
   return (
     <Card>
       <CardActionArea component={Link} to={`/listings/${id}`}>
