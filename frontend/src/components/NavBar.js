@@ -20,6 +20,7 @@ const pages = [
 ];
 const settings = ['User Profile', 'Logout'];
 
+
 function NavBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -138,9 +139,15 @@ function NavBar() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                setting === 'Logout' ? (
+                  <MenuItem key={setting} onClick={handleCloseUserMenu} component={Link} to="/login">
+                    <Typography textAlign="center">{setting}</Typography>
+                  </MenuItem>
+                ) : (
+                <MenuItem key={setting} onClick={handleCloseNavMenu}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
+                )
               ))}
             </Menu>
           </div>
