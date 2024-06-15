@@ -7,7 +7,7 @@ import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import '../App.css';
-import ActionAreaCard from '../components/ListingCard';
+import ListingCard from '../components/ListingCard';
 import SearchBar from '../components/SearchBar';
 
 const initialListings = [
