@@ -9,47 +9,27 @@ import Typography from '@mui/material/Typography';
 import { useNavigate } from 'react-router-dom';
 
 function Login() {
-    const [username, setUsername] = useState("");
-    const [usernameError, setUsernameError] = useState(false);
-    const [password, setPassword] = useState("");
-    const [passwordError, setPasswordError] = useState(false);
+    const [email, setEmail] = useState("");
+    const [emailError, setEmailError] = useState(false);
+    
 
     const navigate = useNavigate();
 
-    const handleUsernameChange = (event) => {
-        setUsername(event.target.value);
+    const handleEmailChange = (event) => {
+        setEmail(event.target.value);
     };
 
-    const handleUsernameBlur = (event) => {
-        setUsername(event.target.value);
-        validateUsername();
+    const handleEmailBlur = (event) => {
+        setEmail(event.target.value);
+        validateEmail();
     };
 
-    const handlePasswordChange = (event) => {
-        setPassword(event.target.value);
-    };
-
-    const handlePasswordBlur = (event) => {
-        setPassword(event.target.value);
-        validatePassword();
-    };
-
-    function validateUsername() {
-        if (username.trim() === "") {
-            setUsernameError(true);
+    function validateEmail() {
+        if (email.trim() === "") {
+            setEmailError(true);
             return false;
         } else {
-            setUsernameError(false);
-            return true;
-        }
-    }
-
-    function validatePassword() {
-        if (password.trim() === "") {
-            setPasswordError(true);
-            return false;
-        } else {
-            setPasswordError(false);
+            setEmailError(false);
             return true;
         }
     }
@@ -58,17 +38,16 @@ function Login() {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
 
-        var validForm = validateUsername() && validatePassword();
+        var validForm = validateEmail();
 
         if (validForm) {
             try {
                 // TODO POST
                 console.log({
-                    username: data.get("username"),
-                    password: data.get("password")
+                    email: data.get("email")
                 });
                 // TODO if succeeds direct to a different page
-                navigate('/');
+                navigate('/check-email');
             } catch (error) {
                 // TODO display error message
                 console.log(error);
@@ -76,9 +55,9 @@ function Login() {
         }
     }
 
-    const handleCreateAccountClick = () => {
-      navigate('/request-account');
-    };
+    const handleLoginClick = () => {
+        navigate('/login');
+      };
 
     return (
         <div className="Login">
@@ -92,7 +71,10 @@ function Login() {
                     }}
                 >
                     <Typography component="h1" variant="h5">
-                        Welcome to VikesPlace!
+                        Create an Account
+                    </Typography>
+                    <Typography component="h6" variant="h6">
+                        Enter your "@uvic.ca" email to sign up
                     </Typography>
                     <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                         <Grid container spacing={1}>
@@ -100,32 +82,15 @@ function Login() {
                                 <TextField
                                     required
                                     fullWidth
-                                    id="username"
-                                    label="Username"
-                                    name="username"
-                                    value={username}
-                                    onChange={handleUsernameChange}
-                                    onBlur={handleUsernameBlur}
-                                    error={usernameError}
+                                    id="email"
+                                    label="email@uvic.ca"
+                                    name="uvic email"
+                                    value={email}
+                                    onChange={handleEmailChange}
+                                    onBlur={handleEmailBlur}
+                                    error={emailError}
                                     helperText={
-                                        usernameError ? "Username is required" : ""
-                                    }
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    name="password"
-                                    label="Password"
-                                    type="password"
-                                    id="password"
-                                    value={password}
-                                    onChange={handlePasswordChange}
-                                    onBlur={handlePasswordBlur}
-                                    error={passwordError}
-                                    helperText={
-                                        passwordError ? "Password is required" : ""
+                                        emailError ? "Email is required" : ""
                                     }
                                 />
                             </Grid>
@@ -136,22 +101,22 @@ function Login() {
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2 }}
                              >
-                                Login
+                                Request Account
                               </Button>
                             </Grid>
                             <Grid item xs={12}>
                               <Typography variant="body1" align="center" sx={{ mt: 1 }}>
-                                  Don't have an account?
+                                  Already have an account?
                               </Typography>
                             </Grid>
                             <Grid item xs={12}>
-                              <Button onClick={handleCreateAccountClick}
+                              <Button onClick={handleLoginClick}
                                   type="submit"
                                   fullWidth
                                   variant="contained"
                                   sx={{ mt: 3, mb: 2 }}
                               >
-                                  Create Account
+                                  Go to login page
                               </Button>
                             </Grid>
                             

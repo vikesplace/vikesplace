@@ -19,6 +19,7 @@ const initialListings = [
 
 function ViewListings() {
   const navigate = useNavigate();
+  
   const [sortCategory, setSortCategory] = useState('');
 
   const [listings, setListings] = useState(initialListings);
