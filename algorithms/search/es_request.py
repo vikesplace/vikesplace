@@ -1,4 +1,17 @@
+import os
+
+from dotenv import load_dotenv
 from elasticsearch import Elasticsearch
+
+
+load_dotenv()
+
+# ES connection details
+ES_HOST = os.getenv("ES_HOST")
+ES_PORT = os.getenv("ES_PORT")
+ES_USER = os.getenv("ES_USER")
+ES_PASS = os.getenv("ELASTIC_PASSWORD")
+ES_CERT_PATH = os.getenv("ES_CERT_PATH")
 
 # default location
 #   downtown victoria; lat = 48.407326, lon = -123.329773
@@ -6,9 +19,9 @@ from elasticsearch import Elasticsearch
 
 def search(query, location, category=None, status=None):
     es = Elasticsearch(
-        "https://localhost:9200/",
-        ca_certs="./ca.crt",
-        basic_auth=("elastic", "a123456")
+        f"https://{ES_HOST}:{ES_PORT}/",
+        ca_certs='../ca.crt',
+        basic_auth=(ES_USER, ES_PASS)
     )
 
     must_clauses = [
@@ -55,24 +68,26 @@ def search(query, location, category=None, status=None):
         }
     }
 
-    query_username = {
-            "bool": {
-                "must": [{"query_string": {
-                    "default_field": "username",
-                    "query": f"*{query}*"
+    query_users = {
+        "bool": {
+            "must": [
+                {
+                    "query_string": {
+                        "default_field": "username",
+                        "query": f"*{query}*"
+                    }
                 }
-                }
-                ]
-            }
+            ]
         }
-    
+    }
+
     results = {}
 
     results["listings"] = es.search(index="listings", query=query_listings,
-                                allow_partial_search_results=True)['hits']['hits']
+                                    allow_partial_search_results=True)['hits']['hits']
 
-    results["users"] = es.search(index="users", query=query_username,
-                             allow_partial_search_results=True)['hits']['hits']
+    results["users"] = es.search(index="users", query=query_users,
+                                 allow_partial_search_results=True)['hits']['hits']
 
     print("====================>>>  number of results item:  ",
           len(results["listings"]))
@@ -82,40 +97,3 @@ def search(query, location, category=None, status=None):
 
     print(results)
     return results  # Return only the hits
-
-# Example usage
-# search2("example_title", category="example_category", status="example_status")
-
-
-'''
-from elasticsearch import Elasticsearch
-
-def search(title, category=None, status=None):
-    es = Elasticsearch(
-        "https://localhost:9200/",
-        ca_certs=r"./search/ca.crt",
-        basic_auth=("elastic", "a123456")
-    )
-    must_clauses = [
-        {"wildcard": {"title": f"*{title}*"}}
-    ]
-    
-    if category:
-        must_clauses.append({"match": {"category": {"query": category}}})
-        
-    if status:
-        must_clauses.append({"match": {"status": {"query": status}}})
-
-    query = {
-        "bool": {
-            "must": must_clauses
-        }
-    }
-
-    results = es.search(index="listings", query=query, allow_partial_search_results=True)
-    
-    #print(results['hits']['hits'])  # for debugging
-    return results['hits']['hits']  # Return only the hits
-
-
-'''
