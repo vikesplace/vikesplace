@@ -26,6 +26,12 @@ describe("Listing Routes", () => {
       .get("/listing/me");
     expect(response.body).toEqual({ message: "Get All Listings of a User" });
   });
+
+  it("should fail to get all listings of a user", async () => {
+    const response = await request(app)
+      .get("/listing/");
+    expect(response.body).toEqual({ message: "Fail to Get All Listings of a User" });
+  });
   
   it("should update a listing", async () => {
     const response = await request(app)
@@ -34,10 +40,23 @@ describe("Listing Routes", () => {
     expect(response.body).toEqual({ message: "Update Listing" });
   });
 
+  it("should fail to update a listing", async () => {
+    const response = await request(app)
+      .patch("/listing/")
+      .send({ name: "Failed to Update Listing" });
+    expect(response.body).toEqual({ message: "Fail to Update Listing" });
+  });
+
   it("should delete a listing", async () => {
     const response = await request(app)
       .delete("/listing/1");
     expect(response.body).toEqual({ message: "Delete Listing" });
+  });
+
+  it("should fail to delete a listing", async () => {
+    const response = await request(app)
+      .delete("/listing/");
+    expect(response.body).toEqual({ message: "Fail to Delete Listing" });
   });
 
   it("should get sorted listings", async () => {
@@ -52,5 +71,9 @@ describe("Listing Routes", () => {
     expect(response.body).toEqual({ message: "Get Listing" });
   });
 
-  
+  it("should fail to get a listing", async () => {
+    const response = await request(app)
+      .get("/listing/");
+    expect(response.body).toEqual({ message: "Fail to Get Listing" });
+  });
 });

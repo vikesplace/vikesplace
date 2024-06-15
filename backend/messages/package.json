@@ -1,4 +1,21 @@
 {
+  "name": "messsages",
+  "description": "```bash\r npm install\r ```",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "jest": {
+    "transform": {
+      "^.+\\.[t|j]sx?$": "babel-jest"
+    }
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC",
   "dependencies": {
     "body-parser": "^1.20.2",
     "dotenv": "^16.4.5",
@@ -6,24 +23,10 @@
     "pg": "^8.11.5",
     "sequelize": "^6.37.3"
   },
-  "name": "messsages",
-  "description": "```bash\r npm install\r ```",
-  "version": "1.0.0",
-  "main": "index.js",
-  "jest": {
-    "transform": {
-      "^.+\\.[t|j]sx?$": "babel-jest"
-    }
-  },
   "devDependencies": {
     "@babel/preset-env": "^7.24.7",
     "babel-jest": "^29.7.0",
     "jest": "^29.7.0",
     "supertest": "^7.0.0"
-  },
-  "scripts": {
-    "test": "jest"
-  },
-  "author": "",
-  "license": "ISC"
+  }
 }

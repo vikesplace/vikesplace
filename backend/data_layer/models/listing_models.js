@@ -1,9 +1,9 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "../config/database.js";
 
-class listing extends Model {}
+class Listings extends Model {}
 
-listing.init(
+Listings.init(
   {
     listing_id: {
       type: DataTypes.INTEGER,
@@ -13,9 +13,8 @@ listing.init(
     seller_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      unique: true,
       references: {
-        model: "users",
+        model: "Users",
         key: "user_id",
       },
       onDelete: "CASCADE",
@@ -26,7 +25,7 @@ listing.init(
       defaultValue: null,
       unique: true,
       references: {
-        model: "users",
+        model: "Users",
         key: "username",
       },
       onDelete: "CASCADE",
@@ -40,7 +39,7 @@ listing.init(
       allowNull: false,
     },
     location: {
-      type: DataTypes.STRING,
+      type: DataTypes.GEOMETRY('POINT'),
       allowNull: false,
     },
     status: {
@@ -75,4 +74,4 @@ listing.init(
   }
 );
 
-export default listing;
+export default Listings;
