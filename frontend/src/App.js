@@ -11,6 +11,9 @@ import VerifiedAccount from './pages/VerifiedAccount.js';
 import SearchHistory from './pages/SearchHistory.js';
 import ListingDetailsPage from './pages/ListingDetailsPage.js';
 import Login from './pages/Login.js';
+import RequestAccount from './pages/RequestAccount.js'
+import CheckYourEmail from './pages/CheckYourEmail.js';
+
 
 function App() {  
   return (
@@ -26,6 +29,8 @@ function App() {
         <Route path="/verify" element={<VerifyAccount />} /> {/* TODO: modify /verify to use parameters from email verification*/}
         <Route path="/verified" element={<VerifiedAccount />} />
         <Route path="/history" element={<SearchHistory />} />
+        <Route path="/request-account" element={<RequestAccount />} />
+        <Route path="/check-email" element={<CheckYourEmail />} />
         <Route path="/listings/:id" element={<ListingDetailsPage />} />
         {/* Add other routes here */}
       </Routes>
