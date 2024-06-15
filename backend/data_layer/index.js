@@ -1,5 +1,5 @@
 import express from "express";
-import 'dotenv/config'
+import 'dotenv/config';
 import listingRoutes from "./routes/listing_routes.js";
 import ratingRoutes from "./routes/rating_routes.js";
 import reviewRoutes from "./routes/review_routes.js";

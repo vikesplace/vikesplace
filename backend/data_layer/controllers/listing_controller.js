@@ -15,7 +15,6 @@ export const createListing = (req, res) => {
         });
     })
     .catch((error) => {
-        console.log(error);
         return res.json({
             message: "Unable to create listing"
         });
