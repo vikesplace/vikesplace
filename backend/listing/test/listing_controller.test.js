@@ -1,19 +1,55 @@
-import axios from 'axios';
-import { createListing } from '../controller/create_listing';
-jest.mock('axios');
-
-const mockReq = {
-    
-}
+import axios from "axios";
+import { createListing } from "../controller/create_listing";
+jest.mock("axios");
 
 describe("Listing Routes", () => {
-    it("should create a listing", async () => {
-        axios.post.mockResolvedValue({
-            data: [{message: "Create Listing"}],
-          });
-        const result = await createListing({},{});
-        console.log(result);
-        expect(result.message).toEqual({ message: "Create Listing" });
-    });
-})
+  it("should create a listing", async () => {
+    axios.post.mockImplementation(() => Promise.resolve({ data: {message: "Create Listing"} }));
+    let responseObject = {};
+    const mockRes = {
+      body:{},
+      json: jest.fn().mockImplementation((result)=>{
+        responseObject = result;
+      }),
+      status: jest.fn()
+    };
+    await createListing(
+      {
+        body: {
+          title: "test",
+          seller_id: "1",
+          price: 0,
+          location: { type: "Point", coordinates: [1, -1] },
+          category: null,
+        },
+      },
+      mockRes
+    );
+    expect(responseObject).toEqual({ message: "Create Listing" });
+  });
 
+  it("it should fail to create", async () => {
+    axios.post.mockImplementation(() => Promise.resolve({ data: {message: "Unable to create listing"} }));
+    let responseObject = {};
+    const mockRes = {
+      body:{},
+      json: jest.fn().mockImplementation((result)=>{
+        responseObject = result;
+      }),
+      status: jest.fn()
+    };
+    await createListing(
+      {
+        body: {
+          title: "test",
+          seller_id: "1",
+          price: 0,
+          location: { type: "Point", coordinates: [1, -1] },
+          category: null,
+        },
+      },
+      mockRes
+    );
+    expect(responseObject).toEqual({ message: "Unable to create listing" });
+  });
+});

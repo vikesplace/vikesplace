@@ -1,5 +1,6 @@
 import express from "express";
 import 'dotenv/config'
+import axiosConfig from './config/axiosConfig.js';
 import listing from "./routes/listing.js";
 
 const PORT = process.env.PORT || 5000;
