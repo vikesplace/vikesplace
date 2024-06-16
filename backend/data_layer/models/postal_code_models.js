@@ -5,7 +5,7 @@ class PostalCodes extends Model {}
 
 PostalCodes.init(
     {
-      postalCode: {
+      postal_code: {
         type: DataTypes.STRING,
         allowNull: false,
         primaryKey: true,
@@ -20,7 +20,10 @@ PostalCodes.init(
       }
     }, {
         sequelize,
+        timestamps: false,
         freezeTableName: true,
     });
-  
+
+//create table if it doesn't already exist, and delete it if it does
+await PostalCodes.sync({force:true}); 
 export default PostalCodes;
