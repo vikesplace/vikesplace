@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import '../App.css';
@@ -18,6 +19,9 @@ const categories = [
 ];
 
 function CreateListing() {
+
+    let navigate = useNavigate();
+
     const [title, setTitle] = useState("");
     const [titleError, setTitleError] = useState(false);
     const [price, setPrice] = useState("");
@@ -82,7 +86,7 @@ function CreateListing() {
     }
 
     function validatePostalCode() {
-        var format = new RegExp("^[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] [0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]$");
+        var format = new RegExp("^[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]$");
         if (!format.test(postalCode)) {
             setPostalCodeError(true);
             return false;
@@ -115,7 +119,7 @@ function CreateListing() {
                     postalCode: data.get("postalCode"),
                     category: category
                 });
-                // TODO if succeeds direct to /manage-listings page
+                navigate(`/manage-listings`);
             } catch (error) {
                 // TODO display error message
                 console.log(error);
