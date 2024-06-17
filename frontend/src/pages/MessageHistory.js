@@ -34,6 +34,7 @@ const chats = [
 function MessageHistory() {
 
     const { id } = useParams();
+    const [newMessage, setNewMessage] = useState("");
 
     //TODO GET chats/messages
     const chatInfo = chats.find((chat) => chat.id.toString() === id);
@@ -78,15 +79,16 @@ function MessageHistory() {
         });
     });
 
-    const [newMessage, setNewMessage] = useState("");
-
     const handleInputKeys = (event) => {
         setNewMessage(event.target.value)
-    }
+    };
 
     const handleSend = (event) => {
         //TODO send/receive messages? (similar to below?)
         //TODO may need to reload MessageList?
+        if (newMessage === "") {
+            return;
+        }
         messagesToDisplay.push(
             {
                 position: "right",
@@ -96,7 +98,12 @@ function MessageHistory() {
             },
         );
         alert("Sending... "+newMessage)
-    }
+        clearTextInput();
+    };
+
+    const clearTextInput = () => {
+        setNewMessage("");
+    };
 
     return (
         <div className="MessageHistory">
