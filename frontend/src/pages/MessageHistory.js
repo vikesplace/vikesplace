@@ -81,7 +81,6 @@ function MessageHistory() {
     const [newMessage, setNewMessage] = useState("");
 
     const handleInputKeys = (event) => {
-        //TODO fix off by one bug
         setNewMessage(event.target.value)
     }
 
@@ -123,7 +122,7 @@ function MessageHistory() {
                         placeholder="Type here..."
                         multiline={true}
                         rightButtons={<Button text={"Send"} onClick={handleSend} title="Send" />}
-                        onKeyDown={handleInputKeys}
+                        onKeyUp={handleInputKeys}
                     />
                 </Box>
             </Container>
