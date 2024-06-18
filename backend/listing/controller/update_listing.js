@@ -7,6 +7,7 @@ export const updateListing = async (req, res) => {
         const response = await axios.patch(`/listing/${req.params.listing_id}`,{
                     title: req.body.title,
                     price: req.body.price,
+                    status: req.body.status,
                     location: location,
                     category: req.body.category || null,
                 });

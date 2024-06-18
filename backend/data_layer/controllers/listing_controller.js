@@ -28,6 +28,8 @@ export const updateListing = (req, res) => {
         location: req.body.location,
         status: "AVAILABLE",
         category: req.body.category
+    },
+    { where: { _id: req.params.listing_id } 
     })
     .then((result) => {
         return res.json({
