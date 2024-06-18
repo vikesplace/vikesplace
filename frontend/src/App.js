@@ -14,6 +14,7 @@ import EditListing from './pages/EditListing.js';
 import Login from './pages/Login.js';
 import RequestAccount from './pages/RequestAccount.js'
 import CheckYourEmail from './pages/CheckYourEmail.js';
+import MessageHistory from './pages/MessageHistory.js';
 
 
 function App() {  
@@ -34,6 +35,7 @@ function App() {
         <Route path="/check-email" element={<CheckYourEmail />} />
         <Route path="/listings/:id" element={<ListingDetailsPage />} />
         <Route path="/edit-listing/:id" element={<EditListing />} />
+        <Route path="/message-history/:id" element={<MessageHistory />} />
         {/* Add other routes here */}
       </Routes>
     </Router>
