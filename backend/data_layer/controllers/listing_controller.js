@@ -20,3 +20,19 @@ export const createListing = (req, res) => {
         });
     });
 };
+
+export const deleteListing = (req, res) => {
+    Listing.update({
+        status: "REMOVED"
+    })
+    .then((result) => {
+        return res.json({
+            message: "Deleted Listing"
+        });
+    })
+    .catch((error) => {
+        return res.json({
+            message: "Unable to delete listing"
+        });
+    });
+};
