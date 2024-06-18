@@ -5,11 +5,11 @@ jest.mock("axios");
 
 describe("Listing Routes", () => {
   it("should create a listing", async () => {
-    axios.post.mockImplementationOnce(() => Promise.resolve({ data: 1 }));
+    axios.post.mockImplementation(() => Promise.resolve({ data: 1 }));
     let responseObject = {};
     const mockRes = {
       body: {},
-      json: jest.fn().mockImplementationOnce((result) => {
+      json: jest.fn().mockImplementation((result) => {
         responseObject = result;
       }),
       status: jest.fn(),
@@ -30,13 +30,13 @@ describe("Listing Routes", () => {
   });
 
   it("it should fail to create", async () => {
-    axios.post.mockImplementationOnce(() =>
+    axios.post.mockImplementation(() =>
       Promise.resolve({ data: { message: "Invalid input data" } })
     );
     let responseObject = {};
     const mockRes = {
       body: {},
-      json: jest.fn().mockImplementationOnce((result) => {
+      json: jest.fn().mockImplementation((result) => {
         responseObject = result;
       }),
       status: jest.fn(),
@@ -69,13 +69,13 @@ describe("Listing Routes", () => {
       },
     ];
     const mockControllerOutput = [1, 2, 3];
-    axios.post.mockImplementationOnce(() =>
+    axios.post.mockImplementation(() =>
       Promise.resolve({ data: mockOutput, status: 200 })
     );
     let responseObject = [];
     const mockRes = {
       body: {},
-      json: jest.fn().mockImplementationOnce((result) => {
+      json: jest.fn().mockImplementation((result) => {
         console.log(result);
         responseObject = result;
       }),
@@ -86,13 +86,13 @@ describe("Listing Routes", () => {
   });
 
   it("fail to return all listingIds", async () => {
-    axios.post.mockImplementationOnce(() =>
+    axios.post.mockImplementation(() =>
       Promise.resolve({ data: { message: "Seller not found" } })
     );
     let responseObject = {};
     const mockRes = {
       body: {},
-      json: jest.fn().mockImplementationOnce((result) => {
+      json: jest.fn().mockImplementation((result) => {
         responseObject = result;
       }),
       status: jest.fn(),
