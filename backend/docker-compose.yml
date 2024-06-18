@@ -85,8 +85,12 @@ services:
       PORT: 5000
   data_layer:
     container_name: data_layer
+    restart: on-failure
     build:
       context: ./data_layer
+    depends_on:
+      database:
+        condition: service_started
     volumes:
       - ./data_layer:/app
     ports:
