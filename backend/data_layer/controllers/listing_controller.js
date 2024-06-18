@@ -21,9 +21,26 @@ export const createListing = (req, res) => {
     });
 };
 
+//get the listing id from the request and delete the listing
+// export const deleteListing = (req, res) => {
+//     Listing.deleteOne({ _id: req.params.id })
+//     .then((result) => {
+//         return res.json({
+//             message: "Delete Listing"
+//         });
+//     })
+//     .catch((error) => {
+//         return res.json({
+//             message: "Unable to delete listing"
+//         });
+//     });
+// };
+
 export const deleteListing = (req, res) => {
     Listing.update({
         status: "REMOVED"
+    },
+    { where: { _id: req.params.listing_id } 
     })
     .then((result) => {
         return res.json({
