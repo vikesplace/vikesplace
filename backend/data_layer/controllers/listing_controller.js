@@ -20,3 +20,24 @@ export const createListing = (req, res) => {
         });
     });
 };
+
+export const updateListing = (req, res) => {
+    Listing.update({
+        title: req.body.title,
+        price: req.body.price,
+        location: req.body.location,
+        status: "AVAILABLE",
+        category: req.body.category
+    })
+    .then((result) => {
+        return res.json({
+            message: "Updated Listing"
+        });
+    })
+    .catch((error) => {
+        return res.json({
+            message: "Unable to update listing"
+        });
+    });
+};
+
