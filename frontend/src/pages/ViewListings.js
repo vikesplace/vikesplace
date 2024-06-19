@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
@@ -13,7 +13,6 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
 import '../App.css';
 import ListingCard from '../components/ListingCard';
 import SearchBar from '../components/SearchBar';
@@ -27,24 +26,11 @@ const initialListings = [
 
 function ViewListings() {
   const navigate = useNavigate();
-
   const [sortCategory, setSortCategory] = useState('');
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
   const [statusFilter, setStatusFilter] = useState('');
-  const [location, setLocation] = useState('Fetching...');
   const [listings, setListings] = useState(initialListings);
-  const [openFilterDialog, setOpenFilterDialog] = useState(false);
-  const [openLocationDialog, setOpenLocationDialog] = useState(false);
-  const [newLocation, setNewLocation] = useState('');
-
-  const currLocation = 'V9VW9W';  //Change later based on api return 
-
-  useEffect(() => {
-    setTimeout(() => {
-      setLocation(currLocation); 
-      // update listings after location
-    }, 1000);
-  }, []);
+  const [open, setOpen] = useState(false);
 
   const handleListingClick = (id) => {
     navigate(`/listings/${id}`);
@@ -90,29 +76,15 @@ function ViewListings() {
       return inPriceRange && matchesStatus;
     });
     setListings(filteredListings);
-    setOpenFilterDialog(false);
+    setOpen(false);
   };
 
-  const handleClickOpenFilterDialog = () => {
-    setOpenFilterDialog(true);
+  const handleClickOpen = () => {
+    setOpen(true);
   };
 
-  const handleCloseFilterDialog = () => {
-    setOpenFilterDialog(false);
-  };
-
-  const handleClickOpenLocationDialog = () => {
-    setOpenLocationDialog(true);
-  };
-
-  const handleCloseLocationDialog = () => {
-    setOpenLocationDialog(false);
-  };
-
-  const applyNewLocation = () => {
-    setLocation(newLocation);
-    // update listings based on new location 
-    setOpenLocationDialog(false);
+  const handleClose = () => {
+    setOpen(false);
   };
 
   return (
@@ -139,20 +111,9 @@ function ViewListings() {
             variant="outlined"
             color="primary"
             startIcon={<FilterListIcon />}
-            onClick={handleClickOpenFilterDialog}
+            onClick={handleClickOpen}
           >
             Add Filter
-          </Button>
-        </Box>
-        <Box mt={2} display="flex" alignItems="center">
-          <LocationOnIcon />
-          <Box ml={1} mr={2}>{location}</Box>
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={handleClickOpenLocationDialog}
-          >
-            Change Location
           </Button>
         </Box>
         <Box mt={2}>
@@ -169,7 +130,7 @@ function ViewListings() {
             </div>
           ))}
         </Box>
-        <Dialog open={openFilterDialog} onClose={handleCloseFilterDialog}>
+        <Dialog open={open} onClose={handleClose}>
           <DialogTitle>Apply Filters</DialogTitle>
           <DialogContent>
             <TextField
@@ -206,31 +167,10 @@ function ViewListings() {
             </FormControl>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseFilterDialog} color="primary">
+            <Button onClick={handleClose} color="primary">
               Cancel
             </Button>
             <Button onClick={applyFilters} color="primary">
-              OK
-            </Button>
-          </DialogActions>
-        </Dialog>
-        <Dialog open={openLocationDialog} onClose={handleCloseLocationDialog}>
-          <DialogTitle>Change Location</DialogTitle>
-          <DialogContent>
-            <TextField
-              label="New Location"
-              type="text"
-              value={newLocation}
-              onChange={(e) => setNewLocation(e.target.value)}
-              fullWidth
-              sx={{ mt: 2 }}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseLocationDialog} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={applyNewLocation} color="primary">
               OK
             </Button>
           </DialogActions>
