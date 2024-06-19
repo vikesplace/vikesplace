@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 
 function RequestPasswordChange() {
     const [email, setEmail] = useState("");
-    const [emailError, setEmailError] = useState(false);
+    const [emailError, setEmailError] = useState("");
     
 
     const navigate = useNavigate();
@@ -26,11 +26,15 @@ function RequestPasswordChange() {
     };
 
     function validateEmail() {
-        if (email.trim() === "") {
-            setEmailError(true);
+        var format = new RegExp("^[A-Z0-9a-z._%+-]+@uvic.ca$");
+        if (!format.test(email)) {
+            setEmailError("Must be a valid @uvic.ca email");
+            return false;
+        } else if (email.trim() === "") {
+            setEmailError("Email is required");
             return false;
         } else {
-            setEmailError(false);
+            setEmailError("");
             return true;
         }
     }
@@ -77,19 +81,17 @@ function RequestPasswordChange() {
                         <Grid container spacing={1}>
                             <Grid item xs={12}>
                                 <TextField
-                                    required
-                                    fullWidth
-                                    id="email"
-                                    label="email@uvic.ca"
-                                    name="uvic email"
-                                    value={email}
-                                    onChange={handleEmailChange}
-                                    onBlur={handleEmailBlur}
-                                    error={emailError}
-                                    helperText={
-                                        emailError ? "Email is required" : ""
-                                    }
-                                />
+                                        required
+                                        fullWidth
+                                        id="email"
+                                        label="email@uvic.ca"
+                                        name="email"
+                                        value={email}
+                                        onChange={handleEmailChange}
+                                        onBlur={handleEmailBlur}
+                                        error={emailError}
+                                        helperText={emailError}
+                                    />
                             </Grid>
                             <Grid item xs={12}>
                               <Button
