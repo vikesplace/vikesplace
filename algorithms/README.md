@@ -5,22 +5,22 @@
 2. Docker
 3. docker-compose
 
-## Environment Setup
+## Getting Started
+
 In the `./algorithms` folder, run 
-1. `pip install -r requirements.txt`
-2. `docker-compose up -d --build`
-3. Using Docker UI, go to `Volumes` and find `vikesplace-certs`
-   1. In the `Data` tab, go to the `ca` folder and copy the  `ca.crt` file into `./algorithms/`
-4. Once the data is properly loaded, run the tests using `pytest -vv`
-   1. You can if the data was loaded by going into Kibana, `http://localhost:5601/app/enterprise_search/content/search_indices`
-   2. There should be two indices, `listings` and `users`, each containing 100 and 20 documents, respectively.
-5. Run `uvicorn search.routes:app --port 8000` to start the Search API
-6. Run `uvicorn recommender.routes:app --port 8001` to start the Recommender API
+```
+docker-compose up -d --build
+```
 
+To stop, run
+```
+docker-compose down -v
+```
+> Need to delete the volumes since certificates will change at every startup
 
-## Where is it Running?
+### Where is it Running?
 - PostgreSQL will be running in `localhost:5432`
-- MongoDB `localhost:27017`
+- MongoDB: `localhost:27017`
 - ElasticSearch: `localhost:9200`
 - Kibana: `localhost:5601`
 - Search API: `localhost:8000`

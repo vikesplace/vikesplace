@@ -1,0 +1,5 @@
+elasticsearch==8.13.2
+fastapi==0.111.0
+pymongo==4.7.3
+python-dotenv==1.0.1
+uvicorn==0.30.1

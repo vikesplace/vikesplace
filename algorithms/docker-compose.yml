@@ -204,7 +204,7 @@ services:
       kibana:
         condition: service_healthy
     build:
-      context: ./
+      context: ./logstash
       dockerfile: Dockerfile
       args:
         - STACK_VERSION=${STACK_VERSION}
@@ -222,6 +222,7 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+
   mongodb:
     image: mongo:latest
     volumes:
@@ -232,6 +233,74 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
-      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}  # Replace 'mydatabase' with your desired database name
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
 
-
+  search:
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      kibana:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    build: 
+      context: ./search
+    volumes:
+      - certs:/usr/share/search
+    ports:
+      - "8000:8000"
+    environment:
+      - ES_HOST=elasticsearch
+      - ES_PORT=${ES_PORT}
+      - ES_USER=${ES_USER}
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - MONGO_HOST=mongodb
+      - MONGO_PORT=${MONGO_PORT}
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
+    entrypoint: 
+      [
+        "/bin/sh", "-c", 
+        "/search/wait-for-cert.sh && fastapi run routes.py --port 8000"
+      ]
+  
+  recommender:
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      kibana:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    build: 
+      context: ./recommender
+    volumes:
+      - certs:/usr/share/recommender
+    ports:
+      - "8001:8001"
+    environment:
+      - ES_HOST=elasticsearch
+      - ES_PORT=${ES_PORT}
+      - ES_USER=${ES_USER}
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - MONGO_HOST=mongodb
+      - MONGO_PORT=${MONGO_PORT}
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
+    entrypoint: 
+      [
+        "/bin/sh", "-c", 
+        "/recommender/wait-for-cert.sh && fastapi run routes.py --port 8001"
+      ]
