@@ -19,4 +19,5 @@ COPY . .
 # Expose port
 EXPOSE 8000
 
-RUN chmod u+x wait-for-cert.sh
+RUN sed -i 's/\r$//' wait-for-cert.sh  && \
+    chmod +x wait-for-cert.sh
