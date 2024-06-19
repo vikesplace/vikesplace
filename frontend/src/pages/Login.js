@@ -6,6 +6,7 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import Link from '@mui/material/Link';
 import { useNavigate } from 'react-router-dom';
 
 function Login() {
@@ -76,10 +77,6 @@ function Login() {
         }
     }
 
-    const handleCreateAccountClick = () => {
-      navigate('/request-account');
-    };
-
     return (
         <div className="Login">
             <Container>
@@ -139,20 +136,15 @@ function Login() {
                                 Login
                               </Button>
                             </Grid>
-                            <Grid item xs={12}>
-                              <Typography variant="body1" align="center" sx={{ mt: 1 }}>
-                                  Don't have an account?
-                              </Typography>
+                            <Grid item xs={12} align="center">
+                                <Link href="/request-account" variant="body1" sx={{ mt: 1 }}>
+                                    Need an account?
+                                </Link>
                             </Grid>
-                            <Grid item xs={12}>
-                              <Button onClick={handleCreateAccountClick}
-                                  type="submit"
-                                  fullWidth
-                                  variant="contained"
-                                  sx={{ mt: 3, mb: 2 }}
-                              >
-                                  Create Account
-                              </Button>
+                            <Grid item xs={12} align="center">
+                                <Link href="/password-change" variant="body1" sx={{ mt: 1 }}>
+                                    Forgot your password?
+                                </Link>
                             </Grid>
                             
                         </Grid>
