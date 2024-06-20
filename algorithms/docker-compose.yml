@@ -270,7 +270,10 @@ services:
     entrypoint: 
       [
         "/bin/sh", "-c", 
-        "/search/wait-for-cert.sh && fastapi run routes.py --port 8000"
+        "/search/wait-for-cert.sh \
+        && /search/wait-for-elastic.sh \
+        && pytest -vv \
+        && fastapi run routes.py --port 8000"
       ]
   
   recommender:
@@ -302,5 +305,8 @@ services:
     entrypoint: 
       [
         "/bin/sh", "-c", 
-        "/recommender/wait-for-cert.sh && fastapi run routes.py --port 8001"
+        "/recommender/wait-for-cert.sh \
+        && /recommender/wait-for-elastic.sh \
+        && pytest -vv \
+        && fastapi run routes.py --port 8001"
       ]

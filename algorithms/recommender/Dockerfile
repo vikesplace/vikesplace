@@ -13,6 +13,9 @@ COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir --upgrade pip\
     && pip install --no-cache-dir -r requirements.txt
 
+RUN apt-get update\
+    && apt-get -qq -y install curl
+
 # Copy the source code into the container.
 COPY . .
 
@@ -21,3 +24,6 @@ EXPOSE 8001
 
 RUN sed -i 's/\r$//' wait-for-cert.sh  && \
     chmod +x wait-for-cert.sh
+
+RUN sed -i 's/\r$//' wait-for-elastic.sh  && \
+    chmod +x wait-for-elastic.sh
