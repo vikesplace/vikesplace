@@ -21,35 +21,19 @@ export const createListing = (req, res) => {
     });
 };
 
-//get the listing id from the request and delete the listing
-// export const deleteListing = (req, res) => {
-//     Listing.deleteOne({ _id: req.params.id })
-//     .then((result) => {
-//         return res.json({
-//             message: "Delete Listing"
-//         });
-//     })
-//     .catch((error) => {
-//         return res.json({
-//             message: "Unable to delete listing"
-//         });
-//     });
-// };
-
-export const deleteListing = (req, res) => {
-    Listing.update({
-        status: "REMOVED"
-    },
-    { where: { _id: req.params.listing_id } 
-    })
-    .then((result) => {
+export const deleteListing = async (req, res) => {
+    try {
+        const listing = await Listing.findByPk(req.params.listing_id);
+        if (!listing) {
+            return res.json({
+                message: "Invalid input data"
+            });
+        }
+        listing.status = "REMOVED";
+        await listing.save();
+    } catch (error) {
         return res.json({
-            message: "Deleted Listing"
+            message: "Invalid input data"
         });
-    })
-    .catch((error) => {
-        return res.json({
-            message: "Unable to delete listing"
-        });
-    });
-};
+    }
+}

@@ -55,7 +55,7 @@ describe("Listing Routes", () => {
   });
 
   it("should delete a listing", async () => {
-    axios.delete.mockImplementation(() => Promise.resolve({ data: {message: "Delete Listing"} }));
+    axios.delete.mockImplementation(() => Promise.resolve({ data: 1 }));
     let responseObject = {};
     const mockRes = {
       body:{},
@@ -72,11 +72,11 @@ describe("Listing Routes", () => {
       },
       mockRes
     );
-    expect(responseObject).toEqual({ message: "Delete Listing" });
+    expect(responseObject).toEqual(1);
   });
 
   it("it should fail to delete", async () => {
-    axios.delete.mockImplementation(() => Promise.resolve({ data: {message: "Unable to delete listing"} }));
+    axios.delete.mockImplementation(() => Promise.resolve({ data: {message: "Invalid input data" } }));
     let responseObject = {};
     const mockRes = {
       body:{},
@@ -93,6 +93,6 @@ describe("Listing Routes", () => {
       },
       mockRes
     );
-    expect(responseObject).toEqual({ message: "Unable to delete listing" });
+    expect(responseObject).toEqual({ message: "Invalid input data" });
   });
 });
