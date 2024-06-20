@@ -1,6 +1,8 @@
+import json
 from pymongo import MongoClient
 from dotenv import load_dotenv
 import os
+import datetime
 
 # Load environment variables from .env file
 load_dotenv()
@@ -32,5 +34,29 @@ def search_history(user_id):
         return None
 
 
-# Example usage
-#print(search_history("userId123"))
+def write_search_activity(user_id, query):
+    # Create a connection to the MongoDB server
+    client = MongoClient(f"mongodb://{MONGO_USER}:{MONGO_PASS}@{MONGO_HOST}:{MONGO_PORT}/")
+
+    # Access the database
+    db = client[MONGO_DB]
+
+    # Access a collection
+    collection = db["user_activity"]
+
+    # Using 'upsert', updates doc if it exits, otherwise create a new doc.
+    result = collection.update_one(
+        filter={"_id": user_id},
+        update={"$push": {
+            "search": {
+                "query": query,
+                "timestamp": datetime.datetime.now()
+            }
+        }},
+        upsert= True
+    )
+
+    if result.upserted_id:
+        return result.upserted_id
+    else:
+        return result.matched_count

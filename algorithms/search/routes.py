@@ -1,11 +1,16 @@
 from fastapi import FastAPI, Path, Query
 from typing import Annotated
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 import search.es_request as es_request
 import search.mongodb_request as mongodb_request
 import json
 
 app = FastAPI()
+
+class SearchActivityCreate(BaseModel):
+    user_id: int
+    query: str
 
 @app.get("/")
 async def root():
@@ -39,3 +44,17 @@ async def search(
         "results": results 
     }
 
+
+@app.post("/users/{userId}/searches")
+async def search(activity: SearchActivityCreate):
+    user_id = activity.user_id
+    query = activity.query
+
+    results = mongodb_request.write_search_activity(user_id, query)
+    print(results)
+
+    return {
+        "status": 200,
+        "message": "Search query saved",
+        "results": results 
+    }
