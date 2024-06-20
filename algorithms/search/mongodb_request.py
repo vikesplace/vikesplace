@@ -21,13 +21,13 @@ def search_history(user_id):
     db = client[MONGO_DB]
 
     # Access a collection
-    collection = db["users"]  # Replace with your collection name
+    collection = db["user_activity"]  # Replace with your collection name
 
     # Query the database based on user ID
-    user_document = collection.find_one({"_id": user_id})
-
+    user_document = collection.find_one({"_id": int(user_id)})
+    print(user_document)
     if user_document:
-        return user_document["history"]
+        return user_document["search"]
     else:
         return None
 
