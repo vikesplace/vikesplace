@@ -21,25 +21,44 @@ export const createListing = (req, res) => {
     });
 };
 
-export const updateListing = (req, res) => {
-    Listing.update({
-        title: req.body.title,
-        price: req.body.price,
-        location: req.body.location,
-        status: "AVAILABLE",
-        category: req.body.category
-    },
-    { where: { _id: req.params.listing_id } 
-    })
-    .then((result) => {
-        return res.json({
-            message: "Updated Listing"
-        });
-    })
-    .catch((error) => {
-        return res.json({
-            message: "Unable to update listing"
-        });
-    });
-};
+// export const updateListing = (req, res) => {
+//     Listing.update({
+//         title: req.body.title,
+//         price: req.body.price,
+//         location: req.body.location,
+//         status: "AVAILABLE",
+//         category: req.body.category
+//     },
+//     { where: { _id: req.params.listing_id } 
+//     })
+//     .then((result) => {
+//         return res.json({
+//             message: "Updated Listing"
+//         });
+//     })
+//     .catch((error) => {
+//         return res.json({
+//             message: "Unable to update listing"
+//         });
+//     });
+// };
 
+export const updateListing = async (req, res) => {
+    try {
+        const listing = await Listing.findByPk(req.params.listing_id);
+        if (!listing) {
+            return res.json({
+                message: "Invalid input data"
+            });
+        }
+        listing.title = req.body.title;
+        listing.price = req.body.price;
+        listing.location = req.body.location;
+        listing.category = req.body.category;
+        await listing.save();
+    } catch (error) {
+        return res.json({
+            message: "Invalid input data"
+        });
+    }
+};
