@@ -1,10 +1,9 @@
-from fastapi import FastAPI, Path, Query
 from typing import Annotated
-from fastapi.responses import JSONResponse
-from pydantic import BaseModel
+
 import search.es_request as es_request
 import search.mongodb_request as mongodb_request
-import json
+from fastapi import FastAPI, Path, Query
+from pydantic import BaseModel
 
 app = FastAPI()
 
