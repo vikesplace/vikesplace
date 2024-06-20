@@ -26,6 +26,16 @@ docker-compose down -v
 - Search API: `localhost:8000`
 - Recommender API: `localhost:8001`
 
+### Running Tests Locally
+Assumming that you have started the containers:
+1. Run `pip install -r requirements.txt` in both `./algorithms/search` or `./algorithms/recommender`
+2. Using Docker UI, go to `Volumes` and find `vikesplace-certs`
+3. In the `Data` tab, go to the `ca` folder and copy the `ca.crt` file into `./algorithms/`
+4. From `./algorithms` folder, the run the tests using `pytest -vv`
+    1. You can run specific test folders, `pytest -vv ./search/tests/`
+    2. You can run specific test files, `pytest -vv ./search/tests/test_routes.py`
+    3. You can run specific test cases, `pytest -vv ./search/tests/test_routes.py::test_save_search_query_with_existing_history`
+
 ## Search Engine
 View all API endpoints by going to `http://localhost:8000/docs`
 
