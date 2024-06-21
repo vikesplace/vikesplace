@@ -60,33 +60,60 @@ describe("Listing Routes", () => {
     const mockOutput = [
       {
         listing_id: 1,
+        seller_id: 1,
+        buyer_username: null,
+        title: "test2",
+        price: "50.00",
+        location: {
+          crs: {
+            type: "name",
+            properties: {
+              name: "EPSG:4326",
+            },
+          },
+          type: "Point",
+          coordinates: [1, -1],
+        },
+        status: "AVAILABLE",
+        listed_at: "2024-06-17T06:25:41.995Z",
+        last_updated_at: "2024-06-17T06:25:41.995Z",
+        category: null,
       },
       {
         listing_id: 2,
-      },
-      {
-        listing_id: 3,
+        seller_id: 1,
+        buyer_username: null,
+        title: "test2",
+        price: "50.00",
+        location: {
+          crs: {
+            type: "name",
+            properties: {
+              name: "EPSG:4326",
+            },
+          },
+          type: "Point",
+          coordinates: [1, -1],
+        },
       },
     ];
-    const mockControllerOutput = [1, 2, 3];
-    axios.post.mockImplementation(() =>
+    axios.get.mockImplementation(() =>
       Promise.resolve({ data: mockOutput, status: 200 })
     );
-    let responseObject = [];
+    let responseObject = {};
     const mockRes = {
       body: {},
       json: jest.fn().mockImplementation((result) => {
-        console.log(result);
         responseObject = result;
       }),
       status: jest.fn(),
     };
     await getSellerListings({}, mockRes);
-    expect(responseObject).toEqual(mockControllerOutput);
+    expect(responseObject).toEqual(mockOutput);
   });
 
   it("fail to return all listingIds", async () => {
-    axios.post.mockImplementation(() =>
+    axios.get.mockImplementation(() =>
       Promise.resolve({ data: { message: "Seller not found" } })
     );
     let responseObject = {};
@@ -98,11 +125,7 @@ describe("Listing Routes", () => {
       status: jest.fn(),
     };
     await getSellerListings(
-      {
-        body: {
-          seller_id: "1",
-        },
-      },
+      {},
       mockRes
     );
     expect(responseObject).toEqual({ message: "Seller not found" });

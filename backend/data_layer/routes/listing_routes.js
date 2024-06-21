@@ -9,7 +9,7 @@ router.get("/", (req, res) => {
 });
 
 //Get all listings of a user
-router.post("/me", getSellerListings);
+router.get("/me", getSellerListings);
 
 //Create a listing
 router.post("/", createListing);

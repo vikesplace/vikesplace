@@ -21,9 +21,8 @@ export const createListing = async (req, res) => {
 export const getSellerListings = async (req, res) => {
   try {
     const listings = await Listing.findAll({
-      attributes: ["listing_id"],
       where: {
-        seller_id: req.body.seller_id,
+        seller_id: req.query.seller_id,
       },
     });
     res.json(listings);
