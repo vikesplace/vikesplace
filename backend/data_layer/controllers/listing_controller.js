@@ -31,9 +31,7 @@ export const deleteListing = async (req, res) => {
         }
         listing.status = "REMOVED";
         await listing.save();
-        return res.json({
-            message: ""
-        });
+        return res.json({});
     } catch (error) {
         return res.json({
             message: "Invalid input data"
