@@ -1,5 +1,6 @@
 import express from "express";
 import {createListing} from "../controller/create_listing.js";
+import { getSellerListings } from "../controller/get_seller_listings.js";
 
 const router = express.Router();
 
@@ -13,9 +14,7 @@ router.get("/", (req, res) => {
 router.post("/", createListing);
 
 //Get all listings of a user
-router.get("/me", (req, res) => {
-  res.json({ message: "Get All Listings of a User" });
-});
+router.get("/me", getSellerListings);
 
 //Update a listing
 router.patch("/:listingId", (req, res) => {

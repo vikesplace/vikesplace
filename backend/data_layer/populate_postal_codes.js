@@ -3,7 +3,7 @@ import fs from 'fs';
 import sequelize from './config/database.js';
 import PostalCodes from "./models/postal_code_models.js";
 
-const csvFilePath = './data/postal_codes.csv';
+const csvFilePath = './data/postcodes.csv';
 
 async function populatePostalCodes() {
   const results = [];
@@ -27,9 +27,9 @@ async function populatePostalCodes() {
         continue;
       }
 
-      const [postalCode, city, province, timezone, latitude, longitude] = line.split(',');
-      if (postalCode && latitude && longitude) {
-        results.push({ postalCode, latitude, longitude });
+      const [postal_code, city, province, timezone, latitude, longitude] = line.split(',');
+      if (postal_code && latitude && longitude) {
+        results.push({ postal_code, latitude, longitude });
       }
     }
 
