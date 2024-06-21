@@ -31,6 +31,7 @@ export const updateListing = async (req, res) => {
         }
         listing.title = req.body.title;
         listing.price = req.body.price;
+        listing.status = req.body.status;
         listing.location = req.body.location;
         listing.category = req.body.category;
         await listing.save();
