@@ -7,8 +7,7 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
-class SearchActivityCreate(BaseModel):
-    user_id: int
+class SearchQuery(BaseModel):
     query: str
 
 @app.get("/")
@@ -32,7 +31,7 @@ async def search(
 
 @app.get("/users/{userId}/searches")
 async def search(
-    userId: str = Path(..., description="The ID of the user"),
+    userId: int = Path(..., description="The ID of the user"),
 ):
     # Assuming es_request.search can handle these parameters
     results = mongodb_request.search_history(userId)
@@ -45,12 +44,12 @@ async def search(
 
 
 @app.post("/users/{userId}/searches")
-async def search(activity: SearchActivityCreate):
-    user_id = activity.user_id
-    query = activity.query
+async def search(userId: int, item: SearchQuery):
+    query = item.query
 
-    results = mongodb_request.write_search_activity(user_id, query)
+    results = mongodb_request.write_search_activity(userId, query)
     print(results)
+    print(type(results))
 
     return {
         "status": 200,

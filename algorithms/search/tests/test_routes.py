@@ -132,10 +132,8 @@ def test_search_invalid_user_history():
 
 
 def test_save_search_query_with_existing_history():
-    user_id = 2
-    req_body = {"user_id": user_id, "query":"dwanjdnakwjdnjkawd"}
-    
-    response = client.post(f"/users/{user_id}/searches", json=req_body)
+    user_id = 1
+    response = client.post(f"/users/{user_id}/searches", json={"query":"frying pan"})
     response_obj = response.json()
 
     assert response.status_code == status.HTTP_200_OK
@@ -145,9 +143,7 @@ def test_save_search_query_with_existing_history():
 
 def test_save_search_query_with_no_existing_history():
     user_id = 999
-    req_body = {"user_id": user_id, "query":"testing"}
-
-    response = client.post(f"/users/{user_id}/searches", json=req_body)
+    response = client.post(f"/users/{user_id}/searches", json={"query":"air fryer"})
     response_obj = response.json()
 
     assert response.status_code == status.HTTP_200_OK
