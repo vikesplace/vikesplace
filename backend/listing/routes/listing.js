@@ -2,6 +2,7 @@ import express from "express";
 import {createListing} from "../controller/create_listing.js";
 import { getSellerListings } from "../controller/get_seller_listings.js";
 
+import {getListingInfo} from "../controller/get_listing.js";
 const router = express.Router();
 
 
@@ -27,9 +28,7 @@ router.delete("/:listingId", (req, res) => {
 });
 
 //Get a listing
-router.get("/:listingId", (req, res) => {
-  res.json({ message: "Get Listing" });
-});
+router.get("/:listingId", getListingInfo);
 
 
 

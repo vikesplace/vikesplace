@@ -30,3 +30,23 @@ export const getSellerListings = async (req, res) => {
     res.json({ message: "Seller not found" });
   }
 };
+export const getListingInfo = async (req, res) => {
+    try {
+        const entry = await Listing.findByPk(req.params.listingId);
+        const {listing_id, seller_id, buyer_username, title, price, location, status, listed_at, lastupdated_at, category} = entry;
+        res.json({
+            seller_id: seller_id,
+            listing_id: listing_id,
+            title: title,
+            price: price,
+            location: location,
+            status: status,
+            listed_at: listed_at,
+            lastupdated_at: lastupdated_at
+        });
+    } catch (error) {
+        res.json({
+            message: "Unable to get listing with id: " + req.params.listingId
+        });
+    }
+}
