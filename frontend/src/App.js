@@ -15,6 +15,7 @@ import Login from './pages/Login.js';
 import RequestAccount from './pages/RequestAccount.js'
 import CheckYourEmail from './pages/CheckYourEmail.js';
 import MessageHistory from './pages/MessageHistory.js';
+import UserProfile from './pages/UserProfile.js';
 
 
 function App() {  
@@ -36,6 +37,7 @@ function App() {
         <Route path="/listings/:id" element={<ListingDetailsPage />} />
         <Route path="/edit-listing/:id" element={<EditListing />} />
         <Route path="/message-history/:id" element={<MessageHistory />} />
+        <Route path="/user-profile" element={<UserProfile />} />
         {/* Add other routes here */}
       </Routes>
     </Router>
