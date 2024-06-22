@@ -72,3 +72,21 @@ export const updateListing = async (req, res) => {
     });
     }
 };
+
+export const deleteListing = async (req, res) => {
+    try {
+        const listing = await Listing.findByPk(req.params.listing_id);
+        if (!listing) {
+            return res.json({
+                message: "Invalid input data"
+            });
+        }
+        listing.status = "REMOVED";
+        await listing.save();
+        res.json({});
+    } catch (error) {
+      res.json({
+        message: "Invalid input data"
+     });
+    }
+}

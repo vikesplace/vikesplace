@@ -1,5 +1,6 @@
 import express from "express";
 import {createListing} from "../controller/create_listing.js";
+import {deleteListing} from "../controller/delete_listing.js";
 import {updateListing} from "../controller/update_listing.js";
 import { getSellerListings } from "../controller/get_seller_listings.js";
 
@@ -22,9 +23,7 @@ router.get("/me", getSellerListings);
 router.patch("/:listingId", updateListing);
 
 //Delete a listing
-router.delete("/:listingId", (req, res) => {
-  res.json({ message: "Delete Listing" });
-});
+router.delete("/:listingId", deleteListing);
 
 //Get a listing
 router.get("/:listingId", getListingInfo);

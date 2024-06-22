@@ -1,5 +1,6 @@
 import axios from "axios";
 import { createListing } from "../controller/create_listing";
+import { deleteListing } from "../controller/delete_listing";
 import { getSellerListings } from "../controller/get_seller_listings";
 import { getListingInfo } from "../controller/get_listing";
 
@@ -222,5 +223,47 @@ describe("Listing Routes", () => {
       mockRes
     );
     expect(responseObject).toEqual({ message: "Unable to update listing" });
+  });
+
+  it("should delete a listing", async () => {
+    axios.delete.mockImplementation(() => Promise.resolve({ data: 1 }));
+    let responseObject = {};
+    const mockRes = {
+      body:{},
+      json: jest.fn().mockImplementation((result)=>{
+        responseObject = result;
+      }),
+      status: jest.fn()
+    };
+    await deleteListing(
+      {
+        params: {
+          listing_id: "1",
+        },
+      },
+      mockRes
+    );
+    expect(responseObject).toEqual(1);
+  });
+
+  it("it should fail to delete", async () => {
+    axios.delete.mockImplementation(() => Promise.resolve({ data: {message: "Invalid input data" } }));
+    let responseObject = {};
+    const mockRes = {
+      body:{},
+      json: jest.fn().mockImplementation((result)=>{
+        responseObject = result;
+      }),
+      status: jest.fn()
+    };
+    await deleteListing(
+      {
+        params: {
+          listing_id: "1",
+        },
+      },
+      mockRes
+    );
+    expect(responseObject).toEqual({ message: "Invalid input data" });
   });
 });
