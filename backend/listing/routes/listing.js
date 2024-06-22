@@ -1,7 +1,9 @@
 import express from "express";
 import {createListing} from "../controller/create_listing.js";
 import {updateListing} from "../controller/update_listing.js";
+import { getSellerListings } from "../controller/get_seller_listings.js";
 
+import {getListingInfo} from "../controller/get_listing.js";
 const router = express.Router();
 
 
@@ -14,9 +16,7 @@ router.get("/", (req, res) => {
 router.post("/", createListing);
 
 //Get all listings of a user
-router.get("/me", (req, res) => {
-  res.json({ message: "Get All Listings of a User" });
-});
+router.get("/me", getSellerListings);
 
 //Update a listing
 router.patch("/:listingId", updateListing);
@@ -27,9 +27,7 @@ router.delete("/:listingId", (req, res) => {
 });
 
 //Get a listing
-router.get("/:listingId", (req, res) => {
-  res.json({ message: "Get Listing" });
-});
+router.get("/:listingId", getListingInfo);
 
 
 
