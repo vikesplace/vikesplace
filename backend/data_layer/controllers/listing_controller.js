@@ -35,7 +35,7 @@ export const updateListing = async (req, res) => {
         listing.location = req.body.location;
         listing.category = req.body.category;
         await listing.save();
-        return res.json({});
+        res.json({});
     } catch (error) {
       res.json({
         message: "Invalid input data"
