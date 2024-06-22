@@ -27,7 +27,7 @@ def test_search():
     assert response_obj['message'] == "Search successful"
     assert response_obj['results']['listings'][0]['_index'] == 'listings'
     assert response_obj['results']['listings'][0]['_source']['price'] == 100
-    assert response_obj['results']['listings'][0]['_source']['buyer_id'] == None
+    assert response_obj['results']['listings'][0]['_source']['buyer_username'] == None
     assert response_obj['results']['listings'][0]['_source']['category'] == 'Sports'
     assert response_obj['results']['listings'][0]['_source']['seller_id'] == 1
     assert response_obj['results']['listings'][0]['_source']['title'] == 'Bicycle'
@@ -54,7 +54,7 @@ def test_search_partial_match_prefix():
     assert response_obj['message'] == "Search successful"
     assert response_obj['results']['listings'][0]['_index'] == 'listings'
     assert response_obj['results']['listings'][0]['_source']['price'] == 100
-    assert response_obj['results']['listings'][0]['_source']['buyer_id'] == None
+    assert response_obj['results']['listings'][0]['_source']['buyer_username'] == None
     assert response_obj['results']['listings'][0]['_source']['category'] == 'Sports'
     assert response_obj['results']['listings'][0]['_source']['seller_id'] == 1
     assert response_obj['results']['listings'][0]['_source']['title'] == 'Bicycle'
@@ -81,7 +81,7 @@ def test_search_partial_match_suffix():
     assert response_obj['message'] == "Search successful"
     assert response_obj['results']['listings'][0]['_index'] == 'listings'
     assert response_obj['results']['listings'][0]['_source']['price'] == 100
-    assert response_obj['results']['listings'][0]['_source']['buyer_id'] == None
+    assert response_obj['results']['listings'][0]['_source']['buyer_username'] == None
     assert response_obj['results']['listings'][0]['_source']['category'] == 'Sports'
     assert response_obj['results']['listings'][0]['_source']['seller_id'] == 1
     assert response_obj['results']['listings'][0]['_source']['title'] == 'Bicycle'
@@ -168,7 +168,7 @@ def test_search_item_inside_radius():
     assert response_obj['message'] == "Search successful"
     assert response_obj['results']['listings'][0]['_index'] == 'listings'
     assert response_obj['results']['listings'][0]['_source']['price'] == 100
-    assert response_obj['results']['listings'][0]['_source']['buyer_id'] == None
+    assert response_obj['results']['listings'][0]['_source']['buyer_username'] == None
     assert response_obj['results']['listings'][0]['_source']['category'] == 'Sports'
     assert response_obj['results']['listings'][0]['_source']['seller_id'] == 1
     assert response_obj['results']['listings'][0]['_source']['title'] == 'Bicycle'
@@ -212,7 +212,7 @@ def test_search_filter_category():
     assert response_obj['message'] == "Search successful"
     assert response_obj['results']['listings'][0]['_index'] == 'listings'
     assert response_obj['results']['listings'][0]['_source']['price'] == 100
-    assert response_obj['results']['listings'][0]['_source']['buyer_id'] == None
+    assert response_obj['results']['listings'][0]['_source']['buyer_username'] == None
     assert response_obj['results']['listings'][0]['_source']['category'] == 'Sports'
     assert response_obj['results']['listings'][0]['_source']['seller_id'] == 1
     assert response_obj['results']['listings'][0]['_source']['title'] == 'Bicycle'
@@ -254,7 +254,7 @@ def test_search_filter_status():
     assert response_obj['message'] == "Search successful"
     assert response_obj['results']['listings'][0]['_index'] == 'listings'
     assert response_obj['results']['listings'][0]['_source']['price'] == 100
-    assert response_obj['results']['listings'][0]['_source']['buyer_id'] == None
+    assert response_obj['results']['listings'][0]['_source']['buyer_username'] == None
     assert response_obj['results']['listings'][0]['_source']['category'] == 'Sports'
     assert response_obj['results']['listings'][0]['_source']['seller_id'] == 1
     assert response_obj['results']['listings'][0]['_source']['title'] == 'Bicycle'
@@ -297,7 +297,7 @@ def test_search_filter_category_and_status():
     assert response_obj['message'] == "Search successful"
     assert response_obj['results']['listings'][0]['_index'] == 'listings'
     assert response_obj['results']['listings'][0]['_source']['price'] == 100
-    assert response_obj['results']['listings'][0]['_source']['buyer_id'] == None
+    assert response_obj['results']['listings'][0]['_source']['buyer_username'] == None
     assert response_obj['results']['listings'][0]['_source']['category'] == 'Sports'
     assert response_obj['results']['listings'][0]['_source']['seller_id'] == 1
     assert response_obj['results']['listings'][0]['_source']['title'] == 'Bicycle'
