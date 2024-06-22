@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/api/auth/"; //TODO update to backend's api for this
+const API_URL = "http://localhost:8080";
 
 class AuthService {
     login(username, password) {

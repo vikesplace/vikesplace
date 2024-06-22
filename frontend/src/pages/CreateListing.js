@@ -11,6 +11,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import DataService from '../services/DataService';
 
 const categories = [
   { value: 'Furniture', label: 'Furniture' },
@@ -119,6 +120,7 @@ function CreateListing() {
                     postalCode: data.get("postalCode"),
                     category: category
                 });
+                createListing(title, price, location, "AVAILABLE", category) 
                 navigate(`/manage-listings`);
             } catch (error) {
                 // TODO display error message

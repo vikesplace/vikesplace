@@ -1,7 +1,7 @@
 import axios from 'axios';
 import authHeader from './AuthHeaderHelper';
 
-const API_URL = 'http://localhost:8080/api/test/'; //TODO update to backend's url
+const API_URL = 'http://localhost:8080/';
 
 class DataService {
     createListing(title, price, location, status, category) {
