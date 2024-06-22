@@ -6,35 +6,34 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import Link from '@mui/material/Link';
 import { useNavigate } from 'react-router-dom';
 
-function RequestAccount() {
-    const [email, setEmail] = useState("");
-    const [emailError, setEmailError] = useState("");
+function CompletePasswordChange() {
+    const [password, setPassword] = useState("");
+    const [passwordError, setPasswordError] = useState(false);
     
 
     const navigate = useNavigate();
 
-    const handleEmailChange = (event) => {
-        setEmail(event.target.value);
+    const handlePasswordChange = (event) => {
+        setPassword(event.target.value);
     };
 
-    const handleEmailBlur = (event) => {
-        setEmail(event.target.value);
-        validateEmail();
+    const handlePasswordBlur = (event) => {
+        setPassword(event.target.value);
+        validatePassword();
     };
 
-    function validateEmail() {
-        var format = new RegExp("^[A-Z0-9a-z._%+-]+@uvic.ca$");
-        if (!format.test(email)) {
-            setEmailError("Must be a valid @uvic.ca email");
+    function validatePassword() {
+        var format = new RegExp("^(?=.*[0-9])(?=.*[!@#$^&*?<>])(?=.*[a-z])(?=.*[A-Z])(?! ).{8,}$");
+        if (!format.test(password)) {
+            setPasswordError(true);
             return false;
-        } else if (email.trim() === "") {
-            setEmailError("Email is required");
+        } else if (password.includes(' ')) {
+            setPasswordError(true);
             return false;
         } else {
-            setEmailError("");
+            setPasswordError(false);
             return true;
         }
     }
@@ -43,16 +42,16 @@ function RequestAccount() {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
 
-        var validForm = validateEmail();
+        var validForm = validatePassword();
 
         if (validForm) {
             try {
                 // TODO POST
                 console.log({
-                    email: data.get("email")
+                    password: data.get("password")
                 });
                 // TODO if succeeds direct to a different page
-                navigate('/check-email');
+                navigate('/password-updated');
             } catch (error) {
                 // TODO display error message
                 console.log(error);
@@ -61,7 +60,7 @@ function RequestAccount() {
     }
 
     return (
-        <div className="RequestAccount">
+        <div className="CompletePasswordChange">
             <Container>
                 <Box
                     sx={{
@@ -72,10 +71,7 @@ function RequestAccount() {
                     }}
                 >
                     <Typography component="h1" variant="h5">
-                        Create an Account
-                    </Typography>
-                    <Typography component="h6" variant="h6">
-                        Enter your "@uvic.ca" email to sign up
+                        Change Password
                     </Typography>
                     <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                         <Grid container spacing={1}>
@@ -83,14 +79,18 @@ function RequestAccount() {
                                 <TextField
                                     required
                                     fullWidth
-                                    id="email"
-                                    label="email@uvic.ca"
-                                    name="email"
-                                    value={email}
-                                    onChange={handleEmailChange}
-                                    onBlur={handleEmailBlur}
-                                    error={emailError}
-                                    helperText={emailError}
+                                    name="password"
+                                    label="Password"
+                                    type="password"
+                                    id="password"
+                                    autoComplete="new-password"
+                                    value={password}
+                                    onChange={handlePasswordChange}
+                                    onBlur={handlePasswordBlur}
+                                    error={passwordError}
+                                    helperText={
+                                        passwordError ? "Must be 8+ characters, with at least 1 symbol, number, lowercase letter, and uppercase letter" : ""
+                                    }
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -100,14 +100,9 @@ function RequestAccount() {
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2 }}
                              >
-                                Request Account
+                                Submit
                               </Button>
-                            </Grid>
-                            <Grid item xs={12} align="center">
-                                <Link href="/login" variant="body1" sx={{ mt: 1 }}>
-                                    Have an account already? Login
-                                </Link>
-                            </Grid>
+                            </Grid>                           
                         </Grid>
                     </Box>
                 </Box>
@@ -116,5 +111,4 @@ function RequestAccount() {
     );
 }
 
-export default RequestAccount;
-
+export default CompletePasswordChange;
