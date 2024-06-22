@@ -27,7 +27,8 @@ services:
     build:
       context: ./account
     volumes:
-      - ./account:/app
+      - ./account:/home/node/app
+      - /home/node/app/node_module
     ports:
       - "5000"
     environment:
@@ -38,7 +39,8 @@ services:
     build:
       context: ./ratings_reviews
     volumes:
-      - ./ratings_reviews:/app
+      - ./ratings_reviews:/home/node/app
+      - /home/node/app/node_module
     ports:
       - "5000"
     environment:
@@ -49,7 +51,8 @@ services:
     build:
       context: ./users
     volumes:
-      - ./users:/app
+      - ./users:/home/node/app
+      - /home/node/app/node_module
     ports:
       - "5000"
     environment:
@@ -60,7 +63,8 @@ services:
     build:
       context: ./messages
     volumes:
-      - ./messages:/app
+      - ./messages:/home/node/app
+      - /home/node/app/node_module
     ports:
       - "5000"
     environment:
@@ -71,7 +75,8 @@ services:
     build:
       context: ./listing
     volumes:
-      - ./listing:/app
+      - ./listing:/home/node/app
+      - /home/node/app/node_module
     ports:
       - "5000"
     environment:
@@ -88,7 +93,8 @@ services:
     build:
       context: ./recommendation
     volumes:
-      - ./recommendation:/app
+      - ./recommendation:/home/node/app
+      - /home/node/app/node_module
     ports:
       - "5000"
     environment:
@@ -99,7 +105,8 @@ services:
     build:
       context: ./search
     volumes:
-      - ./search:/app
+      - ./search:/home/node/app
+      - /home/node/app/node_module
     ports:
       - "5000"
     environment:
@@ -114,7 +121,8 @@ services:
       postgresql:
         condition: service_healthy
     volumes:
-      - ./data_layer:/app
+      - ./data_layer:/home/node/app
+      - /home/node/app/node_module
     ports:
       - "5000"
     environment:
@@ -131,7 +139,8 @@ services:
     build:
       context: ./data_layer
     volumes:
-      - ./data_layer:/app
+      - ./data_layer:/home/node/app
+      - /home/node/app/node_module
     ports:
       - "5000"
     environment:
@@ -152,6 +161,7 @@ services:
     build: 
       context: ./nginx
     volumes:
-      - ./nginx:/app
+      - ./nginx:/home/node/app
+      - /home/node/app/node_module
     ports:
       - "5000"
