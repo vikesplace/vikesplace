@@ -59,7 +59,7 @@ function VerifyAccount() {
         if (username.trim() === "") {
             setUsernameError("Username is required");
             return false;
-        } else if (!format.test(password)) {
+        } else if (!format.test(username)) {
             setUsernameError("Must be 6-20 characters (allow: letters, numbers, _, @)");
             return false;
         } else if (usernameError === "This username has already been chosen") {
