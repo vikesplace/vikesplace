@@ -78,7 +78,7 @@ services:
       - ./listing:/home/node/app
       - /home/node/app/node_module
     ports:
-      - "5000"
+      - "5000:5000"
     environment:
       - PORT=5000
       - DB_HOST=${DB_HOST}
@@ -164,4 +164,4 @@ services:
       - ./nginx:/home/node/app
       - /home/node/app/node_module
     ports:
-      - "5000"
+      - 8080:8080
