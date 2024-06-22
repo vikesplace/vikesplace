@@ -48,5 +48,27 @@ export const getListingInfo = async (req, res) => {
         res.json({
             message: "Unable to get listing with id: " + req.params.listingId
         });
+    });
+};
+
+export const updateListing = async (req, res) => {
+    try {
+        const listing = await Listing.findByPk(req.params.listing_id);
+        if (!listing) {
+            return res.json({
+                message: "Invalid input data"
+            });
+        }
+        listing.title = req.body.title;
+        listing.price = req.body.price;
+        listing.status = req.body.status;
+        listing.location = req.body.location;
+        listing.category = req.body.category;
+        await listing.save();
+        res.json({});
+    } catch (error) {
+      res.json({
+        message: "Invalid input data"
+    });
     }
-}
+};

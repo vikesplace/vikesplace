@@ -175,4 +175,52 @@ describe("Listing Routes", () => {
     );
     expect(responseObject).toEqual({ message: "Unable to get listing with id: 1" });
   });
+
+  it("should update a listing", async () => {
+    axios.patch.mockImplementation(() => Promise.resolve({ data: {message: "Update Listing"} }));
+    let responseObject = {};
+    const mockRes = {
+      body:{},
+      json: jest.fn().mockImplementation((result)=>{
+        responseObject = result;
+      }),
+      status: jest.fn()
+    };
+    await updateListing(
+      {
+        body: {
+          title: "test",
+          price: 0,
+          location: { type: "Point", coordinates: [1, -1] },
+          category: null,
+        },
+      },
+      mockRes
+    );
+    expect(responseObject).toEqual({ message: "Update Listing" });
+  });
+
+  it("it should fail to update", async () => {
+    axios.patch.mockImplementation(() => Promise.resolve({ data: {message: "Unable to update listing"} }));
+    let responseObject = {};
+    const mockRes = {
+      body:{},
+      json: jest.fn().mockImplementation((result)=>{
+        responseObject = result;
+      }),
+      status: jest.fn()
+    };
+    await updateListing(
+      {
+        body: {
+          title: "test",
+          price: 0,
+          location: { type: "Point", coordinates: [1, -1] },
+          category: null,
+        },
+      },
+      mockRes
+    );
+    expect(responseObject).toEqual({ message: "Unable to update listing" });
+  });
 });

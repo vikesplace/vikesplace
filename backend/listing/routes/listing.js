@@ -1,5 +1,6 @@
 import express from "express";
 import {createListing} from "../controller/create_listing.js";
+import {updateListing} from "../controller/update_listing.js";
 import { getSellerListings } from "../controller/get_seller_listings.js";
 
 import {getListingInfo} from "../controller/get_listing.js";
@@ -18,9 +19,7 @@ router.post("/", createListing);
 router.get("/me", getSellerListings);
 
 //Update a listing
-router.patch("/:listingId", (req, res) => {
-  res.json({ message: "Update Listing" });
-});
+router.patch("/:listingId", updateListing);
 
 //Delete a listing
 router.delete("/:listingId", (req, res) => {
