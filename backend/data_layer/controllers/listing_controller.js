@@ -48,7 +48,7 @@ export const getListingInfo = async (req, res) => {
         res.json({
             message: "Unable to get listing with id: " + req.params.listingId
         });
-    });
+    }
 };
 
 export const updateListing = async (req, res) => {

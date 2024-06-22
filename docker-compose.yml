@@ -1,0 +1,162 @@
+volumes:
+  psqldata:
+    driver: local
+  certs:
+    driver: local
+  esdata:
+    driver: local
+  kibanadata:
+    driver: local
+  logstashdata:
+    driver: local
+  metricbeatdata:
+    driver: local
+  mongodbdata:
+    driver: local
+
+networks:
+  default:
+    driver: bridge
+
+services:
+  # Referencing backend services
+  postgresql:
+    extends:
+      file: backend/docker-compose.yml
+      service: postgresql
+
+  account:
+    extends:
+      file: backend/docker-compose.yml
+      service: account
+
+  ratings:
+    extends:
+      file: backend/docker-compose.yml
+      service: ratings
+
+  users:
+    extends:
+      file: backend/docker-compose.yml
+      service: users
+
+  messages:
+    extends:
+      file: backend/docker-compose.yml
+      service: messages
+
+  listing:
+    extends:
+      file: backend/docker-compose.yml
+      service: listing
+
+  be-recommendation:
+    extends:
+      file: backend/docker-compose.yml
+      service: recommendation
+
+  be-search:
+    extends:
+      file: backend/docker-compose.yml
+      service: search
+
+  data_layer:
+    extends:
+      file: backend/docker-compose.yml
+      service: data_layer
+    depends_on:
+      - postgresql
+
+  postal_code_script:
+    extends:
+      file: backend/docker-compose.yml
+      service: postal_code_script
+    depends_on:
+      - postgresql
+
+  nginx:
+    extends:
+      file: backend/docker-compose.yml
+      service: nginx
+
+  # Referencing algorithm services
+  # postgresql:
+  #   extends:
+  #     file: algorithms/docker-compose.yml
+  #     service: postgresql
+
+  setup:
+    extends:
+      file: algorithms/docker-compose.yml
+      service: setup
+
+  elasticsearch:
+    extends:
+      file: algorithms/docker-compose.yml
+      service: elasticsearch
+    depends_on:
+      setup:
+        condition: service_healthy
+
+  kibana:
+    extends:
+      file: algorithms/docker-compose.yml
+      service: kibana
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+
+  metricbeat:
+    extends:
+      file: algorithms/docker-compose.yml
+      service: metricbeat
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      kibana:
+        condition: service_healthy
+
+  logstash:
+    extends:
+      file: algorithms/docker-compose.yml
+      service: logstash
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      kibana:
+        condition: service_healthy
+
+  mongodb:
+    extends:
+      file: algorithms/docker-compose.yml
+      service: mongodb
+
+  search:
+    extends:
+      file: algorithms/docker-compose.yml
+      service: search
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      kibana:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+
+  recommender:
+    extends:
+      file: algorithms/docker-compose.yml
+      service: recommender
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      kibana:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
