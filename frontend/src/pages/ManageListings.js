@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import ListingCard from '../components/ListingCard';
 import '../App.css';
 
@@ -24,6 +25,11 @@ function ManageListings() {
     <div className="ManageListings">
       <Container>
       <Box mt={2}>
+          {(listings.length === 0) && 
+            <Typography align="center" variant='h6'>
+              No Listings Meet Criteria
+            </Typography>
+          }
           {listings.map((listing) => (
             <div key={'div' + listing.id} onClick={() => handleListingClick(listing.id)}>
               <ListingCard

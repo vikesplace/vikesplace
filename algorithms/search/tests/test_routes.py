@@ -111,18 +111,18 @@ def test_search_empty_wrong_title():
 
 def test_search_user_history():
     headers = {"Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"} # Assuming a valid token
-    user_id = "userId123"
+    user_id = 1
     response = client.get(f"/users/{user_id}/searches")
     response_obj = response.json()
 
     assert response.status_code == status.HTTP_200_OK
-    assert response_obj['results'] == ['action 1', 'action 2', 'action 3']
+    assert response_obj['results'][0]['query'] == 'Laptop'
     assert response_obj['message'] == "Search history successful"
 
 
 def test_search_invalid_user_history():
     headers = {"Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"} # Assuming a valid token
-    user_id = "userId129"
+    user_id = 5
     response = client.get(f"/users/{user_id}/searches")
     response_obj = response.json()
 

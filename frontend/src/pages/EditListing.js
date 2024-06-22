@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import ManageListing from '../components/ManageListing.js';
 import '../App.css';
 
@@ -20,7 +21,11 @@ function EditListing() {
   const listing = listings.find((listing) => listing.id === id);
 
   if (!listing) {
-    return <div>Listing not found</div>;
+    return <div>
+      <Typography align="center" variant='h6' sx={{mt: 2}}>
+        No Listing Found
+      </Typography>
+    </div>;
   }
 
   return (
