@@ -1,5 +1,5 @@
 # base image
-FROM postgres:16-alpine
+FROM postgis/postgis:latest
 
 # run init.sql on init
 COPY init.sql /docker-entrypoint-initdb.d
