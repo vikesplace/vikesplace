@@ -1,10 +1,9 @@
 import express from "express";
+import { getSearchResults } from "../controllers/getSearchResults.js";
 
 const router = express.Router();
 
 //Get search results
-router.get("/", (req, res) => {
-  res.json({ message: "Get Search Results" });
-});
+router.get("/", getSearchResults);
 
 export default router;

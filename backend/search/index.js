@@ -1,5 +1,6 @@
 import express from "express";
 import search from "./routes/search.js";
+import axiosConfig from "./config/axiosConfig.js";
 
 const PORT = process.env.PORT || 5000;
 const app = express();
