@@ -9,9 +9,9 @@ const app = express();
 // cution: middleware chain matches the route from top to buttom
 
 app.get("/", (req, res) => {
-  res.json({ message: "Hello World" });
+  res.json({ message: "Hello Worldfdg" });
 });
-
+app.use(express.json());
 app.use(identification);
 app.use("/login", loginRouter);
 app.use("/register", registerRouter);
