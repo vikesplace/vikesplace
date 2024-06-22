@@ -65,14 +65,15 @@ services:
       file: backend/docker-compose.yml
       service: data_layer
     depends_on:
-      - postgresql
+      postgresql:
+        condition: service_healthy
 
   postal_code_script:
     extends:
       file: backend/docker-compose.yml
       service: postal_code_script
     depends_on:
-      - postgresql
+      - data_layer
 
   nginx:
     extends:
