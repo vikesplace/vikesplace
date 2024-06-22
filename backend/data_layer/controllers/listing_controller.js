@@ -1,4 +1,67 @@
 import Listing from "../models/listing_models.js";
+import { Op } from "sequelize";
+
+export const getSortedListings = async (req, res) => {
+  console.log('Full URL:', req.url);
+  const {minPrice, maxPrice, status, sortBy, isDescending, pullLimit, pageOffset} = req.query;
+  console.log('minPrice:', minPrice);
+  console.log('maxPrice:', maxPrice);
+
+  //build where object
+  const where = {};
+  if (minPrice && maxPrice) {
+    where.price = {
+      [Op.between]: [minPrice, maxPrice],
+    };
+  }
+  //check if either maxPrice or minPrice is specified, but not both
+  else if ((minPrice || maxPrice) && !(minPrice && maxPrice)) { //XOR
+    //throw error
+    res.json({
+      message: "Invalid price range specified"
+    });
+  }
+  if (status) { // either AVAILABLE, SOLD, or REMOVED
+    where.status = status;
+  }
+  
+  //build order array
+  const order = [];
+  if (sortBy) {
+
+    //assuming that the listed_at column is easily sortable
+
+    //assuming frontend will pass in a string that matches the column name
+
+    order.push([sortBy, isDescending ? "DESC" : "ASC"]); //default to ascending
+  }
+
+  //build options object
+  const options = {
+    where: where,
+    order: order,
+  };
+
+  //add limit and offset if they exist
+  if (pullLimit) {
+    options.limit = pullLimit;
+  }
+  if (pageOffset) {
+    options.offset = pageOffset;
+  }
+
+  try {
+    const listings = await Listing.findAndCountAll(options);
+    console.log(listings);
+    res.json(listings);
+  } catch (error) {
+    console.log('Error during database query:', error);
+    res.status(500).json({
+      message: "Invalid input data",
+      error: error.message
+    });
+  }
+}
 
 export const createListing = async (req, res) => {
   try {
@@ -48,7 +111,7 @@ export const getListingInfo = async (req, res) => {
         res.json({
             message: "Unable to get listing with id: " + req.params.listingId
         });
-    });
+    };
 };
 
 export const updateListing = async (req, res) => {
