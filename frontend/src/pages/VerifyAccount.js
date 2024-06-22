@@ -55,11 +55,12 @@ function VerifyAccount() {
     };
 
     function validateUsername() {
-        if (!username) {
+        var format = new RegExp("^[A-Za-z0-9_@]{6,20}$");
+        if (username.trim() === "") {
             setUsernameError("Username is required");
             return false;
-        } else if (username.includes(' ')) {
-            setUsernameError("Cannot include spaces");
+        } else if (!format.test(password)) {
+            setUsernameError("Must be 6-20 characters (allow: letters, numbers, _, @)");
             return false;
         } else if (usernameError === "This username has already been chosen") {
             return false;
