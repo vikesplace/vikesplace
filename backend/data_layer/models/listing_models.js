@@ -61,7 +61,7 @@ Listings.init(
     },
     category: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
       validate: {
         isIn: [["ELECTRONICS", "FURNITURE", "CLOTHING", "BOOKS", "OTHER"]],
       },

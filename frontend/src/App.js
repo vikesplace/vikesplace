@@ -10,10 +10,14 @@ import VerifyAccount from './pages/VerifyAccount.js';
 import VerifiedAccount from './pages/VerifiedAccount.js';
 import SearchHistory from './pages/SearchHistory.js';
 import ListingDetailsPage from './pages/ListingDetailsPage.js';
+import EditListing from './pages/EditListing.js';
 import Login from './pages/Login.js';
 import RequestAccount from './pages/RequestAccount.js'
 import CheckYourEmail from './pages/CheckYourEmail.js';
-
+import MessageHistory from './pages/MessageHistory.js';
+import RequestPasswordChange from './pages/RequestPasswordChange.js';
+import CompletePasswordChange from './pages/CompletePasswordChange.js';
+import PasswordUpdated from './pages/PasswordUpdated.js';
 
 function App() {  
   return (
@@ -32,6 +36,11 @@ function App() {
         <Route path="/request-account" element={<RequestAccount />} />
         <Route path="/check-email" element={<CheckYourEmail />} />
         <Route path="/listings/:id" element={<ListingDetailsPage />} />
+        <Route path="/edit-listing/:id" element={<EditListing />} />
+        <Route path="/message-history/:id" element={<MessageHistory />} />
+        <Route path="/password-change" element={<RequestPasswordChange />} />
+        <Route path="/password-update" element={<CompletePasswordChange />} /> {/* TODO: modify /verify to use parameters from email verification*/}
+        <Route path="/password-updated" element={<PasswordUpdated />} />
         {/* Add other routes here */}
       </Routes>
     </Router>
