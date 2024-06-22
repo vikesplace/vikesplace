@@ -81,11 +81,6 @@ services:
       service: nginx
 
   # Referencing algorithm services
-  # postgresql:
-  #   extends:
-  #     file: algorithms/docker-compose.yml
-  #     service: postgresql
-
   setup:
     extends:
       file: algorithms/docker-compose.yml
@@ -161,3 +156,10 @@ services:
         condition: service_healthy
       mongodb:
         condition: service_healthy
+
+
+  # Referecing frontend
+  frontend:
+    extends:
+      file: frontend/docker-compose.yml
+      service: frontend
