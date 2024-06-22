@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import Typography from '@mui/material/Typography';
 import ListingDetails from '../components/ListingDetails';
 
 // Mock data for the example
@@ -15,7 +16,11 @@ const ListingDetailsPage = () => {
   const listing = listings.find((listing) => listing.id === id);
 
   if (!listing) {
-    return <div>Listing not found</div>;
+    return <div>
+      <Typography align="center" variant='h6' sx={{mt: 2}}>
+        No Listing Found
+      </Typography>
+    </div>;
   }
 
   return (
