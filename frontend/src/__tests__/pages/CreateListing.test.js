@@ -1,6 +1,5 @@
 import React from 'react';
 import { render, fireEvent, screen, within } from '@testing-library/react';
-import userEvent from "@testing-library/user-event";
 import '@testing-library/jest-dom/extend-expect';
 import { BrowserRouter as Router } from 'react-router-dom';
 import CreateListing from '../../pages/CreateListing';
@@ -10,13 +9,6 @@ jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
     useNavigate: jest.fn(),
   }));
-
-function setup(jsx) {
-    return {
-        user: userEvent.setup(),
-        ...render(jsx),
-    };
-}
 
 describe('CreateListing page', () => {
   let useNavigateMock;
