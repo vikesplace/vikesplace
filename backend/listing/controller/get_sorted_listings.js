@@ -6,7 +6,7 @@ export const getSortedListings = async (req, res) => {
     const response = await axios.get(`/listing`, {
       params: {
         pullLimit: req.query.pullLimit,
-        pageOffset: req.query.pageOffset, //potentially change to page number calc
+        pageOffset: req.query.pageOffset,
         minPrice: req.query.minPrice,
         maxPrice: req.query.maxPrice,
         status: req.query.status,

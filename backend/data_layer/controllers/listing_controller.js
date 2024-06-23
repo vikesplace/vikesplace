@@ -2,10 +2,7 @@ import Listing from "../models/listing_models.js";
 import { Op } from "sequelize";
 
 export const getSortedListings = async (req, res) => {
-  console.log('Full URL:', req.url);
   const {minPrice, maxPrice, status, sortBy, isDescending, pullLimit, pageOffset} = req.query;
-  console.log('minPrice:', minPrice);
-  console.log('maxPrice:', maxPrice);
 
   //build where object
   const where = {};
@@ -14,33 +11,23 @@ export const getSortedListings = async (req, res) => {
       [Op.between]: [minPrice, maxPrice],
     };
   }
-  //check if either maxPrice or minPrice is specified, but not both
-  else if ((minPrice || maxPrice) && !(minPrice && maxPrice)) { //XOR
-    //throw error
+  else if ((minPrice || maxPrice)) {
     res.json({
       message: "Invalid price range specified"
     });
   }
-  if (status) { // either AVAILABLE, SOLD, or REMOVED
+  if (status) {
     where.status = status;
   }
   
-  //build order array
+  //build order by array
   const order = [];
   if (sortBy) {
-
-    //assuming that the listed_at column is easily sortable
-
-    //assuming frontend will pass in a string that matches the column name
-
-    order.push([sortBy, isDescending ? "DESC" : "ASC"]); //default to ascending
+    order.push([sortBy, (isDescending.toLowerCase()=="true" ? "DESC" : "ASC")]); //defaults to ascending
   }
 
-  //build options object
-  const options = {
-    where: where,
-    order: order,
-  };
+  //build findAndCountAll options object
+  const options = {where, order};
 
   //add limit and offset if they exist
   if (pullLimit) {
@@ -52,16 +39,13 @@ export const getSortedListings = async (req, res) => {
 
   try {
     const listings = await Listing.findAndCountAll(options);
-    console.log(listings);
     res.json(listings);
   } catch (error) {
-    console.log('Error during database query:', error);
-    res.status(500).json({
+    res.json({
       message: "Invalid input data",
-      error: error.message
     });
   }
-}
+};
 
 export const createListing = async (req, res) => {
   try {

@@ -135,7 +135,6 @@ describe("Listing Routes", () => {
   });
 
   it("should get a listing", async () => {
-    //create a mock implementation of axios.get to return a promise that resolves the json data that would contain listing seller_id, listing_id, title, price, location, status, listed_at, lastupdated_at
     axios.get.mockImplementation(() => Promise.resolve({ data: {seller_id: '245242', listing_id: '1', title: 'test', price: 0, location: { type: "Point", coordinates: [1, -1] }, status: 'AVAILABLE', listed_at: '2021-09-01', lastupdated_at: '2021-09-01' } }));
     let responseObject = {};
     const mockRes = {
@@ -266,4 +265,5 @@ describe("Listing Routes", () => {
     );
     expect(responseObject).toEqual({ message: "Invalid input data" });
   });
+ 
 });
