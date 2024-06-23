@@ -2,6 +2,7 @@ import express from "express";
 import loginRouter from "./routes/login.js";
 import registerRouter from "./routes/register.js";
 import passwordRouter from "./routes/password.js";
+import axiosConfig from './config/axiosConfig.js';
 
 const PORT = process.env.PORT || 5000;
 const app = express();
