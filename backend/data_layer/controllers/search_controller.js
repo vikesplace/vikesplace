@@ -1,6 +1,7 @@
 import Search from '../models/search_models.js';
 
 export const getSearchResults = (req, res) => {
+    console.log(req);
     Search.findAll({
         where: {
             query: req.body.query
