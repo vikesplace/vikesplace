@@ -2,7 +2,6 @@ import axios from "axios";
 
 export const getSortedListings = async (req, res) => {
   try {
-    console.log(req.query.minPrice);
     const response = await axios.get(`/listing`, {
       params: {
         pullLimit: req.query.pullLimit,

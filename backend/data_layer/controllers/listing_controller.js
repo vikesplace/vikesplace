@@ -6,7 +6,7 @@ export const getSortedListings = async (req, res) => {
 
   //build where object
   const where = {};
-  if (minPrice && maxPrice) {
+  if ((minPrice && maxPrice) && (minPrice <= maxPrice)) {
     where.price = {
       [Op.between]: [minPrice, maxPrice],
     };
@@ -39,7 +39,7 @@ export const getSortedListings = async (req, res) => {
 
   try {
     const listings = await Listing.findAndCountAll(options);
-    res.json(listings);
+    res.json(listings); 
   } catch (error) {
     res.json({
       message: "Invalid input data",
