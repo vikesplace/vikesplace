@@ -1,12 +1,11 @@
 import axios from 'axios';
 
-export const getLongLat = async (req, res) => {
+export const getLongLat = async (postal_code) => {
     try {
-        const response = await axios.get(`/listing/location/${req.params.postal_code}`)
-        res.json(response.data);
-    } catch (error) {
-        res.json({
-            message: "Invalid input data"
-        });
+        const response = await axios.get(`/listing/location/${postal_code}`)
+        return response.data;
+    } 
+    catch(err){
+        console.log(err);
     }
 }

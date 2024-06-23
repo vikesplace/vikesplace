@@ -53,7 +53,7 @@ export const getListingInfo = async (req, res) => {
 
 export const updateListing = async (req, res) => {
     try {
-        const listing = await Listing.findByPk(req.params.listing_id);
+        const listing = await Listing.findByPk(req.params.listingId);
         if (!listing) {
             return res.json({
                 message: "Invalid input data"
