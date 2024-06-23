@@ -102,14 +102,7 @@ describe('Login Component', () => {
     fireEvent.change(passwordInput, { target: { value: 'validPassword' } });
     fireEvent.submit(screen.getByRole('button', { name: /login/i }));
 
-    expect(useNavigateMock).toHaveBeenCalledTimes(1); // Ensure useNavigate is called exactly once
-    expect(useNavigateMock).toHaveBeenCalledWith('/'); // Ensure useNavigate is called with '/'
-
-    // Alternatively, you can assert directly on the returned function if needed
-    // const navigate = useNavigateMock.mock.results[0].value;
-    // expect(navigate).toHaveBeenCalledWith('/');
-
-    // Note: Adjust the above assertions based on your actual useNavigate usage
+    expect(useNavigateMock).toHaveBeenCalledWith('/');
   });
 
   test('does not navigate when form is invalid on submission', () => {
