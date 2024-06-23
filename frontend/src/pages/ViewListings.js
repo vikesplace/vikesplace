@@ -118,7 +118,7 @@ function ViewListings() {
         </Box>
         <Box mt={2}>
           {listings.map((listing) => (
-            <div key={'div' + listing.id} onClick={() => handleListingClick(listing.id)}>
+            <div key={listing.id} data-testid="listing-card" onClick={() => handleListingClick(listing.id)}>
               <ListingCard
                 id={listing.id}
                 title={listing.title}
@@ -148,7 +148,7 @@ function ViewListings() {
               name="max"
               value={priceRange.max}
               onChange={handlePriceRangeChange}
-              sx={{ mr: 2, mt: 2 }}
+              sx={{ mt: 2 }}
               fullWidth
             />
             <FormControl sx={{ minWidth: 120, mt: 2, width: '100%' }}>
