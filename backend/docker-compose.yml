@@ -1,3 +1,7 @@
+volumes:
+  psqldata:
+    driver: local
+
 services:
   postgresql:
     image: postgis/postgis:latest
@@ -10,7 +14,8 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./data:/var/lib/postgresql/data
+      - ./data_layer/data:/docker-entrypoint-initdb.d
+      - psqldata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 45s
@@ -22,7 +27,8 @@ services:
     build:
       context: ./account
     volumes:
-      - ./account:/app
+      - ./account:/home/node/app
+      - /home/node/app/node_module
     ports:
       - "5000"
     environment:
@@ -33,7 +39,8 @@ services:
     build:
       context: ./ratings_reviews
     volumes:
-      - ./ratings_reviews:/app
+      - ./ratings_reviews:/home/node/app
+      - /home/node/app/node_module
     ports:
       - "5000"
     environment:
@@ -44,7 +51,8 @@ services:
     build:
       context: ./users
     volumes:
-      - ./users:/app
+      - ./users:/home/node/app
+      - /home/node/app/node_module
     ports:
       - "5000"
     environment:
@@ -55,7 +63,8 @@ services:
     build:
       context: ./messages
     volumes:
-      - ./messages:/app
+      - ./messages:/home/node/app
+      - /home/node/app/node_module
     ports:
       - "5000"
     environment:
@@ -66,9 +75,10 @@ services:
     build:
       context: ./listing
     volumes:
-      - ./listing:/app
+      - ./listing:/home/node/app
+      - /home/node/app/node_module
     ports:
-      - "5000"
+      - "5000:5000"
     environment:
       - PORT=5000
       - DB_HOST=${DB_HOST}
@@ -76,13 +86,15 @@ services:
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_DATABASE=${DB_DATABASE}
       - DB_PORT=${DB_PORT}
+      - DATA_LAYER=${DATA_LAYER}
 
   recommendation:
     container_name: recommendation
     build:
       context: ./recommendation
     volumes:
-      - ./recommendation:/app
+      - ./recommendation:/home/node/app
+      - /home/node/app/node_module
     ports:
       - "5000"
     environment:
@@ -93,7 +105,8 @@ services:
     build:
       context: ./search
     volumes:
-      - ./search:/app
+      - ./search:/home/node/app
+      - /home/node/app/node_module
     ports:
       - "5000"
     environment:
@@ -108,23 +121,36 @@ services:
       postgresql:
         condition: service_healthy
     volumes:
-      - ./data_layer:/app
+      - ./data_layer:/home/node/app
+      - /home/node/app/node_module
     ports:
       - "5000"
     environment:
       - PORT=5000
       - DATA_LAYER=${DATA_LAYER}
+      - DB_HOST=${DB_HOST}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_PORT=${DB_PORT}
   
   postal_code_script:
     container_name: postal_code_script
     build:
       context: ./data_layer
     volumes:
-      - ./data_layer:/app
+      - ./data_layer:/home/node/app
+      - /home/node/app/node_module
     ports:
       - "5000"
     environment:
-      PORT: 5000
+      - PORT=5000
+      - DATA_LAYER=${DATA_LAYER}
+      - DB_HOST=${DB_HOST}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_PORT=${DB_PORT}
     depends_on:
       postgresql:
         condition: service_healthy
@@ -135,6 +161,7 @@ services:
     build: 
       context: ./nginx
     volumes:
-      - ./nginx:/app
+      - ./nginx:/home/node/app
+      - /home/node/app/node_module
     ports:
-      - "5000"
+      - 8080:8080
