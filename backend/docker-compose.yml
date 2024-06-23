@@ -1,5 +1,5 @@
 services:
-  database:
+  postgresql:
     image: postgis/postgis:latest
     restart: always
     container_name: postgres_db
@@ -16,6 +16,7 @@ services:
       interval: 45s
       timeout: 15s
       retries: 3
+  
   account:
     container_name: account
     build:
@@ -26,6 +27,7 @@ services:
       - "5000"
     environment:
       PORT: 5000
+  
   ratings:
     container_name: ratings_reviews
     build:
@@ -36,6 +38,7 @@ services:
       - "5000"
     environment:
       PORT: 5000
+  
   users:
     container_name: users
     build:
@@ -46,6 +49,7 @@ services:
       - "5000"
     environment:
       PORT: 5000
+  
   messages:
     container_name: messages
     build:
@@ -56,6 +60,7 @@ services:
       - "5000"
     environment:
       PORT: 5000
+  
   listing:
     container_name: listing
     build:
@@ -65,7 +70,13 @@ services:
     ports:
       - "5000"
     environment:
-      PORT: 5000
+      - PORT=5000
+      - DB_HOST=${DB_HOST}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_PORT=${DB_PORT}
+
   recommendation:
     container_name: recommendation
     build:
@@ -76,6 +87,7 @@ services:
       - "5000"
     environment:
       PORT: 5000
+  
   search:
     container_name: search
     build:
@@ -86,20 +98,23 @@ services:
       - "5000"
     environment:
       PORT: 5000
+  
   data_layer:
     container_name: data_layer
     restart: on-failure
     build:
       context: ./data_layer
     depends_on:
-      database:
-        condition: service_started
+      postgresql:
+        condition: service_healthy
     volumes:
       - ./data_layer:/app
     ports:
       - "5000"
     environment:
-      PORT: 5000
+      - PORT=5000
+      - DATA_LAYER=${DATA_LAYER}
+  
   postal_code_script:
     container_name: postal_code_script
     build:
@@ -111,9 +126,10 @@ services:
     environment:
       PORT: 5000
     depends_on:
-      database:
+      postgresql:
         condition: service_healthy
     command: ["node", "populate_postal_codes.js"]
+  
   nginx:
     container_name: nginx
     build: 

@@ -10,6 +10,7 @@ router.post('/', createUser);
 router.post('/login', (req, res) => {
   res.json({ message: 'login a user' });
 });
+// router.post('/login', , loginUser); // Use loginUser controller for login
 
 //Get all users
 router.get('/', (req, res) => {
