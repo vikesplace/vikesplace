@@ -108,9 +108,9 @@ services:
       - ./search:/home/node/app
       - /home/node/app/node_module
     ports:
-      - "5000"
+      - "5001:5000"
     environment:
-      PORT: 5000
+      - ALG_SEARCH=${ALG_SEARCH}
   
   data_layer:
     container_name: data_layer
