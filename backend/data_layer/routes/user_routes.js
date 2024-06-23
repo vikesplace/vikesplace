@@ -1,16 +1,16 @@
 import express from "express";
-import { createUser } from '../controllers/user_controller.js';
+import { createUser,loginValidation, loginUser } from '../controllers/user_controller.js';
 
 const router = express.Router();
 
 //Create a user
 router.post('/', createUser);
 
-//Login a user
-router.post('/login', (req, res) => {
-  res.json({ message: 'login a user' });
-});
-// router.post('/login', , loginUser); // Use loginUser controller for login
+// //Login a user
+// router.post('/login', (req, res) => {
+//   res.json({ message: 'login a user' });
+// });
+router.post('/login', loginValidation, loginUser);
 
 //Get all users
 router.get('/', (req, res) => {

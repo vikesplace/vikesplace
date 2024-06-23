@@ -14,7 +14,8 @@ const loginValidation = [
     .matches(/[^a-zA-Z0-9]/).withMessage('Password must contain at least one special character')
 ];
 
-router.post("/login", loginValidation, async (req, res) => {
+router.post("/", loginValidation, async (req, res) => {
+  console.log("here inside the login")
   // Validate request
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -25,18 +26,12 @@ router.post("/login", loginValidation, async (req, res) => {
 
   try {
     // Call the /user/login endpoint using Axios
-    const response = await axios.post("/user/login", {
+    console.log("hest before the the axios call")
+    const response = await axios.post("/user/login/", {
       username,
       password
     });
 
-    // Handle successful login
-    if (response.status === 200) {
-      // Optionally, you can handle the token here, e.g., setting a cookie, storing it in local storage, etc.
-      return res.status(200).json(response.data);
-    } else {
-      return res.status(response.status).json({ message: response.data.message });
-    }
   } catch (error) {
     // Handle error response
     if (error.response) {

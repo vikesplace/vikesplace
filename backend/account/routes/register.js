@@ -39,7 +39,6 @@ const passwordValidation = [
 ];
 
 
-
 // Endpoint to request account creation
 router.post('/request_account', (req, res) => {
   const { email, callback } = req.body;
