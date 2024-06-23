@@ -1,8 +1,10 @@
 import axios from 'axios';
 
-export const getLongLat = async (postal_code) => {
+//this method should be called when user is creating their account and entering their postal code
+//so that in the database, we can store the long and lat of the postal code associate with the user
+export const getLongLat = async (postal_code, user_id) => {
     try {
-        const response = await axios.get(`/listing/location/${postal_code}`)
+        const response = await axios.get(`/listing/location/${postal_code}/${user_id}`);
         return response.data;
     } 
     catch(err){

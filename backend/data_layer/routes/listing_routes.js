@@ -25,9 +25,9 @@ router.delete("/:listingId", deleteListing);
 router.get("/:listingId", getListingInfo);
 
 //Get long and lat
-router.get("/location/:location", getLongLat);
+router.get("/location/:postal_code/:user_id", getLongLat);
 
 //Get postal code
-router.get("/location/:longitude/:latitude", getPostalCode);
+router.get("/location/:longitude/:latitude/:user_id", getPostalCode);
 
 export default router;

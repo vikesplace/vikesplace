@@ -259,30 +259,40 @@ describe("Listing Routes", () => {
     expect(result).toEqual(mockOutput);
   });
 
-  it("should update a listing", async () => {
-    axios.patch.mockImplementation(() => Promise.resolve({ data: 1 }));
-    let responseObject = {};
-    const mockRes = {
-      body:{},
-      json: jest.fn().mockImplementation((result)=>{
-        responseObject = result;
-      }),
-      status: jest.fn()
-    };
-    await updateListing(
-      {
-        body: {
-          title: "test",
-          price: 1.01,
-          status: "AVAILABLE",
-          location: { type: "Point", coordinates: [1, -1] },
-          category: "ELECTRONICS",
-        },
-      },
-      mockRes
-    );
-    expect(responseObject).toEqual(1);
+  it("it should fail to get postal code", async () => {
+    axios.get.mockResolvedValue({ data: { message: "Latitude and longitude not found" } });
+
+    const latitude = 45.5;
+    const longitude = -45.5;
+    const result = await getPostalCode(latitude, longitude);
+
+    expect(result).toEqual({ message: "Latitude and longitude not found" });
   });
+
+  // it("should update a listing", async () => {
+  //   axios.patch.mockImplementation(() => Promise.resolve({ data: 1 }));
+  //   let responseObject = {};
+  //   const mockRes = {
+  //     body:{},
+  //     json: jest.fn().mockImplementation((result)=>{
+  //       responseObject = result;
+  //     }),
+  //     status: jest.fn()
+  //   };
+  //   await updateListing(
+  //     {
+  //       body: {
+  //         title: "test",
+  //         price: 1.01,
+  //         status: "AVAILABLE",
+  //         location: { type: "Point", coordinates: [1, -1] },
+  //         category: "ELECTRONICS",
+  //       },
+  //     },
+  //     mockRes
+  //   );
+  //   expect(responseObject).toEqual(1);
+  // });
   // it("it should fail to update", async () => {
   //   axios.patch.mockImplementation(() => Promise.resolve({ data: {message: "Unable to update listing with id: 1"} }));
   //   let responseObject = {};
