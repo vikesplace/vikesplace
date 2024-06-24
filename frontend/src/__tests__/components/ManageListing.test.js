@@ -121,7 +121,42 @@ describe('ManageListing page', () => {
     fireEvent.submit(button);
     // TODO confirm correct data is saved?
 
+    expect(useNavigateMock).toHaveBeenCalledWith('/manage-listings');
+
+    jest.clearAllMocks();
+  });
+
+  test('should not be able to save changed listing with invalid field', () => {
+    useNavigateMock = require('react-router-dom').useNavigate;
+    useNavigateMock.mockReturnValue(jest.fn());
+
+    const postalCodeInput = screen.getByRole('textbox', { name: /postal code/i });
+    fireEvent.change(postalCodeInput, { target: { value: 'notvalid' } });
+    fireEvent.blur(postalCodeInput);
+
+    const button = screen.getByRole('button', { name: /save/i });
+
+    fireEvent.submit(button);
+
     expect(useNavigateMock).not.toHaveBeenCalledWith('/manage-listings');
+
+    jest.clearAllMocks();
+  });
+
+  test('should be able to save changed listing with valid fields', () => {
+    useNavigateMock = require('react-router-dom').useNavigate;
+    useNavigateMock.mockReturnValue(jest.fn());
+
+    const postalCodeInput = screen.getByRole('textbox', { name: /postal code/i });
+    fireEvent.change(postalCodeInput, { target: { value: 'V9V 9V9' } });
+    fireEvent.blur(postalCodeInput);
+
+    const button = screen.getByRole('button', { name: /save/i });
+
+    fireEvent.submit(button);
+    // TODO confirm correct data is saved?
+
+    expect(useNavigateMock).toHaveBeenCalledWith('/manage-listings');
 
     jest.clearAllMocks();
   });
@@ -135,7 +170,7 @@ describe('ManageListing page', () => {
     fireEvent.submit(button);
     // TODO confirm correct data is saved?
 
-    expect(useNavigateMock).not.toHaveBeenCalledWith('/manage-listings');
+    expect(useNavigateMock).toHaveBeenCalledWith('/manage-listings');
 
     jest.clearAllMocks();
   });
