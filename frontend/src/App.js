@@ -22,7 +22,6 @@ import CompletePasswordChange from './pages/CompletePasswordChange.js';
 import PasswordUpdated from './pages/PasswordUpdated.js';
 
 
-
 function App() {  
   return (
     <Router>
