@@ -8,7 +8,7 @@ const app = express();
 
 app.use(identification);
 app.use(express.json());
-app.use("/listing", listing);
+app.use("/listings", listing);
 
 function identification(req, res, next) {
   console.log("Auth middleware logic here");
