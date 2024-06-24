@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useRef, useState } from "react";
 import "./RecommendedList.css";
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
@@ -45,6 +44,7 @@ function RecommendedList(props) {
   
     >
       {data?.map((item) => (
+        <div key={'div' + item.id}>
         <RecommendedItem
           id={item.id}
           title={item.title}
@@ -52,6 +52,7 @@ function RecommendedList(props) {
           status={item.status}
           location={item.location}
         />
+        </div>
       ))}
       </Carousel>
   );
