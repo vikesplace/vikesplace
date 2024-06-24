@@ -1,9 +1,8 @@
 import React from 'react';
-import { render, fireEvent, screen, within } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { BrowserRouter as Router } from 'react-router-dom';
 import VerifiedAccount from '../../pages/VerifiedAccount';
-import { SAMPLE_LISTING } from '../TestData';
 
 describe('VerifiedAccount page', () => {
 
@@ -16,6 +15,7 @@ describe('VerifiedAccount page', () => {
     });
     
     test('renders page', () => {
+        expect(screen.getByText('Your account is now verified and ready for use.')).toBeInTheDocument();
     });
 
 });
