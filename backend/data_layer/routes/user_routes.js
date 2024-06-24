@@ -1,5 +1,5 @@
 import express from "express";
-import { createUser,loginValidation, loginUser } from '../controllers/user_controller.js';
+import { createUser, loginUser } from '../controllers/user_controller.js';
 
 const router = express.Router();
 
@@ -10,7 +10,7 @@ router.post('/', createUser);
 // router.post('/login', (req, res) => {
 //   res.json({ message: 'login a user' });
 // });
-router.post('/login', loginValidation, loginUser);
+router.post('/login', loginUser);
 
 //Get all users
 router.get('/', (req, res) => {
