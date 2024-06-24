@@ -28,7 +28,7 @@ docker-compose down -v
 
 ### Running Tests Locally
 Assumming that you have started the containers:
-1. Run `pip install -r requirements.txt` in both `./algorithms/search` or `./algorithms/recommender`
+1. Run `pip install -r requirements.txt` in both `./algorithms/search` and `./algorithms/recommender`
 2. Using Docker UI, go to `Volumes` and find `vikesplace-certs`
 3. In the `Data` tab, go to the `ca` folder and copy the `ca.crt` file into `./algorithms/`
 4. From `./algorithms` folder, the run the tests using `pytest -vv`

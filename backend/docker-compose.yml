@@ -1,5 +1,9 @@
+volumes:
+  psqldata:
+    driver: local
+
 services:
-  database:
+  postgresql:
     image: postgis/postgis:latest
     restart: always
     container_name: postgres_db
@@ -10,115 +14,154 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./data:/var/lib/postgresql/data
+      - ./data_layer/data:/docker-entrypoint-initdb.d
+      - psqldata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 45s
       timeout: 15s
       retries: 3
+  
   account:
     container_name: account
     build:
       context: ./account
     volumes:
-      - ./account:/app
+      - ./account:/home/node/app
+      - /home/node/app/node_module
     ports:
       - "5000"
     environment:
       PORT: 5000
+  
   ratings:
     container_name: ratings_reviews
     build:
       context: ./ratings_reviews
     volumes:
-      - ./ratings_reviews:/app
+      - ./ratings_reviews:/home/node/app
+      - /home/node/app/node_module
     ports:
       - "5000"
     environment:
       PORT: 5000
+  
   users:
     container_name: users
     build:
       context: ./users
     volumes:
-      - ./users:/app
+      - ./users:/home/node/app
+      - /home/node/app/node_module
     ports:
       - "5000"
     environment:
       PORT: 5000
+  
   messages:
     container_name: messages
     build:
       context: ./messages
     volumes:
-      - ./messages:/app
+      - ./messages:/home/node/app
+      - /home/node/app/node_module
     ports:
       - "5000"
     environment:
       PORT: 5000
+  
   listing:
     container_name: listing
     build:
       context: ./listing
     volumes:
-      - ./listing:/app
+      - ./listing:/home/node/app
+      - /home/node/app/node_module
     ports:
-      - "5000"
+      - "5000:5000"
     environment:
-      PORT: 5000
+      - PORT=5000
+      - DB_HOST=${DB_HOST}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_PORT=${DB_PORT}
+      - DATA_LAYER=${DATA_LAYER}
+
   recommendation:
     container_name: recommendation
     build:
       context: ./recommendation
     volumes:
-      - ./recommendation:/app
+      - ./recommendation:/home/node/app
+      - /home/node/app/node_module
     ports:
       - "5000"
     environment:
       PORT: 5000
+  
   search:
     container_name: search
     build:
       context: ./search
     volumes:
-      - ./search:/app
+      - ./search:/home/node/app
+      - /home/node/app/node_module
     ports:
       - "5000"
     environment:
       PORT: 5000
+  
   data_layer:
     container_name: data_layer
     restart: on-failure
     build:
       context: ./data_layer
     depends_on:
-      database:
-        condition: service_started
+      postgresql:
+        condition: service_healthy
     volumes:
-      - ./data_layer:/app
+      - ./data_layer:/home/node/app
+      - /home/node/app/node_module
     ports:
       - "5000"
     environment:
-      PORT: 5000
+      - PORT=5000
+      - DATA_LAYER=${DATA_LAYER}
+      - DB_HOST=${DB_HOST}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_PORT=${DB_PORT}
+  
   postal_code_script:
     container_name: postal_code_script
     build:
       context: ./data_layer
     volumes:
-      - ./data_layer:/app
+      - ./data_layer:/home/node/app
+      - /home/node/app/node_module
     ports:
       - "5000"
     environment:
-      PORT: 5000
+      - PORT=5000
+      - DATA_LAYER=${DATA_LAYER}
+      - DB_HOST=${DB_HOST}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_PORT=${DB_PORT}
     depends_on:
-      database:
+      postgresql:
         condition: service_healthy
     command: ["node", "populate_postal_codes.js"]
+  
   nginx:
     container_name: nginx
     build: 
       context: ./nginx
     volumes:
-      - ./nginx:/app
+      - ./nginx:/home/node/app
+      - /home/node/app/node_module
     ports:
-      - "5000"
+      - 8080:8080
