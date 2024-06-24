@@ -25,6 +25,9 @@ const ListingDetails = ({ listing }) => {
         <Typography variant="h4" component="h3" gutterBottom>
           {listing.title}
         </Typography>
+        <Typography variant="body1" component="h3" gutterBottom>
+          {listing.category}
+        </Typography>
         <Typography variant="h6" gutterBottom>
           Price: ${listing.price}
         </Typography>
