@@ -2,7 +2,7 @@ import React from 'react';
 import { render, fireEvent, screen, within, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { BrowserRouter as Router } from 'react-router-dom';
-import ViewListings from '../pages/ViewListings';
+import ViewListings from '../../pages/ViewListings';
 
 describe('ViewListings Component', () => {
   beforeEach(() => {
