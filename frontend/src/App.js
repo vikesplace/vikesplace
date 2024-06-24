@@ -18,6 +18,8 @@ import MessageHistory from './pages/MessageHistory.js';
 import RequestPasswordChange from './pages/RequestPasswordChange.js';
 import CompletePasswordChange from './pages/CompletePasswordChange.js';
 import PasswordUpdated from './pages/PasswordUpdated.js';
+import UserProfile from './pages/UserProfile.js';
+
 
 function App() {  
   return (
@@ -41,6 +43,7 @@ function App() {
         <Route path="/password-change" element={<RequestPasswordChange />} />
         <Route path="/password-update" element={<CompletePasswordChange />} /> {/* TODO: modify /verify to use parameters from email verification*/}
         <Route path="/password-updated" element={<PasswordUpdated />} />
+        <Route path="/user-profile" element={<UserProfile />} />
         {/* Add other routes here */}
       </Routes>
     </Router>
