@@ -6,6 +6,7 @@ import 'dotenv/config';
 
 const router = express.Router();
 const jwtSecret = process.env.ACCESS_TOKEN_SECRET;
+console.log(process.env.ACCESS_TOKEN_SECRET);
 const jwtExpiry = 900000;
 
 // Configuration for Nodemailer
@@ -30,7 +31,7 @@ router.post('/', (req, res) => {
   }
 
   const token = jwt.sign({ email }, jwtSecret, { expiresIn: jwtExpiry });
-  const verificationLink = `${callback}${token}`;
+  const verificationLink = `${callback}?jwt${token}`;
 
   console.log("this is the token", token);
 
