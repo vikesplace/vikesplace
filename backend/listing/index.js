@@ -11,8 +11,16 @@ app.use(express.json());
 app.use("/listing", listing);
 
 function identification(req, res, next) {
-  console.log("Auth middleware logic here");
-  next();
+  const token = req.body.jwt;
+  const jwtSecret = process.env.ACCESS_TOKEN_SECRET;
+  try{
+    const decoded = jwt.verify(token, jwtSecret);
+    res.locals.decodedToken = decoded;
+    next();
+  }
+  catch(err){
+    return res.json({message: err});
+  }
 }
 
 app.listen(PORT, () => {

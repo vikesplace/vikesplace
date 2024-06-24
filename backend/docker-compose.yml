@@ -68,7 +68,7 @@ services:
     ports:
       - "5000"
     environment:
-      PORT: 5000
+      - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
   
   listing:
     container_name: listing
@@ -87,6 +87,7 @@ services:
       - DB_DATABASE=${DB_DATABASE}
       - DB_PORT=${DB_PORT}
       - DATA_LAYER=${DATA_LAYER}
+      - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
 
   recommendation:
     container_name: recommendation
@@ -110,7 +111,7 @@ services:
     ports:
       - "5000"
     environment:
-      PORT: 5000
+      - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
   
   data_layer:
     container_name: data_layer
