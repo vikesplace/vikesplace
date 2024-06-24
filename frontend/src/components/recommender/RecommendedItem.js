@@ -1,9 +1,9 @@
 import * as React from "react";
 
 import Card from "@mui/material/Card";
-import "./BasicCard.css"
-import CardContent from "@mui/material/CardContent";
 
+import CardContent from "@mui/material/CardContent";
+import './RecommendedItem.css'
 import Typography from "@mui/material/Typography";
 import { CardActionArea } from "@mui/material";
 import { Link } from "react-router-dom";
@@ -12,10 +12,10 @@ import { Link } from "react-router-dom";
  * can be used for ListingCards as well if wanted
  */
 
-function BasicCard(props) {
+function RecommendedItem(props) {
   return (
-    <div className="card">
-    <Card>
+    <div className="card" >
+    <Card >
       <CardActionArea component={Link} to={`/listings/${props.id}`}>
         <CardContent>
           <Typography variant="h5" component="div">
@@ -36,4 +36,4 @@ function BasicCard(props) {
   );
 }
 
-export default BasicCard;
+export default RecommendedItem;
