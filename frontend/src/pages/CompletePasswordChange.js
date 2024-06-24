@@ -6,25 +6,14 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import Link from '@mui/material/Link';
 import { useNavigate } from 'react-router-dom';
 
-function Login() {
-    const [username, setUsername] = useState("");
-    const [usernameError, setUsernameError] = useState(false);
+function CompletePasswordChange() {
     const [password, setPassword] = useState("");
     const [passwordError, setPasswordError] = useState(false);
+    
 
     const navigate = useNavigate();
-
-    const handleUsernameChange = (event) => {
-        setUsername(event.target.value);
-    };
-
-    const handleUsernameBlur = (event) => {
-        setUsername(event.target.value);
-        validateUsername();
-    };
 
     const handlePasswordChange = (event) => {
         setPassword(event.target.value);
@@ -35,18 +24,12 @@ function Login() {
         validatePassword();
     };
 
-    function validateUsername() {
-        if (username.trim() === "") {
-            setUsernameError(true);
-            return false;
-        } else {
-            setUsernameError(false);
-            return true;
-        }
-    }
-
     function validatePassword() {
-        if (password.trim() === "") {
+        var format = new RegExp("^(?=.*[0-9])(?=.*[!@#$^&*?<>])(?=.*[a-z])(?=.*[A-Z])(?! ).{8,}$");
+        if (!format.test(password)) {
+            setPasswordError(true);
+            return false;
+        } else if (password.includes(' ')) {
             setPasswordError(true);
             return false;
         } else {
@@ -59,17 +42,16 @@ function Login() {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
 
-        var validForm = validateUsername() && validatePassword();
+        var validForm = validatePassword();
 
         if (validForm) {
             try {
                 // TODO POST
                 console.log({
-                    username: data.get("username"),
                     password: data.get("password")
                 });
                 // TODO if succeeds direct to a different page
-                navigate('/');
+                navigate('/password-updated');
             } catch (error) {
                 // TODO display error message
                 console.log(error);
@@ -78,7 +60,7 @@ function Login() {
     }
 
     return (
-        <div className="Login">
+        <div className="CompletePasswordChange">
             <Container>
                 <Box
                     sx={{
@@ -89,27 +71,10 @@ function Login() {
                     }}
                 >
                     <Typography component="h1" variant="h5">
-                        Welcome to VikesPlace!
+                        Change Password
                     </Typography>
                     <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                         <Grid container spacing={1}>
-                            <Grid item xs={12}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    id="username"
-                                    label="Username"
-                                    name="username"
-                                    placeholder="Enter your username"
-                                    value={username}
-                                    onChange={handleUsernameChange}
-                                    onBlur={handleUsernameBlur}
-                                    error={usernameError}
-                                    helperText={
-                                        usernameError ? "Username is required" : ""
-                                    }
-                                />
-                            </Grid>
                             <Grid item xs={12}>
                                 <TextField
                                     required
@@ -118,13 +83,13 @@ function Login() {
                                     label="Password"
                                     type="password"
                                     id="password"
-                                    placeholder="Enter your password"
+                                    autoComplete="new-password"
                                     value={password}
                                     onChange={handlePasswordChange}
                                     onBlur={handlePasswordBlur}
                                     error={passwordError}
                                     helperText={
-                                        passwordError ? "Password is required" : ""
+                                        passwordError ? "Must be 8+ characters, with at least 1 symbol, number, lowercase letter, and uppercase letter" : ""
                                     }
                                 />
                             </Grid>
@@ -135,19 +100,9 @@ function Login() {
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2 }}
                              >
-                                Login
+                                Submit
                               </Button>
-                            </Grid>
-                            <Grid item xs={12} align="center">
-                                <Link href="/request-account" variant="body1" sx={{ mt: 1 }}>
-                                    Need an account?
-                                </Link>
-                            </Grid>
-                            <Grid item xs={12} align="center">
-                                <Link href="/password-change" variant="body1" sx={{ mt: 1 }}>
-                                    Forgot your password?
-                                </Link>
-                            </Grid>
+                            </Grid>                           
                         </Grid>
                     </Box>
                 </Box>
@@ -156,4 +111,4 @@ function Login() {
     );
 }
 
-export default Login;
+export default CompletePasswordChange;

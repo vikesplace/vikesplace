@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import { useNavigate } from 'react-router-dom';
 
-function RequestAccount() {
+function RequestPasswordChange() {
     const [email, setEmail] = useState("");
     const [emailError, setEmailError] = useState("");
     
@@ -61,7 +61,7 @@ function RequestAccount() {
     }
 
     return (
-        <div className="RequestAccount">
+        <div className="RequestPasswordChange">
             <Container>
                 <Box
                     sx={{
@@ -72,26 +72,26 @@ function RequestAccount() {
                     }}
                 >
                     <Typography component="h1" variant="h5">
-                        Create an Account
+                        Request Password Change
                     </Typography>
                     <Typography component="h6" variant="h6">
-                        Enter your "@uvic.ca" email to sign up
+                        Enter the "@uvic.ca" email to assocaited with your account
                     </Typography>
                     <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                         <Grid container spacing={1}>
                             <Grid item xs={12}>
                                 <TextField
-                                    required
-                                    fullWidth
-                                    id="email"
-                                    label="email@uvic.ca"
-                                    name="email"
-                                    value={email}
-                                    onChange={handleEmailChange}
-                                    onBlur={handleEmailBlur}
-                                    error={emailError}
-                                    helperText={emailError}
-                                />
+                                        required
+                                        fullWidth
+                                        id="email"
+                                        label="email@uvic.ca"
+                                        name="email"
+                                        value={email}
+                                        onChange={handleEmailChange}
+                                        onBlur={handleEmailBlur}
+                                        error={emailError}
+                                        helperText={emailError}
+                                    />
                             </Grid>
                             <Grid item xs={12}>
                               <Button
@@ -100,14 +100,14 @@ function RequestAccount() {
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2 }}
                              >
-                                Request Account
+                                Request Password Change
                               </Button>
                             </Grid>
                             <Grid item xs={12} align="center">
                                 <Link href="/login" variant="body1" sx={{ mt: 1 }}>
-                                    Have an account already? Login
+                                    Prefer to login?
                                 </Link>
-                            </Grid>
+                            </Grid>                            
                         </Grid>
                     </Box>
                 </Box>
@@ -116,5 +116,4 @@ function RequestAccount() {
     );
 }
 
-export default RequestAccount;
-
+export default RequestPasswordChange;

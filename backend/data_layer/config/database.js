@@ -6,5 +6,10 @@ const sequelize = new Sequelize( databaseConfig.database, databaseConfig.usernam
     dialect: 'postgres'
 });
 
+sequelize.authenticate().then(()=>{
+    console.log("Connection was successful");
+}).catch((err)=>{
+    console.log("error establishing to database");
+});
 
 export default sequelize;

@@ -16,6 +16,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import '../App.css';
 import ListingCard from '../components/ListingCard';
 import SearchBar from '../components/SearchBar';
+import { Typography } from '@mui/material';
 
 const initialListings = [
   { id: '4', title: 'Test 1', price: '2.00', location: 'V9VW9W', status: 'AVAILABLE' },
@@ -117,6 +118,11 @@ function ViewListings() {
           </Button>
         </Box>
         <Box mt={2}>
+          {(listings.length === 0) && 
+            <Typography align="center" variant='h6'>
+              No Listings Meet Criteria
+            </Typography>
+          }
           {listings.map((listing) => (
             <div key={listing.id} data-testid="listing-card" onClick={() => handleListingClick(listing.id)}>
               <ListingCard

@@ -14,7 +14,8 @@ RUN pip install --no-cache-dir --upgrade pip\
     && pip install --no-cache-dir -r requirements.txt
 
 RUN apt-get update\
-    && apt-get -qq -y install curl
+    && apt-get -qq -y install curl\
+    && apt-get -qq -y install jq
 
 # Copy the source code into the container.
 COPY . .

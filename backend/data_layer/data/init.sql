@@ -1,5 +1,4 @@
-DROP TABLE IF EXISTS "Users";
-DROP TABLE IF EXISTS "Listings";
+CREATE EXTENSION postgis ;
 
 CREATE TABLE IF NOT EXISTS "Users" (
     user_id SERIAL PRIMARY KEY UNIQUE,
@@ -14,8 +13,8 @@ CREATE TABLE IF NOT EXISTS "Users" (
 
 CREATE TABLE IF NOT EXISTS "Listings" (
     listing_id SERIAL PRIMARY KEY,
-    seller_id INT NOT NULL REFERENCES Users(user_id) ON DELETE CASCADE,
-    buyer_username VARCHAR(255) REFERENCES Users(username) ON DELETE CASCADE,
+    seller_id INT NOT NULL REFERENCES "Users"(user_id) ON DELETE CASCADE,
+    buyer_username VARCHAR(255) REFERENCES "Users"(username) ON DELETE CASCADE,
     title VARCHAR(255) NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
     location GEOMETRY(POINT) NOT NULL,
