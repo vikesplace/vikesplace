@@ -14,7 +14,7 @@ describe('EditListing page', () => {
   });
 
   test('renders edit listing form', () => {
-    expect(screen.getByText('Listing not found')).toBeInTheDocument();
+    expect(screen.getByText('No Listing Found')).toBeInTheDocument();
   });
 
   // TODO add test if id has a value (mocked)
