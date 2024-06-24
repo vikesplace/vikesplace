@@ -3,8 +3,7 @@ import { render, fireEvent, screen, within } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { BrowserRouter as Router } from 'react-router-dom';
 import ManageListing from '../../components/ManageListing';
-
-const listing = { id: '4', title: 'Test 1', price: '2.00', location: 'V9V 9W9', category: 'Furniture', status: 'AVAILABLE' };
+import { SAMPLE_LISTING } from '../TestData';
 
 // Mock useNavigate from react-router-dom
 jest.mock('react-router-dom', () => ({
@@ -18,7 +17,7 @@ describe('ManageListing page', () => {
   beforeEach(() => {
     render(
       <Router>
-        <ManageListing listing={listing}/>
+        <ManageListing listing={SAMPLE_LISTING}/>
       </Router>
     );
   });
