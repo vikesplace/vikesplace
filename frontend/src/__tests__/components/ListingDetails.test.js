@@ -15,7 +15,13 @@ describe('ListingDetails component', () => {
       );
     });
     
-    test('renders component', () => {
+    test('renders component with correct title', () => {
+      expect(screen.getByText(SAMPLE_LISTING.title)).toBeInTheDocument();
+    });
+
+    test('component has buttons for message seller and review', () => {
+      expect(screen.getByText('Message Seller')).toBeInTheDocument();
+      expect(screen.getByText('Add Review')).toBeInTheDocument();
     });
 
 });

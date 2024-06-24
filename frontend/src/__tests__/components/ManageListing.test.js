@@ -7,9 +7,9 @@ import { SAMPLE_LISTING } from '../TestData';
 
 // Mock useNavigate from react-router-dom
 jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    useNavigate: jest.fn(),
-  }));
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: jest.fn(),
+}));
 
 describe('ManageListing page', () => {
   let useNavigateMock;
