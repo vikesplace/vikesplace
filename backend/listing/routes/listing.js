@@ -4,10 +4,9 @@ import {deleteListing} from "../controller/delete_listing.js";
 import {updateListing} from "../controller/update_listing.js";
 import { getSellerListings } from "../controller/get_seller_listings.js";
 import { getSortedListings } from "../controller/get_sorted_listings.js";
-
 import {getListingInfo} from "../controller/get_listing.js";
-const router = express.Router();
 
+const router = express.Router();
 
 //Get sorted listings
 router.get("/", getSortedListings);

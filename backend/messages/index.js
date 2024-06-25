@@ -1,14 +1,12 @@
 import express from "express";
+import 'dotenv/config'
 import messages from "./routes/messages.js";
 
 const PORT = process.env.PORT || 5000;
 const app = express();
 
-app.get("/", (req, res) => {
-  res.json({ message: "Hello World" });
-});
-
 app.use(identification);
+app.use(express.json());
 app.use("/messages", messages);
 
 
