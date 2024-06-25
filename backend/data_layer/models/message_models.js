@@ -37,6 +37,24 @@ Messages.init(
         },
         onDelete: "CASCADE",
       },
+      sender_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: "Users",
+          key: "user_id",
+        },
+        onDelete: "CASCADE",
+      },
+      receiver_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: "Users",
+          key: "user_id",
+        },
+        onDelete: "CASCADE",
+      },
     },
     {
       sequelize,

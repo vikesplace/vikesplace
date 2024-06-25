@@ -19,7 +19,16 @@ Chats.init(
         },
         onDelete: "CASCADE",
       },
-      user_id: {
+      user_id_one: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: "Users",
+          key: "user_id",
+        },
+        onDelete: "CASCADE",
+      },
+      user_id_two: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {

@@ -9,7 +9,6 @@ app.use(identification);
 app.use(express.json());
 app.use("/messages", messages);
 
-
 function identification(req, res, next) {
     console.log("Auth middleware logic here");
     next();
