@@ -84,3 +84,31 @@ export const createChat = async (req, res) => {
         });
     }
 };
+export const sendMessages = async (req, res) => {
+    const {user_id, content} = req.body;
+    const chat_id = req.params.chatId;
+    try {
+        //get reciever id from chats table
+        const receiver_id_entry = await Chats.findOne({
+            chat_id: chat_id,
+        });
+        let receiver_id;
+        if(receiver_id_entry.user_id_1 == user_id){
+            receiver_id = receiver_id_entry.user_id_2;
+        }
+        else{
+            receiver_id = receiver_id_entry.user_id_1;
+        }
+        await Messages.create({
+            chat_id: chat_id,
+            content: content,
+            sender_id: user_id,
+            receiver_id: receiver_id,
+        });
+        res.json({});
+    } catch (error) {
+        res.json({
+            message: "Could not send message",
+        });
+    }
+}
