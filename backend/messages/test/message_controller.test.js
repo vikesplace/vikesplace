@@ -193,7 +193,6 @@ describe("Message Routes", () => {
             }),
             status: jest.fn(),
         };
-
         await getMessages({
             body: {
                 content: "Hello",
