@@ -77,6 +77,7 @@ export const getSellerListings = async (req, res) => {
     res.json({ message: "Seller not found" });
   }
 };
+
 export const getListingInfo = async (req, res) => {
     try {
         const entry = await Listing.findByPk(req.params.listingId);
@@ -100,12 +101,13 @@ export const getListingInfo = async (req, res) => {
 
 export const updateListing = async (req, res) => {
     try {
-        const listing = await Listing.findByPk(req.params.listing_id);
+        const listing = await Listing.findByPk(req.params.listingId);
         if (!listing) {
             return res.json({
                 message: "Invalid input data"
             });
         }
+        console.log(JSON.parse(req.body));
         listing.title = req.body.title;
         listing.price = req.body.price;
         listing.status = req.body.status;
@@ -122,7 +124,7 @@ export const updateListing = async (req, res) => {
 
 export const deleteListing = async (req, res) => {
     try {
-        const listing = await Listing.findByPk(req.params.listing_id);
+        const listing = await Listing.findByPk(req.params.listingId);
         if (!listing) {
             return res.json({
                 message: "Invalid input data"

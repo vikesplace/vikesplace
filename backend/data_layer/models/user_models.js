@@ -28,6 +28,10 @@ Users.init(
       type: DataTypes.GEOMETRY('POINT'),
       allowNull: false,
     },
+    postal_code: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     joining_date: {
       type: DataTypes.DATE,
       allowNull: false,
