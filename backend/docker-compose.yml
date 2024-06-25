@@ -46,9 +46,9 @@ services:
       - ./ratings_reviews:/home/node/app
       - /home/node/app/node_module
     ports:
-      - "5000"
+      - "5003:5000"
     environment:
-      PORT: 5000
+      - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
   
   users:
     container_name: users
@@ -58,9 +58,9 @@ services:
       - ./users:/home/node/app
       - /home/node/app/node_module
     ports:
-      - "5000"
+      - "5004:5000"
     environment:
-      PORT: 5000
+      - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
   
   messages:
     container_name: messages
@@ -70,9 +70,9 @@ services:
       - ./messages:/home/node/app
       - /home/node/app/node_module
     ports:
-      - "5000"
+      - "5005:5000"
     environment:
-      PORT: 5000
+      - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
   
   listing:
     container_name: listing
@@ -101,9 +101,9 @@ services:
       - ./recommendation:/home/node/app
       - /home/node/app/node_module
     ports:
-      - "5000"
+      - "5006:5000"
     environment:
-      PORT: 5000
+      - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
   
   search:
     container_name: search
@@ -113,9 +113,9 @@ services:
       - ./search:/home/node/app
       - /home/node/app/node_module
     ports:
-      - "5000"
+      - "5007:5000"
     environment:
-      PORT: 5000
+      - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
   
   data_layer:
     container_name: data_layer
