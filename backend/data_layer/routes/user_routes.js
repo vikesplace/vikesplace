@@ -1,5 +1,5 @@
 import express from "express";
-import { createUser, loginUser, getUser } from '../controllers/user_controller.js';
+import { createUser, loginUser, getUser, resetPassword } from '../controllers/user_controller.js';
 
 const router = express.Router();
 
@@ -11,6 +11,13 @@ router.post('/', createUser);
 //   res.json({ message: 'login a user' });
 // });
 router.post('/login', loginUser);
+
+router.patch('/reset_password', resetPassword);
+
+//Get all users
+router.get('/', (req, res) => {
+  res.json({ message: 'Get All Users' });
+});
 
 //Get a user
 router.get('/:userId', getUser);
