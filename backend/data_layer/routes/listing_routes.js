@@ -1,10 +1,6 @@
 import express from "express";
-<<<<<<< be-id-223
-import { createListing, getListingInfo, getSellerListings, updateListing, deleteListing } from "../controllers/listing_controller.js";
 import { getLongLat, getPostalCode } from "../controllers/location_controller.js";
-=======
 import { createListing, getListingInfo, getSellerListings, updateListing, deleteListing, getSortedListings } from "../controllers/listing_controller.js";
->>>>>>> main
 
 const router = express.Router();
 
