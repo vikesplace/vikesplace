@@ -30,9 +30,10 @@ router.post('/', (req, res) => {
   }
 
   const token = jwt.sign({ email }, jwtSecret, { expiresIn: jwtExpiry });
-  const verificationLink = `${callback}?jwt${token}`;
 
   console.log("this is the token", token);
+
+  const verificationLink = `${callback}${token}`;
 
   const mailOptions = {
     from: process.env.EMAIL,
