@@ -122,7 +122,7 @@ def test_search_user_history():
 
 def test_search_invalid_user_history():
     headers = {"Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"} # Assuming a valid token
-    user_id = 5
+    user_id = 321
     response = client.get(f"/users/{user_id}/searches")
     response_obj = response.json()
 

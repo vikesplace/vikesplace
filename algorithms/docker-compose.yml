@@ -21,10 +21,9 @@ networks:
 
 services:
   postgresql:
-    build:
-      context: ./postgresql/
-      dockerfile: Dockerfile
+    image: postgis/postgis:latest
     volumes:
+      - ./postgresql:/docker-entrypoint-initdb.d
       - psqldata:/var/lib/postgresql/data
     restart: always
     environment:
