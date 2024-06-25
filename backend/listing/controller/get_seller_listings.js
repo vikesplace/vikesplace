@@ -2,7 +2,6 @@ import axios from "axios";
 
 export const getSellerListings = async (req, res) => {
   try {
-    //Get seller_id from JWT token
     const seller_id = res.locals.decodedToken.user_id;
     const response = await axios.get(`/listing/me`, {
       params: { seller_id: seller_id },
