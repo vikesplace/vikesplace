@@ -1,18 +1,27 @@
 import express from "express";
-import 'dotenv/config'
-import axiosConfig from './config/axiosConfig.js';
+import "dotenv/config";
+import axiosConfig from "./config/axiosConfig.js";
 import listing from "./routes/listing.js";
+import jwt from "jsonwebtoken";
+import cookieParser from 'cookie-parser';
 
 const PORT = process.env.PORT || 5000;
+const jwtSecret = process.env.ACCESS_TOKEN_SECRET;
 const app = express();
 
+app.use(cookieParser());
 app.use(identification);
 app.use(express.json());
-app.use("/listing", listing);
+app.use("/listings", listing);
 
 function identification(req, res, next) {
-  console.log("Auth middleware logic here");
-  next();
+  try {
+    const decoded = jwt.verify(req.cookies.Authorization, jwtSecret);
+    res.locals.decodedToken = decoded;
+    next();
+  } catch (err) {
+    res.json({ message: err.message });
+  }
 }
 
 app.listen(PORT, () => {

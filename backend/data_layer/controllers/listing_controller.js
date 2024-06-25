@@ -1,4 +1,51 @@
 import Listing from "../models/listing_models.js";
+import { Op } from "sequelize";
+
+export const getSortedListings = async (req, res) => {
+  const {minPrice, maxPrice, status, sortBy, isDescending, pullLimit, pageOffset} = req.query;
+
+  //build where object
+  const where = {};
+  if ((minPrice && maxPrice) && (minPrice <= maxPrice)) {
+    where.price = {
+      [Op.between]: [minPrice, maxPrice],
+    };
+  }
+  else if ((minPrice || maxPrice)) {
+    res.json({
+      message: "Invalid price range specified"
+    });
+  }
+  if (status) {
+    where.status = status;
+  }
+  
+  //build order by array
+  const order = [];
+  if (sortBy) {
+    order.push([sortBy, (isDescending.toLowerCase()=="true" ? "DESC" : "ASC")]); //defaults to ascending
+  }
+
+  //build findAndCountAll options object
+  const options = {where, order};
+
+  //add limit and offset if they exist
+  if (pullLimit) {
+    options.limit = pullLimit;
+  }
+  if (pageOffset) {
+    options.offset = pageOffset;
+  }
+
+  try {
+    const listings = await Listing.findAndCountAll(options);
+    res.json(listings); 
+  } catch (error) {
+    res.json({
+      message: "Invalid input data",
+    });
+  }
+};
 
 export const createListing = async (req, res) => {
   try {
@@ -30,6 +77,7 @@ export const getSellerListings = async (req, res) => {
     res.json({ message: "Seller not found" });
   }
 };
+
 export const getListingInfo = async (req, res) => {
     try {
         const entry = await Listing.findByPk(req.params.listingId);
@@ -53,12 +101,13 @@ export const getListingInfo = async (req, res) => {
 
 export const updateListing = async (req, res) => {
     try {
-        const listing = await Listing.findByPk(req.params.listing_id);
+        const listing = await Listing.findByPk(req.params.listingId);
         if (!listing) {
             return res.json({
                 message: "Invalid input data"
             });
         }
+        console.log(JSON.parse(req.body));
         listing.title = req.body.title;
         listing.price = req.body.price;
         listing.status = req.body.status;
@@ -75,7 +124,7 @@ export const updateListing = async (req, res) => {
 
 export const deleteListing = async (req, res) => {
     try {
-        const listing = await Listing.findByPk(req.params.listing_id);
+        const listing = await Listing.findByPk(req.params.listingId);
         if (!listing) {
             return res.json({
                 message: "Invalid input data"

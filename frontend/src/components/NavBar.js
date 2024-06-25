@@ -143,7 +143,13 @@ function NavBar() {
                   <MenuItem key={setting} onClick={handleCloseUserMenu} component={Link} to="/login">
                     <Typography textAlign="center">{setting}</Typography>
                   </MenuItem>
-                ) : (
+                ) : 
+                setting === 'User Profile' ? (
+                  <MenuItem key={setting} onClick={handleCloseUserMenu} component={Link} to="/user-profile">
+                    <Typography textAlign="center">{setting}</Typography>
+                  </MenuItem>
+                ) :
+                (
                 <MenuItem key={setting} onClick={handleCloseNavMenu}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
