@@ -34,7 +34,7 @@ INSERT INTO "Users" (username, email, password, location, postal_code, joining_d
 ('Bob', 'bob@example.com', 'password2', 'POINT(48.378400 -123.337822)'::GEOMETRY, 'V9A4L2', '2024-01-02 10:00:00', 0, 0),
 ('Charlie', 'charlie@example.com', 'password3', 'POINT(48.389511 -123.393378)'::GEOMETRY, 'V8W1R7','2024-01-03 10:00:00', 0, 0),
 ('Diana', 'diana@example.com', 'password4', 'POINT(48.389511 -123.337822)'::GEOMETRY, 'V9A4L2', '2024-01-04 10:00:00', 0, 0),
-('Eve', 'eve@example.com', 'password5', 'POINT(48.400622 -123.404489)'::GEOMETRY, 'V8W1R7', '2024-01-05 10:00:00', 0, 0);
+('Eve', 'eve@example.com', 'password5', 'POINT(48.400622 -123.404489)'::GEOMETRY, 'V8W1R7', '2024-01-05 10:00:00', 0, 0),
 ('Frank', 'frank@example.com', 'password6', 'POINT(48.400622 -123.348933)'::GEOMETRY, 'V8N5M3', '2024-01-06 10:00:00', 0, 0),
 ('Grace', 'grace@example.com', 'password7', 'POINT(48.411733 -123.415600)'::GEOMETRY, 'V8N5M3', '2024-01-07 10:00:00', 0, 0),
 ('Hank', 'hank@example.com', 'password8', 'POINT(48.411733 -123.326711)'::GEOMETRY, 'V8N5M3', '2024-01-08 10:00:00', 0, 0),
@@ -67,7 +67,7 @@ INSERT INTO "Listings" (seller_id, buyer_username, title, price, location, posta
 (3, NULL, 'Tablet',200,'POINT(48.389511 -123.404489)'::GEOMETRY, 'V9A4L2', 'AVAILABLE', '2024-02-03 11:00:00', '2024-02-03 11:00:00', 'Electronics'),
 (3, NULL, 'Sofa',300,'POINT(48.389511 -123.393378)'::GEOMETRY, 'V8W1R7', 'AVAILABLE', '2024-02-03 12:00:00', '2024-02-03 12:00:00', 'Furniture'),
 (3, NULL, 'Wireless Earbuds',80,'POINT(48.389511 -123.382267)'::GEOMETRY, 'V8W1R7', 'AVAILABLE', '2024-02-03 13:00:00', '2024-02-03 13:00:00', 'Electronics'),
-(3, NULL, 'Office Desk',150,'POINT(48.389511 -123.371156)'::GEOMETRY, 'V8W1R7', 'AVAILABLE', '2024-02-03 14:00:00', '2024-02-03 14:00:00', 'Furniture');
+(3, NULL, 'Office Desk',150,'POINT(48.389511 -123.371156)'::GEOMETRY, 'V8W1R7', 'AVAILABLE', '2024-02-03 14:00:00', '2024-02-03 14:00:00', 'Furniture'),
 (4, NULL, 'Keyboard',50,'POINT(48.389511 -123.360044)'::GEOMETRY, 'V8N5M3', 'AVAILABLE', '2024-02-04 10:00:00', '2024-02-04 10:00:00', 'Music'),
 (4, NULL, 'Monitor',150,'POINT(48.389511 -123.348933)'::GEOMETRY, 'V8N5M3', 'AVAILABLE', '2024-02-04 11:00:00', '2024-02-04 11:00:00', 'Electronics'),
 (4, NULL, 'Dining Table',250,'POINT(48.389511 -123.337822)'::GEOMETRY, 'V8N5M3', 'AVAILABLE', '2024-02-04 12:00:00', '2024-02-04 12:00:00', 'Furniture'),
