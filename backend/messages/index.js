@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import "dotenv/config";
 
 const PORT = process.env.PORT || 5000;
+const jwtSecret = process.env.ACCESS_TOKEN_SECRET;
 const app = express();
 
 app.get("/", (req, res) => {
@@ -18,7 +19,6 @@ app.use("/messages", messages);
 
 function identification(req, res, next) {
   try {
-    const jwtSecret = process.env.ACCESS_TOKEN_SECRET;
     const decoded = jwt.verify(req.cookies.Authorization, jwtSecret);
     res.locals.decodedToken = decoded;
     next();
