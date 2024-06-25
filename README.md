@@ -13,7 +13,7 @@ git clone https://github.com/vikesplace/vikesplace.git
 ```
 docker-compose up -d --build
 ```
-> Disclaimer: Search and Recommender APIs will be available start once ElasticSearch is populated with data (this process might take a while, e.g. 5 minutes).
+> Disclaimer: Search and Recommender APIs will be available once ElasticSearch is populated with data (this process might take a while, e.g. 5 minutes).
 
 4. Access our application by going to `http://localhost:3000`
 
