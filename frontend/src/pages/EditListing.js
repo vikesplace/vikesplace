@@ -12,12 +12,10 @@ function EditListing() {
 
   const { id } = useParams();
 
-  let listing = {};
-  try {
-    listing = dataService.getListing(id);
-  } catch (error) {
-    // TODO display error message
-    console.log(error);
+  let listing = undefined;
+  let response = dataService.getListing(id);
+  if (response !== undefined) {
+    listing = response.data;
   }
 
   if (!listing) {

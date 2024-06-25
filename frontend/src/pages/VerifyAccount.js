@@ -114,14 +114,17 @@ function VerifyAccount() {
         
         var validForm = validateUsername() && validatePassword() && validateConfirmPassword() && validatePostalCode();
         if (validForm) {
-            try {
-                authService.verify(username, password, postalCode);
-            } catch (error) {
-                // TODO handle error messages
-                console.log(error);
-                // TODO, deal with this error:
-                // setUsernameError("This username has already been chosen");
+            let response = authService.verify(username, password, postalCode);
+            if (response !== undefined) {
+                let message = response.data.message;
+                if (message !== undefined) {
+                    // TODO, use exact error messages
+                    if (message.includes("username")) {
+                        setUsernameError("Username is already taken, please choose another");
+                    }
+                }
             }
+            
         }
     }
     

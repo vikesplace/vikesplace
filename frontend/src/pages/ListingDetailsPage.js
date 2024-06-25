@@ -8,7 +8,11 @@ const ListingDetailsPage = () => {
   const dataService = new DataService();
   const { id } = useParams();
   
-  const listing = dataService.getListing(id);
+  let listing = undefined;
+  let response = dataService.getListing(id);
+  if (response !== undefined) {
+    listing = response.data;
+  }
 
   if (!listing) {
     return <div>

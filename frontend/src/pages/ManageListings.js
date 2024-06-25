@@ -13,12 +13,9 @@ function ManageListings() {
   const navigate = useNavigate();
 
   let listings = []; 
-
-  try {
-    listings = dataService.getSellerListings(); 
-  } catch (error) {
-      // TODO display error message
-      console.log(error);
+  let response = dataService.getSellerListings(); 
+  if (response !== undefined) {
+    listings = response.data;
   }
 
   const handleListingClick = (id) => {

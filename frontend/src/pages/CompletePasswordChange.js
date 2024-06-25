@@ -47,12 +47,9 @@ function CompletePasswordChange() {
         var validForm = validatePassword();
 
         if (validForm) {
-            try {
-                authService.completePasswordChange(password);
+            let response = authService.completePasswordChange(password);
+            if (response !== undefined) {
                 navigate('/password-updated');
-            } catch (error) {
-                // TODO display error message
-                console.log(error);
             }
         }
     }

@@ -29,14 +29,11 @@ function ViewListings() {
   const [statusFilter, setStatusFilter] = useState('');
   const [open, setOpen] = useState(false);
 
-  let listings = []; 
-
-  try {
-    listings = dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, false); 
-  } catch (error) {
-    // TODO display error message
-    console.log(error);
-  }
+  let listings = [];
+  let response = dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, false); 
+  if (response !== undefined) {
+    listings = response.data;
+  } 
 
   const handleListingClick = (id) => {
     navigate(`/listings/${id}`);
@@ -45,12 +42,10 @@ function ViewListings() {
   const handleSortChange = (event) => {
     const category = event.target.value;
     setSortCategory(category);
-    try {
-      listings = dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, false); 
-    } catch (error) {
-      // TODO display error message
-      console.log(error);
-    }
+    response = dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, false); 
+    if (response !== undefined) {
+      listings = response.data;
+    } 
   };
 
   const handlePriceRangeChange = (event) => {
@@ -63,12 +58,7 @@ function ViewListings() {
   };
 
   const applyFilters = () => {
-    try {
-      listings = dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, false); 
-    } catch (error) {
-      // TODO display error message
-      console.log(error);
-    }
+    listings = dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, false); 
     setOpen(false);
   };
 

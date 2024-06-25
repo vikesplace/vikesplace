@@ -11,6 +11,8 @@ import { useNavigate } from 'react-router-dom';
 import AuthService from '../services/AuthService';
 
 function RequestAccount() {
+    let authService = new AuthService();
+
     const [email, setEmail] = useState("");
     const [emailError, setEmailError] = useState("");
     
@@ -46,13 +48,10 @@ function RequestAccount() {
         var validForm = validateEmail();
 
         if (validForm) {
-            try {
-                let authService = new AuthService();
-                authService.register(email);
-                navigate('/check-email');
-            } catch (error) {
-                // TODO display error message
-                console.log(error);
+            let response = authService.register(email);
+            if (response !== undefined) {
+                // TODO confirm success
+                navigate('/check-email ');
             }
         }
     }

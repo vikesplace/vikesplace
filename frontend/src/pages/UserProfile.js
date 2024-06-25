@@ -8,12 +8,10 @@ import DataService from '../services/DataService';
 function UserProfile() {
   const dataService = new DataService();
 
-  let user = [{}];
-  try {
-    user = dataService.getMyUserData();
-  } catch (error) {
-    // TODO display error message
-    console.log(error);
+  let user = {};
+  let response = dataService.getMyUserData();
+  if (response !== undefined) {
+    user = response.data;
   }
 
   return (
@@ -40,28 +38,28 @@ function UserProfile() {
               Username: 
             </Typography>   
             <Typography variant='body2'>
-              {user[0].username}
+              {user.username}
             </Typography>
             <br /> 
             <Typography variant='h6'>
                Email:
             </Typography> 
             <Typography variant='body2'>
-                {user[0].email}
+                {user.email}
             </Typography> 
             <br />
             <Typography variant='h6'>
                Postal Code:
             </Typography> 
             <Typography variant='body2'>
-                {user[0].postalCode}
+                {user.postalCode}
             </Typography> 
             <br />
             <Typography variant='h6'>
                Date Joined:
             </Typography> 
             <Typography variant='body2'>
-                {user[0].createDate}
+                {user.createDate}
             </Typography> 
             <br />
         </Box>

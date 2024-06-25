@@ -65,12 +65,9 @@ function Login() {
         var validForm = validateUsername() && validatePassword();
 
         if (validForm) {
-            try {
-                authService.login(username, password);
+            let response = authService.login(username, password);
+            if (response !== undefined) {
                 navigate('/');
-            } catch (error) {
-                // TODO display error message
-                console.log(error);
             }
         }
     }

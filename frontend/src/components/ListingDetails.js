@@ -25,13 +25,10 @@ const ListingDetails = ({ listing }) => {
   };
 
   const handleSendMessage = () => {
-    try {
-      dataService.sendMessage(message);
-    } catch (error) {
-      // TODO handle error messages
-      console.log(error);
+    let response = dataService.sendMessage(message);
+    if (response !== undefined) {
+      handleClose();
     }
-    handleClose();
   };
 
   const handleChangeMessage = (event) => {

@@ -13,15 +13,13 @@ function Messages() {
   const navigate = useNavigate();
   
   let authService = new AuthService();
-  let id = authService.getCurrentUserId();
-
   let dataService = new DataService();
+  let response = authService.getCurrentUserId();
+
   let chats = [];
-  try {
-    dataService.getChats(id);
-  } catch (error) {
-    // TODO handle error messages
-    console.log(error);
+  if (response !== undefined) {
+    response = dataService.getChats(response.data.userId);
+    chats = response.data;
   }
 
   let chatsToDisplay = [];

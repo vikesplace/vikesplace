@@ -157,24 +157,18 @@ export default function ManageListing({ listing }) {
         var validForm = validateTitle() && validatePrice() && validatePostalCode() && validateCategory() && validateBuyer();
 
         if (validForm) {
-            try {
-                dataService.updateListing(listing.id, title, price, postalCode, status, buyer, category);
+            let response = dataService.updateListing(listing.id, title, price, postalCode, status, buyer, category);
+            if (response !== undefined) {
                 navigate(`/manage-listings`);
-            } catch (error) {
-                // TODO display error message
-                console.log(error);
             }
         }      
     }
 
     const handleDelete = (event) => {
-        try {
-            dataService.deleteListing(listing.id);
-        } catch (error) {
-            // TODO display error message
-            console.log(error);
+        let response = dataService.deleteListing(listing.id);
+        if (response !== undefined) {
+            navigate("/manage-listings");
         }
-        navigate("/manage-listings");
     }
 
   return (

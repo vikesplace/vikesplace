@@ -113,12 +113,9 @@ function CreateListing() {
         var validForm = validateTitle() && validatePrice() && validatePostalCode() && validateCategory();
 
         if (validForm) {
-            try {
-                dataService.createListing(title, price, postalCode, "AVAILABLE", category); 
+            let response = dataService.createListing(title, price, postalCode, "AVAILABLE", category); 
+            if (response !== undefined) {
                 navigate(`/manage-listings`);
-            } catch (error) {
-                // TODO display error message
-                console.log(error);
             }
         }
     }

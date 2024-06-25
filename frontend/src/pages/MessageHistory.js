@@ -15,15 +15,17 @@ function MessageHistory() {
     const [newMessage, setNewMessage] = useState("");
 
     let dataService = new DataService ();
-    let chatInfo = [];
+    let chatInfo = {};
     let messages = [];
 
-    try {
-        chatInfo = dataService.getChatInformation(id);
-        messages = dataService.getChatMessages(id);
-    } catch (error) {
-        // TODO display error message
-        console.log(error);
+    let response = dataService.getChatInformation(id);
+    if (response !== undefined) {
+        chatInfo = response.data;
+    }
+
+    response = dataService.getChatMessages(id);
+    if (response !== undefined) {
+        messages = response.data;
     }
     
     let messagesToDisplay = [];
@@ -41,11 +43,9 @@ function MessageHistory() {
     };
 
     const handleReloadMessages = (event) => {
-        try {
-            messages = dataService.getChatMessages(id);
-        } catch (error) {
-            // TODO display error message
-            console.log(error);
+        response = dataService.getChatMessages(id);
+        if (response !== undefined) {
+            messages = response.data;
         }
     };
 
@@ -54,19 +54,13 @@ function MessageHistory() {
             return;
         }
 
-        try {
-            messages = dataService.sendMessage(newMessage);
-        } catch (error) {
-            // TODO display error message
-            console.log(error);
-        }
-
-        try {
-            messages = dataService.getChatMessages(id);
-        } catch (error) {
-            // TODO display error message
-            console.log(error);
-        }
+        response = dataService.sendMessage(newMessage);
+        if (response !== undefined) {
+            response = dataService.getChatMessages(id);
+            if (response !== undefined) {
+                messages = response.data;
+            }
+        } 
         clearTextInput();
     };
 

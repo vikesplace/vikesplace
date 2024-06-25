@@ -49,13 +49,12 @@ function RequestPasswordChange() {
         var validForm = validateEmail();
 
         if (validForm) {
-            try {
-                authService.requestPasswordChange(email);
+            let response = authService.requestPasswordChange(email);
+            if (response !== undefined) {
+                // TODO confirm success
                 navigate('/check-email');
-            } catch (error) {
-                // TODO display error message
-                console.log(error);
             }
+            
         }
     }
 
