@@ -18,14 +18,11 @@ function CheckYourEmail() {
           }}
         >
             <Typography variant='h6'>
-                Thank you for requesting and account!
+                Thank you for your request!
             </Typography>   
             <br /> 
             <Typography variant='body2'>
-                We have sent you a confirmation email.
-            </Typography> 
-            <Typography variant='body2'>
-                Please check your email and follow the link to finish creating your account.
+                We have sent you an email with next steps. Please follow the link in the email.
             </Typography> 
             <br />
         </Box>

@@ -1,0 +1,22 @@
+FROM node:18-alpine
+
+# create app directory
+WORKDIR /app
+
+# add `/app/node_modules/.bin` to $PATH
+ENV PATH /app/node_modules/.bin:$PATH
+
+# install app dependencies
+COPY package.json ./
+COPY package-lock.json ./
+
+# Copy local code to the container image
+COPY . .
+
+RUN npm install
+
+# Expose the port the app runs in
+EXPOSE 3000
+
+# Serve the app
+CMD ["npm", "start"]

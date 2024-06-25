@@ -1,11 +1,14 @@
-from fastapi import FastAPI, Path, Query
 from typing import Annotated
-from fastapi.responses import JSONResponse
+
 import search.es_request as es_request
 import search.mongodb_request as mongodb_request
-import json
+from fastapi import FastAPI, Path, Query
+from pydantic import BaseModel
 
 app = FastAPI()
+
+class SearchQuery(BaseModel):
+    query: str
 
 @app.get("/")
 async def root():
@@ -28,7 +31,7 @@ async def search(
 
 @app.get("/users/{userId}/searches")
 async def search(
-    userId: str = Path(..., description="The ID of the user"),
+    userId: int = Path(..., description="The ID of the user"),
 ):
     # Assuming es_request.search can handle these parameters
     results = mongodb_request.search_history(userId)
@@ -39,3 +42,17 @@ async def search(
         "results": results 
     }
 
+
+@app.post("/users/{userId}/searches")
+async def search(userId: int, item: SearchQuery):
+    query = item.query
+
+    results = mongodb_request.write_search_activity(userId, query)
+    print(results)
+    print(type(results))
+
+    return {
+        "status": 200,
+        "message": "Search query saved",
+        "results": results 
+    }

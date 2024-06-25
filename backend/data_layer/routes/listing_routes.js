@@ -1,12 +1,15 @@
 import express from "express";
+<<<<<<< be-id-223
 import { createListing, getListingInfo, getSellerListings, updateListing, deleteListing } from "../controllers/listing_controller.js";
+import { getLongLat, getPostalCode } from "../controllers/location_controller.js";
+=======
+import { createListing, getListingInfo, getSellerListings, updateListing, deleteListing, getSortedListings } from "../controllers/listing_controller.js";
+>>>>>>> main
 
 const router = express.Router();
 
 //Get sorted listings
-router.get("/", (req, res) => {
-  res.json({ message: "Get Sorted Listings" });
-});
+router.get("/", getSortedListings);
 
 //Get all listings of a user
 router.get("/me", getSellerListings);
@@ -22,5 +25,11 @@ router.delete("/:listingId", deleteListing);
 
 //Get a listing
 router.get("/:listingId", getListingInfo);
+
+//Get long and lat
+router.get("/location/:postal_code", getLongLat);
+
+//Get postal code
+router.get("/location/:longitude/:latitude", getPostalCode);
 
 export default router;
