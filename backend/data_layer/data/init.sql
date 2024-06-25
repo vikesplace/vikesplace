@@ -28,6 +28,22 @@ CREATE TABLE IF NOT EXISTS "Listings" (
     page_offset INT
 );
 
+CREATE TABLE IF NOT EXISTS "Chats" (
+    chat_id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL REFERENCES "Users"(user_id) ON DELETE CASCADE,
+    listing_id INT NOT NULL REFERENCES "Listings"(listing_id) ON DELETE CASCADE,
+    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS "Messages" (
+    message_id SERIAL PRIMARY KEY,
+    listing_id INT NOT NULL REFERENCES "Listings"(listing_id) ON DELETE CASCADE,
+    message_content TEXT NOT NULL,
+    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    chat_id INT NOT NULL REFERENCES "Chats"(chat_id) ON DELETE CASCADE
+);
+
+
 -- Insert 20 users with unique usernames and emails
 INSERT INTO "Users" (username, email, password, location, postal_code, joining_date, items_sold, items_bought) VALUES
 ('Alice', 'alice@example.com', 'password1', 'POINT(48.378400 -123.415600)'::GEOMETRY, 'V8R6N2', '2024-01-01 10:00:00', 0, 0),
@@ -68,6 +84,36 @@ INSERT INTO "Listings" (seller_id, buyer_username, title, price, location, posta
 (3, NULL, 'Sofa',300,'POINT(48.389511 -123.393378)'::GEOMETRY, 'V8W1R7', 'AVAILABLE', '2024-02-03 12:00:00', '2024-02-03 12:00:00', 'Furniture'),
 (3, NULL, 'Wireless Earbuds',80,'POINT(48.389511 -123.382267)'::GEOMETRY, 'V8W1R7', 'AVAILABLE', '2024-02-03 13:00:00', '2024-02-03 13:00:00', 'Electronics'),
 (3, NULL, 'Office Desk',150,'POINT(48.389511 -123.371156)'::GEOMETRY, 'V8W1R7', 'AVAILABLE', '2024-02-03 14:00:00', '2024-02-03 14:00:00', 'Furniture');
+
+INSERT INTO "Chats" (user_id, listing_id, timestamp) VALUES
+(1, 1, '2024-02-01 10:00:00'),
+(2, 2, '2024-02-01 11:00:00'),
+(3, 3, '2024-02-01 12:00:00'),
+(4, 4, '2024-02-01 13:00:00'),
+(5, 5, '2024-02-01 14:00:00'),
+(6, 6, '2024-02-02 10:00:00'),
+(7, 7, '2024-02-02 11:00:00'),
+(8, 8, '2024-02-02 12:00:00'),
+(9, 9, '2024-02-02 13:00:00'),
+(10, 10, '2024-02-02 14:00:00');
+
+INSERT INTO "Messages" (listing_id, message_content, timestamp, chat_id) VALUES
+(1, 'Hello, I am interested in the Bicycle.', '2024-02-01 10:00:00', 1),
+(1, 'Sure, I can meet you at the park.', '2024-02-01 10:05:00', 1),
+(1, 'Great, see you there.', '2024-02-01 10:10:00', 1),
+(2, 'Hello, I am interested in the Laptop.', '2024-02-01 11:00:00', 2),
+(2, 'Sure, I can meet you at the coffee shop.', '2024-02-01 11:05:00', 2),
+(2, 'Great, see you there.', '2024-02-01 11:10:00', 2),
+(3, 'Hello, I am interested in the Desk Chair.', '2024-02-01 12:00:00', 3),
+(3, 'Sure, I can meet you at the library.', '2024-02-01 12:05:00', 3),
+(3, 'Great, see you there.', '2024-02-01 12:10:00', 3),
+(4, 'Hello, I am interested in the Headphones.', '2024-02-01 13:00:00', 4),
+(4, 'Sure, I can meet you at the park.', '2024-02-01 13:05:00', 4),
+(4, 'Great, see you there.', '2024-02-01 13:10:00', 4),
+(5, 'Hello, I am interested in the Bookshelf.', '2024-02-01 14:00:00', 5),
+(5, 'Sure, I can meet you at the coffee shop.', '2024-02-01 14:05:00', 5),
+(5, 'Great, see you there.', '2024-02-01 14:10:00', 5),
+(6, 'Hello, I am interested in the Guitar.', '2024-02-02 10:00:00', 6);
 
 -- (1, NULL, 'Bicycle',100,'POINT(48.428400 -123.385600)'::GEOMETRY, 'AVAILABLE', '2024-02-01 10:00:00', '2024-02-01 10:00:00', 'Sports'),
 -- (1, NULL, 'Laptop',500,'POINT(48.378400 -123.404489)'::GEOMETRY, 'AVAILABLE', '2024-02-01 11:00:00', '2024-02-01 11:00:00', 'Electronics'),
