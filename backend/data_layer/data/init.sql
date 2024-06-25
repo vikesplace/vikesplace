@@ -53,8 +53,8 @@ INSERT INTO "Users" (username, email, password, location, postal_code, joining_d
 
 
 INSERT INTO "Listings" (seller_id, buyer_username, title, price, location, postal_code, status, listed_at, last_updated_at, category) VALUES
-(1, NULL, 'Bicycle',100,'POINT(48.378400 -123.415600)'::GEOMETRY, 'V8R6N2', 'AVAILABLE', '2024-02-01 10:00:00', '2024-02-01 10:00:00', 'Sports'),
-(1, NULL, 'Laptop',500,'POINT(48.378400 -123.337822)'::GEOMETRY, 'V8R6N2', 'AVAILABLE', '2024-02-01 11:00:00', '2024-02-01 11:00:00', 'Electronics'),
+(1, NULL, 'Bicycle',100,'POINT(48.428400 -123.385600)'::GEOMETRY, 'V8R6N2', 'AVAILABLE', '2024-02-01 10:00:00', '2024-02-01 10:00:00', 'Sports'),
+(1, NULL, 'Laptop',500,'POINT(48.378400 -123.404489)'::GEOMETRY, 'V8R6N2', 'AVAILABLE', '2024-02-01 11:00:00', '2024-02-01 11:00:00', 'Electronics'),
 (1, NULL, 'Desk Chair',75,'POINT(48.378400 -123.393378)'::GEOMETRY, 'V8R6N2', 'AVAILABLE', '2024-02-01 12:00:00', '2024-02-01 12:00:00', 'Furniture'),
 (1, NULL, 'Headphones',50,'POINT(48.378400 -123.382267)'::GEOMETRY, 'V8R6N2', 'AVAILABLE', '2024-02-01 13:00:00', '2024-02-01 13:00:00', 'Electronics'),
 (1, NULL, 'Bookshelf',120,'POINT(48.378400 -123.371156)'::GEOMETRY, 'V8R6N2', 'AVAILABLE', '2024-02-01 14:00:00', '2024-02-01 14:00:00', 'Furniture'),
