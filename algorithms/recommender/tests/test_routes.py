@@ -66,7 +66,7 @@ def test_recommender_current_item():
 
 
 def test_recommender_most_popular_items():
-    response = client.get("/recommendations_most_pop")
+    response = client.get("/recommendations_most_popular")
     response_obj = response.json()
 
     assert response.status_code == status.HTTP_200_OK

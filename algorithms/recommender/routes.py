@@ -43,9 +43,9 @@ async def recommendation_current_item(
     )
 
 
-@app.get("/recommendations_most_pop")
-async def recommendations_most_pop():
-    results = mongodb_request.get_top_10_popular()
+@app.get("/recommendations_most_popular")
+async def recommendations_most_popular():
+    results = es_request.recommendation_most_popular()
 
     return JSONResponse(
         status_code=status.HTTP_200_OK,
