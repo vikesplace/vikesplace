@@ -21,6 +21,10 @@ export const getSearchResults = async (req, res) => {
     requestParamsObject.longitude = longitude;
     requestParamsObject.latitude = latitude;
 
+    if(req.query.category){
+      requestParamsObject.category = req.query.category;
+    }
+
     const response = await axios.get(`${ALG_SEARCH}search`, {
       params: requestParamsObject,
     });
