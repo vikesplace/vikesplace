@@ -271,7 +271,6 @@ services:
         "/bin/sh", "-c", 
         "/search/wait-for-cert.sh \
         && /search/wait-for-elastic.sh \
-        && pytest -vv \
         && fastapi run routes.py --port 8000"
       ]
   
@@ -306,6 +305,5 @@ services:
         "/bin/sh", "-c", 
         "/recommender/wait-for-cert.sh \
         && /recommender/wait-for-elastic.sh \
-        && pytest -vv \
         && fastapi run routes.py --port 8001"
       ]
