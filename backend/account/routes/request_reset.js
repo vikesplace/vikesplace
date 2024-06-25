@@ -1,7 +1,6 @@
 import express from "express";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
-import { check, validationResult } from "express-validator";
 import 'dotenv/config';
 
 const router = express.Router();
@@ -16,12 +15,10 @@ const transporter = nodemailer.createTransport({
   secure: true,
   auth: {
     user: process.env.EMAIL,
-    pass: process.env.APP_PASSWORD
+    pass: process.env.APPPASSWORD
   }
 });
 
-
-// Endpoint to request account creation
 router.post('/', (req, res) => {
   const { email, callback } = req.body;
 
@@ -31,23 +28,20 @@ router.post('/', (req, res) => {
 
   const token = jwt.sign({ email }, jwtSecret, { expiresIn: jwtExpiry });
   console.log(token);
-
-
-  const verificationLink = `${callback}${token}`;
+  const resetLink = `${callback}?jwt=${token}`;
 
   const mailOptions = {
     from: process.env.EMAIL,
     to: email,
-    subject: 'Account Verification',
-    text: `Please verify your Vikesplace account by clicking the following link: ${verificationLink}`
+    subject: 'Password Reset Request',
+    text: `Please reset your password by clicking the following link: ${resetLink}`
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
-      console.log(error);
-      return res.status(500).json({ message: 'Failed to send verification email' });
+      return res.status(500).json({ message: 'Failed to send reset email' });
     }
-    res.status(200).json({ message: 'Verification email sent successfully' });
+    res.status(200).json({ message: 'Reset email sent successfully' });
   });
 });
 

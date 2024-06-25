@@ -1,5 +1,5 @@
 import express from "express";
-import { createUser, loginUser } from '../controllers/user_controller.js';
+import { createUser, loginUser, resetPassword} from '../controllers/user_controller.js';
 
 const router = express.Router();
 
@@ -11,6 +11,8 @@ router.post('/', createUser);
 //   res.json({ message: 'login a user' });
 // });
 router.post('/login', loginUser);
+
+router.patch('/reset_password', resetPassword);
 
 //Get all users
 router.get('/', (req, res) => {
@@ -26,6 +28,7 @@ router.get('/:userId', (req, res) => {
 router.patch('/:userId', (req, res) => {
   res.json({ message: 'Update User' });
 });
+
 
 //Delete a user
 router.delete('/:userId', (req, res) => {
