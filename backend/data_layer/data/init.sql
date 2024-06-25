@@ -47,6 +47,7 @@ CREATE TABLE IF NOT EXISTS "Messages" (
     receiver_id INT NOT NULL REFERENCES "Users"(user_id) ON DELETE CASCADE
 );
 
+-- Insert 20 users with unique usernames and emails
 INSERT INTO "Users" (username, email, password, location, postal_code, joining_date, items_sold, items_bought) VALUES
 ('Alice', 'alice@example.com', 'password1', 'POINT(48.378400 -123.415600)'::GEOMETRY, 'V8R6N2', '2024-01-01 10:00:00', 0, 0),
 ('Bob', 'bob@example.com', 'password2', 'POINT(48.378400 -123.337822)'::GEOMETRY, 'V9A4L2', '2024-01-02 10:00:00', 0, 0),
@@ -68,7 +69,6 @@ INSERT INTO "Users" (username, email, password, location, postal_code, joining_d
 ('Rose', 'rose@example.com', 'password18', 'POINT(48.467289 -123.337822)'::GEOMETRY, 'V8N5M3', '2024-01-18 10:00:00', 0, 0),
 ('Sam', 'sam@example.com', 'password19', 'POINT(48.478400 -123.393378)'::GEOMETRY, 'V8N5M3', '2024-01-19 10:00:00', 0, 0),
 ('Tina', 'tina@example.com', 'password20', 'POINT(48.478400 -123.337822)'::GEOMETRY, 'V8N5M3', '2024-01-20 10:00:00', 0, 0);
-
 
 INSERT INTO "Listings" (seller_id, buyer_username, title, price, location, postal_code, status, listed_at, last_updated_at, category) VALUES
 (1, NULL, 'Bicycle',100,'POINT(48.378400 -123.415600)'::GEOMETRY, 'V8R6N2', 'AVAILABLE', '2024-02-01 10:00:00', '2024-02-01 10:00:00', 'Sports'),

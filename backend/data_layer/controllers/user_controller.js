@@ -33,6 +33,7 @@ export const createUser = async (req, res) => {
             email,
             password: password,
             location: { type: 'Point', coordinates: [longitude, latitude] },
+            postal_code: location,
             items_sold: items_sold || 0,
             items_bought: items_bought || 0
         });
@@ -72,5 +73,18 @@ export const loginUser = async (req, res) => {
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+export const getUser = async (req, res) => {
+    try{
+        const user = await User.findOne({where:{user_id: req.params.userId}});
+        if(!user){
+            return res.status(404).json({message:"User does not exist"});
+        }
+        return res.json({user:user});
+    }
+    catch(err){
+        res.json({message: err});
     }
 };

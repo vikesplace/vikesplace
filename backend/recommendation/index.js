@@ -1,17 +1,28 @@
 import express from "express";
 import recommendation from "./routes/recommendation.js";
+import jwt from "jsonwebtoken";
+import cookieParser from "cookie-parser";
+import "dotenv/config";
 
 const PORT = process.env.PORT || 5000;
+const jwtSecret = process.env.ACCESS_TOKEN_SECRET;
 const app = express();
 
+app.use(cookieParser());
+app.use(express.json());
 app.use(identification);
 app.use("/recommendation", recommendation);
 
 function identification(req, res, next) {
-    console.log("Auth middleware logic here");
+  try {
+    const decoded = jwt.verify(req.cookies.Authorization, jwtSecret);
+    res.locals.decodedToken = decoded;
     next();
+  } catch (err) {
+    res.json({ message: err.message });
+  }
 }
 
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
