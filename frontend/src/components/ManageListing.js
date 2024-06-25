@@ -11,6 +11,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import DataService from '../services/DataService.js';
 
 const categories = [
   { value: 'Furniture', label: 'Furniture' },
@@ -24,6 +25,7 @@ const statuses = [
   ];
 
 export default function ManageListing({ listing }) {
+    const dataService = new DataService();
 
     let navigate = useNavigate();
 
@@ -150,22 +152,13 @@ export default function ManageListing({ listing }) {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-
-        const data = new FormData(event.currentTarget);
+        // const data = new FormData(event.currentTarget);
 
         var validForm = validateTitle() && validatePrice() && validatePostalCode() && validateCategory() && validateBuyer();
 
         if (validForm) {
             try {
-                // TODO POST (edit)
-                console.log({
-                    title: data.get("title"),
-                    price: data.get("price"),
-                    postalCode: data.get("postalCode"),
-                    category: category,
-                    status: status,
-                    buyer: data.get("buyer")
-                });
+                dataService.updateListing(listing.id, title, price, postalCode, status, buyer, category);
                 navigate(`/manage-listings`);
             } catch (error) {
                 // TODO display error message
@@ -175,8 +168,12 @@ export default function ManageListing({ listing }) {
     }
 
     const handleDelete = (event) => {
-        // TODO POST (delete)
-        console.log("DELETE!");
+        try {
+            dataService.deleteListing(listing.id);
+        } catch (error) {
+            // TODO display error message
+            console.log(error);
+        }
         navigate("/manage-listings");
     }
 

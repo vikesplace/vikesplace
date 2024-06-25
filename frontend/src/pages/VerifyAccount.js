@@ -6,9 +6,12 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import AuthService from '../services/AuthService';
 
 
 function VerifyAccount() {
+    const authService = new AuthService();
+    
     const [username, setUsername] = useState("");
     const [usernameError, setUsernameError] = useState("");
     const [password, setPassword] = useState("");
@@ -107,22 +110,17 @@ function VerifyAccount() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
+        // const data = new FormData(event.currentTarget);
         
         var validForm = validateUsername() && validatePassword() && validateConfirmPassword() && validatePostalCode();
         if (validForm) {
-            // TODO get email from JWT
             try {
-                // TODO POST 
-                console.log({
-                    username: data.get("username"),
-                    password: data.get("password"),
-                    postalCode: data.get("postalCode"),
-                });
-                // TODO if succeeds direct to /verified page
+                authService.verify(username, password, postalCode);
             } catch (error) {
-                // TODO check POST response to ensure the error is about username
-                setUsernameError("This username has already been chosen");
+                // TODO handle error messages
+                console.log(error);
+                // TODO, deal with this error:
+                // setUsernameError("This username has already been chosen");
             }
         }
     }

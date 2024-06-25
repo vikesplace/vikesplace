@@ -20,6 +20,7 @@ const categories = [
 ];
 
 function CreateListing() {
+    const dataService = new DataService();
 
     let navigate = useNavigate();
 
@@ -107,20 +108,13 @@ function CreateListing() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
+        // const data = new FormData(event.currentTarget);
 
         var validForm = validateTitle() && validatePrice() && validatePostalCode() && validateCategory();
 
         if (validForm) {
             try {
-                // TODO POST 
-                console.log({
-                    title: data.get("title"),
-                    price: data.get("price"),
-                    postalCode: data.get("postalCode"),
-                    category: category
-                });
-                createListing(title, price, location, "AVAILABLE", category) 
+                dataService.createListing(title, price, postalCode, "AVAILABLE", category); 
                 navigate(`/manage-listings`);
             } catch (error) {
                 // TODO display error message

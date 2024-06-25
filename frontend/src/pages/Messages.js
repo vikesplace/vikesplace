@@ -5,33 +5,25 @@ import { ChatList } from "react-chat-elements";
 import { useNavigate } from 'react-router-dom';
 import "react-chat-elements/dist/main.css";
 import '../App.css';
-
-const chats = [
-  {
-    id: 3,
-    sender: "Person's Name",
-    listing_title: "Title of this item I would like to buy",
-    mostRecent: new Date(),
-  },
-  {
-    id: 16,
-    sender: "Person Number Two",
-    listing_title: "Super cool item",
-    mostRecent: new Date(),
-  },
-  {
-    id: 87,
-    sender: "Person Three",
-    listing_title: "Here is another item available for purchase",
-    mostRecent: new Date(),
-  },
-];
+import DataService from '../services/DataService';
+import AuthService from '../services/AuthService';
 
 function Messages() {
 
   const navigate = useNavigate();
+  
+  let authService = new AuthService();
+  let id = authService.getCurrentUserId();
 
-  //TODO GET chats and convert to below format
+  let dataService = new DataService();
+  let chats = [];
+  try {
+    dataService.getChats(id);
+  } catch (error) {
+    // TODO handle error messages
+    console.log(error);
+  }
+
   let chatsToDisplay = [];
     chats.forEach(chat => {
         chatsToDisplay.push({

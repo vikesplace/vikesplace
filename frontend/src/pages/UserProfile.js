@@ -3,18 +3,19 @@ import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import '../App.css';
 import { Typography } from '@mui/material';
-
-const user = [
-  {
-    username: "vikesperson123",
-    email: "fakeuser@uvic.ca",
-    postalCode: "A1B 2C3",
-    createDate: "June 15, 2024",
-
-  },
-];
+import DataService from '../services/DataService';
 
 function UserProfile() {
+  const dataService = new DataService();
+
+  let user = [{}];
+  try {
+    user = dataService.getMyUserData();
+  } catch (error) {
+    // TODO display error message
+    console.log(error);
+  }
+
   return (
     <div className="UserProfile">
       <Container>

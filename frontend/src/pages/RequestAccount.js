@@ -8,12 +8,12 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import { useNavigate } from 'react-router-dom';
+import AuthService from '../services/AuthService';
 
 function RequestAccount() {
     const [email, setEmail] = useState("");
     const [emailError, setEmailError] = useState("");
     
-
     const navigate = useNavigate();
 
     const handleEmailChange = (event) => {
@@ -41,17 +41,14 @@ function RequestAccount() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
+        // const data = new FormData(event.currentTarget);
 
         var validForm = validateEmail();
 
         if (validForm) {
             try {
-                // TODO POST
-                console.log({
-                    email: data.get("email")
-                });
-                // TODO if succeeds direct to a different page
+                let authService = new AuthService();
+                authService.register(email);
                 navigate('/check-email');
             } catch (error) {
                 // TODO display error message
@@ -89,7 +86,7 @@ function RequestAccount() {
                                     value={email}
                                     onChange={handleEmailChange}
                                     onBlur={handleEmailBlur}
-                                    error={emailError}
+                                    error={emailError ? true : false}
                                     helperText={emailError}
                                 />
                             </Grid>

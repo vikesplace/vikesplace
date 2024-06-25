@@ -17,21 +17,26 @@ import '../App.css';
 import ListingCard from '../components/ListingCard';
 import SearchBar from '../components/SearchBar';
 import { Typography } from '@mui/material';
+import DataService from '../services/DataService';
 
-const initialListings = [
-  { id: '4', title: 'Test 1', price: '2.00', location: 'V9VW9W', status: 'AVAILABLE' },
-  { id: '10', title: 'Super cool object', price: '3.45', location: 'V9VW9W', status: 'SOLD' },
-  { id: '100', title: 'Buy Me!', price: '1234.56', location: 'V9VW9W', status: 'AVAILABLE' },
-  { id: '3', title: 'Another listings for sale', price: '98765432.10', location: 'V9VW9W', status: 'AVAILABLE' }
-];
 
 function ViewListings() {
+  const dataService = new DataService();
   const navigate = useNavigate();
+
   const [sortCategory, setSortCategory] = useState('');
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
   const [statusFilter, setStatusFilter] = useState('');
-  const [listings, setListings] = useState(initialListings);
   const [open, setOpen] = useState(false);
+
+  let listings = []; 
+
+  try {
+    listings = dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, false); 
+  } catch (error) {
+    // TODO display error message
+    console.log(error);
+  }
 
   const handleListingClick = (id) => {
     navigate(`/listings/${id}`);
@@ -40,23 +45,11 @@ function ViewListings() {
   const handleSortChange = (event) => {
     const category = event.target.value;
     setSortCategory(category);
-
-    switch (category) {
-      case 'price':
-        const sortedByPrice = [...listings].sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
-        setListings(sortedByPrice);
-        break;
-      case 'location':
-        const sortedByLocation = [...listings].sort((a, b) => a.location.localeCompare(b.location));
-        setListings(sortedByLocation);
-        break;
-      case 'status':
-        const sortedByStatus = [...listings].sort((a, b) => a.status.localeCompare(b.status));
-        setListings(sortedByStatus);
-        break;
-      default:
-        setListings(initialListings);
-        break;
+    try {
+      listings = dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, false); 
+    } catch (error) {
+      // TODO display error message
+      console.log(error);
     }
   };
 
@@ -70,13 +63,12 @@ function ViewListings() {
   };
 
   const applyFilters = () => {
-    const filteredListings = initialListings.filter(listing => {
-      const inPriceRange = (priceRange.min === '' || parseFloat(listing.price) >= parseFloat(priceRange.min)) &&
-                          (priceRange.max === '' || parseFloat(listing.price) <= parseFloat(priceRange.max));
-      const matchesStatus = statusFilter === '' || listing.status === statusFilter;
-      return inPriceRange && matchesStatus;
-    });
-    setListings(filteredListings);
+    try {
+      listings = dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, false); 
+    } catch (error) {
+      // TODO display error message
+      console.log(error);
+    }
     setOpen(false);
   };
 

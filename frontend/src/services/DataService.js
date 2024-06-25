@@ -4,129 +4,535 @@ import authHeader from './AuthHeaderHelper';
 const API_URL = 'http://localhost:8080/';
 
 class DataService {
-    createListing(title, price, location, status, category) {
-        return axios.post(API_URL + 'listings', { 
-            headers: authHeader(), 
-            title, 
-            price, 
-            location, 
-            status, 
-            category
-        });
+    async createListing(title, price, location, status, category) {
+        try {
+            return await axios.post(API_URL + 'listings', {
+                headers: authHeader(),
+                title,
+                price,
+                location,
+                status,
+                category
+            });
+        } catch (error) {
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+                // The request was made but no response was received
+                // `error.request` is an instance of XMLHttpRequest in the browser 
+                // and an instance of http.ClientRequest in node.js
+                console.log(error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log('Error', error.message);
+            }
+        }
     }
 
-    updateListing(id, title, price, location, status, buyerUsername, category) {
-        return axios.patch(API_URL + 'listings/' + {id}, { 
-            headers: authHeader(), 
-            title, 
-            price, 
-            location, 
-            status, 
-            buyerUsername,
-            category
-        });
+    async updateListing(id, title, price, location, status, buyerUsername, category) {
+        try {
+            return await axios.patch(API_URL + 'listings/' + { id }, {
+                headers: authHeader(),
+                title,
+                price,
+                location,
+                status,
+                buyerUsername,
+                category
+            });
+        } catch (error) {
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+                // The request was made but no response was received
+                // `error.request` is an instance of XMLHttpRequest in the browser 
+                // and an instance of http.ClientRequest in node.js
+                console.log(error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log('Error', error.message);
+            }
+        }
     }
 
-    deleteListing(id) {
-        return axios.delete(API_URL + 'listings/' + {id}, { 
-            headers: authHeader()
-        });
+    async deleteListing(id) {
+        try {
+            return await axios.delete(API_URL + 'listings/' + { id }, {
+                headers: authHeader()
+            });
+        } catch (error) {
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+                // The request was made but no response was received
+                // `error.request` is an instance of XMLHttpRequest in the browser 
+                // and an instance of http.ClientRequest in node.js
+                console.log(error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log('Error', error.message);
+            }
+        }
     }
 
-    getSortedListings(minPrice, maxPrice, status, sortBy, isDescending) {
-        return axios.get(API_URL + 'listings', { 
-            headers: authHeader(),
-            minPrice, 
-            maxPrice, 
-            status,
-            sortBy,
-            isDescending
-        });
+    async getSortedListings(minPrice, maxPrice, status, sortBy, isDescending) {
+        try {
+            return await axios.get(API_URL + 'listings', {
+                headers: authHeader(),
+                minPrice,
+                maxPrice,
+                status,
+                sortBy,
+                isDescending
+            });
+        } catch (error) {
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+                // The request was made but no response was received
+                // `error.request` is an instance of XMLHttpRequest in the browser 
+                // and an instance of http.ClientRequest in node.js
+                console.log(error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log('Error', error.message);
+            }
+        }
     }
 
-    getListing(id) {
-        return axios.get(API_URL + 'listings/' + {id}, { 
-            headers: authHeader()
-        });
+    async getListing(id) {
+        try {
+            return await axios.get(API_URL + 'listings/' + { id }, {
+                headers: authHeader()
+            });
+        } catch (error) {
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+                // The request was made but no response was received
+                // `error.request` is an instance of XMLHttpRequest in the browser 
+                // and an instance of http.ClientRequest in node.js
+                console.log(error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log('Error', error.message);
+            }
+        }
     }
 
-    getSellerListings() {
-        return axios.get(API_URL + 'listings/me', { 
-            headers: authHeader()
-        });
+    async getSellerListings() {
+        try {
+            return await axios.get(API_URL + 'listings/me', {
+                headers: authHeader()
+            });
+        } catch (error) {
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+                // The request was made but no response was received
+                // `error.request` is an instance of XMLHttpRequest in the browser 
+                // and an instance of http.ClientRequest in node.js
+                console.log(error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log('Error', error.message);
+            }
+        }
     }
 
-    getUserSearchHistory(id) {
-        return axios.get(API_URL + 'users/' + {id} + '/searches', { 
-            headers: authHeader()
-        });
+    async updateUserData(id, location) {
+        try {
+            return await axios.patch(API_URL + 'users/' + id, {
+                headers: authHeader(),
+                location
+            });
+        } catch (error) {
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+                // The request was made but no response was received
+                // `error.request` is an instance of XMLHttpRequest in the browser 
+                // and an instance of http.ClientRequest in node.js
+                console.log(error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log('Error', error.message);
+            }
+        }
     }
 
-    getReviews(id) {
-        return axios.get(API_URL + 'review/' + {id}, { 
-            headers: authHeader()
-        });
+    async getMyUserData() {
+        try {
+            return await axios.get(API_URL + 'users/me', {
+                headers: authHeader()
+            });
+        } catch (error) {
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+                // The request was made but no response was received
+                // `error.request` is an instance of XMLHttpRequest in the browser 
+                // and an instance of http.ClientRequest in node.js
+                console.log(error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log('Error', error.message);
+            }
+        }
     }
 
-    getRatings(id) {
-        return axios.get(API_URL + 'rating/' + {id}, { 
-            headers: authHeader()
-        });
+    async getUserData(id) {
+        try {
+            return await axios.get(API_URL + 'users/' + id, {
+                headers: authHeader()
+            });
+        } catch (error) {
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+                // The request was made but no response was received
+                // `error.request` is an instance of XMLHttpRequest in the browser 
+                // and an instance of http.ClientRequest in node.js
+                console.log(error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log('Error', error.message);
+            }
+        }
     }
 
-    createReview(id, reviewContent) {
-        return axios.post(API_URL + 'review/' + {id}, { 
-            headers: authHeader(),
-            reviewContent
-        });
+    async getUserSearchHistory(id) {
+        try {
+            return await axios.get(API_URL + 'users/' + { id } + '/searches', {
+                headers: authHeader()
+            });
+        } catch (error) {
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+                // The request was made but no response was received
+                // `error.request` is an instance of XMLHttpRequest in the browser 
+                // and an instance of http.ClientRequest in node.js
+                console.log(error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log('Error', error.message);
+            }
+        }
     }
 
-    createRating(id, ratingValue) {
-        return axios.post(API_URL + 'rating/' + {id}, { 
-            headers: authHeader(),
-            ratingValue
-        });
+    async search(search, category) {
+        let query = search + category;
+        try {
+            return await axios.get(API_URL + 'search?q=' + { query }, {
+                headers: authHeader(),
+                search,
+                category
+            });
+        } catch (error) {
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+                // The request was made but no response was received
+                // `error.request` is an instance of XMLHttpRequest in the browser 
+                // and an instance of http.ClientRequest in node.js
+                console.log(error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log('Error', error.message);
+            }
+        }
     }
 
-    getRecommendations() {
-        return axios.get(API_URL + 'recommendations', { 
-            headers: authHeader()
-        });
+    async getReviews(id) {
+        try {
+            return await axios.get(API_URL + 'review/' + { id }, {
+                headers: authHeader()
+            });
+        } catch (error) {
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+                // The request was made but no response was received
+                // `error.request` is an instance of XMLHttpRequest in the browser 
+                // and an instance of http.ClientRequest in node.js
+                console.log(error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log('Error', error.message);
+            }
+        }
     }
 
-    ignoreRecommendation(id) {
-        return axios.post(API_URL + 'recommendations/' + {id} + '/ignore', { 
-            headers: authHeader(),
-            ignore: true
-        });
+    async getRatings(id) {
+        try {
+            return await axios.get(API_URL + 'rating/' + { id }, {
+                headers: authHeader()
+            });
+        } catch (error) {
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+                // The request was made but no response was received
+                // `error.request` is an instance of XMLHttpRequest in the browser 
+                // and an instance of http.ClientRequest in node.js
+                console.log(error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log('Error', error.message);
+            }
+        }
     }
 
-    getChats(id) {
-        return axios.get(API_URL + 'chats', { 
-            headers: authHeader(),
-            id
-        });
+    async createReview(id, reviewContent) {
+        try {
+            return await axios.post(API_URL + 'review/' + { id }, {
+                headers: authHeader(),
+                reviewContent
+            });
+        } catch (error) {
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+                // The request was made but no response was received
+                // `error.request` is an instance of XMLHttpRequest in the browser 
+                // and an instance of http.ClientRequest in node.js
+                console.log(error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log('Error', error.message);
+            }
+        }
     }
 
-    getChatMessages(id) {
-        return axios.get(API_URL + 'messages/' + {id}, { 
-            headers: authHeader(),
-            id
-        });
+    async createRating(id, ratingValue) {
+        try {
+            return await axios.post(API_URL + 'rating/' + { id }, {
+                headers: authHeader(),
+                ratingValue
+            });
+        } catch (error) {
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+                // The request was made but no response was received
+                // `error.request` is an instance of XMLHttpRequest in the browser 
+                // and an instance of http.ClientRequest in node.js
+                console.log(error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log('Error', error.message);
+            }
+        }
     }
 
-    getChatInformation(id) {
-        return axios.get(API_URL + 'chats/' + {id}, { 
-            headers: authHeader(),
-            id
-        });
+    async getRecommendations() {
+        try {
+            return await axios.get(API_URL + 'recommendations', {
+                headers: authHeader()
+            });
+        } catch (error) {
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+                // The request was made but no response was received
+                // `error.request` is an instance of XMLHttpRequest in the browser 
+                // and an instance of http.ClientRequest in node.js
+                console.log(error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log('Error', error.message);
+            }
+        }
     }
 
-    updateMessages() {
-        //TODO modify to websocket
-        return axios.post(API_URL + 'messages/updates', { 
-            headers: authHeader()
-        });
+    async ignoreRecommendation(id) {
+        try {
+            return await axios.post(API_URL + 'recommendations/' + { id } + '/ignore', {
+                headers: authHeader(),
+                ignore: true
+            });
+        } catch (error) {
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+                // The request was made but no response was received
+                // `error.request` is an instance of XMLHttpRequest in the browser 
+                // and an instance of http.ClientRequest in node.js
+                console.log(error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log('Error', error.message);
+            }
+        }
+    }
+
+    async getChats(id) {
+        try {
+            return await axios.get(API_URL + 'chats', {
+                headers: authHeader(),
+                id
+            });
+        } catch (error) {
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+                // The request was made but no response was received
+                // `error.request` is an instance of XMLHttpRequest in the browser 
+                // and an instance of http.ClientRequest in node.js
+                console.log(error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log('Error', error.message);
+            }
+        }
+    }
+
+    async getChatMessages(id) {
+        try {
+            return await axios.get(API_URL + 'messages/' + { id }, {
+                headers: authHeader(),
+                id
+            });
+        } catch (error) {
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+                // The request was made but no response was received
+                // `error.request` is an instance of XMLHttpRequest in the browser 
+                // and an instance of http.ClientRequest in node.js
+                console.log(error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log('Error', error.message);
+            }
+        }
+    }
+
+    async getChatInformation(id) {
+        try {
+            return await axios.get(API_URL + 'chats/' + { id }, {
+                headers: authHeader(),
+                id
+            });
+        } catch (error) {
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+                // The request was made but no response was received
+                // `error.request` is an instance of XMLHttpRequest in the browser 
+                // and an instance of http.ClientRequest in node.js
+                console.log(error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log('Error', error.message);
+            }
+        }
+    }
+
+    async sendMessage(message) {
+        try {
+            return await axios.post(API_URL + 'messages/updates', {
+                headers: authHeader(),
+                message
+            });
+        } catch (error) {
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+                // The request was made but no response was received
+                // `error.request` is an instance of XMLHttpRequest in the browser 
+                // and an instance of http.ClientRequest in node.js
+                console.log(error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log('Error', error.message);
+            }
+        }
     }
 }
 
