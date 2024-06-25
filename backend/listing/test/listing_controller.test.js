@@ -288,11 +288,15 @@ describe("Listing Routes", () => {
           location: { type: "Point", coordinates: [1, -1] },
           category: "ELECTRONICS",
         },
+        params: {
+          listing_id: "1",
+        },
       },
       mockRes
     );
     expect(responseObject).toEqual(1);
   });
+  
   it("it should fail to update", async () => {
     axios.patch.mockImplementation(() => Promise.resolve({ data: {message: "Unable to update listing with id: 1"} }));
     let responseObject = {};
@@ -307,10 +311,13 @@ describe("Listing Routes", () => {
       {
         body: {
           title: "test",
-          price: 1.01,
+          price: 0,
           status: "AVAILABLE",
           location: { type: "Point", coordinates: [1, -1] },
-          category: "ELECTRONICS",
+          category: null,
+        },
+        params: {
+          listing_id: "1",
         },
       },
       mockRes
