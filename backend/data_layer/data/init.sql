@@ -191,7 +191,7 @@ INSERT INTO "Chats" (user_id, listing_id, timestamp) VALUES
 (7, 7, '2024-02-02 11:00:00'),
 (8, 8, '2024-02-02 12:00:00'),
 (9, 9, '2024-02-02 13:00:00'),
-(10, 10, '2024-02-02 14:00:00');
+(10, 10, '2024-02-02 14:00:00'); 
 
 INSERT INTO "Messages" (listing_id, message_content, timestamp, chat_id) VALUES
 (1, 'Hello, I am interested in the Bicycle.', '2024-02-01 10:00:00', 1),
