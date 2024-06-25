@@ -4,9 +4,6 @@ const DATA_LAYER = process.env.DATA_LAYER;
 
 export const getSearchResults = async (req, res) => {
   try {
-    //Get seller_id from JWT token
-    //http://localhost:8000/search?query=<query goes here>&location=<lat value>&location=<lon value>
-    //Get Long and Lat depending on user_id
     if (req.query.search == null) {
       res.status(500).json({ message: "internal server error" });
     }
