@@ -12,10 +12,12 @@ export const getSearchResults = async (req, res) => {
     const url = `${DATA_LAYER}user/${userId}`;
     const user = await axios.get(url);
 
-    const requestParamsObject = req.query;
+    const search = req.query.search;
     const longitude = user.data.user.location.coordinates[0];
     const latitude = user.data.user.location.coordinates[1];
 
+    const requestParamsObject = {};
+    requestParamsObject.query = search;
     requestParamsObject.longitude = longitude;
     requestParamsObject.latitude = latitude;
 
