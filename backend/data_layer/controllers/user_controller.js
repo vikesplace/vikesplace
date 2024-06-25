@@ -6,7 +6,6 @@ import 'dotenv/config';
 
 // JWT Secret
 const jwtSecret = process.env.ACCESS_TOKEN_SECRET;
-console.log("this is my jwt secret", jwtSecret)
 
 // Validation rules for login
 
@@ -39,7 +38,7 @@ export const createUser = async (req, res) => {
         });
 
         return res.status(201).json({
-            userId: newUser.user_id,
+            user_id: newUser.dataValues.user_id,
             message: "User created successfully"
         });
     } catch (error) {
@@ -59,21 +58,17 @@ export const loginUser = async (req, res) => {
     try {
         // Check if user exists
         const user = await User.findOne({ where: { username } });
-        console.log("1")    
         if (!user) {
             return res.status(400).json({ message: "User or password is incorrect" });
         }
-        console.log("2")
         // Compare passwords
         const isMatch = await bcrypt.compare(password, user.password);
-        console.log("3")
 
         if (!isMatch) {
             return res.status(400).json({ message: "User or password is incorrect" });
         }
-        console.log("4")
 
-        return res.status(200).json({ message: "User logged in successfully", user_id:user.userId });
+        return res.status(200).json({ message: "User logged in successfully", user_id:user.user_id });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Internal server error" });

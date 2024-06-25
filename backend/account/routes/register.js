@@ -6,7 +6,6 @@ import 'dotenv/config';
 
 const router = express.Router();
 const jwtSecret = process.env.ACCESS_TOKEN_SECRET;
-console.log(process.env.ACCESS_TOKEN_SECRET);
 const jwtExpiry = 900000;
 
 // Configuration for Nodemailer

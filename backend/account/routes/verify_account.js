@@ -6,6 +6,8 @@ import { check, validationResult } from "express-validator";
 import "dotenv/config";
 import axios from "axios";
 
+const jwtSecret = process.env.ACCESS_TOKEN_SECRET;
+
 const router = express.Router();
 
 // Validation rules
@@ -46,18 +48,24 @@ router.post("/", usernameValidation, passwordValidation, async (req, res) => {
   const { jwt: token, username, password, location } = req.body;
 
   try {
-
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await axios.post("/user", {
       username,
       email: res.locals.decodedToken.email,
-      password:hashedPassword,
+      password: hashedPassword,
       location,
       items_sold: 0,
       items_bought: 0,
     });
 
-    res.status(201).json({ userId: newUser.user_id });
+    // Generate JWT token
+    const token = jwt.sign({ userId: newUser.data.user_id }, jwtSecret, {
+      expiresIn: "2h",
+    });
+
+    // Set cookie with token
+    res.cookie("Authorization", token, { httpOnly: true });
+    res.status(201).json({ userId: newUser.data.user_id });
   } catch (error) {
     return res.status(400).json({ message: error.message });
   }
