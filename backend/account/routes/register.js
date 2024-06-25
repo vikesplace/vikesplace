@@ -31,7 +31,6 @@ router.post('/', (req, res) => {
 
   const token = jwt.sign({ email }, jwtSecret, { expiresIn: jwtExpiry });
 
-  console.log("this is the token", token);
 
   const verificationLink = `${callback}${token}`;
 
@@ -44,6 +43,7 @@ router.post('/', (req, res) => {
 
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
+      console.log(error);
       return res.status(500).json({ message: 'Failed to send verification email' });
     }
     res.status(200).json({ message: 'Verification email sent successfully' });
