@@ -1,22 +1,22 @@
 volumes:
   psqldata:
     driver: local
-  certs:
-    driver: local
-  esdata:
-    driver: local
-  kibanadata:
-    driver: local
-  logstashdata:
-    driver: local
-  metricbeatdata:
-    driver: local
-  mongodbdata:
-    driver: local
+  # certs:
+  #   driver: local
+  # esdata:
+  #   driver: local
+  # kibanadata:
+  #   driver: local
+  # logstashdata:
+  #   driver: local
+  # metricbeatdata:
+  #   driver: local
+  # mongodbdata:
+  #   driver: local
 
-networks:
-  default:
-    driver: bridge
+# networks:
+#   default:
+#     driver: bridge
 
 services:
   # Referencing backend services
@@ -80,86 +80,86 @@ services:
       file: backend/docker-compose.yml
       service: nginx
 
-  # Referencing algorithm services
-  setup:
-    extends:
-      file: algorithms/docker-compose.yml
-      service: setup
+  # # Referencing algorithm services
+  # setup:
+  #   extends:
+  #     file: algorithms/docker-compose.yml
+  #     service: setup
 
-  elasticsearch:
-    extends:
-      file: algorithms/docker-compose.yml
-      service: elasticsearch
-    depends_on:
-      setup:
-        condition: service_healthy
+  # elasticsearch:
+  #   extends:
+  #     file: algorithms/docker-compose.yml
+  #     service: elasticsearch
+  #   depends_on:
+  #     setup:
+  #       condition: service_healthy
 
-  kibana:
-    extends:
-      file: algorithms/docker-compose.yml
-      service: kibana
-    depends_on:
-      elasticsearch:
-        condition: service_healthy
+  # kibana:
+  #   extends:
+  #     file: algorithms/docker-compose.yml
+  #     service: kibana
+  #   depends_on:
+  #     elasticsearch:
+  #       condition: service_healthy
 
-  metricbeat:
-    extends:
-      file: algorithms/docker-compose.yml
-      service: metricbeat
-    depends_on:
-      elasticsearch:
-        condition: service_healthy
-      kibana:
-        condition: service_healthy
+  # metricbeat:
+  #   extends:
+  #     file: algorithms/docker-compose.yml
+  #     service: metricbeat
+  #   depends_on:
+  #     elasticsearch:
+  #       condition: service_healthy
+  #     kibana:
+  #       condition: service_healthy
 
-  logstash:
-    extends:
-      file: algorithms/docker-compose.yml
-      service: logstash
-    depends_on:
-      postgresql:
-        condition: service_healthy
-      elasticsearch:
-        condition: service_healthy
-      kibana:
-        condition: service_healthy
+  # logstash:
+  #   extends:
+  #     file: algorithms/docker-compose.yml
+  #     service: logstash
+  #   depends_on:
+  #     postgresql:
+  #       condition: service_healthy
+  #     elasticsearch:
+  #       condition: service_healthy
+  #     kibana:
+  #       condition: service_healthy
 
-  mongodb:
-    extends:
-      file: algorithms/docker-compose.yml
-      service: mongodb
+  # mongodb:
+  #   extends:
+  #     file: algorithms/docker-compose.yml
+  #     service: mongodb
 
-  search:
-    extends:
-      file: algorithms/docker-compose.yml
-      service: search
-    depends_on:
-      postgresql:
-        condition: service_healthy
-      elasticsearch:
-        condition: service_healthy
-      kibana:
-        condition: service_healthy
-      mongodb:
-        condition: service_healthy
+  # search:
+  #   extends:
+  #     file: algorithms/docker-compose.yml
+  #     service: search
+  #   depends_on:
+  #     postgresql:
+  #       condition: service_healthy
+  #     elasticsearch:
+  #       condition: service_healthy
+  #     kibana:
+  #       condition: service_healthy
+  #     mongodb:
+  #       condition: service_healthy
 
-  recommender:
-    extends:
-      file: algorithms/docker-compose.yml
-      service: recommender
-    depends_on:
-      postgresql:
-        condition: service_healthy
-      elasticsearch:
-        condition: service_healthy
-      kibana:
-        condition: service_healthy
-      mongodb:
-        condition: service_healthy
+  # recommender:
+  #   extends:
+  #     file: algorithms/docker-compose.yml
+  #     service: recommender
+  #   depends_on:
+  #     postgresql:
+  #       condition: service_healthy
+  #     elasticsearch:
+  #       condition: service_healthy
+  #     kibana:
+  #       condition: service_healthy
+  #     mongodb:
+  #       condition: service_healthy
 
 
-  # Referecing frontend
-  frontend:
-    extends:
-      file: frontend/docker-compose.yml
-      service: frontend
+  # # Referecing frontend
+  # frontend:
+  #   extends:
+  #     file: frontend/docker-compose.yml
+  #     service: frontend

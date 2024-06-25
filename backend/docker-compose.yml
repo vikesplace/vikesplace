@@ -129,7 +129,7 @@ services:
       - ./data_layer:/home/node/app
       - /home/node/app/node_module
     ports:
-      - "5000"
+      - "3400:5000"
     environment:
       - PORT=5000
       - DATA_LAYER=${DATA_LAYER}
