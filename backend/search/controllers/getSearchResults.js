@@ -1,4 +1,6 @@
 import axios from "axios";
+const ALG_SEARCH = process.env.ALG_SEARCH;
+const DATA_LAYER = process.env.DATA_LAYER;
 
 export const getSearchResults = async (req, res) => {
   try {
@@ -9,15 +11,18 @@ export const getSearchResults = async (req, res) => {
       res.status(500).json({ message: "internal server error" });
     }
 
-    //Get Long and Lat from DB. Requires User Data endpoint.
+    const userId = res.locals.decodedToken.userId;
+    const url = `${DATA_LAYER}user/${userId}`;
+    const user = await axios.get(url);
+
     const requestParamsObject = req.query;
-    const longitude = 48;
-    const latitude = -123;
+    const longitude = user.data.user.location.coordinates[0];
+    const latitude = user.data.user.location.coordinates[1];
 
     requestParamsObject.longitude = longitude;
     requestParamsObject.latitude = latitude;
 
-    const response = await axios.get(`/search`, {
+    const response = await axios.get(`${ALG_SEARCH}search`, {
       params: requestParamsObject,
     });
     if (response.status == 200) {

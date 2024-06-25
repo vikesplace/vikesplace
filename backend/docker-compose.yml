@@ -117,6 +117,7 @@ services:
     environment:
       - ALG_SEARCH=${ALG_SEARCH}
       - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
+      - DATA_LAYER=${DATA_LAYER}
   
   data_layer:
     container_name: data_layer

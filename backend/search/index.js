@@ -1,6 +1,5 @@
 import express from "express";
 import search from "./routes/search.js";
-import axiosConfig from "./config/axiosConfig.js";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import "dotenv/config";

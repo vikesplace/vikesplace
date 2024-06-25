@@ -107,7 +107,6 @@ export const updateListing = async (req, res) => {
                 message: "Invalid input data"
             });
         }
-        console.log(JSON.parse(req.body));
         listing.title = req.body.title;
         listing.price = req.body.price;
         listing.status = req.body.status;
