@@ -1,12 +1,10 @@
 import express from "express";
-import { createListing, getListingInfo, getSellerListings, updateListing, deleteListing } from "../controllers/listing_controller.js";
+import { createListing, getListingInfo, getSellerListings, updateListing, deleteListing, getSortedListings } from "../controllers/listing_controller.js";
 
 const router = express.Router();
 
 //Get sorted listings
-router.get("/", (req, res) => {
-  res.json({ message: "Get Sorted Listings" });
-});
+router.get("/", getSortedListings);
 
 //Get all listings of a user
 router.get("/me", getSellerListings);
