@@ -56,7 +56,6 @@ export const createListing = async (req, res) => {
       location: req.body.location,
       status: "AVAILABLE",
       category: req.body.category,
-      postal_code: req.body.postal_code,
     });
     res.json(createResult.dataValues.listing_id);
   } catch (error) {
@@ -114,7 +113,7 @@ export const updateListing = async (req, res) => {
         listing.location = req.body.location;
         listing.category = req.body.category;
         listing.postal_code = req.body.postal_code;
-        listing.buyer_username = req.body.buyer_username;
+        listing.buyer_username = req.body.buyer_username; 
         await listing.save();
         res.json({});
     } catch (error) {

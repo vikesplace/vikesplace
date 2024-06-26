@@ -9,7 +9,7 @@ export const updateListing = async (req, res) => {
                     location: req.body.location,
                     category: req.body.category || null,
                     postal_code: req.body.postal_code,
-                    buyer_username: req.body.buyer_username || null,
+                    buyer_username: req.body.buyer_username || null
                 });
                 res.json(response.data);
     }
