@@ -1,7 +1,7 @@
 import axios from "axios";
 import httpErrorHandler from "./httpErrorHandler";
 
-const API_URL = "http://localhost:8080";
+const API_URL = "http://localhost:8080/";
 
 class AuthService {
     login(username, password) {
@@ -9,14 +9,8 @@ class AuthService {
             .post(API_URL + "login", {
                 username,
                 password
-            }).catch(httpErrorHandler);
-        try {
-            if (response.data.accessToken) {
-                localStorage.setItem("user", JSON.stringify(response.data));
-            }
-        } catch (error) {
-            console.log("Cannot save access");
-        }
+            }, {withCredentials: true})
+            .catch(httpErrorHandler);
         return response;
     }
   
