@@ -39,7 +39,7 @@ describe("POST /verify_account", () => {
         jwt: "validjwt",
         username: "valid_user",
         password: "Valid1@password",
-        location: "test_location",
+        location: "V8Y2L5",
       });
 
     expect(response.statusCode).toBe(201);
@@ -59,7 +59,7 @@ describe("POST /verify_account", () => {
         jwt: "validjwt",
         username: "short",
         password: "Valid1@password",
-        location: "test_location",
+        location: "V8Y2L5",
       });
 
     expect(response.statusCode).toBe(400);
@@ -73,7 +73,7 @@ describe("POST /verify_account", () => {
         jwt: "validjwt",
         username: "valid_user",
         password: "short",
-        location: "test_location",
+        location: "V8Y2L5",
       });
 
     expect(response.statusCode).toBe(400);
@@ -86,7 +86,7 @@ describe("POST /verify_account", () => {
       .send({
         username: "valid_user",
         password: "Valid1@password",
-        location: "test_location",
+        location: "V8Y2L5",
       });
 
     expect(response.statusCode).toBe(400);
@@ -102,7 +102,7 @@ describe("POST /verify_account", () => {
         jwt: "validjwt",
         username: "valid_user",
         password: "Valid1@password",
-        location: "test_location",
+        location: "V8Y2L5",
       });
 
     expect(response.statusCode).toBe(400);
