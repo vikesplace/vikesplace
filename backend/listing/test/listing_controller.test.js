@@ -3,6 +3,10 @@ import { createListing } from "../controller/create_listing";
 import { deleteListing } from "../controller/delete_listing";
 import { getSellerListings } from "../controller/get_seller_listings";
 import { getListingInfo } from "../controller/get_listing";
+import { updateListing } from "../controller/update_listing";
+import { getLongLat } from "../helper/get_long_lat";
+import { getPostalCode } from "../helper/get_postal_code";
+import { getSortedListings } from "../controller/get_sorted_listings";
 
 jest.mock("axios");
 
@@ -135,7 +139,6 @@ describe("Listing Routes", () => {
   });
 
   it("should get a listing", async () => {
-    //create a mock implementation of axios.get to return a promise that resolves the json data that would contain listing seller_id, listing_id, title, price, location, status, listed_at, lastupdated_at
     axios.get.mockImplementation(() => Promise.resolve({ data: {seller_id: '245242', listing_id: '1', title: 'test', price: 0, location: { type: "Point", coordinates: [1, -1] }, status: 'AVAILABLE', listed_at: '2021-09-01', lastupdated_at: '2021-09-01' } }));
     let responseObject = {};
     const mockRes = {
@@ -177,54 +180,6 @@ describe("Listing Routes", () => {
     expect(responseObject).toEqual({ message: "Unable to get listing with id: 1" });
   });
 
-  it("should update a listing", async () => {
-    axios.patch.mockImplementation(() => Promise.resolve({ data: {message: "Update Listing"} }));
-    let responseObject = {};
-    const mockRes = {
-      body:{},
-      json: jest.fn().mockImplementation((result)=>{
-        responseObject = result;
-      }),
-      status: jest.fn()
-    };
-    await updateListing(
-      {
-        body: {
-          title: "test",
-          price: 0,
-          location: { type: "Point", coordinates: [1, -1] },
-          category: null,
-        },
-      },
-      mockRes
-    );
-    expect(responseObject).toEqual({ message: "Update Listing" });
-  });
-
-  it("it should fail to update", async () => {
-    axios.patch.mockImplementation(() => Promise.resolve({ data: {message: "Unable to update listing"} }));
-    let responseObject = {};
-    const mockRes = {
-      body:{},
-      json: jest.fn().mockImplementation((result)=>{
-        responseObject = result;
-      }),
-      status: jest.fn()
-    };
-    await updateListing(
-      {
-        body: {
-          title: "test",
-          price: 0,
-          location: { type: "Point", coordinates: [1, -1] },
-          category: null,
-        },
-      },
-      mockRes
-    );
-    expect(responseObject).toEqual({ message: "Unable to update listing" });
-  });
-
   it("should delete a listing", async () => {
     axios.delete.mockImplementation(() => Promise.resolve({ data: 1 }));
     let responseObject = {};
@@ -240,6 +195,9 @@ describe("Listing Routes", () => {
         params: {
           listing_id: "1",
         },
+        params: {
+          listingId: "1",
+        },
       },
       mockRes
     );
@@ -247,7 +205,7 @@ describe("Listing Routes", () => {
   });
 
   it("it should fail to delete", async () => {
-    axios.delete.mockImplementation(() => Promise.resolve({ data: {message: "Invalid input data" } }));
+    axios.delete.mockImplementation(() => Promise.resolve({ data: {message: "Unable to delete listing with id: 1" } }));
     let responseObject = {};
     const mockRes = {
       body:{},
@@ -264,6 +222,245 @@ describe("Listing Routes", () => {
       },
       mockRes
     );
-    expect(responseObject).toEqual({ message: "Invalid input data" });
+    expect(responseObject).toEqual({ message: "Unable to delete listing with id: 1" });
   });
+
+  it("should get long lat", async () => {
+    const mockOutput = {
+      longitude: 45.5,
+      latitude: -45.5,
+    };
+
+    axios.get.mockResolvedValue({ data: mockOutput });
+
+    const postal_code = "12345";
+    const result = await getLongLat(postal_code);
+
+    expect(result).toEqual(mockOutput);
+  });
+
+  it("it should fail to get long lat", async () => {
+    axios.get.mockResolvedValue({ data: { message: "Postal code not found" } });
+
+    const postal_code = "12345";
+    const result = await getLongLat(postal_code);
+
+    expect(result).toEqual({ message: "Postal code not found" });
+  });
+
+  it("should get postal code", async () => {
+    const mockOutput = {
+      postal_code: "123"
+    };
+
+    axios.get.mockResolvedValue({ data: mockOutput });
+
+    const latitude = 45.5;
+    const longitude = -45.5;
+    const result = await getPostalCode(latitude, longitude);
+
+    expect(result).toEqual(mockOutput);
+  });
+
+  it("it should fail to get postal code", async () => {
+    axios.get.mockResolvedValue({ data: { message: "Latitude and longitude not found" } });
+
+    const latitude = 45.5;
+    const longitude = -45.5;
+    const result = await getPostalCode(latitude, longitude);
+
+    expect(result).toEqual({ message: "Latitude and longitude not found" });
+  });
+
+  it("should update a listing", async () => {
+    axios.patch.mockImplementation(() => Promise.resolve({ data: 1 }));
+    let responseObject = {};
+    const mockRes = {
+      body:{},
+      json: jest.fn().mockImplementation((result)=>{
+        responseObject = result;
+      }),
+      status: jest.fn()
+    };
+    await updateListing(
+      {
+        body: {
+          title: "test",
+          price: 1.01,
+          status: "AVAILABLE",
+          location: { type: "Point", coordinates: [1, -1] },
+          category: "ELECTRONICS",
+        },
+        params: {
+          listing_id: "1",
+        },
+      },
+      mockRes
+    );
+    expect(responseObject).toEqual(1);
+  });
+  
+  it("it should fail to update", async () => {
+    axios.patch.mockImplementation(() => Promise.resolve({ data: {message: "Unable to update listing with id: 1"} }));
+    let responseObject = {};
+    const mockRes = {
+      body:{},
+      json: jest.fn().mockImplementation((result)=>{
+        responseObject = result;
+      }),
+      status: jest.fn()
+    };
+    await updateListing(
+      {
+        body: {
+          title: "test",
+          price: 0,
+          status: "AVAILABLE",
+          location: { type: "Point", coordinates: [1, -1] },
+          category: null,
+        },
+        params: {
+          listing_id: "1",
+        },
+      },
+      mockRes
+    );
+    expect(responseObject).toEqual({ message: "Unable to update listing with id: 1" });
+  });
+
+  it("should get listings filtered by choice and sorted by price", async () => {
+    axios.get.mockImplementation(() => Promise.resolve({ data: 
+      {
+        "count": 3,
+        "rows": [
+          {
+            "listing_id": 3, "seller_id": 123, "buyer_username": "joe", "title": "test", "price": 0, "location": {"type": "Point", "coordinates": [1, -1]}, "status": "AVAILABLE", "listed_at": "2021-09-01", "lastupdated_at": "2021-09-01", "category": "BOOKS"
+          },
+          {
+            "listing_id": 2, "seller_id": 124, "buyer_username": "maria", "title": "test", "price": 2, "location": {"type": "Point", "coordinates": [1, -1]}, "status": "AVAILABLE", "listed_at": "2021-09-01", "lastupdated_at": "2021-09-01", "category": "BOOKS"
+          },
+          {
+            "listing_id": 1, "seller_id": 123, "buyer_username": "joe", "title": "test", "price": 3, "location": {"type": "Point", "coordinates": [1, -1]}, "status": "AVAILABLE", "listed_at": "2021-09-01", "lastupdated_at": "2021-09-01", "category": "BOOKS"
+          }]
+    }}
+  ));
+    let responseObject = {};
+    const mockRes = {
+      body:{},
+      json: jest.fn().mockImplementation((result)=>{
+        responseObject = result;
+      }),
+      status: jest.fn()
+    };
+    await getSortedListings(
+      {
+        query: {
+          pullLimit: 5,
+          pageOffset: 0,
+          minPrice: 0,
+          maxPrice: 100,
+          status: "AVAILABLE",
+          sortBy: "price",
+          isDescending: false,
+        },
+      },
+      mockRes
+    );
+    expect(responseObject).toEqual(
+      {
+        "count": 3,
+        "rows": [
+          {
+            "listing_id": 3, "seller_id": 123, "buyer_username": "joe", "title": "test", "price": 0, "location": {"type": "Point", "coordinates": [1, -1]}, "status": "AVAILABLE", "listed_at": "2021-09-01", "lastupdated_at": "2021-09-01", "category": "BOOKS"
+          },
+          {
+            "listing_id": 2, "seller_id": 124, "buyer_username": "maria", "title": "test", "price": 2, "location": {"type": "Point", "coordinates": [1, -1]}, "status": "AVAILABLE", "listed_at": "2021-09-01", "lastupdated_at": "2021-09-01", "category": "BOOKS"
+          },
+          {
+            "listing_id": 1, "seller_id": 123, "buyer_username": "joe", "title": "test", "price": 3, "location": {"type": "Point", "coordinates": [1, -1]}, "status": "AVAILABLE", "listed_at": "2021-09-01", "lastupdated_at": "2021-09-01", "category": "BOOKS"
+          }]
+      });
+
+  });
+
+  it("should throw error for invalid price range", async () => {
+    axios.get.mockImplementation(() => Promise.resolve({ data: {message: "Invalid price range"} }));
+    let responseObject = {};
+    const mockRes = {
+      body:{},
+      json: jest.fn().mockImplementation((result)=>{
+        responseObject = result;
+      }),
+      status: jest.fn()
+    };
+    await getSortedListings(
+      {
+        query: {
+          pullLimit: 5,
+          pageOffset: 0,
+          minPrice: 0,
+          status: "AVAILABLE",
+          sortBy: "price",
+          isDescending: false,
+        },
+      },
+      mockRes
+    );
+    expect(responseObject).toEqual({message: "Invalid price range"});
+  });
+
+  it("should throw error for invalid price range", async () => {
+    axios.get.mockImplementation(() => Promise.resolve({ data: {message: "Invalid price range"} }));
+    let responseObject = {};
+    const mockRes = {
+      body:{},
+      json: jest.fn().mockImplementation((result)=>{
+        responseObject = result;
+      }),
+      status: jest.fn()
+    };
+    await getSortedListings(
+      {
+        query: {
+          pullLimit: 5,
+          pageOffset: 0,
+          minPrice: 100,
+          maxPrice: 0,
+          status: "AVAILABLE",
+          sortBy: "price",
+          isDescending: false,
+        },
+      },
+      mockRes
+    );
+    expect(responseObject).toEqual({message: "Invalid price range"});
+  });
+
+  it("should fail to get sorted listings", async () => {
+    axios.get.mockImplementation(() => Promise.resolve({ data: {message: "Invalid input data"} }));
+    let responseObject = {};
+    const mockRes = {
+      body:{},
+      json: jest.fn().mockImplementation((result)=>{
+        responseObject = result;
+      }),
+      status: jest.fn()
+    };
+    await getSortedListings(
+      {
+        query: {
+          pullLimit: 5,
+          pageOffset: 0,
+          minPrice: 0,
+          maxPrice: 100,
+          status: "AVAILABLE",
+          sortBy: "price",
+          isDescending: false,
+        },
+      },
+      mockRes
+    );
+    expect(responseObject).toEqual({message: "Invalid input data"});
+  });
+ 
 });

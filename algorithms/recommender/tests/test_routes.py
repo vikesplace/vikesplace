@@ -17,18 +17,18 @@ def test_recommender_with_activity_history():
         "Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"}
     params = {
         "user_id": user_id,
-        "location": [48.3784,-123.4156],
+        # "location": [48.3784,-123.4156],
+        "latitude": 48.3784,
+        "longitude": -123.4156
     }
     response = client.get("/recommendations", headers=headers, params=params)
     response_obj = response.json()
-
 
     assert response.status_code == status.HTTP_200_OK
     assert len(response_obj) == 5
 
     for obj in response_obj:
-        assert obj['_index'] == 'listings'
-        assert obj['_source']['seller_id'] != user_id
+        assert obj['seller_id'] != user_id
 
 
 def test_recommender_with_no_activity_history():
@@ -37,11 +37,41 @@ def test_recommender_with_no_activity_history():
         "Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"}
     params = {
         "user_id": user_id,
-        "location": [48.467289,-123.404489],
+        # "location": [48.467289,-123.404489],
+        "latitude": 48.467289,
+        "longitude": -123.404489
     }
     response = client.get("/recommendations", headers=headers, params=params)
     response_obj = response.json()
 
-
     assert response.status_code == status.HTTP_200_OK
     assert response_obj == None
+
+
+def test_recommender_current_item():
+    user_id = 1
+    listing_id = 25
+    headers = {
+        "Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"}
+    params = {
+        "user_id": user_id,
+        "listing_id": listing_id
+    }
+    response = client.get("/recommendations_current_item", headers=headers, params=params)
+    response_obj = response.json()
+
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response_obj) == 5
+    print("test output >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.   ",response_obj[0])
+    for obj in response_obj:
+        assert obj['seller_id'] != user_id
+
+
+def test_recommender_most_popular_items():
+    response = client.get("/recommendations_most_popular")
+    response_obj = response.json()
+
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response_obj) == 10
+    for obj in response_obj:
+        assert obj["title"] != None

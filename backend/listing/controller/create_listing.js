@@ -2,15 +2,16 @@ import axios from 'axios';
 
 export const createListing = async (req, res) => {
     try{
-        //Temporary Location until Conversion Setup
-        const location = { type: 'Point', coordinates: [1,-1]};
+        const seller_id = res.locals.decodedToken.userId;
+        const geoPoint = await axios(`/listing/location/${req.body.location}`);
+        const geoPointLocation = geoPoint.data;
         const response = await axios.post("/listing",{
                     title: req.body.title,
-                    //Temporary Seller ID in post. Will be retrieved from JWT
-                    seller_id: req.body.seller_id,
+                    seller_id: seller_id,
                     price: req.body.price,
-                    location: location,
-                    category: req.body.category || null,
+                    location: geoPointLocation,
+                    postal_code: req.body.location,
+                    category: req.body.category
                 });
                 res.json(response.data);
     }

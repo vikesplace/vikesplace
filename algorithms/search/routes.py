@@ -17,11 +17,14 @@ async def root():
 @app.get("/search")
 async def search(
     query: str = Query(None),
-    location: Annotated[list[float], Query(min_length=2, max_length=2)] = [48.437326, -123.329773],
+    # location: Annotated[list[float], Query(min_length=2, max_length=2)] = [48.437326, -123.329773],
+    latitude: float = 48.437326,
+    longitude: float = -123.329773,
     category: str = Query(None),
     status: str = Query(None)
 ):
     # Assuming es_request.search can handle these parameters
+    location = (latitude, longitude)
     results = es_request.search(query, location, category, status)
     return {
         "status": 200,
