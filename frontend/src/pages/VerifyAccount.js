@@ -6,12 +6,13 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import AuthService from '../services/AuthService';
 
 
 function VerifyAccount() {
     const location = useLocation();
+    const navigate = useNavigate();
     const jwt = location.search.replace("?jwt=", "");
     const authService = new AuthService();
     
@@ -118,14 +119,19 @@ function VerifyAccount() {
         var validForm = validateUsername() && validatePassword() && validateConfirmPassword() && validatePostalCode();
         if (validForm) {
             let response = authService.verify(jwt, username, password, postalCode);
-            if (response !== undefined) {
+            if (response !== undefined && response.data !== undefined) {
                 let message = response.data.message;
                 if (message !== undefined) {
                     // TODO, use exact error messages
                     if (message.includes("username")) {
                         setUsernameError("Username is already taken, please choose another");
                     }
+
+                    navigate("/verified");
                 }
+            } else {
+                console.log(response)
+                navigate("/verified");
             }
             
         }
