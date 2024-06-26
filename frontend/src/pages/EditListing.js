@@ -14,6 +14,8 @@ const listings = [
   { id: '3',title: 'Another listings for sale', price: '98765432.10', location: 'V9V 9W9', category: 'Furniture', status: 'AVAILABLE' }
 ];
 
+
+
 function EditListing() {
   const { id } = useParams();
 
