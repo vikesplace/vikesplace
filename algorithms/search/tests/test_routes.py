@@ -1,6 +1,7 @@
 from fastapi.testclient import TestClient
 from search.routes import app
 from fastapi import status
+import search.mongodb_request as mongodb_request
 
 client = TestClient(app)
 
@@ -122,7 +123,7 @@ def test_search_user_history():
 
 def test_search_invalid_user_history():
     headers = {"Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"} # Assuming a valid token
-    user_id = 5
+    user_id = 321
     response = client.get(f"/users/{user_id}/searches")
     response_obj = response.json()
 
@@ -143,6 +144,7 @@ def test_save_search_query_with_existing_history():
 
 def test_save_search_query_with_no_existing_history():
     user_id = 999
+    mongodb_request.delete_search_document(user_id) # clears off search history from previous test iterations
     response = client.post(f"/users/{user_id}/searches", json={"query":"air fryer"})
     response_obj = response.json()
 
