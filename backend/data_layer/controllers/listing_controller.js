@@ -49,11 +49,13 @@ export const getSortedListings = async (req, res) => {
 
 export const createListing = async (req, res) => {
   try {
+    const coordinate = { type: 'Point', coordinates: [req.body.location.latitude,req.body.location.longitude]}
     const createResult = await Listing.create({
       seller_id: req.body.seller_id,
       title: req.body.title,
       price: req.body.price,
-      location: req.body.location,
+      location: coordinate,
+      postal_code: req.body.postal_code,
       status: "AVAILABLE",
       category: req.body.category,
     });
