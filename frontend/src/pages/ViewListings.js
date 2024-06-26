@@ -30,24 +30,24 @@ function ViewListings() {
   const dataService = new DataService();
   const navigate = useNavigate();
 
+  // TODO remove once api is working
+  let initialListings = SAMPLE_DATA;
 
   const [sortCategory, setSortCategory] = useState('');
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
   const [statusFilter, setStatusFilter] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
   const [location, setLocation] = useState('Fetching...');
+  // TODO change intial state once api's working
+  const [listings, setListings] = useState(initialListings);
   const [openFilterDialog, setOpenFilterDialog] = useState(false);
   const [openLocationDialog, setOpenLocationDialog] = useState(false);
   const [newLocation, setNewLocation] = useState('');
   const [postalCodeError, setPostalCodeError] = useState(false);
 
-  let listings = [];
   let response = dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, false); 
   if (response !== undefined) {
-    listings = response.data;
-  } else {
-    // TODO remove once we expect api to succeed
-    listings = SAMPLE_DATA;
+    setListings(response.data);
   }
 
   let currLocation = '';
@@ -74,9 +74,31 @@ function ViewListings() {
   const handleSortChange = (event) => {
     const category = event.target.value;
     setSortCategory(category);
+
+    // TODO remove all until api call once working
+    let sortedListings = [...listings];
+    switch (category) {
+      case 'price':
+        sortedListings.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+        break;
+      case 'location':
+        sortedListings.sort((a, b) => a.location.localeCompare(b.location));
+        break;
+      case 'status':
+        sortedListings.sort((a, b) => a.status.localeCompare(b.status));
+        break;
+      case 'category':
+        sortedListings.sort((a, b) => a.category.localeCompare(b.category));
+        break;
+      default:
+        sortedListings = initialListings;
+        break;
+    }
+    setListings(sortedListings);
+
     response = dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, false); 
     if (response !== undefined) {
-      listings = response.data;
+      setListings(response.data);
     } 
   };
 
@@ -94,7 +116,20 @@ function ViewListings() {
   };
 
   const applyFilters = () => {
-    listings = dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, false); 
+    // TODO remove all until api call once working
+    const filteredListings = initialListings.filter(listing => {
+      const inPriceRange = (priceRange.min === '' || parseFloat(listing.price) >= parseFloat(priceRange.min)) &&
+                          (priceRange.max === '' || parseFloat(listing.price) <= parseFloat(priceRange.max));
+      const matchesStatus = statusFilter === '' || listing.status === statusFilter;
+      const matchesCategory = categoryFilter === '' || listing.category === categoryFilter;
+      return inPriceRange && matchesStatus && matchesCategory;
+    });
+    setListings(filteredListings);
+
+    response = dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, false); 
+    if (response !== undefined) {
+      setListings(response.data);
+    } 
     setOpenFilterDialog(false);
   };
 
@@ -129,6 +164,10 @@ function ViewListings() {
     if (validatePostalCode(newLocation)) {
       setLocation(newLocation);
       // update listings based on new location 
+      let response = dataService.updateUserData(newLocation);
+      if (response !== undefined) {
+        // check error messages
+      }
       setOpenLocationDialog(false);
     }
   };
