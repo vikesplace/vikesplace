@@ -16,9 +16,11 @@ async def root():
 @app.get("/recommendations")
 async def recommendations(
     user_id: int = Query(None), 
-    location: Annotated[list[float], Query(min_length=2, max_length=2)] = [48.437326, -123.329773]
+    # location: Annotated[list[float], Query(min_length=2, max_length=2)] = [48.437326, -123.329773]
+    latitude: float = 48.437326,
+    longitude: float = -123.329773,
 ):
-    
+    location = (latitude, longitude)
     results = es_request.recommendation(
         user_id=user_id,
         user_loc=location)
