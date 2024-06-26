@@ -69,3 +69,5 @@ def test_recommender_most_popular_items():
 
     assert response.status_code == status.HTTP_200_OK
     assert len(response_obj) == 10
+    for obj in response_obj:
+        assert obj["title"] != None
