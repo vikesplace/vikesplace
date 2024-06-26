@@ -106,7 +106,7 @@ def recommendation_current_item(user_id, listing_id):
 
     results['hits']['hits'] = [x['_source'] for x in results['hits']['hits']]
     print(f"recommendation_current_item:>>>>>>>>> {results['hits']['hits']}")
-    
+
     return results['hits']['hits']
 
 
@@ -131,7 +131,8 @@ def recommendation_most_popular():
                 "_id": listing_ids
             }
         })
-
+    
+    results['hits']['hits'] = [x['_source'] for x in results['hits']['hits']]
     print(f"recommendation_most_popular:>>>>>>>>> {results['hits']['hits']}")
 
     return results['hits']['hits']
