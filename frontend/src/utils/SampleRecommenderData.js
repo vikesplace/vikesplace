@@ -36,3 +36,10 @@ export const SAMPLE_CHATS = [
     unread: 10,
   }
 ];
+
+export const SAMPLE_USER = {
+  username: "user123",
+  email: "test@uvic.ca",
+  location: "V9V9V9",
+  createDate: "2024-06-20 4:15PM"
+};

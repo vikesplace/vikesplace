@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import '../App.css';
 import { Typography } from '@mui/material';
 import DataService from '../services/DataService';
+import { SAMPLE_USER } from '../utils/SampleRecommenderData';
 
 function UserProfile() {
   const dataService = new DataService();
@@ -12,6 +13,8 @@ function UserProfile() {
   let response = dataService.getMyUserData();
   if (response !== undefined) {
     user = response.data;
+  } else{
+    user = SAMPLE_USER;
   }
 
   return (
@@ -52,7 +55,7 @@ function UserProfile() {
                Postal Code:
             </Typography> 
             <Typography variant='body2'>
-                {user.postalCode}
+                {user.location}
             </Typography> 
             <br />
             <Typography variant='h6'>
