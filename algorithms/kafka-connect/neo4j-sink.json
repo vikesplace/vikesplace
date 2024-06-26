@@ -1,0 +1,17 @@
+{
+  "name": "neo4j-sink",
+  "config": {
+    "connector.class": "streams.kafka.connect.sink.Neo4jSinkConnector",
+    "tasks.max": "1",
+    "topics": "postgres-users-Users,postgres-listings-Listings",
+    "neo4j.server.uri": "bolt://neo4j:7687",
+    "neo4j.authentication.basic.username": "neo4j",
+    "neo4j.authentication.basic.password": "neo4j_$3ng499",
+    "neo4j.topic.cypher.postgres-users-Users": "MERGE (u:User {id: event.user_id}) SET u += event.properties",
+    "neo4j.topic.cypher.postgres-listings-Listings": "MERGE (l:Listing {id: event.listing_id}) SET l += event.properties",
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.converter.schemas.enable": "false",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": "false"
+  }
+}
