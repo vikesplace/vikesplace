@@ -25,8 +25,16 @@ const transporter = nodemailer.createTransport({
 router.post('/', (req, res) => {
   const { email, callback } = req.body;
 
+  if(!email){
+    return res.status(400).json({ message: 'Email is required' });
+  }
+
   if (!email.endsWith('@uvic.ca')) {
     return res.status(400).json({ message: 'Invalid email address' });
+  }
+
+  if (!callback) {
+    return res.status(400).json({ message: 'Callback URL is required' });
   }
 
   const token = jwt.sign({ email }, jwtSecret, { expiresIn: jwtExpiry });
