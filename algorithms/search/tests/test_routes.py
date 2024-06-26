@@ -158,7 +158,9 @@ def test_search_item_inside_radius():
         "query": "Bicycle",
         "category": "Sports",
         "status": "AVAILABLE",
-        "location": [48.437326, -123.329773]
+        # "location": [48.437326, -123.329773]
+        "latitude": 48.437326,
+        "longitude": -123.329773
     }
     response = client.get("/search", headers=headers, params=params)
     response_obj = response.json()
@@ -185,7 +187,9 @@ def test_search_item_outside_radius():
         "query": "Biccle",
         "category": "Sports",
         "status": "AVAILABLE",
-        "location": [0.0, 0.0]
+        # "location": [0.0, 0.0]
+        "latitude": 0.0,
+        "longitude": 0.0
     }
     response = client.get("/search", headers=headers, params=params)
     response_obj = response.json()

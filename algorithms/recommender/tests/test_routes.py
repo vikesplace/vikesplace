@@ -17,7 +17,9 @@ def test_recommender_with_activity_history():
         "Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"}
     params = {
         "user_id": user_id,
-        "location": [48.3784,-123.4156],
+        # "location": [48.3784,-123.4156],
+        "latitude": 48.3784,
+        "longitude": -123.4156
     }
     response = client.get("/recommendations", headers=headers, params=params)
     response_obj = response.json()
@@ -35,7 +37,9 @@ def test_recommender_with_no_activity_history():
         "Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"}
     params = {
         "user_id": user_id,
-        "location": [48.467289,-123.404489],
+        # "location": [48.467289,-123.404489],
+        "latitude": 48.467289,
+        "longitude": -123.404489
     }
     response = client.get("/recommendations", headers=headers, params=params)
     response_obj = response.json()
