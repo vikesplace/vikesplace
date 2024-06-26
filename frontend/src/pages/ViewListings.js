@@ -36,6 +36,7 @@ function ViewListings() {
   const [openFilterDialog, setOpenFilterDialog] = useState(false);
   const [openLocationDialog, setOpenLocationDialog] = useState(false);
   const [newLocation, setNewLocation] = useState('');
+  const [postalCodeError, setPostalCodeError] = useState(false);
 
   const currLocation = 'V9VW9W';  //Change later based on api return 
 
@@ -109,10 +110,23 @@ function ViewListings() {
     setOpenLocationDialog(false);
   };
 
+  const validatePostalCode = (code) => {
+    var format = new RegExp("^[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]$");
+    if (!format.test(code)) {
+        setPostalCodeError(true);
+        return false;
+    } else {
+        setPostalCodeError(false);
+        return true;
+    }
+  };
+
   const applyNewLocation = () => {
-    setLocation(newLocation);
-    // update listings based on new location 
-    setOpenLocationDialog(false);
+    if (validatePostalCode(newLocation)) {
+      setLocation(newLocation);
+      // update listings based on new location 
+      setOpenLocationDialog(false);
+    }
   };
 
   return (
@@ -224,6 +238,8 @@ function ViewListings() {
               onChange={(e) => setNewLocation(e.target.value)}
               fullWidth
               sx={{ mt: 2 }}
+              error={postalCodeError}
+              helperText={postalCodeError ? "Invalid postal code format" : ""}
             />
           </DialogContent>
           <DialogActions>
