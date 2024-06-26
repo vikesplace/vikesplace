@@ -1,4 +1,5 @@
 import express from "express";
+import 'dotenv/config'
 import messages from "./routes/messages.js";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
@@ -8,9 +9,6 @@ const PORT = process.env.PORT || 5000;
 const jwtSecret = process.env.ACCESS_TOKEN_SECRET;
 const app = express();
 
-app.get("/", (req, res) => {
-  res.json({ message: "Hello World" });
-});
 
 app.use(cookieParser());
 app.use(express.json());
