@@ -100,6 +100,7 @@ function Login() {
                                     id="username"
                                     label="Username"
                                     name="username"
+                                    placeholder="Enter your username"
                                     value={username}
                                     onChange={handleUsernameChange}
                                     onBlur={handleUsernameBlur}
@@ -117,6 +118,7 @@ function Login() {
                                     label="Password"
                                     type="password"
                                     id="password"
+                                    placeholder="Enter your password"
                                     value={password}
                                     onChange={handlePasswordChange}
                                     onBlur={handlePasswordBlur}
@@ -155,4 +157,3 @@ function Login() {
 }
 
 export default Login;
-
