@@ -4,7 +4,7 @@ const DATA_LAYER = process.env.DATA_LAYER;
 
 export const getSearchResults = async (req, res) => {
   try {
-    if (req.query.search == null) {
+    if (req.query.query == null) {
       res.status(500).json({ message: "internal server error" });
     }
 
@@ -12,11 +12,11 @@ export const getSearchResults = async (req, res) => {
     const url = `${DATA_LAYER}user/${userId}`;
     const user = await axios.get(url);
 
-    const search = req.query.search;
+    const requestParamsObject = {};
+    requestParamsObject.query = req.query.query;
     const longitude = user.data.user.location.coordinates[0];
     const latitude = user.data.user.location.coordinates[1];
 
-    const requestParamsObject = {};
     requestParamsObject.query = search;
     requestParamsObject.longitude = longitude;
     requestParamsObject.latitude = latitude;
@@ -28,13 +28,21 @@ export const getSearchResults = async (req, res) => {
     const response = await axios.get(`${ALG_SEARCH}search`, {
       params: requestParamsObject,
     });
-    if (response.status == 200) {
-      res.json(response.data);
-    } else {
-      res.status(500).json({ message: "internal server error" });
+    const listings = response.data.results.listings.map((listing) => {
+      listing.location = listing.postal_code;
+      delete listing.postal_code;
+      return listing;
+    });
+
+    if(response.data.status == 200){
+      res.json(listings);
     }
+    else{
+      res.json({message: "Failed to get listings"});
+    }
+    
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: "internal server error" });
+    res.json({message: err});
   }
 };
