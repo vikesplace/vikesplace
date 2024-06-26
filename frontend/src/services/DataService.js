@@ -94,13 +94,10 @@ class DataService {
         .catch(httpErrorHandler);
     }
 
-    search(query, category, status) {
-        let searchString = "query=" + query + "&category=" + category + "&status=" + status;
-        axios.get(API_URL + 'search?q=' + { searchString }, {
+    search(query) {
+        axios.get(API_URL + 'search?query=' + { query }, {
             headers: authHeader(),
-            query,
-            category,
-            status
+            query
         })
         .catch(httpErrorHandler);
     }

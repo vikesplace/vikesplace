@@ -6,10 +6,13 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import { useLocation } from 'react-router-dom';
 import AuthService from '../services/AuthService';
 
 
 function VerifyAccount() {
+    const location = useLocation();
+    const jwt = location.search.replace("?jwt=", "");
     const authService = new AuthService();
     
     const [username, setUsername] = useState("");
@@ -98,7 +101,7 @@ function VerifyAccount() {
     }
 
     function validatePostalCode() {
-        var format = new RegExp("^[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] [0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]$");
+        var format = new RegExp("^[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ][0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]$");
         if (!format.test(postalCode)) {
             setPostalCodeError(true);
             return false;
@@ -114,7 +117,7 @@ function VerifyAccount() {
         
         var validForm = validateUsername() && validatePassword() && validateConfirmPassword() && validatePostalCode();
         if (validForm) {
-            let response = authService.verify(username, password, postalCode);
+            let response = authService.verify(jwt, username, password, postalCode);
             if (response !== undefined) {
                 let message = response.data.message;
                 if (message !== undefined) {

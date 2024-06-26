@@ -20,13 +20,15 @@ class AuthService {
 
     register(email) {
         return axios.post(API_URL + "request_account", {
-            email
+            email,
+            callback: "http://localhost:3000/verify-account?jwt="
         })
         .catch(httpErrorHandler);
     }
 
-    verify(username, password, location) {
+    verify(jwt, username, password, location) {
         return axios.post(API_URL + "verify_account", {
+            jwt,
             username,
             password,
             location
