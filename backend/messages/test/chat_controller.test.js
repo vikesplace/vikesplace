@@ -3,20 +3,22 @@ import { getChatData } from "../controller/get_chat_data";
 
 jest.mock('axios');
 
-describe("Message Routes", () => {
+describe("Chats Routes", () => {
     it("it should get chat data", async () => {
         const mockOutput = [
             {
-                chat_id: 1,
-                message_content: "Hello World",
                 listing_id: 1,
-                timestamp: "2024-06-17T06:25:41.995Z"
+                user_id_one: 1,
+                user_id_two: 2,
+                timestamp: "2024-06-17T06:25:41.995Z",
+                last_message_time: "2024-06-17T06:25:41.995Z"
             },
             {
-                message_id: 2,
-                message_content: "Hello World Again",
-                listing_id: 1,
-                timestamp: "2024-06-18T06:25:41.995Z"
+                listing_id: 2,
+                user_id_one: 1,
+                user_id_two: 2,
+                timestamp: "2024-06-17T06:25:41.995Z",
+                last_message_time: "2024-06-17T06:25:41.995Z"
             }
         ];
 
@@ -34,7 +36,7 @@ describe("Message Routes", () => {
             }),
             status: jest.fn(),
         };
-        await getAllMessages(
+        await getChatData(
             {
                 params: {
                     chatId: "1",
@@ -43,7 +45,7 @@ describe("Message Routes", () => {
         expect(responseObject).toEqual(mockOutput);
     });
 
-    it("it should fail to return all messages", async () => {
+    it("it should fail to get chat data", async () => {
         axios.get.mockImplementation(() =>
             Promise.resolve({ data: { message: "Chat id not found" }})
         );
@@ -55,7 +57,7 @@ describe("Message Routes", () => {
             }),
             status: jest.fn(),
         };
-        await getAllMessages(
+        await getChatData(
             {
                 params: {
                     chatId: "1",
