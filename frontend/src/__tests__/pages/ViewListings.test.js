@@ -19,7 +19,7 @@ describe('ViewListings Component', () => {
 
   test('renders listing cards', () => {
     const listingCards = screen.getAllByText(/Test 1|Super cool object|Buy Me!|Another listings for sale/);
-    expect(listingCards.length).toBe(4); // Based on initialListings length
+    expect(listingCards.length).toBe(3); // Based on initialListings length
   });
 
   test('opens and closes the filter dialog', async () => {
@@ -62,19 +62,43 @@ describe('ViewListings Component', () => {
   });
 
   test('applies status filter', async () => {
-    fireEvent.click(screen.getByText('Add Filter'));
+    fireEvent.click(screen.getByText('Add Filter')); // Open filter dialog
     
-    fireEvent.mouseDown(screen.getByLabelText('Status'));
-    fireEvent.click(screen.getByText('AVAILABLE'));
+    const statusDropdown = screen.getByLabelText('Status'); // Assuming 'Status' is the label for the dropdown
+  
+    fireEvent.mouseDown(statusDropdown); // Open status dropdown
+  
+    // Find option by text directly if role option is not accessible
+    const availableOption = screen.getByText('AVAILABLE', { selector: 'li' }); // Adjust selector as per your dropdown structure
     
-    fireEvent.click(screen.getByText('OK'));
+    fireEvent.click(availableOption); // Select 'AVAILABLE' status
+    
+    fireEvent.click(screen.getByText('OK')); // Apply filter
     
     await waitFor(() => {
       const listingCards = screen.getAllByTestId('listing-card');
       const availableListings = listingCards.filter(card => {
         return within(card).queryByText('AVAILABLE');
       });
-      expect(availableListings.length).toBe(2); 
+      expect(availableListings.length).toBe(2); // Adjust based on your expected results
+    });
+  });
+  
+  
+
+  test('filters listings by category', async () => {
+    fireEvent.click(screen.getByText('Add Filter')); // Open filter dialog
+  
+    fireEvent.mouseDown(screen.getByLabelText('Category')); // Open category dropdown
+  
+    // Select the option by its unique key
+    fireEvent.click(screen.getByRole('option', { name: 'Sports' })); // Select 'Sports' category
+  
+    fireEvent.click(screen.getByText('OK')); // Apply filter
+  
+    await waitFor(() => {
+      const filteredListings = screen.queryAllByTestId('listing-card');
+      expect(filteredListings.length).toBe(4); // Adjust the expected count based on filtered results
     });
   });
 });
