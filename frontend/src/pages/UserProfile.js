@@ -3,18 +3,20 @@ import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import '../App.css';
 import { Typography } from '@mui/material';
-
-const user = [
-  {
-    username: "vikesperson123",
-    email: "fakeuser@uvic.ca",
-    postalCode: "A1B 2C3",
-    createDate: "June 15, 2024",
-
-  },
-];
+import DataService from '../services/DataService';
+import { SAMPLE_USER } from '../utils/SampleRecommenderData';
 
 function UserProfile() {
+  const dataService = new DataService();
+
+  let user = {};
+  let response = dataService.getMyUserData();
+  if (response !== undefined) {
+    user = response.data;
+  } else{
+    user = SAMPLE_USER;
+  }
+
   return (
     <div className="UserProfile">
       <Container>
@@ -39,28 +41,28 @@ function UserProfile() {
               Username: 
             </Typography>   
             <Typography variant='body2'>
-              {user[0].username}
+              {user.username}
             </Typography>
             <br /> 
             <Typography variant='h6'>
                Email:
             </Typography> 
             <Typography variant='body2'>
-                {user[0].email}
+                {user.email}
             </Typography> 
             <br />
             <Typography variant='h6'>
                Postal Code:
             </Typography> 
             <Typography variant='body2'>
-                {user[0].postalCode}
+                {user.location}
             </Typography> 
             <br />
             <Typography variant='h6'>
                Date Joined:
             </Typography> 
             <Typography variant='body2'>
-                {user[0].createDate}
+                {user.createDate}
             </Typography> 
             <br />
         </Box>

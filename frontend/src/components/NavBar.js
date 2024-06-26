@@ -46,8 +46,9 @@ function NavBar() {
   };
 
   const hideButtons = location.pathname === '/login' || location.pathname === '/request-account' ||
-  location.pathname === '/check-email' || location.pathname === '/verify' || location.pathname === '/verified' ||
-  location.pathname === '/password-change';
+    location.pathname === '/check-email' || location.pathname === '/verify-account' || location.pathname === '/verified' ||
+    location.pathname === '/password-change' || location.pathname === 'password-update'   || 
+    location.pathname === 'password-updated' || location.pathname === 'check-email';
 
   return (
     <AppBar position="static">

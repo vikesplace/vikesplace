@@ -26,12 +26,11 @@ function VerifiedAccount() {
             </Typography> 
             <br /> 
             <Typography variant='body2'>
-                Click the button below to navigate to your home page
-                and begin browsing.
+                Please login, following the link below, to begin browsing.
             </Typography> 
             <br />
-            <Link to={'/'}>
-                <Button variant="contained">Home</Button>
+            <Link to={'/login'}>
+                <Button variant="contained">Login</Button>
             </Link>
         </Box>
       </Container>

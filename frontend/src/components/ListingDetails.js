@@ -8,8 +8,11 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
+import DataService from '../services/DataService.js';
 
 const ListingDetails = ({ listing }) => {
+  const dataService = new DataService();
+
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -22,9 +25,13 @@ const ListingDetails = ({ listing }) => {
   };
 
   const handleSendMessage = () => {
-    //TO DO : API call for sending message to seller
-    console.log('Sending message:', message);
-    handleClose();
+    let response = dataService.sendMessage(message);
+    if (response !== undefined) {
+      handleClose();
+    } else {
+      // TODO remove once we expect api to succeed
+      handleClose();
+    }
   };
 
   const handleChangeMessage = (event) => {

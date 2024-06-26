@@ -7,8 +7,10 @@ import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useNavigate } from 'react-router-dom';
+import AuthService from '../services/AuthService';
 
 function CompletePasswordChange() {
+    const authService = new AuthService();
     const [password, setPassword] = useState("");
     const [passwordError, setPasswordError] = useState(false);
     
@@ -40,21 +42,14 @@ function CompletePasswordChange() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
+        // const data = new FormData(event.currentTarget);
 
         var validForm = validatePassword();
 
         if (validForm) {
-            try {
-                // TODO POST
-                console.log({
-                    password: data.get("password")
-                });
-                // TODO if succeeds direct to a different page
+            let response = authService.completePasswordChange(password);
+            if (response !== undefined) {
                 navigate('/password-updated');
-            } catch (error) {
-                // TODO display error message
-                console.log(error);
             }
         }
     }

@@ -8,8 +8,11 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import { useNavigate } from 'react-router-dom';
+import AuthService from '../services/AuthService';
 
 function Login() {
+    const authService = new AuthService();
+    
     const [username, setUsername] = useState("");
     const [usernameError, setUsernameError] = useState(false);
     const [password, setPassword] = useState("");
@@ -57,22 +60,14 @@ function Login() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
+        // const data = new FormData(event.currentTarget);
 
         var validForm = validateUsername() && validatePassword();
 
         if (validForm) {
-            try {
-                // TODO POST
-                console.log({
-                    username: data.get("username"),
-                    password: data.get("password")
-                });
-                // TODO if succeeds direct to a different page
+            let response = authService.login(username, password);
+            if (response !== undefined) {
                 navigate('/');
-            } catch (error) {
-                // TODO display error message
-                console.log(error);
             }
         }
     }
