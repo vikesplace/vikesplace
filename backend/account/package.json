@@ -12,8 +12,12 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "axios": "^1.7.2",
+    "bcryptjs": "^2.4.3",
+    "data_layer": "1.0.0",
     "dotenv": "^16.4.5",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "express-validator": "^7.1.0"
   },
   "jest": {
     "transform": {
@@ -24,6 +28,8 @@
     "@babel/preset-env": "^7.24.7",
     "babel-jest": "^29.7.0",
     "jest": "^29.7.0",
+    "jsonwebtoken": "^9.0.2",
+    "nodemailer": "^6.9.14",
     "nodemon": "^3.1.0",
     "supertest": "^7.0.0"
   }

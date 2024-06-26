@@ -1,0 +1,11 @@
+# Use the official NGINX base image
+FROM nginx:latest
+
+# create app directory
+WORKDIR /app
+
+# Copy custom NGINX configuration file
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Copy website content to NGINX default directory
+COPY html /app/backend/nginx/html

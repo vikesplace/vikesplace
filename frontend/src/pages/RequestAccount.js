@@ -6,11 +6,12 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import Link from '@mui/material/Link';
 import { useNavigate } from 'react-router-dom';
 
-function Login() {
+function RequestAccount() {
     const [email, setEmail] = useState("");
-    const [emailError, setEmailError] = useState(false);
+    const [emailError, setEmailError] = useState("");
     
 
     const navigate = useNavigate();
@@ -25,11 +26,15 @@ function Login() {
     };
 
     function validateEmail() {
-        if (email.trim() === "") {
-            setEmailError(true);
+        var format = new RegExp("^[A-Z0-9a-z._%+-]+@uvic.ca$");
+        if (!format.test(email)) {
+            setEmailError("Must be a valid @uvic.ca email");
+            return false;
+        } else if (email.trim() === "") {
+            setEmailError("Email is required");
             return false;
         } else {
-            setEmailError(false);
+            setEmailError("");
             return true;
         }
     }
@@ -55,12 +60,8 @@ function Login() {
         }
     }
 
-    const handleLoginClick = () => {
-        navigate('/login');
-      };
-
     return (
-        <div className="Login">
+        <div className="RequestAccount">
             <Container>
                 <Box
                     sx={{
@@ -84,14 +85,12 @@ function Login() {
                                     fullWidth
                                     id="email"
                                     label="email@uvic.ca"
-                                    name="uvic email"
+                                    name="email"
                                     value={email}
                                     onChange={handleEmailChange}
                                     onBlur={handleEmailBlur}
                                     error={emailError}
-                                    helperText={
-                                        emailError ? "Email is required" : ""
-                                    }
+                                    helperText={emailError}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -104,22 +103,11 @@ function Login() {
                                 Request Account
                               </Button>
                             </Grid>
-                            <Grid item xs={12}>
-                              <Typography variant="body1" align="center" sx={{ mt: 1 }}>
-                                  Already have an account?
-                              </Typography>
+                            <Grid item xs={12} align="center">
+                                <Link href="/login" variant="body1" sx={{ mt: 1 }}>
+                                    Have an account already? Login
+                                </Link>
                             </Grid>
-                            <Grid item xs={12}>
-                              <Button onClick={handleLoginClick}
-                                  type="submit"
-                                  fullWidth
-                                  variant="contained"
-                                  sx={{ mt: 3, mb: 2 }}
-                              >
-                                  Go to login page
-                              </Button>
-                            </Grid>
-                            
                         </Grid>
                     </Box>
                 </Box>
@@ -128,5 +116,5 @@ function Login() {
     );
 }
 
-export default Login;
+export default RequestAccount;
 
