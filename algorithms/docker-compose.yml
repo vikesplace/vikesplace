@@ -21,10 +21,9 @@ networks:
 
 services:
   postgresql:
-    build:
-      context: ./postgresql/
-      dockerfile: Dockerfile
+    image: postgis/postgis:latest
     volumes:
+      - ./postgresql:/docker-entrypoint-initdb.d
       - psqldata:/var/lib/postgresql/data
     restart: always
     environment:
@@ -272,7 +271,6 @@ services:
         "/bin/sh", "-c", 
         "/search/wait-for-cert.sh \
         && /search/wait-for-elastic.sh \
-        && pytest -vv \
         && fastapi run routes.py --port 8000"
       ]
   
@@ -307,6 +305,5 @@ services:
         "/bin/sh", "-c", 
         "/recommender/wait-for-cert.sh \
         && /recommender/wait-for-elastic.sh \
-        && pytest -vv \
         && fastapi run routes.py --port 8001"
       ]

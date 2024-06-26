@@ -42,6 +42,10 @@ Listings.init(
       type: DataTypes.GEOMETRY('POINT'),
       allowNull: false,
     },
+    postal_code: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     status: {
       type: DataTypes.STRING,
       allowNull: false,

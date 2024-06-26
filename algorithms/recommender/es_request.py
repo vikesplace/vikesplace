@@ -68,6 +68,70 @@ def recommendation(user_id, user_loc):
 
     results = es.search(index="listings", query=q, sort=sort, from_=0, size=5)
 
-    print(results['hits']['hits'])
+    results['hits']['hits'] = [x['_source'] for x in results['hits']['hits']]
+    print(f"recommendation:>>>>>>>>> {results['hits']['hits']}")
+
+    return results['hits']['hits']
+
+
+def recommendation_current_item(user_id, listing_id):
+
+    es = Elasticsearch(
+        f"https://{ES_HOST}:{ES_PORT}/",
+        ca_certs='./ca.crt',
+        basic_auth=(ES_USER, ES_PASS)
+    )
+
+    q = {
+        "bool": {
+            "must": {
+                "more_like_this": {
+                    "fields": ["title"],
+                    "like": {"_index": "listings", "_id": f"{listing_id}"},
+                    "min_term_freq": 1,
+                    "max_query_terms": 12
+                }
+            },
+            "must_not": [
+                {
+                    "term": {
+                        "seller_id": user_id
+                    }
+                }
+            ]
+        }
+    }
+
+    results = es.search(index="listings", query=q, from_=0, size=5)
+
+    results['hits']['hits'] = [x['_source'] for x in results['hits']['hits']]
+    print(f"recommendation_current_item:>>>>>>>>> {results['hits']['hits']}")
+    
+    return results['hits']['hits']
+
+
+def recommendation_most_popular():
+    es = Elasticsearch(
+        f"https://{ES_HOST}:{ES_PORT}/",
+        ca_certs='./ca.crt',
+        basic_auth=(ES_USER, ES_PASS)
+    )
+    
+    most_pop_items = mongodb_request.get_top_10_popular()
+
+    listing_ids = []
+
+    for item in most_pop_items:
+        listing_ids.append(item['listing_id'])
+
+    results = es.search(
+        index="listings", 
+        query={
+            "terms": {
+                "_id": listing_ids
+            }
+        })
+
+    print(f"recommendation_most_popular:>>>>>>>>> {results['hits']['hits']}")
 
     return results['hits']['hits']

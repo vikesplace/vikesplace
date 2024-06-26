@@ -88,6 +88,9 @@ def search(query, location, category=None, status=None):
 
     results["users"] = es.search(index="users", query=query_users,
                                  allow_partial_search_results=True)['hits']['hits']
+    
+    results['listings'] = [x['_source'] for x in results['listings']]
+    results['users'] = [x['_source'] for x in results['users']]
 
     print("====================>>>  number of results item:  ",
           len(results["listings"]))
