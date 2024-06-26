@@ -1,4 +1,5 @@
 import axios from "axios"
+import { redirect } from "react-router-dom";
 
 export default function httpErrorHandler(error) {
     if (error === null) throw new Error('Unrecoverable error!! Error is null!')
@@ -20,8 +21,8 @@ export default function httpErrorHandler(error) {
             if (statusCode === 404) {
                 console.log('The requested resource does not exist or has been deleted')
             } else if (statusCode === 401) {
-                console.log('Please login to access this resource')
-                //redirect user to login
+                console.log('Please login to access this resource');
+                redirect("/login");
             }
         } else if (request) {
             //The request was made but no response was received, `error.request` is an instance of XMLHttpRequest in the browser and an instance of http.ClientRequest in Node.js
