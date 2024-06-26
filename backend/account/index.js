@@ -5,12 +5,17 @@ import passwordRouter from "./routes/password.js";
 import verifyAccountRouter from "./routes/verify_account.js";
 import jwt from "jsonwebtoken";
 import axiosConfig from "./config/axiosConfig.js";
+import cors from "cors" 
 
 const PORT = process.env.PORT || 5000;
 const jwtSecret = process.env.ACCESS_TOKEN_SECRET;
 const app = express();
 
 // cution: middleware chain matches the route from top to buttom
+app.use(cors({
+  origin:["http://localhost:3000"],
+  credentials:true
+}));
 
 app.get("/", (req, res) => {
   res.json({ message: "Hello Worldfdg" });
