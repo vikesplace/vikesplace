@@ -11,25 +11,28 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-  
+import DataService from '../services/DataService';
+import { SAMPLE_DATA } from '../utils/SampleRecommenderData';
+
 const categories = [
-  { value: 'Furniture', label: 'Furniture' },
-  { value: 'Office Supplies', label: 'Office Supplies' },
-  { value: 'Electronics', label: 'Electronics' },
-  {value:'Vehicles', label:'Vehicles'},
-  {value:'Phones',label:'Phones'},
-  {value:'Entertainment', label: 'Entertainment'},
-  {value:'Garden', label:'Garden'},
-  {value:'Outdoor',label:'Outdoor'},
-  {value:'Sports',label:'Sports'},
-  {value:'Kicthen Supplies',label:'Kitchen Supplies'},
-  {value:'Musical Instruments',value:'Musical Instruments'},
-  {value:'Apparel',label:'Apparel'},
-  {value: 'Beauty',label:'Beauty'},
-  {value:'Health',label:'Health'}
+    { value: 'Furniture', label: 'Furniture' },
+    { value: 'Office Supplies', label: 'Office Supplies' },
+    { value: 'Electronics', label: 'Electronics' },
+    { value:'Vehicles', label:'Vehicles'},
+    { value:'Phones', label:'Phones'},
+    { value:'Entertainment', label: 'Entertainment'},
+    { value:'Garden', label:'Garden'},
+    { value:'Outdoor', label:'Outdoor'},
+    { value:'Sports', label:'Sports'},
+    { value:'Kicthen Supplies', label:'Kitchen Supplies'},
+    { value:'Musical Instruments', label:'Musical Instruments'},
+    { value:'Apparel', label:'Apparel'},
+    { value: 'Beauty', label:'Beauty'},
+    { value:'Health', label:'Health'}
 ];
 
 function CreateListing() {
+    const dataService = new DataService();
 
     let navigate = useNavigate();
 
@@ -97,7 +100,7 @@ function CreateListing() {
     }
 
     function validatePostalCode() {
-        var format = new RegExp("^[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]$");
+        var format = new RegExp("^[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ][0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]$");
         if (!format.test(postalCode)) {
             setPostalCodeError(true);
             return false;
@@ -117,23 +120,19 @@ function CreateListing() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
+        // const data = new FormData(event.currentTarget);
 
         var validForm = validateTitle() && validatePrice() && validatePostalCode() && validateCategory();
 
         if (validForm) {
-            try {
-                // TODO POST 
-                console.log({
-                    title: data.get("title"),
-                    price: data.get("price"),
-                    postalCode: data.get("postalCode"),
-                    category: category
-                });
+            let response = dataService.createListing(title, price, postalCode, "AVAILABLE", category); 
+            if (response !== undefined) {
                 navigate(`/manage-listings`);
-            } catch (error) {
-                // TODO display error message
-                console.log(error);
+            } else {
+                // TODO remove once we expect api to succeed
+                let id = SAMPLE_DATA.length + 1;
+                SAMPLE_DATA.push({ id: id, title: title, price: price, location: 'postalCode', status: 'AVAILABLE', category: category })
+                navigate(`/manage-listings`);
             }
         }
     }
@@ -199,7 +198,7 @@ function CreateListing() {
                         onBlur={handlePostalCodeBlur}
                         error={postalCodeError}
                         helperText={
-                            postalCodeError ? "Please enter a valid postal code (format: A1A 1A1)" : ""
+                            postalCodeError ? "Please enter a valid postal code with format A1A1A1" : ""
                         }
                     />
                 </Grid>

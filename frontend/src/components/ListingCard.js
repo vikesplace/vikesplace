@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 
 export default function ListingCard({ id, title, price, location, status, category}) {
   return (
-    <Card>
+    <Card data-testid="listing-card">
       <CardActionArea component={Link} to={`/listings/${id}`}>
         <CardHeader title={title} subheader={category}/>
         <CardContent>

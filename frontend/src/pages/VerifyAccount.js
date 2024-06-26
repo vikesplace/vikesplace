@@ -6,9 +6,16 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import { useNavigate, useLocation } from 'react-router-dom';
+import AuthService from '../services/AuthService';
 
 
 function VerifyAccount() {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const jwt = location.search.replace("?jwt=", "");
+    const authService = new AuthService();
+    
     const [username, setUsername] = useState("");
     const [usernameError, setUsernameError] = useState("");
     const [password, setPassword] = useState("");
@@ -95,7 +102,7 @@ function VerifyAccount() {
     }
 
     function validatePostalCode() {
-        var format = new RegExp("^[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] [0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]$");
+        var format = new RegExp("^[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ][0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]$");
         if (!format.test(postalCode)) {
             setPostalCodeError(true);
             return false;
@@ -107,23 +114,26 @@ function VerifyAccount() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
+        // const data = new FormData(event.currentTarget);
         
         var validForm = validateUsername() && validatePassword() && validateConfirmPassword() && validatePostalCode();
         if (validForm) {
-            // TODO get email from JWT
-            try {
-                // TODO POST 
-                console.log({
-                    username: data.get("username"),
-                    password: data.get("password"),
-                    postalCode: data.get("postalCode"),
-                });
-                // TODO if succeeds direct to /verified page
-            } catch (error) {
-                // TODO check POST response to ensure the error is about username
-                setUsernameError("This username has already been chosen");
+            let response = authService.verify(jwt, username, password, postalCode);
+            if (response !== undefined && response.data !== undefined) {
+                let message = response.data.message;
+                if (message !== undefined) {
+                    // TODO, use exact error messages
+                    if (message.includes("username")) {
+                        setUsernameError("Username is already taken, please choose another");
+                    }
+
+                    navigate("/verified");
+                }
+            } else {
+                console.log(response)
+                navigate("/verified");
             }
+            
         }
     }
     
@@ -207,7 +217,7 @@ function VerifyAccount() {
                         onBlur={handlePostalCodeBlur}
                         error={postalCodeError}
                         helperText={
-                            postalCodeError ? "Please enter a valid postal code (format: A1A 1A1)" : ""
+                            postalCodeError ? "Please enter a valid postal code with format A1A1A1" : ""
                         }
                     />
                 </Grid>

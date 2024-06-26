@@ -18,34 +18,46 @@ import '../App.css';
 import ListingCard from '../components/ListingCard';
 import SearchBar from '../components/SearchBar';
 import { Typography } from '@mui/material';
-
-const initialListings = [
-  { id: '4', title: 'Test 1', price: '2.00', location: 'V9VW9W', status: 'AVAILABLE', category: 'Sports' },
-  { id: '10', title: 'Super cool object', price: '3.45', location: 'V9VW9W', status: 'SOLD', category: 'Health' },
-  { id: '100', title: 'Buy Me!', price: '1234.56', location: 'V9VW9W', status: 'AVAILABLE', category: 'Office Supplies' },
-  { id: '3', title: 'Another listing for sale', price: '98765432.10', location: 'V9VW9W', status: 'AVAILABLE', category: 'Sports' },
-  
-];
+import DataService from '../services/DataService';
+import { SAMPLE_DATA } from '../utils/SampleRecommenderData';
 
 const categories = [
   'Electronics', 'Phones', 'Vehicles', 'Entertainment', 'Garden', 'Outdoor', 'Sports', 'Kitchen Supplies', 'Furniture', 'Musical Instruments', 'Office Supplies', 'Apparel', 'Books', 'Beauty', 'Health'
 ];
 
+
 function ViewListings() {
+  const dataService = new DataService();
   const navigate = useNavigate();
+
+  // TODO remove once api is working
+  let initialListings = SAMPLE_DATA;
 
   const [sortCategory, setSortCategory] = useState('');
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
   const [statusFilter, setStatusFilter] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
   const [location, setLocation] = useState('Fetching...');
+  // TODO change intial state once api's working
   const [listings, setListings] = useState(initialListings);
   const [openFilterDialog, setOpenFilterDialog] = useState(false);
   const [openLocationDialog, setOpenLocationDialog] = useState(false);
   const [newLocation, setNewLocation] = useState('');
   const [postalCodeError, setPostalCodeError] = useState(false);
 
-  const currLocation = 'V9VW9W';  //Change later based on api return 
+  let response = dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, false); 
+  if (response !== undefined) {
+    setListings(response.data);
+  }
+
+  let currLocation = '';
+  response = dataService.getMyUserData();
+  if (response !== undefined) {
+    currLocation = response.data;
+  } else {
+    // TODO remove once we expect api to succeed
+    currLocation = "V8V2G4"
+  }
 
   useEffect(() => {
     setTimeout(() => {
@@ -53,6 +65,7 @@ function ViewListings() {
       // update listings after location
     }, 1000);
   }, []);
+
 
   const handleListingClick = (id) => {
     navigate(`/listings/${id}`);
@@ -62,6 +75,7 @@ function ViewListings() {
     const category = event.target.value;
     setSortCategory(category);
 
+    // TODO remove all until api call once working
     let sortedListings = [...listings];
     switch (category) {
       case 'price':
@@ -81,6 +95,11 @@ function ViewListings() {
         break;
     }
     setListings(sortedListings);
+
+    response = dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, false); 
+    if (response !== undefined) {
+      setListings(response.data);
+    } 
   };
 
   const handlePriceRangeChange = (event) => {
@@ -97,6 +116,7 @@ function ViewListings() {
   };
 
   const applyFilters = () => {
+    // TODO remove all until api call once working
     const filteredListings = initialListings.filter(listing => {
       const inPriceRange = (priceRange.min === '' || parseFloat(listing.price) >= parseFloat(priceRange.min)) &&
                           (priceRange.max === '' || parseFloat(listing.price) <= parseFloat(priceRange.max));
@@ -105,6 +125,11 @@ function ViewListings() {
       return inPriceRange && matchesStatus && matchesCategory;
     });
     setListings(filteredListings);
+
+    response = dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, false); 
+    if (response !== undefined) {
+      setListings(response.data);
+    } 
     setOpenFilterDialog(false);
   };
 
@@ -139,6 +164,10 @@ function ViewListings() {
     if (validatePostalCode(newLocation)) {
       setLocation(newLocation);
       // update listings based on new location 
+      let response = dataService.updateUserData(newLocation);
+      if (response !== undefined) {
+        // check error messages
+      }
       setOpenLocationDialog(false);
     }
   };
@@ -191,7 +220,7 @@ function ViewListings() {
             </Typography>
           }
           {listings.map((listing) => (
-            <div key={'div' + listing.id} onClick={() => handleListingClick(listing.id)}>
+            <div key={listing.id} data-testid="listing-card" onClick={() => handleListingClick(listing.id)}>
               <ListingCard
                 id={listing.id}
                 title={listing.title}
@@ -222,7 +251,7 @@ function ViewListings() {
               name="max"
               value={priceRange.max}
               onChange={handlePriceRangeChange}
-              sx={{ mr: 2, mt: 2 }}
+              sx={{ mt: 2 }}
               fullWidth
             />
             <FormControl sx={{ minWidth: 120, mt: 2, width: '100%' }}>
