@@ -10,8 +10,12 @@ class AuthService {
                 username,
                 password
             }).catch(httpErrorHandler);
-        if (response.data.accessToken) {
-            localStorage.setItem("user", JSON.stringify(response.data));
+        try {
+            if (response.data.accessToken) {
+                localStorage.setItem("user", JSON.stringify(response.data));
+            }
+        } catch (error) {
+            console.log("Cannot save access");
         }
         return response;
     }
