@@ -2,8 +2,9 @@ import axios from 'axios';
 
 export const getChatIds = async (req, res) => {
     try {
-        const user_id = res.locals.decodedToken.user_id;
-        const response = await axios.get(`/chats`, {
+        const user_id = res.locals.decodedToken.userId;
+        console.log(user_id);
+        const response = await axios.get(`/message/chats`, {
             params: { user_id: user_id },
           });
           if (response.status == 200) {

@@ -29,7 +29,6 @@ export const getAllMessages = async (req, res) => {
 
 export const getChatIds = async (req, res) => {
     try {
-        console.log(req.query.user_id);
         const chatIds1 = await Chats.findAll
         ({
             where: {
