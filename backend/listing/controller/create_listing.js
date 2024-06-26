@@ -13,7 +13,7 @@ export const createListing = async (req, res) => {
                     category: req.body.category
                 });
                 res.json(response.data);
-    }
+    } 
     catch(err){
         console.log(err);
     }
