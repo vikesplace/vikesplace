@@ -42,6 +42,11 @@ Chats.init(
         allowNull: false,
         defaultValue: DataTypes.NOW,
       },
+      last_message_time: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+      },
     },
     {
       sequelize,
