@@ -1,21 +1,51 @@
 import React from 'react';
-import { render, fireEvent, screen, within } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import MessageHistory from '../../pages/MessageHistory';
-import { SAMPLE_LISTING } from '../TestData';
 
-describe('MessageHistory page', () => {
+const renderWithRouter = (ui, { route = '/' } = {}) => {
+  window.history.pushState({}, 'Test page', route);
+  return render(
+    <MemoryRouter initialEntries={[route]}>
+      <Routes>
+        <Route path="/message-history/:id" element={ui} />
+      </Routes>
+    </MemoryRouter>
+  );
+};
 
-    beforeEach(() => {
-        render(
-            <Router>
-                <MessageHistory />
-            </Router>
-        );
-    });
-    
-    test('renders page', () => {
-    });
+beforeAll(() => {
+  window.alert = jest.fn();
+});
 
+describe('MessageHistory Component', () => {
+  test('renders without crashing', () => {
+    renderWithRouter(<MessageHistory />, { route: '/message-history/3' });
+  });
+
+  test('displays the correct chat information', () => {
+    renderWithRouter(<MessageHistory />, { route: '/message-history/3' });
+
+    expect(screen.getByText(/Message .* about .*/)).toBeInTheDocument();
+    expect(screen.getByText(/I'm interested in buying this item.../)).toBeInTheDocument();
+    expect(screen.getByText(/Could I ask for a \$5 discount\?/)).toBeInTheDocument();
+    expect(screen.getByText(/How long have you had this item\?/)).toBeInTheDocument();
+    expect(screen.getByText(/I've had it for 2 years, and it has been very useful to me. I'm glad you're interested in it.../)).toBeInTheDocument();
+    expect(screen.getByText(/I can give you \$2 off if that works\?/)).toBeInTheDocument();
+    expect(screen.getByText(/Yes that works. Are you comfortable meeting at the library\?/)).toBeInTheDocument();
+    expect(screen.getByText(/Yes! That works for me/)).toBeInTheDocument();
+  });
+
+  test('sends a new message when clicking the send button', () => {
+    renderWithRouter(<MessageHistory />, { route: '/message-history/3' });
+
+    const inputElement = screen.getByPlaceholderText('Type here...');
+    const sendButton = screen.getByText('Send');
+
+    fireEvent.change(inputElement, { target: { value: 'New message' } });
+    fireEvent.click(sendButton);
+
+    expect(window.alert).toHaveBeenCalledWith('Sending... New message');
+  });
 });
