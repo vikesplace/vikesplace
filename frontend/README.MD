@@ -1,41 +1,78 @@
 # Welcome to Vikesplace Frontend!
 
+## Dependencies
+- Node.js (latest version)
+- Docker Desktop
+- Git
+
 ## Run the App
 
-### 1. Open Docker Hub Desktop
+### Just Frontend
 
-### 2. Run `docker-compose up` in Project Directory
+1. Navigate to vikesplace/frontend folder (the project directory)
 
-Note: Project Directory is \vikesplace\frontend\
+2. Run `npm install` (the first time, and after updates to package.json) to ensure all dependencies are available.
 
-This will take approximately 2 minutes to run. Once complete, the frontend application is running on a docker container.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+3. Use `npm start` to run application in development mode.
+
+4. Open [http://localhost:3000](http://localhost:3000) to view it in your browser (it should open automatically).
 
 
-## Available Scripts
+### Frontend with Docker
 
-_(Modifed from Create React App default README.MD)_
+1. Navigate to vikesplace/frontend folder (the project directory)
 
-In the project directory (\vikesplace\frontend\\), you can run:
+2. Ensure Docker Desktop is open
 
-### `npm start`
+3. Run `docker-compose up --build` in project directory
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Note: this will take about 5 minutes to run, as `npm install` needs to run every time. Once complete, frontend application is running on a docker container. 
 
-If you would like to run the application this way, you will need to run `npm install` to ensure all dependencies are available.
+4. Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-### `npm test`
+5. Close docker once done testing application, run `docker-compose down -v` to ensure ports are available for other projects.
 
-Launches the test runner in the interactive watch mode.
 
-### `npm run build`
+### Frontend Tests
 
-Builds the app for production to the `build` folder.\
-Your app is ready to be deployed!
+1. Navigate to vikesplace/frontend folder (the project directory)
 
-### `npm run eject`
+2. Run `npm install` (the first time, and after updates to package.json) to ensure all dependencies are available.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+3. Run `npm test`
 
-Do not run this command! It allows for customized development with configuration files and transitive dependencies, but we do not intend to use it at this time.
+
+### Frontend + Backend Integration
+
+1. Make the following file changes:
+   1. In the /backend folder, update .env to include EMAIL, APP_PASSWORD, REFRESH_TOKEN_SECRET
+   
+   Note: to reduce security concerns these are shared on our Discord, not on GitHub.
+
+   2. In backend/nginx/nginx.conf comment three lines, from `location /search {}`
+
+   Note: this is due to conflicts with naming in the recommender
+
+2. Open Docker Desktop
+
+3. In the vikesplace/backend directory, run `docker-compose up --build`
+
+Note: wait until all backend containers are running, about 1-2 minutes.
+- Ensure postal_code_script has run completely after datalayer was up and running (usually choose to run it again just to make sure, it will auto shutoff once done)
+- Ensure data_layer and nginx are both running as all api calls rely on them
+- To shut off all containers once done testing, run `docker-compose down -v`
+
+4. In the vikesplace/frontend directory complete the "Just Frontend" steps
+
+
+### Integrated Application (All in Docker)
+
+1. Open Docker Desktop
+
+2. Run `docker-compose up --build` in vikesplace
+
+Note: this takes anywhere from 5-20 minutes. Not recommended if you are developing.
+
+3. In docker, ensure that postal_code_scripts has completely run (if unsure, try running again, will shutoff automatically once complete)
+
+4. Should be able to access all areas of application.
