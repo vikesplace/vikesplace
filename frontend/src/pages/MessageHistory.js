@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography';
 import "react-chat-elements/dist/main.css";
 import '../App.css';
 import DataService from '../services/DataService';
+import { SAMPLE_CHATS } from '../utils/SampleRecommenderData';
 
 function MessageHistory() {
 
@@ -21,11 +22,46 @@ function MessageHistory() {
     let response = dataService.getChatInformation(id);
     if (response !== undefined) {
         chatInfo = response.data;
+    } else {
+        // TODO remove once api is expected to return a result
+        chatInfo = SAMPLE_CHATS.find((chat) => chat.id.toString() === id);
     }
 
     response = dataService.getChatMessages(id);
     if (response !== undefined) {
         messages = response.data;
+    } else {
+        // TODO remove once api is expected to return a result
+        messages = [
+            {
+              sender:chatInfo.title,
+              content:"I'm interested in buying this item...",
+            },
+            {
+                sender:chatInfo.title,
+                content:"Could I ask for a $5 discount?",
+            },
+            {
+                sender:chatInfo.title,
+                content:"How long have you had this item?",
+            },
+            {
+                sender:"Test User",
+                content:"I've had it for 2 years, and it has been very useful to me. I'm glad you're interested in it...",
+            },
+            {
+                sender:"Test User",
+                content:"I can give you $2 off if that works?",
+            },
+            {
+                sender:chatInfo.title,
+                content:"Yes that works. Are you comfortable meeting at the library?",
+            },
+            {
+                sender:"Test User",
+                content:"Yes! That works for me",
+            }
+          ];;
     }
     
     let messagesToDisplay = [];

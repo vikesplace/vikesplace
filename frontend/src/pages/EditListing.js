@@ -6,8 +6,7 @@ import Typography from '@mui/material/Typography';
 import ManageListing from '../components/ManageListing.js';
 import '../App.css';
 import DataService from '../services/DataService.js';
-
-
+import { SAMPLE_DATA } from '../utils/SampleRecommenderData.js';
 
 function EditListing() {
   const dataService = new DataService();
@@ -18,6 +17,9 @@ function EditListing() {
   let response = dataService.getListing(id);
   if (response !== undefined) {
     listing = response.data;
+  } else {
+    // TODO remove once we expect api to succeed
+    listing = SAMPLE_DATA.find((listing) => listing.id === id);
   }
 
   if (!listing) {

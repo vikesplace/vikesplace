@@ -129,7 +129,7 @@ export default function ManageListing({ listing }) {
     }
 
     function validatePostalCode() {
-        var format = new RegExp("^[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]$");
+        var format = new RegExp("^[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ][0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]$");
         if (!format.test(postalCode)) {
             setPostalCodeError(true);
             return false;
@@ -242,7 +242,7 @@ export default function ManageListing({ listing }) {
                         onBlur={handlePostalCodeBlur}
                         error={postalCodeError}
                         helperText={
-                            postalCodeError ? "Please enter a valid postal code (format: A1A 1A1)" : ""
+                            postalCodeError ? "Please enter a valid postal code with format A1A1A1" : ""
                         }
                     />
                 </Grid>

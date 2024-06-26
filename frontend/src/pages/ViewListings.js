@@ -19,6 +19,7 @@ import ListingCard from '../components/ListingCard';
 import SearchBar from '../components/SearchBar';
 import { Typography } from '@mui/material';
 import DataService from '../services/DataService';
+import { SAMPLE_DATA } from '../utils/SampleRecommenderData';
 
 const categories = [
   'Electronics', 'Phones', 'Vehicles', 'Entertainment', 'Garden', 'Outdoor', 'Sports', 'Kitchen Supplies', 'Furniture', 'Musical Instruments', 'Office Supplies', 'Apparel', 'Books', 'Beauty', 'Health'
@@ -44,13 +45,19 @@ function ViewListings() {
   let response = dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, false); 
   if (response !== undefined) {
     listings = response.data;
-  } 
+  } else {
+    // TODO remove once we expect api to succeed
+    listings = SAMPLE_DATA;
+  }
 
   let currLocation = '';
   response = dataService.getMyUserData();
   if (response !== undefined) {
     currLocation = response.data;
-  } 
+  } else {
+    // TODO remove once we expect api to succeed
+    currLocation = "V8V2G4"
+  }
 
   useEffect(() => {
     setTimeout(() => {

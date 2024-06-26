@@ -211,7 +211,7 @@ function VerifyAccount() {
                         onBlur={handlePostalCodeBlur}
                         error={postalCodeError}
                         helperText={
-                            postalCodeError ? "Please enter a valid postal code (format: A1A 1A1)" : ""
+                            postalCodeError ? "Please enter a valid postal code with format A1A1A1" : ""
                         }
                     />
                 </Grid>

@@ -28,6 +28,9 @@ const ListingDetails = ({ listing }) => {
     let response = dataService.sendMessage(message);
     if (response !== undefined) {
       handleClose();
+    } else {
+      // TODO remove once we expect api to succeed
+      handleClose();
     }
   };
 

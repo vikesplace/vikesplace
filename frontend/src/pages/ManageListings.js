@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography';
 import ListingCard from '../components/ListingCard';
 import '../App.css';
 import DataService from '../services/DataService';
+import { SAMPLE_DATA } from '../utils/SampleRecommenderData';
 
 function ManageListings() {
   const dataService = new DataService();
@@ -16,6 +17,9 @@ function ManageListings() {
   let response = dataService.getSellerListings(); 
   if (response !== undefined) {
     listings = response.data;
+  } else {
+    // TODO remove once we expect api to succeed
+    listings = SAMPLE_DATA;
   }
 
   const handleListingClick = (id) => {

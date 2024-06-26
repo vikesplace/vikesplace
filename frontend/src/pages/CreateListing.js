@@ -12,6 +12,7 @@ import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import DataService from '../services/DataService';
+import { SAMPLE_DATA } from '../utils/SampleRecommenderData';
 
 const categories = [
   { value: 'Furniture', label: 'Furniture' },
@@ -99,7 +100,7 @@ function CreateListing() {
     }
 
     function validatePostalCode() {
-        var format = new RegExp("^[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]$");
+        var format = new RegExp("^[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ][0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]$");
         if (!format.test(postalCode)) {
             setPostalCodeError(true);
             return false;
@@ -126,6 +127,11 @@ function CreateListing() {
         if (validForm) {
             let response = dataService.createListing(title, price, postalCode, "AVAILABLE", category); 
             if (response !== undefined) {
+                navigate(`/manage-listings`);
+            } else {
+                // TODO remove once we expect api to succeed
+                let id = SAMPLE_DATA.length + 1;
+                SAMPLE_DATA.push({ id: id, title: title, price: price, location: 'postalCode', status: 'AVAILABLE', category: category })
                 navigate(`/manage-listings`);
             }
         }
@@ -192,7 +198,7 @@ function CreateListing() {
                         onBlur={handlePostalCodeBlur}
                         error={postalCodeError}
                         helperText={
-                            postalCodeError ? "Please enter a valid postal code (format: A1A 1A1)" : ""
+                            postalCodeError ? "Please enter a valid postal code with format A1A1A1" : ""
                         }
                     />
                 </Grid>
