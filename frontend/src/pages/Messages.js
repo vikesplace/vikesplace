@@ -84,7 +84,7 @@ function Messages() {
       }
 
       chatsToDisplay.push({
-          id:chat,
+          id:chat.id,
           title:otherUserInfo.username,
           subtitle:listingInfo.title,
           date:chatInfo.lastMessageTime,
@@ -92,6 +92,7 @@ function Messages() {
     });
 
   const handleClick = (event) => {
+    console.log(event)
     navigate('/message-history/'+event.id);    
   }
 
