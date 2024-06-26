@@ -5,10 +5,11 @@ import ListingDetails from '../components/ListingDetails';
 
 // Mock data for the example
 const listings = [
-  { id: '4', title: 'Test 1', price: '2.00', description: 'This is a test listing.', location: 'V9VW9W', status: 'AVAILABLE' },
-  { id: '10', title: 'Super cool object', price: '3.45', description: 'This object is super cool.', location: 'V9VW9W', status: 'SOLD' },
-  { id: '100', title: 'Buy Me!', price: '1234.56', description: 'Please buy me!', location: 'V9VW9W', status: 'AVAILABLE' },
-  { id: '3', title: 'Another listings for sale', price: '98765432.10', description: 'Another great listing for sale.', location: 'V9VW9W', status: 'AVAILABLE' }
+  { id: '4', title: 'Test 1', price: '2.00', location: 'V9VW9W', status: 'AVAILABLE', category: 'Sports' },
+  { id: '10', title: 'Super cool object', price: '3.45', location: 'V9VW9W', status: 'SOLD', category: 'Health' },
+  { id: '100', title: 'Buy Me!', price: '1234.56', location: 'V9VW9W', status: 'AVAILABLE', category: 'Office Supplies' },
+  { id: '3', title: 'Another listing for sale', price: '98765432.10', location: 'V9VW9W', status: 'AVAILABLE', category: 'Sports' },
+  
 ];
 
 const ListingDetailsPage = () => {

@@ -7,7 +7,7 @@
 
 ## Getting Started
 
-In the `./algorithms` folder, run 
+In the `./vikesplace/algorithms` folder, run 
 ```
 docker-compose up -d --build
 ```
@@ -16,7 +16,9 @@ To stop, run
 ```
 docker-compose down -v
 ```
-> Need to delete the volumes since certificates will change at every startup
+> The `-v` flag deletes the volumes created by our services - this is
+> required because currently we **don't** want to persist any data in
+> ElasticSearch and PostgresSQL.
 
 ### Where is it Running?
 - PostgreSQL will be running in `localhost:5432`
@@ -26,12 +28,30 @@ docker-compose down -v
 - Search API: `localhost:8000`
 - Recommender API: `localhost:8001`
 
-### Running Tests Locally
-Assumming that you have started the containers:
-1. Run `pip install -r requirements.txt` in both `./algorithms/search` and `./algorithms/recommender`
+### Modifying & Adding New Features
+Assumming that you want to make changes to the APIs, restarting all services will 
+take a long time, therefore we recommend doing the following: 
+
+1. Build new images
+```
+docker-compose build
+```
+1. Update and restart only the containers you want
+```
+docker-compose up -d --no-deps <service>
+```
+To test the API locally, you must do the following:
+1. Run `pip install -r requirements.txt` in both `./algorithms/search` and 
+  `./algorithms/recommender`
 2. Using Docker UI, go to `Volumes` and find `vikesplace-certs`
-3. In the `Data` tab, go to the `ca` folder and copy the `ca.crt` file into `./algorithms/`
-4. From `./algorithms` folder, the run the tests using `pytest -vv`
+3. In the `Data` tab, go to the `ca` folder and copy the `ca.crt` file into the 
+folder you're running your commands from.
+   - Ex. 1: If we're running tests from `./algorithms/`, then we must place the 
+    `ca.crt` in the `./algorithms` folder.
+   - Ex. 2: If we're running tests from `./algorithms/search`, then we must place 
+    the `ca.crt` in the `./algorithms/search` folder.
+
+1. Run the tests using `pytest -vv`
     1. You can run specific test folders, `pytest -vv ./search/tests/`
     2. You can run specific test files, `pytest -vv ./search/tests/test_routes.py`
     3. You can run specific test cases, `pytest -vv ./search/tests/test_routes.py::test_save_search_query_with_existing_history`

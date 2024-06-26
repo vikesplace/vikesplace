@@ -49,11 +49,13 @@ export const getSortedListings = async (req, res) => {
 
 export const createListing = async (req, res) => {
   try {
+    const coordinate = { type: 'Point', coordinates: [req.body.location.latitude,req.body.location.longitude]}
     const createResult = await Listing.create({
       seller_id: req.body.seller_id,
       title: req.body.title,
       price: req.body.price,
-      location: req.body.location,
+      location: coordinate,
+      postal_code: req.body.postal_code,
       status: "AVAILABLE",
       category: req.body.category,
     });
@@ -107,12 +109,13 @@ export const updateListing = async (req, res) => {
                 message: "Invalid input data"
             });
         }
-        console.log(JSON.parse(req.body));
         listing.title = req.body.title;
         listing.price = req.body.price;
         listing.status = req.body.status;
         listing.location = req.body.location;
         listing.category = req.body.category;
+        listing.postal_code = req.body.postal_code;
+        listing.buyer_username = req.body.buyer_username; 
         await listing.save();
         res.json({});
     } catch (error) {

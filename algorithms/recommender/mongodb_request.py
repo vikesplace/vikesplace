@@ -50,3 +50,29 @@ def latest_user_activity(user_id):
         return user_document[0]["listings"]
     else:
         return None
+
+
+def get_top_10_popular():
+    # Create a connection to the MongoDB server
+    client = MongoClient(
+        f"mongodb://{MONGO_USER}:{MONGO_PASS}@{MONGO_HOST}:{MONGO_PORT}/")
+    db = client[MONGO_DB]
+    collection = db["user_activity"]
+
+    pipeline = [
+        {"$unwind": "$listings"},
+        {"$group": {
+            "_id": "$listings.listing_id",
+            "count": {"$sum": 1}
+        }},
+        {"$sort": {"count": -1}},
+        {"$limit": 10}
+    ]
+
+    results = list(collection.aggregate(pipeline))
+    # rename _id to listing_id 
+    for i in results:
+        i["listing_id"] = i.pop("_id")
+
+    return results
+    

@@ -9,11 +9,11 @@ export const getAllMessages = async (req, res) => {
         });
         
         const messages = enteries.map(entry => {
-            const {message_id, listing_id, message_content, timestamp, chat_id} = entry;
+            const {message_id, listing_id, message_content, timestamp, chat_id, sender_id, receiver_id} = entry;
             return {
                 message_id: message_id,
+                sender_id: sender_id,
                 message_content: message_content,
-                listing_id: listing_id,
                 timestamp: timestamp
             };
         });
