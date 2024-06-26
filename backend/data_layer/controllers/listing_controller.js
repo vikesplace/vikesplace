@@ -114,6 +114,8 @@ export const updateListing = async (req, res) => {
         listing.status = req.body.status;
         listing.location = req.body.location;
         listing.category = req.body.category;
+        listing.postal_code = req.body.postal_code;
+        listing.buyer_username = req.body.buyer_username; 
         await listing.save();
         res.json({});
     } catch (error) {
