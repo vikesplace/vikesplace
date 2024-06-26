@@ -1,7 +1,7 @@
 # Welcome to Vikesplace Frontend!
 
 ## Dependencies
-- Node.js (latest version)
+- Node.js
 - Docker Desktop
 - Git
 
@@ -40,6 +40,10 @@ Note: this will take about 5 minutes to run, as `npm install` needs to run every
 2. Run `npm install` (the first time, and after updates to package.json) to ensure all dependencies are available.
 
 3. Run `npm test`
+
+Note: run individual test suites with `npm test <filename>`, where `<filename>` is replaced with a file name like `ViewListings.test.js`
+
+Most tests are failing because they were written before api integration with mocked data, this is expected and we will be mocking api calls for more consistent testing in the future.
 
 
 ### Frontend + Backend Integration
