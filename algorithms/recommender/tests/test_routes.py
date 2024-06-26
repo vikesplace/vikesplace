@@ -26,8 +26,7 @@ def test_recommender_with_activity_history():
     assert len(response_obj) == 5
 
     for obj in response_obj:
-        assert obj['_index'] == 'listings'
-        assert obj['_source']['seller_id'] != user_id
+        assert obj['seller_id'] != user_id
 
 
 def test_recommender_with_no_activity_history():
@@ -59,10 +58,9 @@ def test_recommender_current_item():
 
     assert response.status_code == status.HTTP_200_OK
     assert len(response_obj) == 5
-    
+    print("test output >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.   ",response_obj[0])
     for obj in response_obj:
-        assert obj['_index'] == 'listings'
-        assert obj['_source']['seller_id'] != user_id
+        assert obj['seller_id'] != user_id
 
 
 def test_recommender_most_popular_items():

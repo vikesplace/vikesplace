@@ -68,6 +68,7 @@ def recommendation(user_id, user_loc):
 
     results = es.search(index="listings", query=q, sort=sort, from_=0, size=5)
 
+    results['hits']['hits'] = [x['_source'] for x in results['hits']['hits']]
     print(f"recommendation:>>>>>>>>> {results['hits']['hits']}")
 
     return results['hits']['hits']
@@ -103,8 +104,9 @@ def recommendation_current_item(user_id, listing_id):
 
     results = es.search(index="listings", query=q, from_=0, size=5)
 
+    results['hits']['hits'] = [x['_source'] for x in results['hits']['hits']]
     print(f"recommendation_current_item:>>>>>>>>> {results['hits']['hits']}")
-
+    
     return results['hits']['hits']
 
 
