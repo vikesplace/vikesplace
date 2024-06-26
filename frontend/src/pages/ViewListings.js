@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
@@ -13,27 +13,52 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 import '../App.css';
 import ListingCard from '../components/ListingCard';
 import SearchBar from '../components/SearchBar';
 import { Typography } from '@mui/material';
 import DataService from '../services/DataService';
 
+const categories = [
+  'Electronics', 'Phones', 'Vehicles', 'Entertainment', 'Garden', 'Outdoor', 'Sports', 'Kitchen Supplies', 'Furniture', 'Musical Instruments', 'Office Supplies', 'Apparel', 'Books', 'Beauty', 'Health'
+];
+
 
 function ViewListings() {
   const dataService = new DataService();
   const navigate = useNavigate();
 
+
   const [sortCategory, setSortCategory] = useState('');
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
   const [statusFilter, setStatusFilter] = useState('');
-  const [open, setOpen] = useState(false);
+  const [categoryFilter, setCategoryFilter] = useState('');
+  const [location, setLocation] = useState('Fetching...');
+  const [openFilterDialog, setOpenFilterDialog] = useState(false);
+  const [openLocationDialog, setOpenLocationDialog] = useState(false);
+  const [newLocation, setNewLocation] = useState('');
+  const [postalCodeError, setPostalCodeError] = useState(false);
 
   let listings = [];
   let response = dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, false); 
   if (response !== undefined) {
     listings = response.data;
   } 
+
+  let currLocation = '';
+  response = dataService.getMyUserData();
+  if (response !== undefined) {
+    currLocation = response.data;
+  } 
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLocation(currLocation); 
+      // update listings after location
+    }, 1000);
+  }, []);
+
 
   const handleListingClick = (id) => {
     navigate(`/listings/${id}`);
@@ -57,17 +82,48 @@ function ViewListings() {
     setStatusFilter(event.target.value);
   };
 
+  const handleCategoryFilterChange = (event) => {
+    setCategoryFilter(event.target.value);
+  };
+
   const applyFilters = () => {
     listings = dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, false); 
-    setOpen(false);
+    setOpenFilterDialog(false);
   };
 
-  const handleClickOpen = () => {
-    setOpen(true);
+  const handleClickOpenFilterDialog = () => {
+    setOpenFilterDialog(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleCloseFilterDialog = () => {
+    setOpenFilterDialog(false);
+  };
+
+  const handleClickOpenLocationDialog = () => {
+    setOpenLocationDialog(true);
+  };
+
+  const handleCloseLocationDialog = () => {
+    setOpenLocationDialog(false);
+  };
+
+  const validatePostalCode = (code) => {
+    var format = new RegExp("^[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]$");
+    if (!format.test(code)) {
+        setPostalCodeError(true);
+        return false;
+    } else {
+        setPostalCodeError(false);
+        return true;
+    }
+  };
+
+  const applyNewLocation = () => {
+    if (validatePostalCode(newLocation)) {
+      setLocation(newLocation);
+      // update listings based on new location 
+      setOpenLocationDialog(false);
+    }
   };
 
   return (
@@ -88,15 +144,27 @@ function ViewListings() {
               <MenuItem value="price">Price</MenuItem>
               <MenuItem value="location">Location</MenuItem>
               <MenuItem value="status">Status</MenuItem>
+              <MenuItem value="category">Category</MenuItem>
             </Select>
           </FormControl>
           <Button
             variant="outlined"
             color="primary"
             startIcon={<FilterListIcon />}
-            onClick={handleClickOpen}
+            onClick={handleClickOpenFilterDialog}
           >
             Add Filter
+          </Button>
+        </Box>
+        <Box mt={2} display="flex" alignItems="center">
+          <LocationOnIcon />
+          <Box ml={1} mr={2}>{location}</Box>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={handleClickOpenLocationDialog}
+          >
+            Change Location
           </Button>
         </Box>
         <Box mt={2}>
@@ -113,12 +181,13 @@ function ViewListings() {
                 price={listing.price}
                 location={listing.location}
                 status={listing.status}
+                category={listing.category}
               />
               <br />
             </div>
           ))}
         </Box>
-        <Dialog open={open} onClose={handleClose}>
+        <Dialog open={openFilterDialog} onClose={handleCloseFilterDialog}>
           <DialogTitle>Apply Filters</DialogTitle>
           <DialogContent>
             <TextField
@@ -153,12 +222,50 @@ function ViewListings() {
                 <MenuItem value="SOLD">Sold</MenuItem>
               </Select>
             </FormControl>
+            <FormControl sx={{ minWidth: 120, mt: 2, width: '100%' }}>
+              <InputLabel id="category-filter-label">Category</InputLabel>
+              <Select
+                labelId="category-filter-label"
+                id="category-filter"
+                value={categoryFilter}
+                label="Category"
+                onChange={handleCategoryFilterChange}
+              >
+                <MenuItem value=""><em>None</em></MenuItem>
+                {categories.map((category) => (
+                  <MenuItem key={category} value={category}>{category}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose} color="primary">
+            <Button onClick={handleCloseFilterDialog} color="primary">
               Cancel
             </Button>
             <Button onClick={applyFilters} color="primary">
+              OK
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog open={openLocationDialog} onClose={handleCloseLocationDialog}>
+          <DialogTitle>Change Location</DialogTitle>
+          <DialogContent>
+            <TextField
+              label="New Location"
+              type="text"
+              value={newLocation}
+              onChange={(e) => setNewLocation(e.target.value)}
+              fullWidth
+              sx={{ mt: 2 }}
+              error={postalCodeError}
+              helperText={postalCodeError ? "Invalid postal code format" : ""}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseLocationDialog} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={applyNewLocation} color="primary">
               OK
             </Button>
           </DialogActions>

@@ -15,8 +15,19 @@ import DataService from '../services/DataService';
 
 const categories = [
   { value: 'Furniture', label: 'Furniture' },
-  { value: 'SchoolSupplies', label: 'School Supplies' },
-  { value: 'Technology', label: 'Technology' }
+  { value: 'Office Supplies', label: 'Office Supplies' },
+  { value: 'Electronics', label: 'Electronics' },
+  {value:'Vehicles', label:'Vehicles'},
+  {value:'Phones',label:'Phones'},
+  {value:'Entertainment', label: 'Entertainment'},
+  {value:'Garden', label:'Garden'},
+  {value:'Outdoor',label:'Outdoor'},
+  {value:'Sports',label:'Sports'},
+  {value:'Kicthen Supplies',label:'Kitchen Supplies'},
+  {value:'Musical Instruments',value:'Musical Instruments'},
+  {value:'Apparel',label:'Apparel'},
+  {value: 'Beauty',label:'Beauty'},
+  {value:'Health',label:'Health'}
 ];
 
 function CreateListing() {

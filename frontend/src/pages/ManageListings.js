@@ -38,7 +38,8 @@ function ManageListings() {
                 title={listing.title}
                 price={listing.price}
                 location={listing.location}
-                status={listing.status}          
+                status={listing.status}
+                category={listing.category}          
               />
               <br />
             </div>

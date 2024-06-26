@@ -14,11 +14,21 @@ import Typography from '@mui/material/Typography';
 import DataService from '../services/DataService.js';
 
 const categories = [
-  { value: 'Furniture', label: 'Furniture' },
-  { value: 'SchoolSupplies', label: 'School Supplies' },
-  { value: 'Technology', label: 'Technology' }
-];
-
+    { value: 'Furniture', label: 'Furniture' },
+    { value: 'Office Supplies', label: 'Office Supplies' },
+    { value: 'Electronics', label: 'Electronics' },
+    {value:'Vehicles', label:'Vehicles'},
+    {value:'Phones',label:'Phones'},
+    {value:'Entertainment', label: 'Entertainment'},
+    {value:'Garden', label:'Garden'},
+    {value:'Outdoor',label:'Outdoor'},
+    {value:'Sports',label:'Sports'},
+    {value:'Kicthen Supplies',label:'Kitchen Supplies'},
+    {value:'Musical Instruments',value:'Musical Instruments'},
+    {value:'Apparel',label:'Apparel'},
+    {value: 'Beauty',label:'Beauty'},
+    {value:'Health',label:'Health'}
+  ];
 const statuses = [
     { value: 'AVAILABLE', label: 'AVAILABLE' },
     { value: 'SOLD', label: 'SOLD' }
