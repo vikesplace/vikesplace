@@ -16,12 +16,6 @@ router.get("/chats", (req, res) => {
 //get all messages for a chat
 router.get("/:chatId", getAllMessages);
 
-// get chat data (user in chat, listingId, lastMessageTime)
-router.get("/chats/:chatId", (req, res) => {
-    //handle logic here
-    res.json({ message: "Get chat data" });
-});
-
 // //send a message
 router.post("/:chatId", (req, res) => {
     //handle logic here

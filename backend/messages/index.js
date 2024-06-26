@@ -1,6 +1,7 @@
 import express from "express";
 import 'dotenv/config'
 import messages from "./routes/messages.js";
+import chats from "./routes/chats.js";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import "dotenv/config";
@@ -18,6 +19,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(identification);
 app.use("/messages", messages);
+app.use("/chats", chats);
 
 function identification(req, res, next) {
   try {
