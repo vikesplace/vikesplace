@@ -4,11 +4,16 @@ import axiosConfig from "./config/axiosConfig.js";
 import listing from "./routes/listing.js";
 import jwt from "jsonwebtoken";
 import cookieParser from 'cookie-parser';
+import cors from "cors";
 
 const PORT = process.env.PORT || 5000;
 const jwtSecret = process.env.ACCESS_TOKEN_SECRET;
 const app = express();
 
+app.use(cors({
+  origin:["http://localhost:3000"],
+  credentials:true
+}));
 app.use(cookieParser());
 app.use(identification);
 app.use(express.json());
@@ -20,7 +25,7 @@ function identification(req, res, next) {
     res.locals.decodedToken = decoded;
     next();
   } catch (err) {
-    res.json({ message: err.message });
+    res.status(401).json({ message: err.message });
   }
 }
 

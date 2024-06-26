@@ -30,11 +30,11 @@ function RequestPasswordChange() {
 
     function validateEmail() {
         var format = new RegExp("^[A-Z0-9a-z._%+-]+@uvic.ca$");
-        if (!format.test(email)) {
-            setEmailError("Must be a valid @uvic.ca email");
+        if (email.trim() === "Email is required") {
+            setEmailError("");
             return false;
-        } else if (email.trim() === "") {
-            setEmailError("Email is required");
+        } else if (!format.test(email)) {
+            setEmailError("Must be a valid @uvic.ca emailEmail is required");
             return false;
         } else {
             setEmailError("");
