@@ -28,7 +28,7 @@ export const getSearchResults = async (req, res) => {
       params: requestParamsObject,
     });
 
-    if(response.data.status == 200){
+    if(response.data.status == 200 && response.data.results.listings){
       const listings = response.data.results.listings.map((listing) => {
         listing.location = listing.postal_code;
         delete listing.postal_code;
