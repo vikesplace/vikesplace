@@ -1,23 +1,5 @@
 CREATE EXTENSION postgis ;
 
-CREATE TABLE IF NOT EXISTS "Chats" (
-    chat_id SERIAL PRIMARY KEY,
-    user_id_1 INT NOT NULL REFERENCES "Users"(user_id) ON DELETE CASCADE,
-    user_id_2 INT NOT NULL REFERENCES "Users"(user_id) ON DELETE CASCADE,
-    listing_id INT NOT NULL REFERENCES "Listings"(listing_id) ON DELETE CASCADE,
-    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS "Messages" (
-    message_id SERIAL PRIMARY KEY,
-    listing_id INT NOT NULL REFERENCES "Listings"(listing_id) ON DELETE CASCADE,
-    message_content TEXT NOT NULL,
-    sender_id INT NOT NULL REFERENCES "Users"(user_id) ON DELETE CASCADE,
-    receiver_id INT NOT NULL REFERENCES "Users"(user_id) ON DELETE CASCADE,
-    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    chat_id INT NOT NULL REFERENCES "Chats"(chat_id) ON DELETE CASCADE
-);
-
 CREATE TABLE IF NOT EXISTS "Users" (
     user_id SERIAL PRIMARY KEY UNIQUE,
     username VARCHAR(255) NOT NULL UNIQUE,
@@ -86,7 +68,8 @@ INSERT INTO "Users" (username, email, password, location, postal_code, joining_d
 ('Quinn', 'quinn@example.com', 'password17', 'POINT(48.467289 -123.404489)'::GEOMETRY, 'V8N5M3', '2024-01-17 10:00:00', 0, 0),
 ('Rose', 'rose@example.com', 'password18', 'POINT(48.467289 -123.337822)'::GEOMETRY, 'V8N5M3', '2024-01-18 10:00:00', 0, 0),
 ('Sam', 'sam@example.com', 'password19', 'POINT(48.478400 -123.393378)'::GEOMETRY, 'V8N5M3', '2024-01-19 10:00:00', 0, 0),
-('Tina', 'tina@example.com', 'password20', 'POINT(48.478400 -123.337822)'::GEOMETRY, 'V8N5M3', '2024-01-20 10:00:00', 0, 0);
+('Tina', 'tina@example.com', 'password20', 'POINT(48.478400 -123.337822)'::GEOMETRY, 'V8N5M3', '2024-01-20 10:00:00', 0, 0),
+('TestUser', 'testuser@example.com', '$2a$10$2NC3ozp1b1YIgSb0tpEEEep83BUpAOz5xi4.dsyqqa80kXINQl5oO', 'POINT(48.478400 -123.337822)'::GEOMETRY, 'V8N5M3', '2024-01-20 10:00:00', 0, 0);
 
 INSERT INTO "Listings" (seller_id, buyer_username, title, price, location, postal_code, status, listed_at, last_updated_at, category) VALUES
 (1, NULL, 'Bicycle',100,'POINT(48.428400 -123.385600)'::GEOMETRY, 'V8R6N2', 'AVAILABLE', '2024-02-01 10:00:00', '2024-02-01 10:00:00', 'Sports'),
