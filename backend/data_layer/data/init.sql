@@ -1,5 +1,23 @@
 CREATE EXTENSION postgis ;
 
+CREATE TABLE IF NOT EXISTS "Chats" (
+    chat_id SERIAL PRIMARY KEY,
+    user_id_1 INT NOT NULL REFERENCES "Users"(user_id) ON DELETE CASCADE,
+    user_id_2 INT NOT NULL REFERENCES "Users"(user_id) ON DELETE CASCADE,
+    listing_id INT NOT NULL REFERENCES "Listings"(listing_id) ON DELETE CASCADE,
+    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS "Messages" (
+    message_id SERIAL PRIMARY KEY,
+    listing_id INT NOT NULL REFERENCES "Listings"(listing_id) ON DELETE CASCADE,
+    message_content TEXT NOT NULL,
+    sender_id INT NOT NULL REFERENCES "Users"(user_id) ON DELETE CASCADE,
+    receiver_id INT NOT NULL REFERENCES "Users"(user_id) ON DELETE CASCADE,
+    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    chat_id INT NOT NULL REFERENCES "Chats"(chat_id) ON DELETE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS "Users" (
     user_id SERIAL PRIMARY KEY UNIQUE,
     username VARCHAR(255) NOT NULL UNIQUE,

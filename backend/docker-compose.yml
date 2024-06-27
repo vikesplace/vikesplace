@@ -73,6 +73,7 @@ services:
       - "5005:5000"
     environment:
       - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
+      - DATA_LAYER=${DATA_LAYER}
   
   listing:
     container_name: listing

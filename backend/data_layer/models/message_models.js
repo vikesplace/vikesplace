@@ -1,5 +1,5 @@
-import { DataTypes, Model } from "sequelize";
-import sequelize from "../config/database.js";
+import {DataTypes, Model} from 'sequelize';
+import sequelize from '../config/database.js';
 
 class Messages extends Model {}
 
