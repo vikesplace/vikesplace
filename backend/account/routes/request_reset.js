@@ -15,7 +15,7 @@ const transporter = nodemailer.createTransport({
   secure: true,
   auth: {
     user: process.env.EMAIL,
-    pass: process.env.APPPASSWORD
+    pass: process.env.APP_PASSWORD
   }
 });
 
@@ -36,7 +36,7 @@ router.post('/', (req, res) => {
 
   const token = jwt.sign({ email }, jwtSecret, { expiresIn: jwtExpiry });
   console.log(token);
-  const resetLink = `${callback}?jwt=${token}`;
+  const resetLink = `${callback}${token}`;
 
   const mailOptions = {
     from: process.env.EMAIL,
@@ -45,8 +45,10 @@ router.post('/', (req, res) => {
     text: `Please reset your password by clicking the following link: ${resetLink}`
   };
 
+  console.log('1');
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
+      console.log(error);
       return res.status(500).json({ message: 'Failed to send reset email' });
     }
     res.status(200).json({ message: 'Reset email sent successfully' });

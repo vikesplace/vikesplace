@@ -17,7 +17,7 @@ describe("POST /", () => {
   beforeEach(() => {
     process.env.ACCESS_TOKEN_SECRET = "testsecret";
     process.env.EMAIL = "test@example.com";
-    process.env.APPPASSWORD = "testpassword";
+    process.env.APP_PASSWORD = "testpassword";
 
     jwt.sign.mockReturnValue("testtoken");
 
