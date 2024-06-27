@@ -79,6 +79,14 @@ services:
     extends:
       file: backend/docker-compose.yml
       service: nginx
+    depends_on:
+      - be-search
+      - be-recommendation
+      - listing
+      - messages
+      - users
+      - ratings
+      - account
 
   # Referencing algorithm services
   setup:

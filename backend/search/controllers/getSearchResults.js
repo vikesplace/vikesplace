@@ -14,8 +14,8 @@ export const getSearchResults = async (req, res) => {
 
     const requestParamsObject = {};
     requestParamsObject.query = req.query.query;
-    const longitude = user.data.user.location.coordinates[0];
-    const latitude = user.data.user.location.coordinates[1];
+    const longitude = user.data.user.location.coordinates[1];
+    const latitude = user.data.user.location.coordinates[0];
 
     requestParamsObject.longitude = longitude;
     requestParamsObject.latitude = latitude;
