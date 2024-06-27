@@ -26,6 +26,17 @@ const passwordValidation = [
 
 // Endpoint to change the password of an existing user
 router.post("/", passwordValidation, async (req, res) => {
+
+  const { token, newPassword } = req.body;
+
+  if (!token) { 
+    return res.status(400).json({ message: 'token is missing' });
+  }
+
+  if (!newPassword) {
+    return res.status(400).json({ message: 'Password must be at least 8 characters long' });
+  }
+
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({
@@ -34,9 +45,7 @@ router.post("/", passwordValidation, async (req, res) => {
         .map((err) => err.msg)
         .join(", "),
     });
-  }
-
-  const { token, newPassword } = req.body;
+  } 
 
   try {
     const decodedToken = jwt.verify(token, jwtSecret);
