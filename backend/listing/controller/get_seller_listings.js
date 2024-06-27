@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const getSellerListings = async (req, res) => {
   try {
-    const seller_id = res.locals.decodedToken.user_id;
+    const seller_id = res.locals.decodedToken.userId;
     const response = await axios.get(`/listing/me`, {
       params: { seller_id: seller_id },
     });

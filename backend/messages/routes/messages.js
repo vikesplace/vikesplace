@@ -5,7 +5,7 @@ import { createChat } from "../controller/create_chat.js";
 const router = express.Router();
 
 // create a new chat with seller of a listing
-router/post("/chats/:listingId", createChat);
+router.post("/chats/:listingId", createChat);
 
 // get all chat_ids for the logged in user
 router.get("/chats", getChatIds);
