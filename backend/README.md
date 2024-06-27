@@ -61,3 +61,18 @@ To start containers
 ```bash
 docker compose up
 ```
+
+## 5. Docker Compose to build and Start docker images
+
+Navigate to ./backend/(directory you want to test)/test
+
+To run all test
+```bash
+npm test
+```
+
+To run a specific test
+```bash
+npm test "speicific test file"
+```
+
