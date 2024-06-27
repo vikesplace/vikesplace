@@ -28,6 +28,39 @@ export const getAllMessages = async (req, res) => {
     }
 };
 
+export const getChatIds = async (req, res) => {
+    try {
+        const chatIds1 = await Chats.findAll
+        ({
+            where: {
+                user_id_one: req.query.user_id
+            }
+        });
+
+        const chatIds2 = await Chats.findAll
+        ({
+            where: {
+                user_id_two: req.query.user_id
+            }
+        });
+
+        const chatIds = chatIds1.concat(chatIds2);
+
+        const chats = chatIds.map(entry => {
+            const {chat_id, listing_id, user_id_one, user_id_two, timestamp, last_message_time} = entry;
+            return {
+                chat_id: chat_id
+            };
+        });
+
+        res.json(chats);
+    } catch (error) {
+        res.json({
+            message: "Invalid input data"
+        });
+    }
+};
+
 export const createChat = async (req, res) => {
     try {
         //get user_2 from listings table

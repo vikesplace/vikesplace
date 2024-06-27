@@ -1,6 +1,7 @@
 import express from "express";
 import 'dotenv/config'
 import messages from "./routes/messages.js";
+import axiosConfig from "./config/axiosConfig.js";
 import chats from "./routes/chats.js";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
