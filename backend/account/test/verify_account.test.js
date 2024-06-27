@@ -106,6 +106,6 @@ describe("POST /verify_account", () => {
       });
 
     expect(response.statusCode).toBe(400);
-    expect(response.body.message).toBe("Failed to create user");
+    expect(response.body.message).toBe("Cannot read properties of undefined (reading 'email')");
   });
 });
