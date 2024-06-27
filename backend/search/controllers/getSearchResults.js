@@ -27,13 +27,13 @@ export const getSearchResults = async (req, res) => {
     const response = await axios.get(`${ALG_SEARCH}search`, {
       params: requestParamsObject,
     });
-    const listings = response.data.results.listings.map((listing) => {
-      listing.location = listing.postal_code;
-      delete listing.postal_code;
-      return listing;
-    });
 
     if(response.data.status == 200){
+      const listings = response.data.results.listings.map((listing) => {
+        listing.location = listing.postal_code;
+        delete listing.postal_code;
+        return listing;
+      });
       res.json(listings);
     }
     else{
