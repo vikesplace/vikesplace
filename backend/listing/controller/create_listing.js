@@ -3,7 +3,7 @@ import axios from 'axios';
 export const createListing = async (req, res) => {
     try{
         const seller_id = res.locals.decodedToken.userId;
-        const geoPoint = await axios(`/listing/location/${req.body.location}`);
+        const geoPoint = await axios.get(`/listing/location/${req.body.location}`);
         const geoPointLocation = geoPoint.data;
         const response = await axios.post("/listing",{
                     title: req.body.title,
