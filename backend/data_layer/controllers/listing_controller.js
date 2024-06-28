@@ -13,7 +13,7 @@ export const getSortedListings = async (req, res) => {
   }
   else if ((minPrice || maxPrice)) {
     console.error("Invalid price range specified");
-    return res.status(400).json({ error: "Invalid price range specified" });
+    return res.status(400).json({ message: "Invalid price range specified" });
   }
   if (status) {
     where.status = status;
@@ -42,7 +42,7 @@ export const getSortedListings = async (req, res) => {
   } catch (error) {
     if (error.name === 'SequelizeValidationError') {
       console.error(error);
-      res.status(400).json({ error: error.message });
+      res.status(400).json({ message: error.message });
     } else {
       console.error(error);
       res.status(500).send();
@@ -66,7 +66,7 @@ export const createListing = async (req, res) => {
   } catch (error) {
     if (error.name === 'SequelizeValidationError') {
       console.error(error);
-      res.status(400).json({ error: error.message });
+      res.status(400).json({ message: error.message });
     } else { 
       console.error(error);
       res.status(500).send();
@@ -130,7 +130,7 @@ export const updateListing = async (req, res) => {
         res.json({});
     } catch (error) {
       if (error.name === 'SequelizeValidationError') {
-        return res.status(400).json({ error: error.message });
+        return res.status(400).json({ message: error.message });
       } else {
         console.error(error);
         res.status(500).send();

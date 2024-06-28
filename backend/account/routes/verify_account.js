@@ -74,11 +74,11 @@ router.post("/", usernameValidation, passwordValidation, async (req, res) => {
     res.status(201).json({ userId: newUser.data.user_id });
   } catch (error) {
     if (error.response) {
-        console.error(error.response.data.error);
-        return res.status(error.response.status).json({ error: error.response.data.error });
+        console.error(error.response.data.message);
+        return res.status(error.response.status).json({ message: error.response.data.message });
     } else {
         console.error('Error creating user:', error);
-        return res.status(500).json({ error: 'Failed to create user' });
+        return res.status(500).json({ message: 'Failed to create user' });
     }
   }
 });

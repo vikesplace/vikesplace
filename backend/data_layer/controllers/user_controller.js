@@ -18,7 +18,7 @@ export const createUser = async (req, res) => {
         const postalCodeRecord = await PostalCodes.findOne({ where: { postal_code: location } });
             
         if (!postalCodeRecord) {
-            return res.status(400).json({ error: "Invalid postal code" });
+            return res.status(400).json({ message: "Invalid postal code" });
         }
         const { latitude, longitude } = postalCodeRecord;
         
@@ -43,13 +43,13 @@ export const createUser = async (req, res) => {
         });
     } catch (error) {
         if (error.name === 'SequelizeValidationError') {
-            res.status(400).json({ error: "Validation error: " + error.message });
+            res.status(400).json({ message: "Validation error: " + error.message });
         }
         else if (error.name === 'SequelizeUniqueConstraintError') {
-            res.status(400).json({ error: "Username or email already exists"});
+            res.status(400).json({ message: "Username or email already exists"});
         } 
          else {
-            res.status(500).json({ error: "Database error: " + error.message});
+            res.status(500).json({ message: "Database error: " + error.message});
         }
     }
 };

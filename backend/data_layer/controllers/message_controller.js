@@ -1,16 +1,19 @@
 import Messages from "../models/message_models.js";
 import Chats from "../models/chat_models.js";
-import Listings from "../models/listing_models.js";
 
 export const getAllMessages = async (req, res) => {
     try {
-        const enteries = await Messages.findAll({
+        const entries = await Messages.findAll({
             where: {
                 chat_id: req.params.chatId
             }
         });
+        if (!entries) {
+            console.error("Chat not found");
+            return res.status(500).send();
+        }
         
-        const messages = enteries.map(entry => {
+        const messages = entries.map(entry => {
             const {message_id, listing_id, message_content, timestamp, chat_id, sender_id, receiver_id} = entry;
             return {
                 message_id: message_id,
@@ -22,9 +25,8 @@ export const getAllMessages = async (req, res) => {
 
         res.json(messages);
     } catch (error) {
-        res.json({
-            message: "Chat id not found"
-        });
+        console.error(error);
+        return res.status(500).send();
     }
 };
 
@@ -55,35 +57,11 @@ export const getChatIds = async (req, res) => {
 
         res.json(chats);
     } catch (error) {
-        res.json({
-            message: "Invalid input data"
-        });
+        console.error(error);
+        return res.status(500).send();
     }
 };
 
-export const createChat = async (req, res) => {
-    try {
-        //get user_2 from listings table
-        const listing_entry = await Listings.findOne({
-            where: {
-                listing_id: req.params.listingId
-            }
-        });
-        const chat_entry = await Chats.create(
-            {
-                listing_id: req.params.listingId,
-                user_id_one: res.body.userId,
-                user_id_two: listing_entry.user_id,
-            }
-        );
-
-        res.json(chat_entry);
-    } catch (error) {
-        res.json({
-            message: "Could not create chat"
-        });
-    }
-};
 export const sendMessages = async (req, res) => {
     const {user_id, content} = req.body;
     const chat_id = req.params.chatId;
@@ -92,23 +70,33 @@ export const sendMessages = async (req, res) => {
         const receiver_id_entry = await Chats.findOne({
             chat_id: chat_id,
         });
-        let receiver_id;
-        if(receiver_id_entry.user_id_1 == user_id){
-            receiver_id = receiver_id_entry.user_id_2;
+        if (!receiver_id_entry) {
+            console.error("Chat not found");
+            return res.status(500).send();
+        }
+        const listing_id = receiver_id_entry.listing_id;
+        let receiver_id = null;
+        if(receiver_id_entry.user_id_one == user_id){
+            receiver_id = receiver_id_entry.user_id_two;
         }
         else{
-            receiver_id = receiver_id_entry.user_id_1;
+            receiver_id = receiver_id_entry.user_id_two;
         }
         await Messages.create({
+            listing_id: listing_id,
             chat_id: chat_id,
-            content: content,
+            message_content: content,
             sender_id: user_id,
             receiver_id: receiver_id,
         });
         res.json({});
     } catch (error) {
-        res.json({
-            message: "Could not send message",
-        });
+        if (error.name === 'SequelizeValidationError') {
+            console.error(error);
+            res.status(400).json({ message: error.message });
+        } else { 
+            console.error(error);
+            return res.status(500).send();
+        }
     }
 }
