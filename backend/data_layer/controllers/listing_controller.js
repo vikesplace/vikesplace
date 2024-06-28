@@ -61,9 +61,11 @@ export const createListing = async (req, res) => {
     });
     res.json(createResult.dataValues.listing_id);
   } catch (error) {
-    res.json({
-      message: "Invalid input data",
-    });
+    if (error.name === 'SequelizeValidationError') {
+      res.status(400).json({ error: "Validation error: " + error.message });
+  } else {
+      res.status(500).json({ error: "Database error: " + error.message });
+  }
   }
 };
 

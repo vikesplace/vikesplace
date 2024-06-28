@@ -8,6 +8,7 @@ export const getLongLat = async (req, res) => {
         });
 
         if(!find_postal_code) {
+            console.log("no postal code found")
             return res.json({
                 message: "Invalid input data"
             }); 

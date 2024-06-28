@@ -73,7 +73,13 @@ router.post("/", usernameValidation, passwordValidation, async (req, res) => {
     res.cookie("Authorization", token, { httpOnly: true });
     res.status(201).json({ userId: newUser.data.user_id });
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    if (error.response) {
+        console.error(error.response.data.error);
+        return res.status(error.response.status).json({ error: error.response.data.error });
+    } else {
+        console.error('Error creating user:', error);
+        return res.status(500).json({ error: 'Failed to create user' });
+    }
   }
 });
 
