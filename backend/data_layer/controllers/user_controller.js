@@ -17,10 +17,9 @@ export const createUser = async (req, res) => {
         // Fetch coordinates for the provided postal code
         const postalCodeRecord = await PostalCodes.findOne({ where: { postal_code: location } });
             
-    }catch{
-        return res.status(400).json({ error: "Postal code not found" });
-    }
-    try {
+        if (!postalCodeRecord) {
+            return res.status(400).json({ error: "Invalid postal code" });
+        }
         const { latitude, longitude } = postalCodeRecord;
         
         if (latitude === null || longitude === null || isNaN(latitude) || isNaN(longitude)) {
@@ -50,7 +49,7 @@ export const createUser = async (req, res) => {
             res.status(400).json({ error: "Username or email already exists"});
         } 
          else {
-            res.status(500).json({ error: "Database error: " + error.message + " " + error.name });
+            res.status(500).json({ error: "Database error: " + error.message});
         }
     }
 };
