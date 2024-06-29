@@ -8,5 +8,3 @@ export const calculateDistance = (user_location, listing_location) => {
     return false;
   }
 };
-
-// const result = listings.map(listing => calculateDistance(listing.listing_id, user_location, listing.listing_location)).filter(listing => listing !== null);
