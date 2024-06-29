@@ -12,9 +12,8 @@ export const getSortedListings = async (req, res) => {
     };
   }
   else if ((minPrice || maxPrice)) {
-    res.json({
-      message: "Invalid price range specified"
-    });
+    console.error("Invalid price range specified");
+    return res.status(400).json({ message: "Invalid price range specified" });
   }
   if (status) {
     where.status = status;
@@ -41,9 +40,13 @@ export const getSortedListings = async (req, res) => {
     const listings = await Listing.findAndCountAll(options);
     res.json(listings); 
   } catch (error) {
-    res.json({
-      message: "Invalid input data",
-    });
+    if (error.name === 'SequelizeValidationError') {
+      console.error(error);
+      res.status(400).json({ message: error.message });
+    } else {
+      console.error(error);
+      res.status(500).send();
+    }
   }
 };
 
@@ -61,9 +64,13 @@ export const createListing = async (req, res) => {
     });
     res.json(createResult.dataValues.listing_id);
   } catch (error) {
-    res.json({
-      message: "Invalid input data",
-    });
+    if (error.name === 'SequelizeValidationError') {
+      console.error(error);
+      res.status(400).json({ message: error.message });
+    } else { 
+      console.error(error);
+      res.status(500).send();
+    }
   }
 };
 
@@ -76,14 +83,19 @@ export const getSellerListings = async (req, res) => {
     });
     res.json(listings);
   } catch (error) {
-    res.json({ message: "Seller not found" });
+    console.error(error);
+    return res.status(500).send();
   }
 };
 
 export const getListingInfo = async (req, res) => {
     try {
-        const entry = await Listing.findByPk(req.params.listingId);
-        const {listing_id, seller_id, buyer_username, title, price, location, status, listed_at, lastupdated_at, category} = entry;
+        const listing = await Listing.findByPk(req.params.listingId);
+        if (!listing) {
+          console.error("Listing not found");
+          return res.status(500).send();
+        }
+        const {listing_id, seller_id, buyer_username, title, price, location, status, listed_at, lastupdated_at, category} = listing;
         res.json({
             seller_id: seller_id,
             listing_id: listing_id,
@@ -95,9 +107,8 @@ export const getListingInfo = async (req, res) => {
             lastupdated_at: lastupdated_at
         });
     } catch (error) {
-        res.json({
-            message: "Unable to get listing with id: " + req.params.listingId
-        });
+        console.error(error);
+        return res.status(500).send();
     };
 };
 
@@ -105,9 +116,8 @@ export const updateListing = async (req, res) => {
     try {
         const listing = await Listing.findByPk(req.params.listingId);
         if (!listing) {
-            return res.json({
-                message: "Invalid input data"
-            });
+          console.error("Listing not found");
+          return res.status(500).send();
         }
         listing.title = req.body.title;
         listing.price = req.body.price;
@@ -119,9 +129,12 @@ export const updateListing = async (req, res) => {
         await listing.save();
         res.json({});
     } catch (error) {
-      res.json({
-        message: "Invalid input data"
-    });
+      if (error.name === 'SequelizeValidationError') {
+        return res.status(400).json({ message: error.message });
+      } else {
+        console.error(error);
+        res.status(500).send();
+      }
     }
 };
 
@@ -129,16 +142,14 @@ export const deleteListing = async (req, res) => {
     try {
         const listing = await Listing.findByPk(req.params.listingId);
         if (!listing) {
-            return res.json({
-                message: "Invalid input data"
-            });
+          console.error("Listing not found");
+          return res.status(500).send();
         }
         listing.status = "REMOVED";
         await listing.save();
         res.json({});
     } catch (error) {
-      res.json({
-        message: "Invalid input data"
-     });
+      console.error(error);
+      return res.status(500).send();
     }
 }
