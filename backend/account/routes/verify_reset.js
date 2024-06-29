@@ -27,17 +27,17 @@ const passwordValidation = [
 // Endpoint to change the password of an existing user
 router.post("/", passwordValidation, async (req, res) => {
 
-  const { token, newPassword } = req.body;
-
+  const { jwt: token, password } = req.body;
   if (!token) { 
     return res.status(400).json({ message: 'token is missing' });
   }
 
-  if (!newPassword) {
+  if (!password) {
     return res.status(400).json({ message: 'Password must be at least 8 characters long' });
   }
 
   const errors = validationResult(req);
+  console.log(errors);
   if (!errors.isEmpty()) {
     return res.status(400).json({
       message: errors
@@ -51,10 +51,10 @@ router.post("/", passwordValidation, async (req, res) => {
     const decodedToken = jwt.verify(token, jwtSecret);
     const email = decodedToken.email;
 
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Update the user's password in the database
-    const response = await axios.put("/user/reset_password", {
+    const response = await axios.put("/user/reset_password/", {
       email,
       password: hashedPassword,
     });
