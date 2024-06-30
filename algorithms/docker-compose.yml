@@ -30,7 +30,6 @@ networks:
 services:
   postgresql:
     image: postgis/postgis:latest
-    image: postgis/postgis:latest
     volumes:
       - ./postgresql:/docker-entrypoint-initdb.d
       - psqldata-vikesplace:/var/lib/postgresql/data
