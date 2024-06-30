@@ -12,7 +12,13 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.19.2"
+    "axios": "^1.7.2",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "data_layer": "1.0.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-validator": "^7.1.0"
   },
   "jest": {
     "transform": {

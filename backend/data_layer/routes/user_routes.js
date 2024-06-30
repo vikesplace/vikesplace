@@ -1,15 +1,18 @@
 import express from "express";
-import { createUser } from '../controllers/user_controller.js';
+import { createUser, loginUser, getUser, resetPassword } from '../controllers/user_controller.js';
 
 const router = express.Router();
 
 //Create a user
 router.post('/', createUser);
 
-//Login a user
-router.post('/login', (req, res) => {
-  res.json({ message: 'login a user' });
-});
+// //Login a user
+// router.post('/login', (req, res) => {
+//   res.json({ message: 'login a user' });
+// });
+router.post('/login', loginUser);
+
+router.patch('/reset_password', resetPassword);
 
 //Get all users
 router.get('/', (req, res) => {
@@ -17,9 +20,7 @@ router.get('/', (req, res) => {
 });
 
 //Get a user
-router.get('/:userId', (req, res) => {
-  res.json({ message: 'Get User' });
-});
+router.get('/:userId', getUser);
 
 //Update a user
 router.patch('/:userId', (req, res) => {

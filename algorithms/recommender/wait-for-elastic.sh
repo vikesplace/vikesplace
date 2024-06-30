@@ -4,7 +4,7 @@ listings=$( curl -k --silent --cacert ca.crt --user "${ES_USER}:${ELASTIC_PASSWO
 users=$( curl -k --silent --cacert ca.crt --user "${ES_USER}:${ELASTIC_PASSWORD}" -XGET "https://${ES_HOST}:${ES_PORT}/users/_count" | jq -r '.count' )
 
 # Wait for ES to be loaded, listings and users should have 100 and 20 records, respectively.
-while [ "$listings" = "null" ] || [ "$users" = "null" ] || [ "$listings" -ne 100 ] || [ "$users" -ne 20 ]; do
+while [ "$listings" = "null" ] || [ "$users" = "null" ] || [ "$listings" -lt 100 ] || [ "$users" -lt 20 ]; do
     
     echo "Waiting for data to be loaded into ElasticSearch..."
     

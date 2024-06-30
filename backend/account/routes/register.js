@@ -1,12 +1,12 @@
-import express, { application } from "express";
-import jwt from "jsonwebtoken"
-import nodemailer from "nodemailer"
+import express from "express";
+import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer";
+import { check, validationResult } from "express-validator";
+import 'dotenv/config';
+
 const router = express.Router();
-import 'dotenv/config'
-
-
 const jwtSecret = process.env.ACCESS_TOKEN_SECRET;
-const jwtExpiry = '2h';
+const jwtExpiry = 900000;
 
 // Configuration for Nodemailer
 const transporter = nodemailer.createTransport({
@@ -19,41 +19,44 @@ const transporter = nodemailer.createTransport({
     pass: process.env.APP_PASSWORD
   }
 });
-router.post('/request_account', (req, res) => {
 
+
+// Endpoint to request account creation
+router.post('/', (req, res) => {
   const { email, callback } = req.body;
-  // Validate email address
+
+  if(!email){
+    return res.status(400).json({ message: 'Email is required' });
+  }
+
   if (!email.endsWith('@uvic.ca')) {
     return res.status(400).json({ message: 'Invalid email address' });
   }
 
-  // Create JWT token
-  const token = jwt.sign({ email }, jwtSecret, { expiresIn: jwtExpiry });
+  if (!callback) {
+    return res.status(400).json({ message: 'Callback URL is required' });
+  }
 
-  // Generate verification link
+  const token = jwt.sign({ email }, jwtSecret, { expiresIn: jwtExpiry });
+  console.log(token);
+
+
   const verificationLink = `${callback}${token}`;
 
-  // Email options
   const mailOptions = {
-    from: process.env.EMAIL, // Replace with your email
+    from: process.env.EMAIL,
     to: email,
     subject: 'Account Verification',
     text: `Please verify your Vikesplace account by clicking the following link: ${verificationLink}`
   };
 
-  // Send verification email
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
+      console.log(error);
       return res.status(500).json({ message: 'Failed to send verification email' });
     }
     res.status(200).json({ message: 'Verification email sent successfully' });
   });
-});
-
-
-router.post("/verify_account", (req, res) => {
-  // handle verify account logic here
-  res.json({ message: "user registered" });
 });
 
 export default router;

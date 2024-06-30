@@ -1,21 +1,17 @@
 import axios from "axios";
+import httpErrorHandler from "./httpErrorHandler";
 
-const API_URL = "http://localhost:8080/api/auth/"; //TODO update to backend's api for this
+const API_URL = "http://localhost:8080/";
 
 class AuthService {
     login(username, password) {
-        return axios
-        .post(API_URL + "login", {
-            username,
-            password
-            })
-        .then(response => {
-            if (response.data.accessToken) {
-                localStorage.setItem("user", JSON.stringify(response.data));
-            }
-
-            return response.data;
-        });
+        const response = axios
+            .post(API_URL + "login", {
+                username,
+                password
+            }, {withCredentials: true})
+            .catch(httpErrorHandler);
+        return response;
     }
   
     logout() {
@@ -24,20 +20,42 @@ class AuthService {
 
     register(email) {
         return axios.post(API_URL + "request_account", {
-            email
-        });
+            email,
+            callback: "http://localhost:3000/verify-account?jwt="
+        })
+        .catch(httpErrorHandler);
     }
 
-    verify(username, password, location) {
+    verify(jwt, username, password, location) {
         return axios.post(API_URL + "verify_account", {
+            jwt,
             username,
             password,
             location
-        });
+        })
+        .catch(httpErrorHandler);
+    }
+
+    requestPasswordChange(email) {
+        return axios.post(API_URL + "verify_password", {
+            email
+        })
+        .catch(httpErrorHandler);
+    }
+
+    completePasswordChange(password) {
+        return axios.post(API_URL + "reset_password", {
+            password
+        })
+        .catch(httpErrorHandler);
     }
 
     getCurrentUser() {
-        return JSON.parse(localStorage.getItem('user'));;
+        return JSON.parse(localStorage.getItem('user'));
+    }
+
+    getCurrentUserId() {
+        return JSON.parse(localStorage.getItem('user'));
     }
 }
 

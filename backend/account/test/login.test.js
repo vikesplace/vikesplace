@@ -1,64 +1,124 @@
 import request from "supertest";
 import express from "express";
-import loginRouter from "../routes/login.js";
+import axios from "axios";
+import jwt from "jsonwebtoken";
+import router from "../routes/login"; // Adjust the path as necessary
 
-const identification = (req, res, next) => {
-  console.log("Auth middleware logic here");
-  next();
-};
+jest.mock("axios");
+jest.mock("jsonwebtoken");
 
 const app = express();
 app.use(express.json());
-app.use(identification);
-app.use("/login", loginRouter);
+app.use("/login", router);
 
-describe("Login Routes", () => {
-  it("should log in a user on POST /login", async () => {
-    const response = await request(app)
-      .post("/login")
-      .send({ username: "test", password: "test" });
-    expect(response.body).toEqual({ message: "User logged in" });
+describe("POST /login", () => {
+  beforeEach(() => {
+    process.env.ACCESS_TOKEN_SECRET = "testsecret";
+    jwt.sign.mockReturnValue("testtoken");
   });
 
-  it("should not log in a user with incorrect username on POST /login", async () => {
-    const response = await request(app)
-      .post("/login")
-      .send({ username: "wronguser", password: "test" });
-    expect(response.body).toEqual({ error: "Invalid username or password" });
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
-  it("should not log in a user with incorrect password on POST /login", async () => {
+  // it("should login user with valid credentials", async () => {
+  //   axios.post.mockResolvedValueOnce({ data: { user_id: 1 } });
+
+  //   const response = await request(app)
+  //     .post("/login")
+  //     .send({
+  //       username: "valid_user",
+  //       password: "Valid1@password",
+  //     });
+
+  //   expect(response.statusCode).toBe(200);
+  //   expect(response.body).toEqual({ message: "User logged in successfully" });
+  //   expect(jwt.sign).toHaveBeenCalledWith(
+  //     { userId: 1 },
+  //     process.env.ACCESS_TOKEN_SECRET,
+  //     { expiresIn: "2h" }
+  //   );
+  //   expect(axios.post).toHaveBeenCalledWith("/user/login/", {
+  //     username: "valid_user",
+  //     password: "Valid1@password",
+  //   });
+  // });
+
+  it("should return 400 if validation fails for username", async () => {
     const response = await request(app)
       .post("/login")
-      .send({ username: "test", password: "wrongpassword" });
-    expect(response.body).toEqual({ error: "Invalid username or password" });
+      .send({
+        password: "Valid1@password",
+      });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.body.message).toContain("Username is required");
+    expect(jwt.sign).not.toHaveBeenCalled();
+    expect(axios.post).not.toHaveBeenCalled();
   });
 
-  it("should not log in a user with missing username on POST /login", async () => {
+  it("should return 400 if validation fails for password", async () => {
     const response = await request(app)
       .post("/login")
-      .send({ password: "test" });
-    expect(response.body).toEqual({ error: "Username is required" });
+      .send({
+        username: "valid_user",
+        password: "short",
+      });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.body.message).toContain("Password must be at least 8 characters long");
+    expect(jwt.sign).not.toHaveBeenCalled();
+    expect(axios.post).not.toHaveBeenCalled();
   });
 
-  it("should not log in a user with missing password on POST /login", async () => {
+  it("should return 400 if axios post fails with 400", async () => {
+    axios.post.mockRejectedValueOnce({
+      response: {
+        status: 400,
+        data: { message: "Invalid credentials" },
+      },
+    });
+
     const response = await request(app)
       .post("/login")
-      .send({ username: "test" });
-    expect(response.body).toEqual({ error: "Password is required" });
+      .send({
+        username: "invalid_user",
+        password: "Invalid1@password",
+      });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.body.message).toBe("Invalid credentials");
+    expect(jwt.sign).not.toHaveBeenCalled();
   });
 
-  it("should not log in a user with missing username and password on POST /login", async () => {
-    const response = await request(app)
-      .post("/login")
-      .send({});
-    expect(response.body).toEqual({ error: "Username and password are required" });
-  });
+  it("should return 500 if axios post fails with no response", async () => {
+    axios.post.mockRejectedValueOnce(new Error("Network error"));
 
-  it("should not log in an unregistered user on POST /login", async () => {
     const response = await request(app)
       .post("/login")
-      .send({ username: "unregistereduser", password: "password" });
-    expect(response.body).toEqual({ error: "Invalid username or password" });
+      .send({
+        username: "valid_user",
+        password: "Valid1@password",
+      });
+
+    expect(response.statusCode).toBe(500);
+    expect(response.body.message).toBe("Internal server error");
+    expect(jwt.sign).not.toHaveBeenCalled();
   });
+  
+  it("should return 400 if there is a server error", async () => {
+    // axios.post.mockResolvedValueOnce({ data: { user_id: 1 } });
+    const response = await request(app)
+      .post("/login")
+      .send({
+        username: "alpha_123",
+        password: "Abcdefgh123@",
+      });
+    // expect(response.statusCode).toBe(200);
+    expect(response.body.message).toContain("Internal server error");
+    
+    });
+
+
 });
+

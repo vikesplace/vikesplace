@@ -1,70 +1,82 @@
-# Getting Started with Create React App
+# Welcome to Vikesplace Frontend!
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Dependencies
+- Node.js
+- Docker Desktop
+- Git
 
-## Available Scripts
+## Run the App
 
-In the project directory, you can run:
+### Just Frontend
 
-### `npm start`
+1. Navigate to vikesplace/frontend folder (the project directory)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+2. Run `npm install` (the first time, and after updates to package.json) to ensure all dependencies are available.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+3. Use `npm start` to run application in development mode.
 
-### `npm test`
+4. Open [http://localhost:3000](http://localhost:3000) to view it in your browser (it should open automatically).
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+### Frontend with Docker
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. Navigate to vikesplace/frontend folder (the project directory)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+2. Ensure Docker Desktop is open
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+3. Run `docker-compose up --build` in project directory
 
-### `npm run eject`
+Note: this will take about 5 minutes to run, as `npm install` needs to run every time. Once complete, frontend application is running on a docker container. 
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+4. Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+5. Close docker once done testing application, run `docker-compose down -v` to ensure ports are available for other projects.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Frontend Tests
 
-## Learn More
+1. Navigate to vikesplace/frontend folder (the project directory)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+2. Run `npm install` (the first time, and after updates to package.json) to ensure all dependencies are available.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+3. Run `npm test`
 
-### Code Splitting
+Note: run individual test suites with `npm test <filename>`, where `<filename>` is replaced with a file name like `ViewListings.test.js`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Most tests are failing because they were written before api integration with mocked data, this is expected and we will be mocking api calls for more consistent testing in the future.
 
-### Analyzing the Bundle Size
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### Frontend + Backend Integration
 
-### Making a Progressive Web App
+1. Make the following file changes:
+   1. In the /backend folder, update .env to include EMAIL, APP_PASSWORD, REFRESH_TOKEN_SECRET
+   
+   Note: to reduce security concerns these are shared on our Discord, not on GitHub.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+   2. In backend/nginx/nginx.conf comment three lines, from `location /search {}`
 
-### Advanced Configuration
+   Note: this is due to conflicts with naming in the recommender
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+2. Open Docker Desktop
 
-### Deployment
+3. In the vikesplace/backend directory, run `docker-compose up --build`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Note: wait until all backend containers are running, about 1-2 minutes.
+- Ensure postal_code_script has run completely after datalayer was up and running (usually choose to run it again just to make sure, it will auto shutoff once done)
+- Ensure data_layer and nginx are both running as all api calls rely on them
+- To shut off all containers once done testing, run `docker-compose down -v`
 
-### `npm run build` fails to minify
+4. In the vikesplace/frontend directory complete the "Just Frontend" steps
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+### Integrated Application (All in Docker)
+
+1. Open Docker Desktop
+
+2. Run `docker-compose up --build` in vikesplace
+
+Note: this takes anywhere from 5-20 minutes. Not recommended if you are developing.
+
+3. In docker, ensure that postal_code_scripts has completely run (if unsure, try running again, will shutoff automatically once complete)
+
+4. Should be able to access all areas of application.

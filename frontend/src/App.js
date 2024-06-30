@@ -15,9 +15,11 @@ import Login from './pages/Login.js';
 import RequestAccount from './pages/RequestAccount.js'
 import CheckYourEmail from './pages/CheckYourEmail.js';
 import MessageHistory from './pages/MessageHistory.js';
+import UserProfile from './pages/UserProfile.js';
 import RequestPasswordChange from './pages/RequestPasswordChange.js';
 import CompletePasswordChange from './pages/CompletePasswordChange.js';
 import PasswordUpdated from './pages/PasswordUpdated.js';
+
 
 function App() {  
   return (
@@ -30,7 +32,7 @@ function App() {
         <Route path="/manage-listings" element={<ManageListings />} />
         <Route path="/messages" element={<Messages />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/verify" element={<VerifyAccount />} /> {/* TODO: modify /verify to use parameters from email verification*/}
+        <Route path="/verify-account" element={<VerifyAccount />} />
         <Route path="/verified" element={<VerifiedAccount />} />
         <Route path="/history" element={<SearchHistory />} />
         <Route path="/request-account" element={<RequestAccount />} />
@@ -38,8 +40,9 @@ function App() {
         <Route path="/listings/:id" element={<ListingDetailsPage />} />
         <Route path="/edit-listing/:id" element={<EditListing />} />
         <Route path="/message-history/:id" element={<MessageHistory />} />
+        <Route path="/user-profile" element={<UserProfile />} />
         <Route path="/password-change" element={<RequestPasswordChange />} />
-        <Route path="/password-update" element={<CompletePasswordChange />} /> {/* TODO: modify /verify to use parameters from email verification*/}
+        <Route path="/password-update" element={<CompletePasswordChange />} />
         <Route path="/password-updated" element={<PasswordUpdated />} />
         {/* Add other routes here */}
       </Routes>

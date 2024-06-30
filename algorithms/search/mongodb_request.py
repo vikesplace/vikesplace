@@ -60,3 +60,23 @@ def write_search_activity(user_id, query):
         return result.upserted_id
     else:
         return result.matched_count
+    
+
+def delete_search_document(user_id):
+    # Create a connection to the MongoDB server
+    client = MongoClient(f"mongodb://{MONGO_USER}:{MONGO_PASS}@{MONGO_HOST}:{MONGO_PORT}/")
+
+    # Access the database
+    db = client[MONGO_DB]
+
+    # Access a collection
+    collection = db["user_activity"]
+
+    # Using 'upsert', updates doc if it exits, otherwise create a new doc.
+    query = {"_id": user_id}
+
+    # Delete a single document that matches the query
+    result = collection.delete_one(query)
+
+    return result.deleted_count
+

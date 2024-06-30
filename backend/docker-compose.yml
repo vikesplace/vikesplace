@@ -30,9 +30,13 @@ services:
       - ./account:/home/node/app
       - /home/node/app/node_module
     ports:
-      - "5000"
+      - "5002:5000"
     environment:
-      PORT: 5000
+      - DATA_LAYER=${DATA_LAYER}
+      - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
+      - EMAIL=${EMAIL}
+      - APP_PASSWORD=${APP_PASSWORD}
+      - REFRESH_TOKEN_SECRET=${REFRESH_TOKEN_SECRET}
   
   ratings:
     container_name: ratings_reviews
@@ -42,9 +46,9 @@ services:
       - ./ratings_reviews:/home/node/app
       - /home/node/app/node_module
     ports:
-      - "5000"
+      - "5003:5000"
     environment:
-      PORT: 5000
+      - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
   
   users:
     container_name: users
@@ -54,9 +58,9 @@ services:
       - ./users:/home/node/app
       - /home/node/app/node_module
     ports:
-      - "5000"
+      - "5004:5000"
     environment:
-      PORT: 5000
+      - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
   
   messages:
     container_name: messages
@@ -66,9 +70,10 @@ services:
       - ./messages:/home/node/app
       - /home/node/app/node_module
     ports:
-      - "5000"
+      - "5005:5000"
     environment:
-      PORT: 5000
+      - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
+      - DATA_LAYER=${DATA_LAYER}
   
   listing:
     container_name: listing
@@ -78,7 +83,7 @@ services:
       - ./listing:/home/node/app
       - /home/node/app/node_module
     ports:
-      - "5000:5000"
+      - "5010:5000"
     environment:
       - PORT=5000
       - DB_HOST=${DB_HOST}
@@ -87,6 +92,7 @@ services:
       - DB_DATABASE=${DB_DATABASE}
       - DB_PORT=${DB_PORT}
       - DATA_LAYER=${DATA_LAYER}
+      - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
 
   recommendation:
     container_name: recommendation
@@ -96,9 +102,9 @@ services:
       - ./recommendation:/home/node/app
       - /home/node/app/node_module
     ports:
-      - "5000"
+      - "5006:5000"
     environment:
-      PORT: 5000
+      - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
   
   search:
     container_name: search
@@ -108,9 +114,11 @@ services:
       - ./search:/home/node/app
       - /home/node/app/node_module
     ports:
-      - "5000"
+      - "5007:5000"
     environment:
-      PORT: 5000
+      - ALG_SEARCH=${ALG_SEARCH}
+      - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
+      - DATA_LAYER=${DATA_LAYER}
   
   data_layer:
     container_name: data_layer
@@ -124,7 +132,7 @@ services:
       - ./data_layer:/home/node/app
       - /home/node/app/node_module
     ports:
-      - "5000"
+      - "3400:5000"
     environment:
       - PORT=5000
       - DATA_LAYER=${DATA_LAYER}

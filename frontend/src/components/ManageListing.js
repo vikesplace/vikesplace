@@ -11,19 +11,31 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import DataService from '../services/DataService.js';
 
 const categories = [
-  { value: 'Furniture', label: 'Furniture' },
-  { value: 'SchoolSupplies', label: 'School Supplies' },
-  { value: 'Technology', label: 'Technology' }
-];
-
+    { value: 'Furniture', label: 'Furniture' },
+    { value: 'Office Supplies', label: 'Office Supplies' },
+    { value: 'Electronics', label: 'Electronics' },
+    { value:'Vehicles', label:'Vehicles'},
+    { value:'Phones', label:'Phones'},
+    { value:'Entertainment', label: 'Entertainment'},
+    { value:'Garden', label:'Garden'},
+    { value:'Outdoor', label:'Outdoor'},
+    { value:'Sports', label:'Sports'},
+    { value:'Kicthen Supplies', label:'Kitchen Supplies'},
+    { value:'Musical Instruments', label:'Musical Instruments'},
+    { value:'Apparel', label:'Apparel'},
+    { value: 'Beauty', label:'Beauty'},
+    { value:'Health', label:'Health'}
+  ];
 const statuses = [
     { value: 'AVAILABLE', label: 'AVAILABLE' },
     { value: 'SOLD', label: 'SOLD' }
   ];
 
 export default function ManageListing({ listing }) {
+    const dataService = new DataService();
 
     let navigate = useNavigate();
 
@@ -117,7 +129,7 @@ export default function ManageListing({ listing }) {
     }
 
     function validatePostalCode() {
-        var format = new RegExp("^[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]$");
+        var format = new RegExp("^[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ][0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]$");
         if (!format.test(postalCode)) {
             setPostalCodeError(true);
             return false;
@@ -150,34 +162,23 @@ export default function ManageListing({ listing }) {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-
-        const data = new FormData(event.currentTarget);
+        // const data = new FormData(event.currentTarget);
 
         var validForm = validateTitle() && validatePrice() && validatePostalCode() && validateCategory() && validateBuyer();
 
         if (validForm) {
-            try {
-                // TODO POST (edit)
-                console.log({
-                    title: data.get("title"),
-                    price: data.get("price"),
-                    postalCode: data.get("postalCode"),
-                    category: category,
-                    status: status,
-                    buyer: data.get("buyer")
-                });
+            let response = dataService.updateListing(listing.id, title, price, postalCode, status, buyer, category);
+            if (response !== undefined) {
                 navigate(`/manage-listings`);
-            } catch (error) {
-                // TODO display error message
-                console.log(error);
             }
         }      
     }
 
     const handleDelete = (event) => {
-        // TODO POST (delete)
-        console.log("DELETE!");
-        navigate("/manage-listings");
+        let response = dataService.deleteListing(listing.id);
+        if (response !== undefined) {
+            navigate("/manage-listings");
+        }
     }
 
   return (
@@ -241,7 +242,7 @@ export default function ManageListing({ listing }) {
                         onBlur={handlePostalCodeBlur}
                         error={postalCodeError}
                         helperText={
-                            postalCodeError ? "Please enter a valid postal code (format: A1A 1A1)" : ""
+                            postalCodeError ? "Please enter a valid postal code with format A1A1A1" : ""
                         }
                     />
                 </Grid>

@@ -48,16 +48,3 @@ Dev:
 ```bash
 npm run dev
 ```
-
-## To Populate PostCodes Table
-
-ensure docker database container is running
-
-```bash
-node populate_postal_codes.js
-```
-
-check if table is created in docker container:
-
-```bash
-docker exec -it postgres_db psql -U user -d database
