@@ -11,8 +11,8 @@ done
 
 # Function to register connectors
 register_connectors() {
-  curl -X POST -H 'Content-Type: application/json' --data @/etc/kafka-connect/jdbc-postgres-users-source.json http://localhost:8083/connectors
-  curl -X POST -H 'Content-Type: application/json' --data @/etc/kafka-connect/jdbc-postgres-listings-source.json http://localhost:8083/connectors
+  #curl -X POST -H 'Content-Type: application/json' --data @/etc/kafka-connect/jdbc-postgres-users-source.json http://localhost:8083/connectors
+  #curl -X POST -H 'Content-Type: application/json' --data @/etc/kafka-connect/jdbc-postgres-listings-source.json http://localhost:8083/connectors
   curl -X POST -H 'Content-Type: application/json' --data @/etc/kafka-connect/neo4j-sink.json http://localhost:8083/connectors
 }
 

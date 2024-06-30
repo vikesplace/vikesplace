@@ -1,13 +1,15 @@
 volumes:
   certs:
     driver: local
-  psqldata:
+  psqldata-vikesplace:
     driver: local
   esdata:
     driver: local
   kibanadata:
     driver: local
-  logstashdata:
+  logstashdata-elasticsearch:
+    driver: local
+  logstashdata-kafka:
     driver: local
   metricbeatdata:
     driver: local
@@ -27,11 +29,10 @@ networks:
 
 services:
   postgresql:
-    build:
-      context: ./postgresql/
-      dockerfile: Dockerfile
+    image: postgis/postgis:latest
     volumes:
-      - psqldata:/var/lib/postgresql/data
+      - ./postgresql:/docker-entrypoint-initdb.d
+      - psqldata-vikesplace:/var/lib/postgresql/data
     restart: always
     environment:
       - POSTGRES_DB=${POSTGRES_DB}
@@ -46,18 +47,38 @@ services:
       retries: 5
 
   neo4j:
-    image: neo4j:latest
+    image: neo4j:4.4.31-enterprise
     container_name: neo4j
     environment:
-      - NEO4J_AUTH=${NEO4J_AUTH}  # Set your own password
+      NEO4J_AUTH: ${NEO4J_AUTH}
+      NEO4J_ACCEPT_LICENSE_AGREEMENT: "yes"
+      NEO4J_server_config_strict_validation_enabled: "false"
+      NEO4J_apoc_initializer_cypher: 'CALL apoc.cypher.runSchemaFile("file:////var/lib/neo4j/init.cypher");'
+      NEO4JLABS_PLUGINS: '["apoc"]' 
+      NEO4J_apoc_export_file_enabled: "true" 
+      NEO4J_apoc_import_file_enabled: "true" 
+      NEO4J_apoc_import_file_use__neo4j__config: "true" 
+      NEO4J_dbms_directories_import: "/" 
     ports:
       - 7474:7474
       - 7687:7687
     volumes:
       - neo4jdata:/data
-
+      - ./neo4j/conf/init.sh:/docker-entrypoint-initdb.d/init.cypher
+      #- ./neo4j/neo4j-streams-4.1.5.jar:/plugins
+      #- ./neo4j/streams.conf:/var/lib/neo4j/streams.conf
+      - ./neo4j/conf/apoc.conf:/var/lib/apoc.conf
+      - ./neo4j/conf/init.cypher:/var/lib/neo4j/init.cypher
+    depends_on:
+      - kafka
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--spider", "http://neo4j:7474"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+  
   zookeeper:
-    image: wurstmeister/zookeeper:3.4.6
+    image: wurstmeister/zookeeper
     ports:
       - "2181:2181"
     environment:
@@ -83,29 +104,69 @@ services:
       timeout: 10s
       retries: 5
 
+  create-topics:
+    image: confluentinc/cp-kafka:7.2.1
+    depends_on:
+      kafka:
+        condition: service_healthy
+    entrypoint: ["/bin/sh", "-c"]
+    command: >
+      "kafka-topics --create --topic users_topic --bootstrap-server kafka:9092 --partitions 1 --replication-factor 1 &&
+       kafka-topics --create --topic listings_topic --bootstrap-server kafka:9092 --partitions 1 --replication-factor 1"
+
   kafka-connect:
-    build:
-      context: ./kafka-connect/
-      dockerfile: Dockerfile
+    image: confluentinc/cp-kafka-connect:latest
     ports:
       - "8083:8083"
     volumes:
       - kafkadata:/var/lib/kafka/data
+      - ./kafka-connect/neo4j-sink.json:/etc/kafka-connect/neo4j-sink.json
+      - ./kafka-connect/neo4j-connect/neo4j-kafka-connect-neo4j-5.0.5:/usr/share/java/neo4j-kafka-connect-neo4j-5.0.5
     depends_on:
       - kafka
-      - zookeeper
-      - postgresql
       - neo4j
+    environment:
+      - NEO4J_PASSWORD=${NEO4J_PASSWORD}
+      - NEO4J_USER=${NEO4J_USER}
+      - CONNECT_BOOTSTRAP_SERVERS=kafka:9092 
+      - CONNECT_REST_ADVERTISED_HOST_NAME=kafka-connect 
+      - CONNECT_GROUP_ID=kafka-connect-group 
+      - CONNECT_CONFIG_STORAGE_TOPIC=connect-configs 
+      - CONNECT_OFFSET_STORAGE_TOPIC=connect-offsets 
+      - CONNECT_STATUS_STORAGE_TOPIC=connect-status 
+      - CONNECT_KEY_CONVERTER=org.apache.kafka.connect.json.JsonConverter 
+      - CONNECT_VALUE_CONVERTER=org.apache.kafka.connect.json.JsonConverter 
+      - CONNECT_KEY_CONVERTER_SCHEMAS_ENABLE=false 
+      - CONNECT_VALUE_CONVERTER_SCHEMAS_ENABLE=false 
+      - CONNECT_PLUGIN_PATH=/usr/share/java
+      - CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR=1
+      - CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR=1
+      - CONNECT_STATUS_STORAGE_REPLICATION_FACTOR=1
+    command: >
+      bash -c "
+        # Start Kafka Connect in the background
+        /etc/confluent/docker/run &
 
-  #faust-app:
-  #  build:
-  #    context: ./faust-data-processing/
-  #    dockerfile: Dockerfile
-  #  depends_on:
-  #    kafka:
-  #        condition: service_healthy
-  #  environment:
-  #    FAUST_BROKER: 'kafka://kafka:9092'
+        # Wait for Kafka Connect to be ready
+        while ! nc -z localhost 8083; do
+          echo 'Waiting for Kafka Connect to start...'
+          sleep 5
+        done
+
+        # Register the Neo4j sink connector
+        echo 'Registering Neo4j sink connector...'
+        curl -X POST -H 'Content-Type: application/json' --data @/etc/kafka-connect/neo4j-sink.json http://localhost:8083/connectors
+
+        # Periodic synchronization every 5 minutes (300 seconds)
+        while true; do
+          echo 'Synchronizing connectors...'
+          curl -X POST -H 'Content-Type: application/json' --data @/etc/kafka-connect/neo4j-sink.json http://localhost:8083/connectors
+          sleep 300
+        done
+
+        # Wait for Kafka Connect to terminate (forwarding signals)
+        wait
+      "
 
   setup:
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
@@ -263,7 +324,7 @@ services:
     command:
       - --strict.perms=false
 
-  logstash:
+  logstash-elasticsearch:
     depends_on:
       postgresql:
         condition: service_healthy
@@ -272,7 +333,7 @@ services:
       kibana:
         condition: service_healthy
     build:
-      context: ./logstash
+      context: ./logstash/logstash-elasticsearch
       dockerfile: Dockerfile
       args:
         - STACK_VERSION=${STACK_VERSION}
@@ -281,12 +342,34 @@ services:
     user: root
     volumes:
       - certs:/usr/share/logstash/certs
-      - logstashdata:/usr/share/logstash/data
+      - logstashdata-elasticsearch:/usr/share/logstash/data
     environment:
       - xpack.monitoring.enabled=false
       - ELASTIC_USER=elastic
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
       - ELASTIC_HOSTS=https://elasticsearch:9200
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+
+  logstash-kafka:
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    build:
+      context: ./logstash/logstash-kafka
+      dockerfile: Dockerfile
+      args:
+        - STACK_VERSION=${STACK_VERSION}
+    labels:
+      co.elastic.logs/module: logstash
+    user: root
+    volumes:
+      - logstashdata-kafka:/usr/share/logstash/data
+    environment:
+      - xpack.monitoring.enabled=false
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
