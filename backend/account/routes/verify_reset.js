@@ -28,6 +28,7 @@ const passwordValidation = [
 router.post("/", passwordValidation, async (req, res) => {
 
   const { jwt: token, password } = req.body;
+  console.log(password);
   if (!token) { 
     return res.status(400).json({ message: 'token is missing' });
   }
@@ -37,7 +38,7 @@ router.post("/", passwordValidation, async (req, res) => {
   }
 
   const errors = validationResult(req);
-  console.log(errors);
+  //console.log(errors);
   if (!errors.isEmpty()) {
     return res.status(400).json({
       message: errors
@@ -49,18 +50,19 @@ router.post("/", passwordValidation, async (req, res) => {
 
   try {
     const decodedToken = jwt.verify(token, jwtSecret);
-    const email = decodedToken.email;
-
+    const userEmail = decodedToken.email;
+    //console.log(userEmail);
     const hashedPassword = await bcrypt.hash(password, 10);
-
+    console.log(hashedPassword); //To check if the updated password matches the database one, only for debugging
     // Update the user's password in the database
-    const response = await axios.put("/user/reset_password/", {
-      email,
+    const response = await axios.post("/user/resetPassword/", {
+      email: userEmail,
       password: hashedPassword,
     });
 
     res.status(200).json({ message: "Password updated successfully" });
   } catch (error) {
+    //console.log(error);
     return res.status(400).json({ message: error.message });
   }
 });
