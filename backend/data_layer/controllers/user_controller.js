@@ -91,7 +91,7 @@ export const getUser = async (req, res) => {
 
 export const resetPassword = async (req, res) => {
     const { email, password } = req.body;
-    console.log(req.body);
+    //console.log(req.body);
 
     try {
         // Find user by email
