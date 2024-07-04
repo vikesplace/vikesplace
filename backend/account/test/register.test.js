@@ -7,31 +7,46 @@ jest.mock("nodemailer");
 
 const app = express();
 app.use(express.json());
+app.use("/", router);
 app.use("/request_account", router);
 
-describe("POST /request_account", () => {
-  let mockSendMail;
+const sendMailMock = jest.fn();
+
+nodemailer.createTransport.mockReturnValue({
+  sendMail: sendMailMock,
+});
+
+describe('POST /', () => {
 
   beforeEach(() => {
-    // Clear all instances and calls to constructor and all methods:
-    nodemailer.createTransport.mockClear();
-    mockSendMail = jest.fn((mailOptions, callback) => {
-      callback(null, { response: "250 Message accepted" });
-    });
-
-    nodemailer.createTransport.mockReturnValue({
-      sendMail: mockSendMail,
-    });
+    jest.clearAllMocks();
   });
 
-  it("should send a verification email for a valid UVic email", async () => {
-    const response = await request(app)
-      .post("/request_account")
-      .send({ email: "amanpalod@uvic.ca", callback: "http://localhost:5002/verify-account/?jwt=" });
+  it('should send verification email successfully', async () => {
+    
+    sendMailMock.mockImplementation((mailOptions, callback) => {
+      callback(null, { response: '250 OK' });
+    });
 
-    // expect(response.statusCode).toBe(200);
-    expect(response.body).toEqual({ message: "Verification email sent successfully" });
-    // expect(mockSendMail).toHaveBeenCalled();
+    const response = await request(app)
+      .post('/')
+      .send({
+        email: 'test@uvic.ca',
+        callback: 'http://localhost:3000/verify?token=',
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body.message).toBe('Verification email sent successfully');
+    expect(sendMailMock).toHaveBeenCalledTimes(1);
+    expect(sendMailMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        from: process.env.EMAIL,
+        to: 'test@uvic.ca',
+        subject: 'Account Verification',
+        text: expect.stringContaining('http://localhost:3000/verify?token='),
+      }),
+      expect.any(Function)
+    );
   });
 
   it("should return 400 for an invalid UVic email", async () => {
@@ -44,7 +59,7 @@ describe("POST /request_account", () => {
   });
 
   it("should return 500 if email sending fails", async () => {
-    mockSendMail.mockImplementationOnce((mailOptions, callback) => {
+    sendMailMock.mockImplementationOnce((mailOptions, callback) => {
       callback(new Error("Failed to send email"));
     });
 

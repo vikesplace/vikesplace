@@ -12,7 +12,7 @@ router.post('/', createUser);
 // });
 router.post('/login', loginUser);
 
-router.patch('/reset_password', resetPassword);
+router.post('/resetPassword', resetPassword);
 
 //Get all users
 router.get('/', (req, res) => {
