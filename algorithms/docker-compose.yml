@@ -21,6 +21,8 @@ volumes:
     driver: local
   zookeeperdata:
     driver: local
+  mongo_key:
+    driver: local
 
 networks:
   default:
@@ -112,7 +114,8 @@ services:
     entrypoint: ["/bin/sh", "-c"]
     command: >
       "kafka-topics --create --topic users_topic --bootstrap-server kafka:9092 --partitions 1 --replication-factor 1 &&
-       kafka-topics --create --topic listings_topic --bootstrap-server kafka:9092 --partitions 1 --replication-factor 1"
+       kafka-topics --create --topic listings_topic --bootstrap-server kafka:9092 --partitions 1 --replication-factor 1 &&
+       kafka-topics --create --topic user.vikesplace.user_activity.activities --bootstrap-server kafka:9092 --partitions 1 --replication-factor 1"
 
   kafka-connect:
     image: confluentinc/cp-kafka-connect:latest
@@ -122,6 +125,8 @@ services:
       - kafkadata:/var/lib/kafka/data
       - ./kafka-connect/neo4j-sink.json:/etc/kafka-connect/neo4j-sink.json
       - ./kafka-connect/neo4j-connect/neo4j-kafka-connect-neo4j-5.0.5:/usr/share/java/neo4j-kafka-connect-neo4j-5.0.5
+      - ./kafka-connect/mongo-source.json:/etc/kafka-connect/mongo-source.json
+      - ./kafka-connect/mongo-connect/mongodb-kafka-connect-mongodb/lib/mongo-kafka-connect-1.13.0-confluent.jar:/usr/share/java/mongo-kafka-connect-1.13.0-confluent.jar
     depends_on:
       - kafka
       - neo4j
@@ -138,7 +143,7 @@ services:
       - CONNECT_VALUE_CONVERTER=org.apache.kafka.connect.json.JsonConverter 
       - CONNECT_KEY_CONVERTER_SCHEMAS_ENABLE=false 
       - CONNECT_VALUE_CONVERTER_SCHEMAS_ENABLE=false 
-      - CONNECT_PLUGIN_PATH=/usr/share/java
+      - CONNECT_PLUGIN_PATH=/usr/share/java/
       - CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR=1
       - CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR=1
       - CONNECT_STATUS_STORAGE_REPLICATION_FACTOR=1
@@ -153,14 +158,25 @@ services:
           sleep 5
         done
 
-        # Register the Neo4j sink connector
-        echo 'Registering Neo4j sink connector...'
-        curl -X POST -H 'Content-Type: application/json' --data @/etc/kafka-connect/neo4j-sink.json http://localhost:8083/connectors
+        #confluent-hub install --no-prompt mongodb/kafka-connect-mongodb:latest
+
+        #Register the Neo4j sink connector if not already registered
+        if ! curl -s http://localhost:8083/connectors | grep neo4j-sink; then
+          echo 'Registering Neo4j sink connector...'
+          curl -X POST -H 'Content-Type: application/json' --data @/etc/kafka-connect/neo4j-sink.json http://localhost:8083/connectors
+        fi
+
+        # Register the MongoDB source connector if not already registered
+        if ! curl -s http://localhost:8083/connectors | grep mongo-source; then
+          echo 'Registering MongoDB source connector...'
+          curl -X POST -H 'Content-Type: application/json' --data @/etc/kafka-connect/mongo-source.json http://localhost:8083/connectors
+        fi
 
         # Periodic synchronization every 5 minutes (300 seconds)
         while true; do
           echo 'Synchronizing connectors...'
           curl -X POST -H 'Content-Type: application/json' --data @/etc/kafka-connect/neo4j-sink.json http://localhost:8083/connectors
+          curl -X POST -H 'Content-Type: application/json' --data @/etc/kafka-connect/mongo-source.json http://localhost:8083/connectors
           sleep 300
         done
 
@@ -375,22 +391,26 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 
   mongodb:
-    image: mongo:latest
-    volumes:
-      - mongodbdata:/data/db
-      - ./mongodb/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    build:
+       context: ./mongodb
+       dockerfile: Dockerfile
+    restart: always
     ports:
       - "27017:27017"
+    volumes:
+      - mongo_key:/etc/mongodb-keyfile
+      - mongodbdata:/data/db
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
-      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
     healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 10s
-      timeout: 10s
-      retries: 5
-      start_period: 20s
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"] #echo "rs.status()" | mongosh --port 27017 --quiet
+      interval: 5s
+      timeout: 30s
+      start_period: 0s
+      start_interval: 1s
+      retries: 30
 
   search:
     depends_on:

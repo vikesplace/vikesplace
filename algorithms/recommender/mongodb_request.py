@@ -13,11 +13,11 @@ MONGO_USER = os.getenv("MONGO_INITDB_ROOT_USERNAME")
 MONGO_PASS = os.getenv("MONGO_INITDB_ROOT_PASSWORD")
 MONGO_DB = os.getenv("MONGO_INITDB_DATABASE")
 
+MONGO_URI = f"mongodb://{MONGO_USER}:{MONGO_PASS}@{MONGO_HOST}:{MONGO_PORT}/{MONGO_DB}?replicaSet=rs0"
 
 def user_activity(user_id):
     # Create a connection to the MongoDB server
-    client = MongoClient(
-        f"mongodb://{MONGO_USER}:{MONGO_PASS}@{MONGO_HOST}:{MONGO_PORT}/")
+    client = MongoClient(MONGO_URI)
 
     # Access the database
     db = client[MONGO_DB]
@@ -37,8 +37,7 @@ def user_activity(user_id):
 
 def latest_user_activity(user_id):
     # Create a connection to the MongoDB server
-    client = MongoClient(
-        f"mongodb://{MONGO_USER}:{MONGO_PASS}@{MONGO_HOST}:{MONGO_PORT}/")
+    client = MongoClient(MONGO_URI)
     db = client[MONGO_DB]
     collection = db["user_activity"]
 
@@ -54,8 +53,7 @@ def latest_user_activity(user_id):
 
 def get_top_10_popular():
     # Create a connection to the MongoDB server
-    client = MongoClient(
-        f"mongodb://{MONGO_USER}:{MONGO_PASS}@{MONGO_HOST}:{MONGO_PORT}/")
+    client = MongoClient(MONGO_URI)
     db = client[MONGO_DB]
     collection = db["user_activity"]
 
@@ -75,4 +73,3 @@ def get_top_10_popular():
         i["listing_id"] = i.pop("_id")
 
     return results
-    
