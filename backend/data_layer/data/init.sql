@@ -47,6 +47,23 @@ CREATE TABLE IF NOT EXISTS "Messages" (
     receiver_id INT NOT NULL REFERENCES "Users"(user_id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS "Ratings" (
+    listing_rating_id SERIAL PRIMARY KEY,
+    rated_listing_id INT NOT NULL REFERENCES "Listings"(listing_id) ON DELETE CASCADE,
+    rating_user_id INT NOT NULL REFERENCES "Users"(user_id) ON DELETE CASCADE,
+    rating_value INT NOT NULL CHECK (rating_value >= 1 AND rating_value <= 5),
+    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS "Reviews" (
+    listing_review_id SERIAL PRIMARY KEY,
+    reviewed_listing_id INT NOT NULL REFERENCES "Listings"(listing_id) ON DELETE CASCADE,
+    review_user_id INT NOT NULL REFERENCES "Users"(user_id) ON DELETE CASCADE,
+    review_content TEXT NOT NULL,
+    listing_rating_id INT NOT NULL REFERENCES "Ratings"(listing_rating_id) ON DELETE CASCADE,
+    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Insert 20 users with unique usernames and emails
 INSERT INTO "Users" (username, email, password, location, postal_code, joining_date, items_sold, items_bought) VALUES
 ('Alice', 'alice@example.com', 'password1', 'POINT(48.378400 -123.415600)'::GEOMETRY, 'V8R6N2', '2024-01-01 10:00:00', 0, 0),
@@ -202,3 +219,29 @@ INSERT INTO "Messages" (listing_id, message_content, timestamp, chat_id, sender_
 (5, 'Sure, I can meet you at the coffee shop.', '2024-02-01 14:05:00', 5, 2, 1),
 (5, 'Great, see you there.', '2024-02-01 14:10:00', 5, 1, 2),
 (6, 'Hello, I am interested in the Guitar.', '2024-02-02 10:00:00', 6, 1, 2);
+
+INSERT INTO "Ratings" (listing_rating_id, rated_listing_id, rating_user_id, rating_value, timestamp) VALUES
+(1, 1, 2, 5, '2024-02-01 10:00:00'),
+(2, 2, 3, 4, '2024-02-01 11:00:00'),
+(3, 3, 4, 3, '2024-02-01 12:00:00'),
+(4, 4, 5, 2, '2024-02-01 13:00:00'),
+(5, 5, 6, 1, '2024-02-01 14:00:00'),
+(6, 6, 7, 5, '2024-02-02 10:00:00'),
+(7, 7, 8, 4, '2024-02-02 11:00:00'),
+(8, 8, 9, 3, '2024-02-02 12:00:00'),
+(9, 9, 10, 2, '2024-02-02 13:00:00'),
+(10, 10, 11, 1, '2024-02-02 14:00:00'),
+(11, 11, 12, 1, '2024-02-02 14:00:00');
+
+INSERT INTO "Reviews" (listing_review_id, reviewed_listing_id, review_user_id, review_content, listing_rating_id, timestamp) VALUES
+(1, 1, 2, 'Great bike, would rent again.', 1, '2024-02-01 10:00:00'),
+(11, 1, 2, 'Bad bike, would not rent again.', 1, '2024-02-01 10:00:00'),
+(2, 2, 3, 'Good laptop, would rent again.', 2, '2024-02-01 11:00:00'),
+(3, 3, 4, 'Average desk chair, would not rent again.', 3, '2024-02-01 12:00:00'),
+(4, 4, 5, 'Poor headphones, would not rent again.', 4, '2024-02-01 13:00:00'),
+(5, 5, 6, 'Terrible bookshelf, would not rent again.', 5, '2024-02-01 14:00:00'),
+(6, 6, 7, 'Great guitar, would rent again.', 6, '2024-02-02 10:00:00'),
+(7, 7, 8, 'Good keyboard, would rent again.', 7, '2024-02-02 11:00:00'),
+(8, 8, 9, 'Average monitor, would not rent again.', 8, '2024-02-02 12:00:00'),
+(9, 9, 10, 'Poor dining table, would not rent again.', 9, '2024-02-02 13:00:00'),
+(10, 10, 11, 'Terrible bluetooth speaker, would not rent again.', 10, '2024-02-02 14:00:00');
