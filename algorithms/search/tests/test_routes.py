@@ -1,6 +1,6 @@
 import requests
 from fastapi import status
-#import search.mongodb_request as mongodb_request
+import search.mongodb_request as mongodb_request
 
 # Base URL for the deployed FastAPI instance
 BASE_URL = "http://localhost:8000"
@@ -127,7 +127,7 @@ def test_save_search_query_with_existing_history():
 
 def test_save_search_query_with_no_existing_history():
     user_id = 999
-    #mongodb_request.delete_search_document(user_id) # clears off search history from previous test iterations
+    mongodb_request.delete_search_document(user_id) # clears off search history from previous test iterations
     response = requests.post(f"{BASE_URL}/users/{user_id}/searches", json={"query":"air fryer"})
     response_obj = response.json()
 
