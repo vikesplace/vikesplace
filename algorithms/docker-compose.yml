@@ -118,15 +118,13 @@ services:
        kafka-topics --create --topic user.vikesplace.user_activity.activities --bootstrap-server kafka:9092 --partitions 1 --replication-factor 1"
 
   kafka-connect:
-    image: confluentinc/cp-kafka-connect:latest
+    build: 
+      context: /kafka-connect
+      dockerfile: Dockerfile
     ports:
       - "8083:8083"
     volumes:
       - kafkadata:/var/lib/kafka/data
-      - ./kafka-connect/neo4j-sink.json:/etc/kafka-connect/neo4j-sink.json
-      - ./kafka-connect/neo4j-connect/neo4j-kafka-connect-neo4j-5.0.5:/usr/share/java/neo4j-kafka-connect-neo4j-5.0.5
-      - ./kafka-connect/mongo-source.json:/etc/kafka-connect/mongo-source.json
-      - ./kafka-connect/mongo-connect/mongodb-kafka-connect-mongodb/lib/mongo-kafka-connect-1.13.0-confluent.jar:/usr/share/java/mongo-kafka-connect-1.13.0-confluent.jar
     depends_on:
       - kafka
       - neo4j
