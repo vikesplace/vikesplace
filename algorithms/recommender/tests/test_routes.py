@@ -1,12 +1,12 @@
+import requests
 from fastapi import status
-from fastapi.testclient import TestClient
-from recommender.routes import app
 
-client = TestClient(app)
+# Base URL for the deployed FastAPI instance
+BASE_URL = "http://localhost:8001"
 
 
 def test_read_root():
-    response = client.get("/")
+    response = requests.get(f"{BASE_URL}/")
     assert response.status_code == 200
     assert response.json() == {"message": "VikesPlace Recommendation Service"}
 
@@ -21,7 +21,7 @@ def test_recommender_with_activity_history():
         "latitude": 48.3784,
         "longitude": -123.4156
     }
-    response = client.get("/recommendations", headers=headers, params=params)
+    response = requests.get(f"{BASE_URL}/recommendations", headers=headers, params=params)
     response_obj = response.json()
 
     assert response.status_code == status.HTTP_200_OK
@@ -41,7 +41,7 @@ def test_recommender_with_no_activity_history():
         "latitude": 48.467289,
         "longitude": -123.404489
     }
-    response = client.get("/recommendations", headers=headers, params=params)
+    response = requests.get(f"{BASE_URL}/recommendations", headers=headers, params=params)
     response_obj = response.json()
 
     assert response.status_code == status.HTTP_200_OK
@@ -57,7 +57,7 @@ def test_recommender_current_item():
         "user_id": user_id,
         "listing_id": listing_id
     }
-    response = client.get("/recommendations_current_item", headers=headers, params=params)
+    response = requests.get(f"{BASE_URL}/recommendations_current_item", headers=headers, params=params)
     response_obj = response.json()
 
     assert response.status_code == status.HTTP_200_OK
@@ -68,7 +68,7 @@ def test_recommender_current_item():
 
 
 def test_recommender_most_popular_items():
-    response = client.get("/recommendations_most_popular")
+    response = requests.get(f"{BASE_URL}/recommendations_most_popular")
     response_obj = response.json()
 
     assert response.status_code == status.HTTP_200_OK
