@@ -181,6 +181,17 @@ services:
         # Wait for Kafka Connect to terminate (forwarding signals)
         wait
       "
+  neo4j-relations-kafka-connect:
+    build: 
+      context: /neo4j-relations-kafka-connect
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      - kafka
+      - neo4j
+    environment:
+      - NEO4J_PASSWORD=${NEO4J_PASSWORD}
+      - NEO4J_USER=${NEO4J_USER}
 
   setup:
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
