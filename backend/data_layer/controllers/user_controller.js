@@ -94,7 +94,8 @@ export const getUser = async (req, res) => {
 };
 
 export const resetPassword = async (req, res) => {
-    const { email, newPassword } = req.body;
+    const { email, password } = req.body;
+    //console.log(req.body);
 
     try {
         // Find user by email
@@ -103,15 +104,16 @@ export const resetPassword = async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
-
+        //console.log(newPassword);
+        //console.log(email);
         // Generate salt and hash the new password
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(newPassword, salt);
+        // const salt = await bcrypt.genSalt(10);
+        // const hashedPassword = await bcrypt.hash(newPassword, salt);
 
         // Update user's password
-        user.password = hashedPassword;
+        user.password = password;
         await user.save();
-
+        
         return res.status(200).json({ message: "Password reset successfully" });
     } catch (error) {
         console.error(error);

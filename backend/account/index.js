@@ -19,14 +19,14 @@ app.use(cors({
 }));
 
 app.get("/", (req, res) => {
-  res.json({ message: "Hello Worldfdg" });
+  res.json({ message: "Hello World" });
 });
 app.use(express.json());
 app.use("/login", loginRouter);
 app.use("/request_account", registerRouter);
 app.use("/verify_account", identification, verifyAccountRouter);
 app.use("/request_reset", resetPassword);
-app.use("/verify_reset", verifyPassword);
+app.use("/verify_reset", identification, verifyPassword);
 
 function identification(req, res, next) {
   const token = req.body.jwt;

@@ -14,10 +14,12 @@ MONGO_USER = os.getenv("MONGO_INITDB_ROOT_USERNAME")
 MONGO_PASS = os.getenv("MONGO_INITDB_ROOT_PASSWORD")
 MONGO_DB = os.getenv("MONGO_INITDB_DATABASE")
 
+MONGO_URI = f"mongodb://{MONGO_USER}:{MONGO_PASS}@{MONGO_HOST}:{MONGO_PORT}/{MONGO_DB}?replicaSet=rs0"
 
 def search_history(user_id):
     # Create a connection to the MongoDB server
-    client = MongoClient(f"mongodb://{MONGO_USER}:{MONGO_PASS}@{MONGO_HOST}:{MONGO_PORT}/")
+    client = MongoClient(MONGO_URI)
+    #mongodb://mongoadmin:secret@mongodb:27017/vikesplace?replicaSet=rs0
 
     # Access the database
     db = client[MONGO_DB]
@@ -36,7 +38,7 @@ def search_history(user_id):
 
 def write_search_activity(user_id, query):
     # Create a connection to the MongoDB server
-    client = MongoClient(f"mongodb://{MONGO_USER}:{MONGO_PASS}@{MONGO_HOST}:{MONGO_PORT}/")
+    client = MongoClient(MONGO_URI)
 
     # Access the database
     db = client[MONGO_DB]
@@ -64,7 +66,7 @@ def write_search_activity(user_id, query):
 
 def delete_search_document(user_id):
     # Create a connection to the MongoDB server
-    client = MongoClient(f"mongodb://{MONGO_USER}:{MONGO_PASS}@{MONGO_HOST}:{MONGO_PORT}/")
+    client = MongoClient(MONGO_URI)
 
     # Access the database
     db = client[MONGO_DB]
