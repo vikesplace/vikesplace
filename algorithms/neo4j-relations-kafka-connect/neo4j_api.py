@@ -1,8 +1,15 @@
+import os
+from dotenv import load_dotenv
 from neo4j import GraphDatabase, RoutingControl
 
+load_dotenv()
+
+# ES connection details
+NEO4J_USER = os.getenv("NEO4J_USER")
+NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD")
 
 URI = "neo4j://neo4j:7687"
-AUTH = ("neo4j", "neo4j_$3ng499")
+AUTH = (NEO4J_USER, NEO4J_PASSWORD)
 
 
 def add_relation(user_id_raw, listing_id_raw):

@@ -67,8 +67,6 @@ services:
     volumes:
       - neo4jdata:/data
       - ./neo4j/conf/init.sh:/docker-entrypoint-initdb.d/init.cypher
-      #- ./neo4j/neo4j-streams-4.1.5.jar:/plugins
-      #- ./neo4j/streams.conf:/var/lib/neo4j/streams.conf
       - ./neo4j/conf/apoc.conf:/var/lib/apoc.conf
       - ./neo4j/conf/init.cypher:/var/lib/neo4j/init.cypher
     depends_on:
@@ -181,6 +179,7 @@ services:
         # Wait for Kafka Connect to terminate (forwarding signals)
         wait
       "
+  
   neo4j-relations-kafka-connect:
     build: 
       context: /neo4j-relations-kafka-connect
@@ -487,4 +486,23 @@ services:
         "/recommender/wait-for-cert.sh \
         && /recommender/wait-for-elastic.sh \
         && fastapi run routes.py --port 8001"
+      ]
+
+  recommender_advanced:
+    depends_on:
+      neo4j:
+        condition: service_healthy
+    build: 
+      context: ./recommender_advanced
+      dockerfile: Dockerfile
+    ports:
+      - "8002:8002"
+    environment:
+      - NEO4J_USER=${NEO4J_USER}
+      - NEO4J_PASSWORD=${NEO4J_PASSWORD}
+      - NEO4J_URI=${NEO4J_URI_DOCKER}
+    entrypoint: 
+      [
+        "/bin/sh", "-c", 
+        "fastapi run routes.py --port 8002"
       ]
