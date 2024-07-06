@@ -13,11 +13,11 @@ ES_USER = os.getenv("ES_USER")
 ES_PASS = os.getenv("ELASTIC_PASSWORD")
 ES_CERT_PATH = os.getenv("ES_CERT_PATH")
 
-# default location
+# default lat_long
 #   downtown victoria; lat = 48.407326, lon = -123.329773
 
 
-def search(query, location, category=None, status=None):
+def search(query, lat_long, category=None, status=None):
     es = Elasticsearch(
         f"https://{ES_HOST}:{ES_PORT}/",
         ca_certs='./ca.crt',
@@ -37,9 +37,9 @@ def search(query, location, category=None, status=None):
         {
             "geo_distance": {
                 "distance": "5km",
-                "location": {
-                            "lat": location[0],
-                            "lon": location[1]
+                "lat_long": {
+                            "lat": lat_long[0],
+                            "lon": lat_long[1]
                 }
             }
         }
