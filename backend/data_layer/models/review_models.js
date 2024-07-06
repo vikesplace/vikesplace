@@ -52,6 +52,7 @@ Reviews.init(
   },
   {
     sequelize,
+    freezeTableName: true,
     timestamps: false,
   }
 );
