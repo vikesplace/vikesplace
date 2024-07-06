@@ -1,4 +1,5 @@
 import express from "express";
+import { updateUserData} from "../controller/update_user_data.js";
 
 const router = express.Router();
 
@@ -15,10 +16,7 @@ router.get("/:userId", (req, res) => {
 });
 
 //update user data
-router.patch("/:userId", (req, res) => {
-    //handle logic here
-    res.json({ message: "Update user data" });
-});
+router.patch("/:userId", updateUserData);
 
 export default router;
 

@@ -16,12 +16,12 @@ export const createUser = async (req, res) => {
     try {
         // Fetch coordinates for the provided postal code
         const postalCodeRecord = await PostalCodes.findOne({ where: { postal_code: location } });
-            
+
         if (!postalCodeRecord) {
             return res.status(400).json({ message: "Invalid postal code" });
         }
         const { latitude, longitude } = postalCodeRecord;
-        
+
         if (latitude === null || longitude === null || isNaN(latitude) || isNaN(longitude)) {
             return res.status(400).json({ message: "Invalid coordinates for the postal code" });
         }
@@ -46,10 +46,10 @@ export const createUser = async (req, res) => {
             res.status(400).json({ message: "Validation error: " + error.message });
         }
         else if (error.name === 'SequelizeUniqueConstraintError') {
-            res.status(400).json({ message: "Username or email already exists"});
-        } 
-         else {
-            res.status(500).json({ message: "Database error: " + error.message});
+            res.status(400).json({ message: "Username or email already exists" });
+        }
+        else {
+            res.status(500).json({ message: "Database error: " + error.message });
         }
     }
 };
@@ -57,7 +57,7 @@ export const createUser = async (req, res) => {
 
 // Login a user
 export const loginUser = async (req, res) => {
-    
+
     const { username, password } = req.body;
 
     try {
@@ -73,7 +73,7 @@ export const loginUser = async (req, res) => {
             return res.status(400).json({ message: "User or password is incorrect" });
         }
 
-        return res.status(200).json({ message: "User logged in successfully", user_id:user.user_id });
+        return res.status(200).json({ message: "User logged in successfully", user_id: user.user_id });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Internal server error" });
@@ -81,15 +81,15 @@ export const loginUser = async (req, res) => {
 };
 
 export const getUser = async (req, res) => {
-    try{
-        const user = await User.findOne({where:{user_id: req.params.userId}});
-        if(!user){
-            return res.status(404).json({message:"User does not exist"});
+    try {
+        const user = await User.findOne({ where: { user_id: req.params.userId } });
+        if (!user) {
+            return res.status(404).json({ message: "User does not exist" });
         }
-        return res.json({user:user});
+        return res.json({ user: user });
     }
-    catch(err){
-        res.json({message: err});
+    catch (err) {
+        res.json({ message: err });
     }
 };
 
@@ -113,10 +113,31 @@ export const resetPassword = async (req, res) => {
         // Update user's password
         user.password = password;
         await user.save();
-        
+
         return res.status(200).json({ message: "Password reset successfully" });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+export const updateUserData = async (req, res) => {
+    try {
+        const user = await User.findByPk(req.params.userId);
+        if (!user) {
+            console.error("User not found");
+            return res.status(500).send();
+        }
+        user.location = req.body.location;
+        user.postal_code = req.body.postal_code;
+        await user.save();
+        res.json({});
+    } catch (error) {
+        if (error.name === 'SequelizeValidationError') {
+            return res.status(400).json({ message: error.message });
+        } else {
+            console.error(error);
+            res.status(500).send();
+        }
     }
 };
