@@ -80,42 +80,17 @@ export const loginUser = async (req, res) => {
     }
 };
 
-// export const getUser = async (req, res) => {
-//     try{
-//         const user = await User.findOne({where:{user_id: req.params.userId}});
-//         if(!user){
-//             return res.status(404).json({message:"User does not exist"});
-//         }
-//         return res.json({user:user});
-//     }
-//     catch(err){
-//         res.json({message: err});
-//     }
-// };
-
 export const getUserData = async (req, res) => {
-    try {
-        const user = await User.findByPk(req.params.userId);
-        if (!user) {
-            console.error("User not found");
-            return res.status(500).send();
+    try{
+        const user = await User.findOne({where:{user_id: req.params.userId}});
+        if(!user){
+            return res.status(404).json({message:"User does not exist"});
         }
-        const {user_id, username, email, password, location, postal_code, joining_date, items_sold, items_bought} = user;
-        res.json({
-            user_id: user_id,
-            username: username,
-            email: email,
-            password: password,
-            location: location,
-            postal_code: postal_code,
-            joining_date: joining_date,
-            items_sold: items_sold,
-            items_bought: items_bought
-        });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).send();
-    };
+        return res.json({user:user});
+    }
+    catch(err){
+        res.json({message: err});
+    }
 };
 
 export const resetPassword = async (req, res) => {
