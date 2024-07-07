@@ -54,7 +54,7 @@ describe("Get Seller Listings Tests", () => {
       json: jest.fn().mockImplementation((result) => {
         responseObject = result;
       }),
-      status: 200,
+      status: jest.fn().mockReturnThis(),
       locals: { decodedToken: { userId: 1 } },
     };
 
@@ -72,7 +72,7 @@ describe("Get Seller Listings Tests", () => {
       json: jest.fn().mockImplementation((result) => {
         responseObject = result;
       }),
-      status: 200,
+      status: jest.fn().mockReturnThis(),
       locals: { decodedToken: { userId: 1 } },
     };
     await getSellerListings({}, mockGetRes);
@@ -80,18 +80,23 @@ describe("Get Seller Listings Tests", () => {
   });
 
   it("fail to return all listings because seller not found", async () => {
+    axios.get.mockImplementation(() =>
+      Promise.reject(new Error("Internal Server Error"))
+    );
     let responseObject = {};
     const mockGetRes = {
       body: {},
       json: jest.fn().mockImplementation((result) => {
         responseObject = result;
       }),
-      status: 200,
+      status: jest.fn().mockReturnThis(),
+      locals: { decodedToken: { userId: 1 } },
     };
 
-    const spyConsoleLog = jest.spyOn(console, "log");
+    const spyConsoleLog = jest.spyOn(console, "error");
     await getSellerListings({}, mockGetRes);
 
     expect(spyConsoleLog).toHaveBeenCalled();
+    expect(responseObject).toEqual({ message: "Failed to get listings" });
   });
 });
