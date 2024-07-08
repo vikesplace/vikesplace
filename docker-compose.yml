@@ -7,11 +7,13 @@ volumes:
     driver: local
   kibanadata:
     driver: local
-  logstashdata:
+  logstashdata-elasticsearch:
     driver: local
   metricbeatdata:
     driver: local
   mongodbdata:
+    driver: local
+  mongo_key:
     driver: local
 
 networks:
@@ -123,7 +125,7 @@ services:
   logstash:
     extends:
       file: algorithms/docker-compose.yml
-      service: logstash
+      service: logstash-elasticsearch
     depends_on:
       postgresql:
         condition: service_healthy
