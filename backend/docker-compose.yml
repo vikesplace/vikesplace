@@ -49,6 +49,7 @@ services:
       - "5003:5000"
     environment:
       - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
+      - DATA_LAYER=${DATA_LAYER}
   
   users:
     container_name: users

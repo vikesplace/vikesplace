@@ -5,12 +5,12 @@ class Ratings extends Model {}
 
 Ratings.init(
   {
-    listing_rating_id: {
+    rating_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    rated_listing_id: {
+    listing_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       unique: true,
@@ -20,10 +20,9 @@ Ratings.init(
       },
       onDelete: "CASCADE",
     },
-    rating_user_id: {
+    user_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      unique: true,
       references: {
         model: "Users",
         key: "user_id",

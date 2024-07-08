@@ -34,13 +34,13 @@ Reviews.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    listing_rating_id: {
+    rating_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       unique: true,
       references: {
         model: "Ratings",
-        key: "listing_rating_id",
+        key: "rating_id",
       },
       onDelete: "CASCADE",
     },
