@@ -123,13 +123,14 @@ export const resetPassword = async (req, res) => {
 
 export const updateUserData = async (req, res) => {
     try {
+        const coordinate = { type: 'Point', coordinates: [req.body.location.latitude,req.body.location.longitude]}
         const user = await User.findByPk(req.params.userId);
         if (!user) {
             console.error("User not found");
             return res.status(500).send();
         }
-        user.location = req.body.location;
-        user.postal_code = req.body.postal_code;
+        user.location = coordinate;
+        user.postal_code = req.body.postal_code,
         await user.save();
         res.json({});
     } catch (error) {
