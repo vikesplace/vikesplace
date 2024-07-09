@@ -94,7 +94,7 @@ describe('CreateListing page', () => {
     const categoryInput = screen.getByRole('combobox', { name: /category/i });
 
     fireEvent.mouseDown(categoryInput);
-    const listbox = within(getByRole('listbox'));
+    const listbox = within(screen.getByRole('listbox'));
 
     fireEvent.click(listbox.getByText(/Furniture/i));
 

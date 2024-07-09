@@ -75,7 +75,7 @@ describe('ViewListings Component', () => {
     fireEvent.mouseDown(statusDropdown); // Open status dropdown
   
     // Find option by text directly if role option is not accessible
-    const availableOption = screen.getByText('AVAILABLE', { selector: 'li' }); // Adjust selector as per your dropdown structure
+    const availableOption = screen.getByText('Available', { selector: 'li' }); // Adjust selector as per your dropdown structure
     
     fireEvent.click(availableOption); // Select 'AVAILABLE' status
     
