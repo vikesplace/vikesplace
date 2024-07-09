@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
-import '../App.css';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useNavigate, useLocation } from 'react-router-dom';
 import AuthService from '../services/AuthService';
-
 
 function VerifyAccount() {
     const location = useLocation();
@@ -114,7 +112,6 @@ function VerifyAccount() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        // const data = new FormData(event.currentTarget);
         
         var validForm = validateUsername() && validatePassword() && validateConfirmPassword() && validatePostalCode();
         if (validForm) {
@@ -122,7 +119,6 @@ function VerifyAccount() {
             if (response !== undefined && response.data !== undefined) {
                 let message = response.data.message;
                 if (message !== undefined) {
-                    // TODO, use exact error messages
                     if (message.includes("username")) {
                         setUsernameError("Username is already taken, please choose another");
                     }
@@ -130,12 +126,12 @@ function VerifyAccount() {
                     navigate("/verified");
                 }
             } else {
-                console.log(response)
+                console.log(response);
                 navigate("/verified");
             }
             
         }
-    }
+    };
     
   return (
     <div className="VerifyAccount">
@@ -166,6 +162,8 @@ function VerifyAccount() {
                         onBlur={handleUsernameBlur}
                         error={usernameError !== ""}
                         helperText={usernameError}
+                        sx={{ height: '56px', position: 'relative' }}
+                        FormHelperTextProps={{ sx: { position: 'absolute', bottom: -20, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' } }}
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -184,6 +182,8 @@ function VerifyAccount() {
                         helperText={
                             passwordError ? "Must be 8+ characters, with at least 1 symbol, number, lowercase letter, and uppercase letter" : ""
                         }
+                        sx={{ height: '56px', position: 'relative' }}
+                        FormHelperTextProps={{ sx: { position: 'absolute', bottom: -20, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' } }}
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -202,6 +202,8 @@ function VerifyAccount() {
                         helperText={
                             confirmPassError ? "Must match password" : ""
                         }
+                        sx={{ height: '56px', position: 'relative' }}
+                        FormHelperTextProps={{ sx: { position: 'absolute', bottom: -20, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' } }}
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -219,6 +221,8 @@ function VerifyAccount() {
                         helperText={
                             postalCodeError ? "Please enter a valid postal code with format A1A1A1" : ""
                         }
+                        sx={{ height: '56px', position: 'relative' }}
+                        FormHelperTextProps={{ sx: { position: 'absolute', bottom: -20, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' } }}
                     />
                 </Grid>
                 <Button
