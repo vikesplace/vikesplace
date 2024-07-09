@@ -4,6 +4,10 @@ import { createListing } from "../controller/create_listing";
 jest.mock("axios");
 
 describe("Create Listing Tests", () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("should create a listing", async () => {
     axios.post.mockImplementation(() =>
       Promise.resolve({ data: 1, status: 200 })
@@ -35,7 +39,6 @@ describe("Create Listing Tests", () => {
     expect(postResponse).toEqual(1);
   });
 
-
   it("should fail to create due to missing userId", async () => {
     let postResponse = {};
     const mockPostRes = {
@@ -44,7 +47,7 @@ describe("Create Listing Tests", () => {
         postResponse = result;
       }),
       status: jest.fn().mockReturnThis(),
-      locals: {decodedToken: { userId: 1 } }, // No decodedToken here
+      locals: {}, // No decodedToken here to act as missing userId
     };
 
     axios.get.mockImplementation(() =>
@@ -59,10 +62,10 @@ describe("Create Listing Tests", () => {
         category: "ELECTRONICS",
       },
     };
-
+    
     const spyConsoleError = jest.spyOn(console, "error").mockImplementation(() => {});
     await createListing(mockReq, mockPostRes);
-
+    expect(spyConsoleError).toHaveBeenCalled();
     spyConsoleError.mockRestore();
   });
 
