@@ -15,6 +15,7 @@ class AuthService {
     }
   
     logout() {
+        // TODO remove from cookies
         localStorage.removeItem("user");
     }
 
@@ -48,14 +49,6 @@ class AuthService {
             password
         })
         .catch(httpErrorHandler);
-    }
-
-    getCurrentUser() {
-        return JSON.parse(localStorage.getItem('user'));
-    }
-
-    getCurrentUserId() {
-        return JSON.parse(localStorage.getItem('user'));
     }
 }
 
