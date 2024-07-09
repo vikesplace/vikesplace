@@ -19,7 +19,7 @@ describe("Get Own User Data", () => {
     };
 
     axios.get.mockImplementation((url) => {
-      return Promise.resolve({ data: { user: mockOutput } });
+      return Promise.resolve({ data: mockOutput });
     });
     let responseObject = {};
     const req = {};

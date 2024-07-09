@@ -1,5 +1,5 @@
 import express from "express";
-import { createUser, loginUser, getUser, resetPassword } from '../controllers/user_controller.js';
+import { createUser, loginUser, getUser, getUserMe, resetPassword } from '../controllers/user_controller.js';
 
 const router = express.Router();
 
@@ -21,6 +21,9 @@ router.get('/', (req, res) => {
 
 //Get a user
 router.get('/:userId', getUser);
+
+//Get User Me
+router.get('/me/:userId', getUserMe)
 
 //Update a user
 router.patch('/:userId', (req, res) => {

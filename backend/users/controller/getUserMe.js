@@ -3,9 +3,8 @@ import axios from "axios";
 export const getUserMe = async (req, res) => {
   try {
     const userId = res.locals.decodedToken.userId;
-    const userData = await axios.get(`user/${userId}`);
-
-    res.json(userData.data.user);
+    const userData = await axios.get(`user/me/${userId}`);
+    res.json(userData.data);
   } catch (error) {
     if (error.response && error.response.status == 400) {
       // if bad request, return error to client

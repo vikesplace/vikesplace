@@ -3,6 +3,7 @@ import { check, validationResult } from "express-validator";
 import User from "../models/user_models.js";
 import PostalCodes from "../models/postal_code_models.js";
 import "dotenv/config";
+import Listings from "../models/listing_models.js";
 
 // JWT Secret
 const jwtSecret = process.env.ACCESS_TOKEN_SECRET;
@@ -88,6 +89,19 @@ export const loginUser = async (req, res) => {
 };
 
 export const getUser = async (req, res) => {
+  try{
+      const user = await User.findOne({where:{user_id: req.params.userId}});
+      if(!user){
+          return res.status(404).json({message:"User does not exist"});
+      }
+      return res.json({user:user});
+  }
+  catch(err){
+      res.json({message: err});
+  }
+};
+
+export const getUserMe = async (req, res) => {
   try {
     const user = await User.findOne({
       attributes: [
@@ -95,15 +109,27 @@ export const getUser = async (req, res) => {
         "username",
         "location",
         ["joining_date", "joiningDate"],
+        ["items_sold", "itemsSold"],
+        ["items_purchased", "itemsPurchased"]
       ],
       where: { user_id: req.params.userId },
     });
+    const itemsSold = await Listings.findAll({where: {seller_id: req.params.userId}});
+    const itemsBought = await Listings.findAll({where: {buyer_username: user.dataValues.username}});
+
     if (!user) {
       return res.status(404).json({ message: "User does not exist" });
     }
-    return res.json({ user: user });
+    return res.status(200).json({
+      userId: user.dataValues.userId,
+      username: user.dataValues.username,
+      location: user.dataValues.location,
+      joiningDate: user.dataValues.joiningDate,
+      itemsSold: itemsSold,
+      itemsBought: itemsBought
+    });
   } catch (err) {
-    res.json({ message: err });
+    res.status(500).json({ message: err });
   }
 };
 

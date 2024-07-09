@@ -42,7 +42,7 @@ Users.init(
       allowNull: false,
       defaultValue: 0,
     },
-    items_bought: {
+    items_purchased: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0,
