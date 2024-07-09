@@ -3,7 +3,7 @@ import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { BrowserRouter as Router } from 'react-router-dom';
 import ListingCard from '../../components/ListingCard';
-import { SAMPLE_LISTING } from '../TestData';
+import { SAMPLE_LISTING } from '../../testSetup/TestData';
 
 // Mock useNavigate from react-router-dom
 jest.mock('react-router-dom', () => ({

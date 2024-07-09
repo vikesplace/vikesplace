@@ -3,7 +3,7 @@ import { render, screen, } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { BrowserRouter as Router } from 'react-router-dom';
 import ManageListings from '../../pages/ManageListings';
-import { SAMPLE_LISTING_LIST } from '../TestData';
+import { SAMPLE_LISTING_LIST } from '../../testSetup/TestData';
 
 describe('ManageListings page', () => {
   beforeEach(() => {
