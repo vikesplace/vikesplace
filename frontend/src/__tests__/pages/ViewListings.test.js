@@ -3,6 +3,7 @@ import { render, fireEvent, screen, within, waitFor } from '@testing-library/rea
 import '@testing-library/jest-dom/extend-expect';
 import { BrowserRouter as Router } from 'react-router-dom';
 import ViewListings from '../../pages/ViewListings';
+import { SAMPLE_DATA } from '../../utils/SampleRecommenderData';
 
 describe('ViewListings Component', () => {
   beforeEach(() => {
@@ -18,8 +19,8 @@ describe('ViewListings Component', () => {
   });
 
   test('renders listing cards', () => {
-    const listingCards = screen.getAllByText(/Test 1|Super cool object|Buy Me!|Another listings for sale/);
-    expect(listingCards.length).toBe(3); // Based on initialListings length
+    const listingCards = screen.getAllByTestId('listing-card');
+    expect(listingCards.length).toBe(SAMPLE_DATA.length); // Based on initialListings length
   });
 
   test('opens and closes the filter dialog', async () => {
@@ -57,11 +58,16 @@ describe('ViewListings Component', () => {
     
     await waitFor(() => {
       const listings = screen.queryAllByTestId('listing-card');
-      expect(listings.length).toBe(2); 
+      const numFilteredListings = SAMPLE_DATA.filter(listing => {
+        return (parseFloat(listing.price) >= parseFloat('3')) &&
+                            (parseFloat(listing.price) <= parseFloat('100'));
+      }).length;
+      expect(listings.length).toBe(numFilteredListings); 
     });
   });
 
   test('applies status filter', async () => {
+    const filterValue = 'AVAILABLE';
     fireEvent.click(screen.getByText('Add Filter')); // Open filter dialog
     
     const statusDropdown = screen.getByLabelText('Status'); // Assuming 'Status' is the label for the dropdown
@@ -78,27 +84,34 @@ describe('ViewListings Component', () => {
     await waitFor(() => {
       const listingCards = screen.getAllByTestId('listing-card');
       const availableListings = listingCards.filter(card => {
-        return within(card).queryByText('AVAILABLE');
+        return within(card).queryByText(filterValue);
       });
-      expect(availableListings.length).toBe(2); // Adjust based on your expected results
+      const numFilteredListings = SAMPLE_DATA.filter(listing => {
+        return listing.status === filterValue;
+      }).length;
+      expect(availableListings.length).toBe(numFilteredListings); // Adjust based on your expected results
     });
   });
   
   
 
   test('filters listings by category', async () => {
+    const filterValue = 'Sports';
     fireEvent.click(screen.getByText('Add Filter')); // Open filter dialog
   
     fireEvent.mouseDown(screen.getByLabelText('Category')); // Open category dropdown
   
     // Select the option by its unique key
-    fireEvent.click(screen.getByRole('option', { name: 'Sports' })); // Select 'Sports' category
+    fireEvent.click(screen.getByRole('option', { name: filterValue })); // Select 'Sports' category
   
     fireEvent.click(screen.getByText('OK')); // Apply filter
   
     await waitFor(() => {
       const filteredListings = screen.queryAllByTestId('listing-card');
-      expect(filteredListings.length).toBe(4); // Adjust the expected count based on filtered results
+      const numFilteredListings = SAMPLE_DATA.filter(listing => {
+        return listing.category === filterValue;
+      }).length;
+      expect(filteredListings.length).toBe(numFilteredListings); // Adjust the expected count based on filtered results
     });
   });
 });
