@@ -39,7 +39,7 @@ describe("Create Listing Tests", () => {
     expect(postResponse).toEqual(1);
   });
 
-  it("should fail to create due to missing userId", async () => {
+  it("should fail to create listing", async () => {
     let postResponse = {};
     const mockPostRes = {
       body: {},
@@ -47,11 +47,15 @@ describe("Create Listing Tests", () => {
         postResponse = result;
       }),
       status: jest.fn().mockReturnThis(),
-      locals: {}, // No decodedToken here to act as missing userId
+      locals: { decodedToken: { userId: 1 } },
     };
 
     axios.get.mockImplementation(() =>
       Promise.resolve({ data: { type: "Point", coordinates: [1, -1] } })
+    );
+
+    axios.post.mockImplementation(() =>
+      Promise.reject({status: 500})
     );
 
     const mockReq = {
@@ -63,10 +67,8 @@ describe("Create Listing Tests", () => {
       },
     };
     
-    const spyConsoleError = jest.spyOn(console, "error").mockImplementation(() => {});
     await createListing(mockReq, mockPostRes);
-    expect(spyConsoleError).toHaveBeenCalled();
-    spyConsoleError.mockRestore();
+    expect(postResponse).toEqual({"message": "Error creating listing"});
   });
 
   it("should fail due to missing location", async () => {
