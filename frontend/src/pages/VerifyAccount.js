@@ -162,7 +162,7 @@ function VerifyAccount() {
                         onBlur={handleUsernameBlur}
                         error={usernameError !== ""}
                         helperText={usernameError}
-                        sx={{ height: '56px', position: 'relative' }}
+                        sx={{ height: '56px', position: 'relative', mt: 3}}
                         FormHelperTextProps={{ sx: { position: 'absolute', bottom: -20, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' } }}
                     />
                 </Grid>
@@ -182,7 +182,7 @@ function VerifyAccount() {
                         helperText={
                             passwordError ? "Must be 8+ characters, with at least 1 symbol, number, lowercase letter, and uppercase letter" : ""
                         }
-                        sx={{ height: '56px', position: 'relative' }}
+                        sx={{ height: '56px', position: 'relative' , mt: 3}}
                         FormHelperTextProps={{ sx: { position: 'absolute', bottom: -20, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' } }}
                     />
                 </Grid>
@@ -202,7 +202,7 @@ function VerifyAccount() {
                         helperText={
                             confirmPassError ? "Must match password" : ""
                         }
-                        sx={{ height: '56px', position: 'relative' }}
+                        sx={{ height: '56px', position: 'relative', mt: 3 }}
                         FormHelperTextProps={{ sx: { position: 'absolute', bottom: -20, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' } }}
                     />
                 </Grid>
@@ -221,7 +221,7 @@ function VerifyAccount() {
                         helperText={
                             postalCodeError ? "Please enter a valid postal code with format A1A1A1" : ""
                         }
-                        sx={{ height: '56px', position: 'relative' }}
+                        sx={{ height: '56px', position: 'relative', mt: 3 }}
                         FormHelperTextProps={{ sx: { position: 'absolute', bottom: -20, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' } }}
                     />
                 </Grid>
