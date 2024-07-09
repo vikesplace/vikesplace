@@ -49,7 +49,8 @@ INSERT INTO "Users" (username, email, password, lat_long, location, joining_date
 ('Quinn', 'quinn@example.com', 'password17', 'POINT(48.467289 -123.404489)'::GEOMETRY, 'V8N5M3', '2024-01-17 10:00:00', 0, 0),
 ('Rose', 'rose@example.com', 'password18', 'POINT(48.467289 -123.337822)'::GEOMETRY, 'V8N5M3', '2024-01-18 10:00:00', 0, 0),
 ('Sam', 'sam@example.com', 'password19', 'POINT(48.478400 -123.393378)'::GEOMETRY, 'V8N5M3', '2024-01-19 10:00:00', 0, 0),
-('Tina', 'tina@example.com', 'password20', 'POINT(48.478400 -123.337822)'::GEOMETRY, 'V8N5M3', '2024-01-20 10:00:00', 0, 0);
+('Tina', 'tina@example.com', 'password20', 'POINT(48.478400 -123.337822)'::GEOMETRY, 'V8N5M3', '2024-01-20 10:00:00', 0, 0),
+('TestUser', 'testuser@example.com', '$2a$10$2NC3ozp1b1YIgSb0tpEEEep83BUpAOz5xi4.dsyqqa80kXINQl5oO', 'POINT(48.478400 -123.337822)'::GEOMETRY, 'V8N5M3', '2024-01-20 10:00:00', 0, 0);
 
 
 INSERT INTO "Listings" (seller_id, buyer_username, title, price, lat_long, location, status, listed_at, last_updated_at, category) VALUES
@@ -155,6 +156,33 @@ INSERT INTO "Listings" (seller_id, buyer_username, title, price, lat_long, locat
 (20, NULL, 'Desk Lamp',30,'POINT(48.478400 -123.315600)'::GEOMETRY, 'V8N5M3', 'AVAILABLE', '2024-02-20 14:00:00', '2024-02-20 14:00:00', 'Furniture');
 
 
+-- Insert 4k users
+CREATE TEMP TABLE temp_users (
+    firstName VARCHAR(255),
+    lastName VARCHAR(255),
+    randomNum INT,
+    username VARCHAR(255),
+    email VARCHAR(255),
+    password VARCHAR(255),
+    location VARCHAR(255),
+    latitude FLOAT,
+    longitude FLOAT,
+    joining_date TIMESTAMP
+);
+
+COPY temp_users(firstName, lastName, randomNum, username, email, password, location, latitude, longitude, joining_date)
+FROM '/docker-entrypoint-initdb.d/users.csv' DELIMITER ',' CSV HEADER;
+
+INSERT INTO "Users" (username, email, password, lat_long, location, joining_date)
+SELECT username, email, password,
+       CONCAT('POINT(',latitude,' ',longitude ,')')::GEOMETRY,
+       location, joining_date
+FROM temp_users;
+
+DROP TABLE temp_users;
+
+
+-- Insert 150k listings
 CREATE TEMP TABLE temp_listings (
     seller_id INT,
     title TEXT,
@@ -168,9 +196,8 @@ CREATE TEMP TABLE temp_listings (
     category VARCHAR(255)
 );
 
-
 COPY temp_listings(seller_id, title, price, latitude, longitude, postal_code, status, listed_at, last_updated_at, category) 
-FROM '/docker-entrypoint-initdb.d/data.csv' DELIMITER ';' CSV HEADER;
+FROM '/docker-entrypoint-initdb.d/listings.csv' DELIMITER ',' CSV HEADER;
 
 INSERT INTO "Listings" (seller_id, title, price, lat_long, location, status, listed_at, last_updated_at, category)
 SELECT seller_id, title, price, 

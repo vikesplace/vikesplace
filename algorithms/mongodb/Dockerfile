@@ -6,6 +6,7 @@ COPY init-replica-set.js /docker-entrypoint-initdb.d/
 COPY entrypoint.sh /usr/src/app/
 COPY mongod.conf /etc/
 COPY init-mongo.js /docker-entrypoint-initdb.d/
+COPY user_activity.json /docker-entrypoint-initdb.d/
 
 EXPOSE 27017
 
