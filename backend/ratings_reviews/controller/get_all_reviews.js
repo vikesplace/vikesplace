@@ -2,7 +2,6 @@ import axios from "axios";
 
 export const getAllReviews = async (req, res) => {
     try {
-        console.log(req.params.listingId);
         const response = await axios.get(`/review/${req.params.listingId}`);
         res.json(response.data);
     } catch (err) {
