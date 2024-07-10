@@ -66,21 +66,21 @@ describe('CreateListing page', () => {
   test('validation on an empty postal code', () => {
     const postalCodeInput = screen.getByRole('textbox', { name: /postal code/i });
     fireEvent.blur(postalCodeInput);
-    expect(screen.getByText('Please enter a valid postal code (format: A1A 1A1)')).toBeInTheDocument();
+    expect(screen.getByText('Please enter a valid postal code with format A1A1A1')).toBeInTheDocument();
   });
 
   test('validation on an invalid postal code', () => {
     const postalCodeInput = screen.getByRole('textbox', { name: /postal code/i });
     fireEvent.change(postalCodeInput, { target: { value: 'invalidPostalCode' } });
     fireEvent.blur(postalCodeInput);
-    expect(screen.getByText('Please enter a valid postal code (format: A1A 1A1)')).toBeInTheDocument();
+    expect(screen.getByText('Please enter a valid postal code with format A1A1A1')).toBeInTheDocument();
   });
 
   test('pass validation on a valid postal code', () => {
     const postalCodeInput = screen.getByRole('textbox', { name: /postal code/i });
-    fireEvent.change(postalCodeInput, { target: { value: 'V9V 9V9' } });
+    fireEvent.change(postalCodeInput, { target: { value: 'V9V9V9' } });
     fireEvent.blur(postalCodeInput);
-    expect(screen.queryByText('Please enter a valid postal code (format: A1A 1A1)')).not.toBeInTheDocument();
+    expect(screen.queryByText('Please enter a valid postal code with format A1A1A1')).not.toBeInTheDocument();
   });
 
   // TODO: no validation on empty/valid category yet
@@ -94,7 +94,7 @@ describe('CreateListing page', () => {
     const categoryInput = screen.getByRole('combobox', { name: /category/i });
 
     fireEvent.mouseDown(categoryInput);
-    const listbox = within(getByRole('listbox'));
+    const listbox = within(screen.getByRole('listbox'));
 
     fireEvent.click(listbox.getByText(/Furniture/i));
 

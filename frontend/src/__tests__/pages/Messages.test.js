@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { useNavigate } from 'react-router-dom';
 import Messages from '../../pages/Messages';
+import { SAMPLE_CHATS } from '../../utils/SampleRecommenderData'
 
 jest.mock('react-router-dom', () => ({
   useNavigate: jest.fn(),
@@ -22,20 +23,18 @@ describe('Messages Component', () => {
   test('displays the correct chat information', () => {
     render(<Messages />);
 
-    expect(screen.getByText("Person's Name")).toBeInTheDocument();
-    expect(screen.getByText('Title of this item I would like to buy')).toBeInTheDocument();
-    expect(screen.getByText('Person Number Two')).toBeInTheDocument();
-    expect(screen.getByText('Super cool item')).toBeInTheDocument();
-    expect(screen.getByText('Person Three')).toBeInTheDocument();
-    expect(screen.getByText('Here is another item available for purchase')).toBeInTheDocument();
+    SAMPLE_CHATS.forEach(chat => {
+      expect(screen.getByText(chat.title)).toBeInTheDocument();
+      expect(screen.getByText(chat.subtitle)).toBeInTheDocument();      
+    });
   });
 
   test('navigates to correct URL on chat item click', () => {
     render(<Messages />);
 
-    const firstChatItem = screen.getByText("Person's Name").closest('.rce-container-citem');
+    const firstChatItem = screen.getByText(SAMPLE_CHATS[0].title).closest('.rce-container-citem');
     fireEvent.click(firstChatItem);
 
-    expect(mockNavigate).toHaveBeenCalledWith('/message-history/3');
+    expect(mockNavigate).toHaveBeenCalledWith('/message-history/'+SAMPLE_CHATS[0].id);
   });
 });

@@ -169,6 +169,9 @@ export default function ManageListing({ listing }) {
         if (validForm) {
             let response = dataService.updateListing(listing.id, title, price, postalCode, status, buyer, category);
             if (response !== undefined) {
+                // TODO check success
+                navigate(`/manage-listings`);
+            } else {
                 navigate(`/manage-listings`);
             }
         }      
@@ -177,7 +180,10 @@ export default function ManageListing({ listing }) {
     const handleDelete = (event) => {
         let response = dataService.deleteListing(listing.id);
         if (response !== undefined) {
-            navigate("/manage-listings");
+            // TODO check success
+            navigate(`/manage-listings`);
+        } else {
+            navigate(`/manage-listings`);
         }
     }
 
