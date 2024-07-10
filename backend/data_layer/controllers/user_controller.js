@@ -11,7 +11,7 @@ const jwtSecret = process.env.ACCESS_TOKEN_SECRET;
 // Validation rules for login
 
 export const createUser = async (req, res) => {
-  const { username, email, password, location, items_sold, items_bought } =
+  const { username, email, password, location, items_sold, items_purchased } =
     req.body;
 
   try {
@@ -36,16 +36,16 @@ export const createUser = async (req, res) => {
         .json({ message: "Invalid coordinates for the postal code" });
     }
 
-        // Create the user
-        const newUser = await User.create({
-            username,
-            email,
-            password: password,
-            lat_long: { type: 'Point', coordinates: [longitude, latitude] },
-            location: location,
-            items_sold: items_sold || 0,
-            items_bought: items_bought || 0
-        });
+    // Create the user
+    const newUser = await User.create({
+      username,
+      email,
+      password: password,
+      lat_long: { type: "Point", coordinates: [longitude, latitude] },
+      location: location,
+      items_sold: items_sold || 0,
+      items_purchased: items_purchased || 0,
+    });
 
     return res.status(201).json({
       user_id: newUser.dataValues.user_id,
@@ -74,11 +74,9 @@ export const loginUser = async (req, res) => {
     }
     // Compare passwords
     const isMatch = await bcrypt.compare(password, user.password);
-
     if (!isMatch) {
       return res.status(400).json({ message: "User or password is incorrect" });
     }
-
     return res
       .status(200)
       .json({ message: "User logged in successfully", user_id: user.user_id });
@@ -89,16 +87,58 @@ export const loginUser = async (req, res) => {
 };
 
 export const getUserData = async (req, res) => {
-    try{
-        const user = await User.findOne({where:{user_id: req.params.userId}});
-        if(!user){
-            return res.status(404).json({message:"User does not exist"});
-        }
-        return res.json({user:user});
+  try {
+    const user = await User.findOne({
+      attributes: [
+        "username",
+        "location",
+        ["joining_date", "joiningDate"],
+        ["items_sold", "itemsSold"],
+        ["items_purchased", "itemsPurchased"],
+      ],
+      where: { user_id: req.params.userId },
+    });
+    if (!user) {
+      return res.status(404).json({ message: "User does not exist" });
     }
-    catch(err){
-        res.json({message: err});
-    }
+
+    const itemsSold = await Listings.findAll({
+      attributes: [
+        ["seller_id", "sellerId"],
+        ["listing_id", "listingId"],
+        "location",
+        "price",
+        ["listed_at", "listedAt"],
+        "status",
+        "title",
+        ["last_updated_at", "lastUpdatedAt"],
+      ],
+      where: { seller_id: req.params.userId },
+    });
+    const itemsBought = await Listings.findAll({
+      attributes: [
+        ["seller_id", "sellerId"],
+        ["listing_id", "listingId"],
+        "location",
+        "price",
+        ["listed_at", "listedAt"],
+        "status",
+        "title",
+        ["last_updated_at", "lastUpdatedAt"],
+      ],
+      where: { buyer_username: user.dataValues.username },
+    });
+
+    return res.status(200).json({
+      username: user.dataValues.username,
+      location: user.dataValues.location,
+      joiningDate: user.dataValues.joiningDate,
+      itemsSold: itemsSold,
+      itemsBought: itemsBought,
+    });
+  } catch (err) {
+    res.json({ message: err });
+  }
 };
 
 export const getUserMe = async (req, res) => {
@@ -110,23 +150,48 @@ export const getUserMe = async (req, res) => {
         "location",
         ["joining_date", "joiningDate"],
         ["items_sold", "itemsSold"],
-        ["items_purchased", "itemsPurchased"]
+        ["items_purchased", "itemsPurchased"],
       ],
       where: { user_id: req.params.userId },
     });
-    const itemsSold = await Listings.findAll({where: {seller_id: req.params.userId}});
-    const itemsBought = await Listings.findAll({where: {buyer_username: user.dataValues.username}});
 
     if (!user) {
       return res.status(404).json({ message: "User does not exist" });
     }
+    const itemsSold = await Listings.findAll({
+      attributes: [
+        ["seller_id", "sellerId"],
+        ["listing_id", "listingId"],
+        "location",
+        "price",
+        ["listed_at", "listedAt"],
+        "status",
+        "title",
+        ["last_updated_at", "lastUpdatedAt"],
+      ],
+      where: { seller_id: req.params.userId },
+    });
+    const itemsBought = await Listings.findAll({
+      attributes: [
+        ["seller_id", "sellerId"],
+        ["listing_id", "listingId"],
+        "location",
+        "price",
+        ["listed_at", "listedAt"],
+        "status",
+        "title",
+        ["last_updated_at", "lastUpdatedAt"],
+      ],
+      where: { buyer_username: user.dataValues.username },
+    });
+
     return res.status(200).json({
       userId: user.dataValues.userId,
       username: user.dataValues.username,
       location: user.dataValues.location,
       joiningDate: user.dataValues.joiningDate,
       itemsSold: itemsSold,
-      itemsBought: itemsBought
+      itemsBought: itemsBought,
     });
   } catch (err) {
     res.status(500).json({ message: err });

@@ -61,7 +61,7 @@ router.post("/", usernameValidation, passwordValidation, async (req, res) => {
       password: hashedPassword,
       location,
       items_sold: 0,
-      items_bought: 0,
+      items_purchased: 0,
     });
 
     // Generate JWT token

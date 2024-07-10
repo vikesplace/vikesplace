@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getUserMe } from "../controller/getUserMe";
+import { getUserMe } from "../controller/get_user_me";
 
 jest.mock("axios");
 
@@ -15,7 +15,7 @@ describe("Get Own User Data", () => {
       },
       joining_date: "2024-01-20T10:00:00.000Z",
       items_sold: 0,
-      items_bought: 0,
+      items_purchased: 0,
     };
 
     axios.get.mockImplementation((url) => {
