@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getSearchResults } from "../controllers/getSearchResults";
+import { getSearchResults } from "../controllers/get_search_results.js";
 
 jest.mock("axios");
 
@@ -62,12 +62,11 @@ describe("Get Search Results Tests", () => {
         status: "AVAILABLE"
       },
     ];
-    const mockUser = {data: {user: {lat_long: {coordinates: [5,5]}}}};
     
     axios.get.mockImplementation((url) => {
       switch (url) {
-        case 'undefineduser/1':
-          return Promise.resolve(mockUser);
+        case 'undefineduser/getUserLatLong/1':
+          return Promise.resolve({data: {lat_long: {coordinates: [5,5]}}});
         case 'undefinedsearch':
           return Promise.resolve({data: {results: {listings: searchOutput}, status: 200}});
       }
@@ -92,13 +91,12 @@ describe("Get Search Results Tests", () => {
   });
   it("Fail to Return Listings", async () => {
     const mockOutput = {"message": "Failed to get listings"};
-    const mockUser = {data: {user: {lat_long: {coordinates: [5,5]}}}};
     
     axios.get.mockImplementation((url) => {
       console.log(url);
       switch (url) {
-        case 'undefineduser/1':
-          return Promise.resolve(mockUser);
+        case 'undefineduser/getUserLatLong/1':
+          return Promise.resolve({data: {lat_long: {coordinates: [5,5]}}});
         case 'undefinedsearch':
           return Promise.resolve({data: {results: {listings: mockOutput}, status: 400}});
       }
