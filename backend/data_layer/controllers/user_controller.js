@@ -11,11 +11,11 @@ const jwtSecret = process.env.ACCESS_TOKEN_SECRET;
 
 export const createUser = async (req, res) => {
 
-    const { username, email, password, lat_long, items_sold, items_bought } = req.body;
+    const { username, email, password, location, items_sold, items_bought } = req.body;
 
     try {
         // Fetch coordinates for the provided postal code
-        const postalCodeRecord = await PostalCodes.findOne({ where: { postal_code: lat_long } });
+        const postalCodeRecord = await PostalCodes.findOne({ where: { postal_code: location } });
 
         if (!postalCodeRecord) {
             return res.status(400).json({ message: "Invalid postal code" });
@@ -32,7 +32,7 @@ export const createUser = async (req, res) => {
             email,
             password: password,
             lat_long: { type: 'Point', coordinates: [longitude, latitude] },
-            location: lat_long,
+            location: location,
             items_sold: items_sold || 0,
             items_bought: items_bought || 0
         });
