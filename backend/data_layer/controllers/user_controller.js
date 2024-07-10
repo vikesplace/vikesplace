@@ -225,3 +225,18 @@ export const resetPassword = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+export const getUserLatLong = async (req, res) => {
+  try {
+    const latLong = await User.findOne({
+      attributes: ["lat_long"],
+      where: { user_id: req.params.userId },
+    });
+    if (!latLong) {
+      return res.status(404).json({ message: "User does not exist" });
+    }
+    return res.json(latLong.dataValues);
+  } catch (err) {
+    res.json({ message: err });
+  }
+};
