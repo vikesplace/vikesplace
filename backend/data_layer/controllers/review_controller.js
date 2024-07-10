@@ -22,23 +22,16 @@ export const createReview = (req, res) => {
 
 export const getAllReviews = async (req, res) => {
     try {
-        const entries = await Reviews.findAll({
+        const reviews = await Reviews.findAll({
             where: {
                 listing_id: req.params.listingId
-            }
+            },
+            attributes: ["review_content"]
         });
-        if (!entries) {
+        if (!reviews) {
             console.error("Listing not found");
             return res.status(500).send();
         }
-        
-        const reviews = entries.map(entry => {
-            const {review_id, listing_id, user_id, review_content, rating_id, timestamp} = entry;
-            return {
-                review_content: review_content,
-            };
-        });
-
         res.json(reviews);
     } catch (error) {
         console.error(error);
