@@ -9,7 +9,7 @@ describe("Get Own User Data", () => {
       user_id: 21,
       username: "TestUser",
       email: "testuser@example.com",
-      location: {
+      lat_long: {
         type: "Point",
         coordinates: [48.4784, -123.337822],
       },
