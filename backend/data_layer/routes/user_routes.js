@@ -1,5 +1,5 @@
 import express from "express";
-import { createUser, loginUser, getUser, resetPassword } from '../controllers/user_controller.js';
+import { createUser, loginUser, getUser, resetPassword, getUserLatLong } from '../controllers/user_controller.js';
 
 const router = express.Router();
 
@@ -13,6 +13,8 @@ router.post('/', createUser);
 router.post('/login', loginUser);
 
 router.post('/resetPassword', resetPassword);
+
+router.get('/getUserLatLong/:userId', getUserLatLong);
 
 //Get all users
 router.get('/', (req, res) => {

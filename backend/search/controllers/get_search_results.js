@@ -9,13 +9,13 @@ export const getSearchResults = async (req, res) => {
     }
 
     const userId = res.locals.decodedToken.userId;
-    const url = `${DATA_LAYER}user/${userId}`;
-    const user = await axios.get(url);
+    const url = `${DATA_LAYER}user/getUserLatLong/${userId}`;
+    const latLong = await axios.get(url);
 
     const requestParamsObject = {};
     requestParamsObject.query = req.query.query;
-    const latitude = user.data.user.lat_long.coordinates[0];
-    const longitude = user.data.user.lat_long.coordinates[1];
+    const latitude = latLong.data.lat_long.coordinates[0];
+    const longitude = latLong.data.lat_long.coordinates[1];
 
     requestParamsObject.longitude = longitude;
     requestParamsObject.latitude = latitude;
