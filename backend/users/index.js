@@ -18,9 +18,9 @@ app.use(cors({
 app.use(cookieParser());
 app.use(express.json());
 app.use(identification);
-app.use("/users", userdata);
-app.use("/searchhistory", searchhistory);
 
+app.use("/searchhistory", searchhistory);
+app.use("/users", userdata);
 function identification(req, res, next) {
   try {
     const decoded = jwt.verify(req.cookies.Authorization, jwtSecret);

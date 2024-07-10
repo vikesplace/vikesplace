@@ -15,7 +15,7 @@ describe("Get User Data Tests", () => {
                     postal_code: "V8P5C2",
                     joining_date: "2021-09-01",
                     items_sold: 0,
-                    items_bought: 0,
+                    items_purchased: 0,
                 }
             })
         );
@@ -46,7 +46,7 @@ describe("Get User Data Tests", () => {
             postal_code: "V8P5C2",
             joining_date: "2021-09-01",
             items_sold: 0,
-            items_bought: 0,
+            items_purchased: 0,
         });
     });
 
