@@ -220,7 +220,7 @@ function ViewListings() {
             </Typography>
           }
           {listings.map((listing) => (
-            <div key={listing.id} data-testid="listing-card" onClick={() => handleListingClick(listing.id)}>
+            <div key={listing.id} onClick={() => handleListingClick(listing.id)}>
               <ListingCard
                 id={listing.id}
                 title={listing.title}
