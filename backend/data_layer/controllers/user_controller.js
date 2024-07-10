@@ -80,7 +80,7 @@ export const loginUser = async (req, res) => {
     }
 };
 
-export const getUser = async (req, res) => {
+export const getUserData = async (req, res) => {
     try{
         const user = await User.findOne({where:{user_id: req.params.userId}});
         if(!user){
