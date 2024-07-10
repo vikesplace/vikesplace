@@ -31,8 +31,8 @@ def test_search():
     assert response_obj['results']['listings'][0]['status'] == 'AVAILABLE'
     assert response_obj['results']['listings'][0]['listing_id'] == 1
     assert response_obj['results']['listings'][0]['type'] == 'listings'
-    assert response_obj['results']['listings'][0]['location']['lat'] == 48.4284
-    assert response_obj['results']['listings'][0]['location']['lon'] == -123.3856
+    assert response_obj['results']['listings'][0]['lat_long']['lat'] == 48.4284
+    assert response_obj['results']['listings'][0]['lat_long']['lon'] == -123.3856
 
 def test_search_partial_match_prefix():
     headers = {
@@ -55,8 +55,8 @@ def test_search_partial_match_prefix():
     assert response_obj['results']['listings'][0]['status'] == 'AVAILABLE'
     assert response_obj['results']['listings'][0]['listing_id'] == 1
     assert response_obj['results']['listings'][0]['type'] == 'listings'
-    assert response_obj['results']['listings'][0]['location']['lat'] == 48.4284
-    assert response_obj['results']['listings'][0]['location']['lon'] == -123.3856
+    assert response_obj['results']['listings'][0]['lat_long']['lat'] == 48.4284
+    assert response_obj['results']['listings'][0]['lat_long']['lon'] == -123.3856
 
 def test_search_partial_match_suffix():
     headers = {
@@ -79,8 +79,8 @@ def test_search_partial_match_suffix():
     assert response_obj['results']['listings'][0]['status'] == 'AVAILABLE'
     assert response_obj['results']['listings'][0]['listing_id'] == 1
     assert response_obj['results']['listings'][0]['type'] == 'listings'
-    assert response_obj['results']['listings'][0]['location']['lat'] == 48.4284
-    assert response_obj['results']['listings'][0]['location']['lon'] == -123.3856
+    assert response_obj['results']['listings'][0]['lat_long']['lat'] == 48.4284
+    assert response_obj['results']['listings'][0]['lat_long']['lon'] == -123.3856
 
 def test_search_empty_wrong_title():
     headers = {
@@ -157,8 +157,8 @@ def test_search_item_inside_radius():
     assert response_obj['results']['listings'][0]['status'] == 'AVAILABLE'
     assert response_obj['results']['listings'][0]['listing_id'] == 1
     assert response_obj['results']['listings'][0]['type'] == 'listings'
-    assert response_obj['results']['listings'][0]['location']['lat'] == 48.4284
-    assert response_obj['results']['listings'][0]['location']['lon'] == -123.3856
+    assert response_obj['results']['listings'][0]['lat_long']['lat'] == 48.4284
+    assert response_obj['results']['listings'][0]['lat_long']['lon'] == -123.3856
 
 
 def test_search_item_outside_radius():
@@ -202,8 +202,8 @@ def test_search_filter_category():
     assert response_obj['results']['listings'][0]['status'] == 'AVAILABLE'
     assert response_obj['results']['listings'][0]['listing_id'] == 1
     assert response_obj['results']['listings'][0]['type'] == 'listings'
-    assert response_obj['results']['listings'][0]['location']['lat'] == 48.4284
-    assert response_obj['results']['listings'][0]['location']['lon'] == -123.3856
+    assert response_obj['results']['listings'][0]['lat_long']['lat'] == 48.4284
+    assert response_obj['results']['listings'][0]['lat_long']['lon'] == -123.3856
 
 
 def test_search_filter_bad_category():
@@ -243,8 +243,8 @@ def test_search_filter_status():
     assert response_obj['results']['listings'][0]['status'] == 'AVAILABLE'
     assert response_obj['results']['listings'][0]['listing_id'] == 1
     assert response_obj['results']['listings'][0]['type'] == 'listings'
-    assert response_obj['results']['listings'][0]['location']['lat'] == 48.4284
-    assert response_obj['results']['listings'][0]['location']['lon'] == -123.3856
+    assert response_obj['results']['listings'][0]['lat_long']['lat'] == 48.4284
+    assert response_obj['results']['listings'][0]['lat_long']['lon'] == -123.3856
 
 
 def test_search_filter_bad_status():
@@ -285,8 +285,8 @@ def test_search_filter_category_and_status():
     assert response_obj['results']['listings'][0]['status'] == 'AVAILABLE'
     assert response_obj['results']['listings'][0]['listing_id'] == 1
     assert response_obj['results']['listings'][0]['type'] == 'listings'
-    assert response_obj['results']['listings'][0]['location']['lat'] == 48.4284
-    assert response_obj['results']['listings'][0]['location']['lon'] == -123.3856
+    assert response_obj['results']['listings'][0]['lat_long']['lat'] == 48.4284
+    assert response_obj['results']['listings'][0]['lat_long']['lon'] == -123.3856
 
 
 def test_search_filter_bad_category_and_bad_status():

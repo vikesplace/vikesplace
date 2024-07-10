@@ -20,10 +20,10 @@ async def recommendations(
     latitude: float = 48.437326,
     longitude: float = -123.329773,
 ):
-    location = (latitude, longitude)
+    lat_long = (latitude, longitude)
     results = es_request.recommendation(
         user_id=user_id,
-        user_loc=location)
+        user_loc=lat_long)
 
     return JSONResponse(
         status_code=status.HTTP_200_OK,
