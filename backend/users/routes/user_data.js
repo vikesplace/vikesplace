@@ -1,5 +1,6 @@
 import express from "express";
 import { getUserMe } from "../controller/getUserMe.js";
+import { getUserData } from "../controller/get_user_data.js";
 
 const router = express.Router();
 
@@ -7,10 +8,7 @@ const router = express.Router();
 router.get("/me", getUserMe);
 
 //get another user's data
-router.get("/:userId", (req, res) => {
-    //handle logic here
-    res.json({ message: "Get another user data" });
-});
+router.get("/:userId", getUserData);
 
 //update user data
 router.patch("/:userId", (req, res) => {

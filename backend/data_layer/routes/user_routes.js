@@ -1,5 +1,5 @@
 import express from "express";
-import { createUser, loginUser, getUser, getUserMe, resetPassword } from '../controllers/user_controller.js';
+import { createUser, loginUser, getUserData, getUserMe, resetPassword } from '../controllers/user_controller.js';
 
 const router = express.Router();
 
@@ -20,7 +20,7 @@ router.get('/', (req, res) => {
 });
 
 //Get a user
-router.get('/:userId', getUser);
+router.get('/:userId', getUserData);
 
 //Get User Me
 router.get('/me/:userId', getUserMe)

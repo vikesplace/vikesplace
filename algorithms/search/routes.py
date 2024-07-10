@@ -24,8 +24,8 @@ async def search(
     status: str = Query(None)
 ):
     # Assuming es_request.search can handle these parameters
-    location = (latitude, longitude)
-    results = es_request.search(query, location, category, status)
+    lat_long = (latitude, longitude)
+    results = es_request.search(query, lat_long, category, status)
     return {
         "status": 200,
         "message": "Search successful",

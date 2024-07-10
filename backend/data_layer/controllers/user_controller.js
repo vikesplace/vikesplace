@@ -36,16 +36,16 @@ export const createUser = async (req, res) => {
         .json({ message: "Invalid coordinates for the postal code" });
     }
 
-    // Create the user
-    const newUser = await User.create({
-      username,
-      email,
-      password: password,
-      location: { type: "Point", coordinates: [longitude, latitude] },
-      postal_code: location,
-      items_sold: items_sold || 0,
-      items_bought: items_bought || 0,
-    });
+        // Create the user
+        const newUser = await User.create({
+            username,
+            email,
+            password: password,
+            lat_long: { type: 'Point', coordinates: [longitude, latitude] },
+            location: location,
+            items_sold: items_sold || 0,
+            items_bought: items_bought || 0
+        });
 
     return res.status(201).json({
       user_id: newUser.dataValues.user_id,
@@ -88,17 +88,17 @@ export const loginUser = async (req, res) => {
   }
 };
 
-export const getUser = async (req, res) => {
-  try{
-      const user = await User.findOne({where:{user_id: req.params.userId}});
-      if(!user){
-          return res.status(404).json({message:"User does not exist"});
-      }
-      return res.json({user:user});
-  }
-  catch(err){
-      res.json({message: err});
-  }
+export const getUserData = async (req, res) => {
+    try{
+        const user = await User.findOne({where:{user_id: req.params.userId}});
+        if(!user){
+            return res.status(404).json({message:"User does not exist"});
+        }
+        return res.json({user:user});
+    }
+    catch(err){
+        res.json({message: err});
+    }
 };
 
 export const getUserMe = async (req, res) => {

@@ -24,11 +24,11 @@ Users.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    location: {
+    lat_long: {
       type: DataTypes.GEOMETRY('POINT'),
       allowNull: false,
     },
-    postal_code: {
+    location: {
       type: DataTypes.STRING,
       allowNull: false,
     },
