@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import UserProfile from '../../pages/UserProfile';
+import { SAMPLE_USER } from '../../utils/SampleRecommenderData';
 
 describe('UserProfile Component', () => {
   test('renders without crashing', () => {
@@ -21,9 +22,9 @@ describe('UserProfile Component', () => {
     expect(postalCodeElement).toBeInTheDocument();
     expect(createDateElement).toBeInTheDocument();
 
-    expect(screen.getByText('vikesperson123')).toBeInTheDocument();
-    expect(screen.getByText('fakeuser@uvic.ca')).toBeInTheDocument();
-    expect(screen.getByText('A1B 2C3')).toBeInTheDocument();
-    expect(screen.getByText('June 15, 2024')).toBeInTheDocument();
+    expect(screen.getByText(SAMPLE_USER.username)).toBeInTheDocument();
+    expect(screen.getByText(SAMPLE_USER.email)).toBeInTheDocument();
+    expect(screen.getByText(SAMPLE_USER.location)).toBeInTheDocument();
+    expect(screen.getByText(SAMPLE_USER.createDate)).toBeInTheDocument();
   });
 });

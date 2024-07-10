@@ -3,7 +3,7 @@ import { render, fireEvent, screen, within } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { BrowserRouter as Router } from 'react-router-dom';
 import ListingDetailsPage from '../../pages/ListingDetailsPage';
-import { SAMPLE_LISTING } from '../TestData'
+import { SAMPLE_LISTING } from '../../testSetup/TestData'
 
 // TODO get this to mock useParams correctly
 /* jest.mock('react-router-dom', () => ({

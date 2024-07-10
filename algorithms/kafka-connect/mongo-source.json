@@ -1,0 +1,20 @@
+{
+    "name": "mongo-source-connector",
+    "config": {
+      "connector.class": "com.mongodb.kafka.connect.MongoSourceConnector",
+      "tasks.max": "1",
+      "connection.uri": "mongodb://mongoadmin:secret@mongodb:27017/vikesplace?replicaSet=rs0",
+      "database": "vikesplace",
+      "collection": "user_activity",
+      "pipeline": "[{\"$match\": {\"operationType\": {\"$in\": [\"insert\", \"update\", \"replace\"]}}}]",
+      "copy.existing": "true",
+      "startup.mode": "copy_existing",
+      "topic.prefix": "user",
+      "topic.suffix": "activities",
+      "topic":"user.activities",
+      "topics":"user.activities",
+      "output.format.value": "json",
+      "output.format.key": "json"
+    }
+}
+  

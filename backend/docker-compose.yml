@@ -62,6 +62,7 @@ services:
       - "5004:5000"
     environment:
       - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
+      - DATA_LAYER=${DATA_LAYER}
   
   messages:
     container_name: messages

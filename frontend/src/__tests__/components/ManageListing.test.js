@@ -3,7 +3,7 @@ import { render, fireEvent, screen, within } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { BrowserRouter as Router } from 'react-router-dom';
 import ManageListing from '../../components/ManageListing';
-import { SAMPLE_LISTING } from '../TestData';
+import { SAMPLE_LISTING } from '../../testSetup/TestData';
 
 // Mock useNavigate from react-router-dom
 jest.mock('react-router-dom', () => ({
@@ -72,21 +72,21 @@ describe('ManageListing page', () => {
     const postalCodeInput = screen.getByRole('textbox', { name: /postal code/i });
     fireEvent.change(postalCodeInput, { target: { value: '' } });
     fireEvent.blur(postalCodeInput);
-    expect(screen.getByText('Please enter a valid postal code (format: A1A 1A1)')).toBeInTheDocument();
+    expect(screen.getByText('Please enter a valid postal code with format A1A1A1')).toBeInTheDocument();
   });
 
   test('validation on an invalid postal code', () => {
     const postalCodeInput = screen.getByRole('textbox', { name: /postal code/i });
     fireEvent.change(postalCodeInput, { target: { value: 'invalidPostalCode' } });
     fireEvent.blur(postalCodeInput);
-    expect(screen.getByText('Please enter a valid postal code (format: A1A 1A1)')).toBeInTheDocument();
+    expect(screen.getByText('Please enter a valid postal code with format A1A1A1')).toBeInTheDocument();
   });
 
   test('pass validation on a valid postal code', () => {
     const postalCodeInput = screen.getByRole('textbox', { name: /postal code/i });
-    fireEvent.change(postalCodeInput, { target: { value: 'V9V 9V9' } });
+    fireEvent.change(postalCodeInput, { target: { value: 'V9V9V9' } });
     fireEvent.blur(postalCodeInput);
-    expect(screen.queryByText('Please enter a valid postal code (format: A1A 1A1)')).not.toBeInTheDocument();
+    expect(screen.queryByText('Please enter a valid postal code with format A1A1A1')).not.toBeInTheDocument();
   });
 
   // TODO: no validation on empty/valid category yet
@@ -100,7 +100,7 @@ describe('ManageListing page', () => {
     const categoryInput = screen.getByRole('combobox', { name: /category/i });
 
     fireEvent.mouseDown(categoryInput);
-    const listbox = within(getByRole('listbox'));
+    const listbox = within(screen.getByRole('listbox'));
 
     fireEvent.click(listbox.getByText(/Furniture/i));
 

@@ -1,0 +1,4 @@
+kafka
+neo4j
+kafka-python
+confluent-kafka

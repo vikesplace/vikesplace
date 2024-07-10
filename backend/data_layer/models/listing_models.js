@@ -38,11 +38,11 @@ Listings.init(
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
     },
-    location: {
+    lat_long: {
       type: DataTypes.GEOMETRY('POINT'),
       allowNull: false,
     },
-    postal_code: {
+    location: {
       type: DataTypes.STRING,
       allowNull: false,
     },

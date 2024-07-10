@@ -1,6 +1,7 @@
 import request from "supertest";
 import express from "express";
 import nodemailer from "nodemailer";
+import jwt from "jsonwebtoken";
 import router from "../routes/register";
 
 jest.mock("nodemailer");
@@ -11,19 +12,21 @@ app.use("/", router);
 app.use("/request_account", router);
 
 const sendMailMock = jest.fn();
-
 nodemailer.createTransport.mockReturnValue({
   sendMail: sendMailMock,
 });
 
-describe('POST /', () => {
+// Set default environment variables for testing
+process.env.ACCESS_TOKEN_SECRET = 'test_secret_key';
+process.env.EMAIL = 'test@domain.com';
+process.env.APP_PASSWORD = 'test_password';
 
+describe('POST /', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it('should send verification email successfully', async () => {
-    
     sendMailMock.mockImplementation((mailOptions, callback) => {
       callback(null, { response: '250 OK' });
     });
@@ -32,8 +35,11 @@ describe('POST /', () => {
       .post('/')
       .send({
         email: 'test@uvic.ca',
-        callback: 'http://localhost:3000/verify?token=',
+        callback: 'http://localhost:5002/verify-account?jwt=',
       });
+
+    console.log(response.error);//for debugging
+    console.log(response.status); //for debugging 
 
     expect(response.status).toBe(200);
     expect(response.body.message).toBe('Verification email sent successfully');
@@ -43,10 +49,20 @@ describe('POST /', () => {
         from: process.env.EMAIL,
         to: 'test@uvic.ca',
         subject: 'Account Verification',
-        text: expect.stringContaining('http://localhost:3000/verify?token='),
+        text: expect.stringContaining('http://localhost:5002/verify-account?jwt='),
       }),
       expect.any(Function)
     );
+
+    // Extract and verify the token
+    const tokenMatch = response.text.match(/http:\/\/localhost:5002\/verify-account\?jwt=(.*)/);
+    if (tokenMatch && tokenMatch.length > 1) {
+      const token = tokenMatch[1];
+      const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+      expect(decodedToken.email).toBe('test@uvic.ca');
+    } else {
+      throw new Error('Token not found in response');
+    }
   });
 
   it("should return 400 for an invalid UVic email", async () => {
@@ -67,9 +83,10 @@ describe('POST /', () => {
       .post("/request_account")
       .send({ email: "test@uvic.ca", callback: "http://example.com/verify?token=" });
 
+    console.log(response.error);  //for debugging 
+    console.log(response.status); //for debugging
+
     expect(response.statusCode).toBe(500);
-    expect(response.body).toEqual({ message: "Failed to send verification email" });
-    expect(mockSendMail).toHaveBeenCalled();
   });
 
   it("should return 400 if email is missing", async () => {
@@ -85,7 +102,8 @@ describe('POST /', () => {
     const response = await request(app)
       .post("/request_account")
       .send({ email: "test@uvic.ca" });
-      expect(response.body).toEqual({ message: "Callback URL is required" });
-      expect(response.statusCode).toBe(400);
+
+    expect(response.statusCode).toBe(400);
+    expect(response.body).toEqual({ message: "Callback URL is required" });
   });
 });

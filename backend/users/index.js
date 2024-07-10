@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import "dotenv/config";
 import cors from "cors";
+import axiosConfig from "./config/axiosConfig.js";
 
 const PORT = process.env.PORT || 5000;
 const jwtSecret = process.env.ACCESS_TOKEN_SECRET;
@@ -17,9 +18,9 @@ app.use(cors({
 app.use(cookieParser());
 app.use(express.json());
 app.use(identification);
-app.use("/userdata", userdata);
-app.use("/searchhistory", searchhistory);
 
+app.use("/searchhistory", searchhistory);
+app.use("/users", userdata);
 function identification(req, res, next) {
   try {
     const decoded = jwt.verify(req.cookies.Authorization, jwtSecret);
