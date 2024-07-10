@@ -14,13 +14,13 @@ export const getSearchResults = async (req, res) => {
 
     const requestParamsObject = {};
     requestParamsObject.query = req.query.query;
-    const longitude = user.data.user.location.coordinates[1];
-    const latitude = user.data.user.location.coordinates[0];
+    const latitude = user.data.user.lat_long.coordinates[0];
+    const longitude = user.data.user.lat_long.coordinates[1];
 
     requestParamsObject.longitude = longitude;
     requestParamsObject.latitude = latitude;
 
-    if(req.query.category){
+    if (req.query.category) {
       requestParamsObject.category = req.query.category;
     }
 
@@ -28,20 +28,34 @@ export const getSearchResults = async (req, res) => {
       params: requestParamsObject,
     });
 
-    if(response.data.status == 200 && response.data.results.listings){
+    if (response.data.status == 200 && response.data.results.listings) {
       const listings = response.data.results.listings.map((listing) => {
-        listing.location = listing.postal_code;
-        delete listing.postal_code;
-        return listing;
+        return {
+          sellerId: listing.seller_id,
+          listingId: listing.listing_id,
+          price: listing.price,
+          listedAt: listing.listed_at,
+          status: listing.status,
+          title: listing.title,
+          lastUpdatedAt: listing.last_updated_at,
+          location: listing.location,
+        };
       });
+
       res.json(listings);
+    } else {
+      res.json({ message: "Failed to get listings" });
     }
-    else{
-      res.json({message: "Failed to get listings"});
+  } catch (error) {
+    if (error.response && error.response.status == 400) {
+      // if bad request, return error to client
+      return res
+        .status(error.response.status)
+        .json({ message: error.response.data.message });
+    } else {
+      // if internal server error, log error and return message to client
+      console.error("Error searching:", error);
+      return res.status(500).json({ message: "Error searching" });
     }
-    
-  } catch (err) {
-    console.log(err);
-    res.json({message: err});
   }
 };
