@@ -1,11 +1,11 @@
-import Review from "../models/review_models.js";
+import Reviews from "../models/review_models.js";
 
 export const createReview = (req, res) => {
     Review.create({
-        reviewed_listing_id: req.body.reviewed_listing_id,
-        review_user_id: req.body.review_user_id,
+        listing_id: req.body.listing_id,
+        user_id: req.body.user_id,
         review_content: req.body.review_content,
-        listing_rating_id: req.body.listing_rating_id
+        rating_id: req.body.rating_id
     })
     .then((result) => {
         return res.json({
@@ -19,3 +19,22 @@ export const createReview = (req, res) => {
         });
     });
 }
+
+export const getAllReviews = async (req, res) => {
+    try {
+        const reviews = await Reviews.findAll({
+            where: {
+                listing_id: req.params.listingId
+            },
+            attributes: ["review_content"]
+        });
+        if (!reviews) {
+            console.error("Listing not found");
+            return res.status(500).send();
+        }
+        res.json(reviews);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send();
+    }
+};
