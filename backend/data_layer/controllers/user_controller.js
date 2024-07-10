@@ -11,11 +11,11 @@ const jwtSecret = process.env.ACCESS_TOKEN_SECRET;
 
 export const createUser = async (req, res) => {
 
-    const { username, email, password, location, items_sold, items_bought } = req.body;
+    const { username, email, password, lat_long, items_sold, items_bought } = req.body;
 
     try {
         // Fetch coordinates for the provided postal code
-        const postalCodeRecord = await PostalCodes.findOne({ where: { postal_code: location } });
+        const postalCodeRecord = await PostalCodes.findOne({ where: { postal_code: lat_long } });
 
         if (!postalCodeRecord) {
             return res.status(400).json({ message: "Invalid postal code" });
@@ -31,8 +31,8 @@ export const createUser = async (req, res) => {
             username,
             email,
             password: password,
-            location: { type: 'Point', coordinates: [longitude, latitude] },
-            postal_code: location,
+            lat_long: { type: 'Point', coordinates: [longitude, latitude] },
+            location: lat_long,
             items_sold: items_sold || 0,
             items_bought: items_bought || 0
         });
@@ -123,14 +123,14 @@ export const resetPassword = async (req, res) => {
 
 export const updateUserData = async (req, res) => {
     try {
-        const coordinate = { type: 'Point', coordinates: [req.body.location.latitude,req.body.location.longitude]}
+        const coordinate = { type: 'Point', coordinates: [req.body.lat_long.latitude,req.body.lat_long.longitude]}
         const user = await User.findByPk(req.params.userId);
         if (!user) {
             console.error("User not found");
             return res.status(500).send();
         }
-        user.location = coordinate;
-        user.postal_code = req.body.postal_code,
+        user.lat_long = coordinate;
+        user.location = req.body.location,
         await user.save();
         res.json({});
     } catch (error) {

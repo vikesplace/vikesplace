@@ -36,7 +36,7 @@ const passwordValidation = [
 // Endpoint to verify account and create a new user
 router.post("/", usernameValidation, passwordValidation, async (req, res) => {
 
-  const { jwt: token, username, password, location } = req.body;
+  const { jwt: token, username, password, lat_long } = req.body;
 
   if (!token) {
     return res.status(400).json({ message: 'jwt is required' });
@@ -59,7 +59,7 @@ router.post("/", usernameValidation, passwordValidation, async (req, res) => {
       username,
       email: res.locals.decodedToken.email,
       password: hashedPassword,
-      location,
+      lat_long,
       items_sold: 0,
       items_bought: 0,
     });

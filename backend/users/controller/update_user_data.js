@@ -4,7 +4,7 @@ export const updateUserData = async (req, res) => {
     let geoPointLocation = null;
     try{
         // get the lat,long geopoint of the provided postal code location
-        const geoPoint = await axios.get(`/listing/location/${req.body.location}`);
+        const geoPoint = await axios.get(`/listing/location/${req.body.lat_long}`);
         geoPointLocation = geoPoint.data;
         
     } catch (geoError) {
@@ -17,8 +17,8 @@ export const updateUserData = async (req, res) => {
     }
     try{
         const response = await axios.patch(`/user/${req.params.userId}`,{
-                location: geoPointLocation,
-                postal_code: req.body.location,
+                lat_long: geoPointLocation,
+                location: req.body.lat_long,
         });
         return res.json(response.data);
     }
