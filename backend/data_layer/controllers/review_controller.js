@@ -24,7 +24,7 @@ export const getAllReviews = async (req, res) => {
     try {
         const entries = await Reviews.findAll({
             where: {
-                reviewed_listing_id: req.params.listingId
+                listing_id: req.params.listingId
             }
         });
         if (!entries) {
@@ -33,7 +33,7 @@ export const getAllReviews = async (req, res) => {
         }
         
         const reviews = entries.map(entry => {
-            const {listing_review_id, reviewed_listing_id, review_user_id, review_content, listing_rating_id, timestamp} = entry;
+            const {review_id, listing_id, user_id, review_content, rating_id, timestamp} = entry;
             return {
                 review_content: review_content,
             };
