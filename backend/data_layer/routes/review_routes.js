@@ -1,14 +1,13 @@
 import express from "express";
 import { createReview } from "../controllers/review_controller.js";
+import { getAllReviews } from "../controllers/review_controller.js";
 
 const router = express.Router();
 
-//Create a review
+// //Create a review
 router.post("/", createReview);
 
 //Get all reviews for a listing
-router.get("/:listingId", (req, res) => {
-  res.json({ message: "Get All Reviews for a Listing" });
-});
+router.get("/:listingId", getAllReviews);
 
 export default router;

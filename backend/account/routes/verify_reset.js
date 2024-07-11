@@ -38,7 +38,6 @@ router.post("/", passwordValidation, async (req, res) => {
   }
 
   const errors = validationResult(req);
-  //console.log(errors);
   if (!errors.isEmpty()) {
     return res.status(400).json({
       message: errors
@@ -51,7 +50,6 @@ router.post("/", passwordValidation, async (req, res) => {
   try {
     const decodedToken = jwt.verify(token, jwtSecret);
     const userEmail = decodedToken.email;
-    //console.log(userEmail);
     const hashedPassword = await bcrypt.hash(password, 10);
     console.log(hashedPassword); //To check if the updated password matches the database one, only for debugging
     // Update the user's password in the database

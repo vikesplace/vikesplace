@@ -14,5 +14,9 @@ done
 mongosh /docker-entrypoint-initdb.d/init-replica-set.js
 
 mongosh /docker-entrypoint-initdb.d/init-mongo.js
+
+## uncomment below to insert 4k users
+# mongoimport --db vikesplace --collection user_activity --file /docker-entrypoint-initdb.d/user_activity.json --jsonArray
+
 # Bring MongoDB to the foreground
 wait

@@ -98,6 +98,8 @@ function MessageHistory() {
             }
         } 
         clearTextInput();
+
+        alert("Sending... New message");
     };
 
     const clearTextInput = () => {

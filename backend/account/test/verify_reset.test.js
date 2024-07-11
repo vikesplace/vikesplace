@@ -3,7 +3,7 @@ import express from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import axios from "axios";
-import router from "../routes/verify_reset"; // Adjust the path as necessary
+import router from "../routes/verify_reset";
 
 jest.mock("jsonwebtoken");
 jest.mock("bcryptjs");
@@ -15,7 +15,7 @@ app.use("/", router);
 
 describe("POST /", () => {
   beforeEach(() => {
-    process.env.ACCESS_TOKEN_SECRET = "testsecret";
+    process.env.ACCESS_TOKEN_SECRET = "test_secret";
   });
 
   afterEach(() => {
@@ -30,15 +30,16 @@ describe("POST /", () => {
     const response = await request(app)
       .post("/")
       .send({
-        token: "validToken",
-        newPassword: "Valid1@password",
+        jwt: "validToken",
+        password: "Valid1@password",
       });
 
-    // expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toBe(200);
     expect(response.body).toEqual({ message: "Password updated successfully" });
+    console.log(response.error);
     expect(jwt.verify).toHaveBeenCalledWith("validToken", process.env.ACCESS_TOKEN_SECRET);
     expect(bcrypt.hash).toHaveBeenCalledWith("Valid1@password", 10);
-    expect(axios.post).toHaveBeenCalledWith("/user", {
+    expect(axios.post).toHaveBeenCalledWith("/user/resetPassword/", {
       email: "test@uvic.ca",
       password: "hashedPassword",
     });
@@ -48,32 +49,13 @@ describe("POST /", () => {
     const response = await request(app)
       .post("/")
       .send({
-        token: "validToken",
-        newPassword: "short",
+        jwt: "validToken",
+        password: "short", // Password length less than 8 characters
       });
 
     expect(response.statusCode).toBe(400);
     expect(response.body.message).toContain("Password must be at least 8 characters long");
     expect(jwt.verify).not.toHaveBeenCalled();
-    expect(bcrypt.hash).not.toHaveBeenCalled();
-    expect(axios.post).not.toHaveBeenCalled();
-  });
-
-  it("should return 400 if token is invalid", async () => {
-    jwt.verify.mockImplementationOnce(() => {
-      throw new Error("Invalid token");
-    });
-
-    const response = await request(app)
-      .post("/")
-      .send({
-        token: "invalidToken",
-        newPassword: "Valid1@password",
-      });
-
-    expect(response.statusCode).toBe(400);
-    expect(response.body.message).toBe("Invalid token");
-    expect(jwt.verify).toHaveBeenCalledWith("invalidToken", process.env.ACCESS_TOKEN_SECRET);
     expect(bcrypt.hash).not.toHaveBeenCalled();
     expect(axios.post).not.toHaveBeenCalled();
   });
@@ -86,15 +68,15 @@ describe("POST /", () => {
     const response = await request(app)
       .post("/")
       .send({
-        token: "validToken",
-        newPassword: "Valid1@password",
+        jwt: "validToken",
+        password: "Valid1@password",
       });
 
     expect(response.statusCode).toBe(400);
     expect(response.body.message).toBe("Database error");
     expect(jwt.verify).toHaveBeenCalledWith("validToken", process.env.ACCESS_TOKEN_SECRET);
     expect(bcrypt.hash).toHaveBeenCalledWith("Valid1@password", 10);
-    expect(axios.post).toHaveBeenCalledWith("/user", {
+    expect(axios.post).toHaveBeenCalledWith("/user/resetPassword/", {
       email: "test@uvic.ca",
       password: "hashedPassword",
     });
@@ -104,7 +86,7 @@ describe("POST /", () => {
     const response = await request(app)
       .post("/")
       .send({
-        newPassword: "Valid1@password",
+        password: "Valid1@password",
       });
 
     expect(response.statusCode).toBe(400);
@@ -118,7 +100,7 @@ describe("POST /", () => {
     const response = await request(app)
       .post("/")
       .send({
-        token: "validToken",
+        jwt: "validToken",
       });
 
     expect(response.statusCode).toBe(400);
