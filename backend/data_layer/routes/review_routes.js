@@ -4,7 +4,7 @@ import { getAllReviews } from "../controllers/review_controller.js";
 
 const router = express.Router();
 
-// //Create a review
+//Create a review
 router.post("/", createReview);
 
 //Get all reviews for a listing
