@@ -18,7 +18,7 @@ Charity.init(
             type: DataTypes.STRING,
             allowNull: false,
             validate: {
-                isIn: [["AVAILABLE", "CLOSED"]],
+                isIn: [["OPEN", "CLOSED"]],
             },
         },
         fund: {
