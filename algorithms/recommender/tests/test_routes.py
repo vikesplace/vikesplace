@@ -32,7 +32,7 @@ def test_recommender_with_activity_history():
 
 
 def test_recommender_with_no_activity_history():
-    user_id = 17
+    user_id = 1_000_000_000
     headers = {
         "Authorization": "Bearer dfgdsgdgksdgjsdgjdsgjndsgfdgdfkgndfjgdbndfkfnd"}
     params = {
