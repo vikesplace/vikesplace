@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS "Listings" (
 );
 
 -- Insert 20 users with unique usernames and emails
-INSERT INTO "Users" (username, email, password, lat_long, location, joining_date, items_sold, items_bought) VALUES
+INSERT INTO "Users" (username, email, password, lat_long, location, joining_date, items_sold, items_purchased) VALUES
 ('Alice', 'alice@example.com', 'password1', 'POINT(48.378400 -123.415600)'::GEOMETRY, 'V8R6N2', '2024-01-01 10:00:00', 0, 0),
 ('Bob', 'bob@example.com', 'password2', 'POINT(48.378400 -123.337822)'::GEOMETRY, 'V9A4L2', '2024-01-02 10:00:00', 0, 0),
 ('Charlie', 'charlie@example.com', 'password3', 'POINT(48.389511 -123.393378)'::GEOMETRY, 'V8W1R7','2024-01-03 10:00:00', 0, 0),
