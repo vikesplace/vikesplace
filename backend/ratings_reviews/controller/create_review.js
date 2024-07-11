@@ -4,7 +4,8 @@ export const createReview = async (req, res) => {
     try {
         const listingId = req.params.listingId;
         const userId = res.locals.decodedToken.userId;
-        const response = await axios.post(`/review/${listingId}`, {
+        const response = await axios.post(`/review`, {
+            listing_id: listingId,
             review_content: req.body.review_content,
             user_id: userId,
             rating_id: req.body.rating_id
