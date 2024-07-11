@@ -70,6 +70,11 @@ Listings.init(
         isIn: [["ELECTRONICS", "FURNITURE", "CLOTHING", "BOOKS", "OTHER"]],
       },
     },
+    for_charity: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
   },
   {
     sequelize,
