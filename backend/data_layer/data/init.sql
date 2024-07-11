@@ -25,7 +25,8 @@ CREATE TABLE IF NOT EXISTS "Listings" (
     last_updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     category VARCHAR(255) NOT NULL,
     pull_limit INT,
-    page_offset INT
+    page_offset INT,
+    for_charity BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE IF NOT EXISTS "Chats" (
