@@ -1,4 +1,4 @@
-import Review from "../models/review_models.js";
+import Reviews from "../models/review_models.js";
 
 export const createReview = async (req, res) => {
     try {
@@ -18,5 +18,24 @@ export const createReview = async (req, res) => {
             console.error(error);
             res.status(500).send();
         }
+    }
+};
+
+export const getAllReviews = async (req, res) => {
+    try {
+        const reviews = await Reviews.findAll({
+            where: {
+                listing_id: req.params.listingId
+            },
+            attributes: ["review_content"]
+        });
+        if (!reviews) {
+            console.error("Listing not found");
+            return res.status(500).send();
+        }
+        res.json(reviews);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send();
     }
 };

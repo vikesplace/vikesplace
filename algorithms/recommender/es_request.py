@@ -56,7 +56,7 @@ def recommendation(user_id, user_loc):
     sort = [
         {
             "_geo_distance": {
-                "location": {
+                "lat_long": {
                     "lat": user_loc[0],
                     "lon": user_loc[1]
                 },

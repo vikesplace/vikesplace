@@ -23,8 +23,8 @@ export const createListing = async (req, res) => {
             title: req.body.title,
             seller_id: seller_id,
             price: req.body.price,
-            location: geoPointLocation,
-            postal_code: req.body.location,
+            lat_long: geoPointLocation,
+            location: req.body.location,
             category: req.body.category
         });
         return res.json(response.data);

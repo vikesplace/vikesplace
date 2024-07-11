@@ -1,14 +1,11 @@
 import express from "express";
 import { createReview } from "../controller/create_review.js";
+import { getAllReviews } from "../controller/get_all_reviews.js";
 
 const router = express.Router();
 
-// cution: middleware chain matches the route from top to buttom
-
 //Get All Reviews for a Listing
-router.get("/:listingId", (req, res) => {
-  res.json({ message: "Get All Reviews" });
-});
+router.get("/:listingId", getAllReviews);
 
 //Leave a Review for a Listing
 router.post("/:listingId", createReview);
