@@ -64,6 +64,17 @@ CREATE TABLE IF NOT EXISTS "Reviews" (
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS "Charity" (
+    charity_id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    status VARCHAR(255) NOT NULL CHECK (status IN ('OPEN', 'CLOSED')),
+    fund DECIMAL(10, 2) NOT NULL,
+    logo_url VARCHAR(255) NOT NULL,
+    start_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    end_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    num_listings INT NOT NULL DEFAULT 0
+);
+
 -- Insert 20 users with unique usernames and emails
 INSERT INTO "Users" (username, email, password, lat_long, location, joining_date, items_sold, items_purchased) VALUES
 ('Alice', 'alice@example.com', 'password1', 'POINT(48.378400 -123.415600)'::GEOMETRY, 'V8R6N2', '2024-01-01 10:00:00', 0, 0),
@@ -245,3 +256,10 @@ INSERT INTO "Reviews" (listing_id, user_id, review_content, rating_id, timestamp
 (8, 9, 'Average monitor, would not rent again.', 8, '2024-02-02 12:00:00'),
 (9, 10, 'Poor dining table, would not rent again.', 9, '2024-02-02 13:00:00'),
 (10, 11, 'Terrible bluetooth speaker, would not rent again.', 10, '2024-02-02 14:00:00');
+
+INSERT INTO "Charity" (name, status, fund, logo_url, start_date, end_date, num_listings) VALUES
+('BC Children''s Hospital', 'OPEN', 1000.00, '12345', '2024-02-01 10:00:00', '2024-02-01 10:00:00', 0),
+('Canadian Red Cross', 'CLOSED', 2000.00, '12345', '2024-02-01 11:00:00', '2024-02-01 11:00:00', 0),
+('World Wildlife Fund', 'OPEN', 3000.00, '12345', '2024-02-01 12:00:00', '2024-02-01 13:00:00', 0),
+('Doctors Without Borders', 'OPEN', 4000.00, '12345', '2024-02-01 13:00:00', '2024-02-01 13:00:00', 0),
+('Salvation Army', 'CLOSED', 5000.00, '12345', '2024-02-01 14:00:00', '2024-02-01 14:00:00', 0);
