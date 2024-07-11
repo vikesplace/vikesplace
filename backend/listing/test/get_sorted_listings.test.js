@@ -13,32 +13,30 @@ describe("Get Sorted Listings Tests", () => {
   it("should return all listings for user", async () => {
     const mockUser = {
       data: {
-        user: {
-          location: {
+          lat_long: {
             coordinates: [1, -1],
           },
-        },
       },
     };
     const mockListings = {
       data: {
         rows: [
           {
-            listing_id: 1,
-            seller_id: 1,
+            listingId: 1,
+            sellerId: 1,
             title: "test1",
             price: "50.00",
-            location: {
+            lat_long: {
               coordinates: [2, -2],
             },
             status: "AVAILABLE",
           },
           {
-            listing_id: 2,
-            seller_id: 1,
+            listingId: 2,
+            sellerId: 1,
             title: "test2",
             price: "50.00",
-            location: {
+            lat_long: {
               coordinates: [3, -3],
             },
             status: "AVAILABLE",
@@ -69,32 +67,30 @@ describe("Get Sorted Listings Tests", () => {
   it("should return filtered listings based on distance", async () => {
     const mockUser = {
       data: {
-        user: {
-          location: {
+          lat_long: {
             coordinates: [1, -1],
           },
-        },
       },
     };
     const mockListings = {
       data: {
         rows: [
           {
-            listing_id: 1,
-            seller_id: 1,
+            listingId: 1,
+            sellerId: 1,
             title: "test1",
             price: "50.00",
-            location: {
+            lat_long: {
               coordinates: [2, -2],
             },
             status: "AVAILABLE",
           },
           {
-            listing_id: 2,
-            seller_id: 1,
+            listingId: 2,
+            sellerId: 1,
             title: "test2",
             price: "50.00",
-            location: {
+            lat_long: {
               coordinates: [100, 100],
             },
             status: "AVAILABLE",
@@ -128,7 +124,7 @@ describe("Get Sorted Listings Tests", () => {
     axios.get.mockRejectedValueOnce({
       response: {
         status: 400,
-        data: { message: "User not found" },
+        data: { message: "User does not exist" },
       },
     });
 
@@ -143,7 +139,7 @@ describe("Get Sorted Listings Tests", () => {
 
     await getSortedListings({ query: {} }, mockGetRes);
     expect(mockGetRes.status).toHaveBeenCalledWith(400);
-    expect(responseObject).toEqual({ message: "User not found" });
+    expect(responseObject).toEqual({ message: "User does not exist" });
   });
 
   it("should return internal server error", async () => {
