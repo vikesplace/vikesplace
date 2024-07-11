@@ -31,8 +31,8 @@ export const createUser = async (req, res) => {
             username,
             email,
             password: password,
-            location: { type: 'Point', coordinates: [longitude, latitude] },
-            postal_code: location,
+            lat_long: { type: 'Point', coordinates: [longitude, latitude] },
+            location: location,
             items_sold: items_sold || 0,
             items_bought: items_bought || 0
         });

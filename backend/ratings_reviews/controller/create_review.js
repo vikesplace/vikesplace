@@ -6,12 +6,12 @@ export const createReview = async (req, res) => {
         const userId = res.locals.decodedToken.userId;
         const response = await axios.post(`/review/${listingId}`, {
             review_content: req.body.review_content,
-            review_user_id: userId,
-            listing_rating_id: req.body.listing_rating_id
+            user_id: userId,
+            rating_id: req.body.rating_id
           });
           return res.json({
-            listingReviewId: response.data.listing_review_id,
-            reviewedListingId: response.data.reviewed_listing_id,
+            listingReviewId: response.data.review_id,
+            reviewedListingId: response.data.listing_id,
             timestamp: response.data.timestamp,
           });
     } catch (error) {

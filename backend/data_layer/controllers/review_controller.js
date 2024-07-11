@@ -3,10 +3,10 @@ import Review from "../models/review_models.js";
 export const createReview = async (req, res) => {
     try {
         const reviewResult = await Review.create({
-            reviewed_listing_id: req.params.listingId,
-            review_user_id: req.body.review_user_id,
+            listing_id: req.params.listingId,
+            user_id: req.body.user_id,
             review_content: req.body.review_content,
-            listing_rating_id: req.body.listing_rating_id
+            rating_id: req.body.rating_id
         })
 
         res.json(reviewResult.dataValues);

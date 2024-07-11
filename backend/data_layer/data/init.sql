@@ -5,11 +5,11 @@ CREATE TABLE IF NOT EXISTS "Users" (
     username VARCHAR(255) NOT NULL UNIQUE,
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    location GEOMETRY(POINT) NOT NULL,
-    postal_code VARCHAR(255) NOT NULL,
+    lat_long GEOMETRY(POINT) NOT NULL,
+    location VARCHAR(255) NOT NULL,
     joining_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     items_sold INT NOT NULL DEFAULT 0,
-    items_bought INT NOT NULL DEFAULT 0
+    items_purchased INT NOT NULL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS "Listings" (
@@ -18,8 +18,8 @@ CREATE TABLE IF NOT EXISTS "Listings" (
     buyer_username VARCHAR(255) REFERENCES "Users"(username) ON DELETE CASCADE,
     title VARCHAR(255) NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
-    location GEOMETRY(POINT) NOT NULL,
-    postal_code VARCHAR(255) NOT NULL,
+    lat_long GEOMETRY(POINT) NOT NULL,
+    location VARCHAR(255) NOT NULL,
     status VARCHAR(255) NOT NULL CHECK (status IN ('AVAILABLE', 'SOLD', 'REMOVED')),
     listed_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -48,24 +48,24 @@ CREATE TABLE IF NOT EXISTS "Messages" (
 );
 
 CREATE TABLE IF NOT EXISTS "Ratings" (
-    listing_rating_id SERIAL PRIMARY KEY,
-    rated_listing_id INT NOT NULL REFERENCES "Listings"(listing_id) ON DELETE CASCADE,
-    rating_user_id INT NOT NULL REFERENCES "Users"(user_id) ON DELETE CASCADE,
+    rating_id SERIAL PRIMARY KEY,
+    listing_id INT NOT NULL REFERENCES "Listings"(listing_id) ON DELETE CASCADE,
+    user_id INT NOT NULL REFERENCES "Users"(user_id) ON DELETE CASCADE,
     rating_value INT NOT NULL CHECK (rating_value >= 1 AND rating_value <= 5),
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS "Reviews" (
-    listing_review_id SERIAL PRIMARY KEY,
-    reviewed_listing_id INT NOT NULL REFERENCES "Listings"(listing_id) ON DELETE CASCADE,
-    review_user_id INT NOT NULL REFERENCES "Users"(user_id) ON DELETE CASCADE,
+    review_id SERIAL PRIMARY KEY,
+    listing_id INT NOT NULL REFERENCES "Listings"(listing_id) ON DELETE CASCADE,
+    user_id INT NOT NULL REFERENCES "Users"(user_id) ON DELETE CASCADE,
     review_content TEXT NOT NULL,
-    listing_rating_id INT NOT NULL REFERENCES "Ratings"(listing_rating_id) ON DELETE CASCADE,
+    rating_id INT NOT NULL REFERENCES "Ratings"(rating_id) ON DELETE CASCADE,
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Insert 20 users with unique usernames and emails
-INSERT INTO "Users" (username, email, password, location, postal_code, joining_date, items_sold, items_bought) VALUES
+INSERT INTO "Users" (username, email, password, lat_long, location, joining_date, items_sold, items_purchased) VALUES
 ('Alice', 'alice@example.com', 'password1', 'POINT(48.378400 -123.415600)'::GEOMETRY, 'V8R6N2', '2024-01-01 10:00:00', 0, 0),
 ('Bob', 'bob@example.com', 'password2', 'POINT(48.378400 -123.337822)'::GEOMETRY, 'V9A4L2', '2024-01-02 10:00:00', 0, 0),
 ('Charlie', 'charlie@example.com', 'password3', 'POINT(48.389511 -123.393378)'::GEOMETRY, 'V8W1R7','2024-01-03 10:00:00', 0, 0),
@@ -88,7 +88,7 @@ INSERT INTO "Users" (username, email, password, location, postal_code, joining_d
 ('Tina', 'tina@example.com', 'password20', 'POINT(48.478400 -123.337822)'::GEOMETRY, 'V8N5M3', '2024-01-20 10:00:00', 0, 0),
 ('TestUser', 'testuser@example.com', '$2a$10$2NC3ozp1b1YIgSb0tpEEEep83BUpAOz5xi4.dsyqqa80kXINQl5oO', 'POINT(48.478400 -123.337822)'::GEOMETRY, 'V8N5M3', '2024-01-20 10:00:00', 0, 0);
 
-INSERT INTO "Listings" (seller_id, buyer_username, title, price, location, postal_code, status, listed_at, last_updated_at, category) VALUES
+INSERT INTO "Listings" (seller_id, buyer_username, title, price, lat_long, location, status, listed_at, last_updated_at, category) VALUES
 (1, NULL, 'Bicycle',100,'POINT(48.428400 -123.385600)'::GEOMETRY, 'V8R6N2', 'AVAILABLE', '2024-02-01 10:00:00', '2024-02-01 10:00:00', 'Sports'),
 (1, NULL, 'Laptop',500,'POINT(48.378400 -123.404489)'::GEOMETRY, 'V8R6N2', 'AVAILABLE', '2024-02-01 11:00:00', '2024-02-01 11:00:00', 'Electronics'),
 (1, NULL, 'Desk Chair',75,'POINT(48.378400 -123.393378)'::GEOMETRY, 'V8R6N2', 'AVAILABLE', '2024-02-01 12:00:00', '2024-02-01 12:00:00', 'Furniture'),
@@ -220,7 +220,7 @@ INSERT INTO "Messages" (listing_id, message_content, timestamp, chat_id, sender_
 (5, 'Great, see you there.', '2024-02-01 14:10:00', 5, 1, 2),
 (6, 'Hello, I am interested in the Guitar.', '2024-02-02 10:00:00', 6, 1, 2);
 
-INSERT INTO "Ratings" (rated_listing_id, rating_user_id, rating_value, timestamp) VALUES
+INSERT INTO "Ratings" (listing_id, user_id, rating_value, timestamp) VALUES
 (1, 2, 5, '2024-02-01 10:00:00'),
 (2, 3, 4, '2024-02-01 11:00:00'),
 (3, 4, 3, '2024-02-01 12:00:00'),
@@ -233,8 +233,9 @@ INSERT INTO "Ratings" (rated_listing_id, rating_user_id, rating_value, timestamp
 (10, 11, 1, '2024-02-02 14:00:00'),
 (11, 12, 1, '2024-02-02 14:00:00');
 
-INSERT INTO "Reviews" (reviewed_listing_id, review_user_id, review_content, listing_rating_id, timestamp) VALUES
+INSERT INTO "Reviews" (listing_id, user_id, review_content, rating_id, timestamp) VALUES
 (1, 2, 'Great bike, would rent again.', 1, '2024-02-01 10:00:00'),
+(1, 2, 'Bad bike, would not rent again.', 1, '2024-02-01 10:00:00'),
 (2, 3, 'Good laptop, would rent again.', 2, '2024-02-01 11:00:00'),
 (3, 4, 'Average desk chair, would not rent again.', 3, '2024-02-01 12:00:00'),
 (4, 5, 'Poor headphones, would not rent again.', 4, '2024-02-01 13:00:00'),

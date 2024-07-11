@@ -6,14 +6,22 @@ jest.mock("axios");
 describe("Create Review Tests", () => {
     it("should create a review", async () => {
         const mockOutput = {
-            listing_rating_id: 1,
-            reviewed_listing_id: 1,
-            timestamp: "2021-04-14T22:04:59.000Z",
+            reviewedListingId: 1,
+            listingReviewId: 1,
+            timestamp: "2024-07-08T08:08:13.414Z",
         };
         axios.post.mockImplementation(() =>
             Promise.resolve(
                 {
-                    data: mockOutput,
+                    data: {
+                        review_id: 1,
+                        review_content: "test",
+                        listing_id: 1,
+                        timestamp: "2024-07-08T08:08:13.414Z",
+                        user_id: 1,
+                        rating_id: 1
+                      },
+                      status: 200,
                 })
         );
         let responseObject = {};
@@ -29,7 +37,8 @@ describe("Create Review Tests", () => {
             {
                 body: {
                     review_content: "test",
-                    listing_rating_id: 1,
+                    listingReviewId: 1,
+                    reviewedListingId: 1,
                 },
                 params: { listingId: 1 },
             },
