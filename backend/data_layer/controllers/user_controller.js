@@ -240,3 +240,25 @@ export const getUserLatLong = async (req, res) => {
     res.json({ message: err });
   }
 };
+
+export const updateUserData = async (req, res) => {
+    try {
+        const coordinate = { type: 'Point', coordinates: [req.body.lat_long.latitude,req.body.lat_long.longitude]}
+        const user = await User.findByPk(req.params.userId);
+        if (!user) {
+            console.error("User not found");
+            return res.status(500).send();
+        }
+        user.lat_long = coordinate;
+        user.location = req.body.location,
+        await user.save();
+        res.json({});
+    } catch (error) {
+        if (error.name === 'SequelizeValidationError') {
+            return res.status(400).json({ message: error.message });
+        } else {
+            console.error(error);
+            res.status(500).send();
+        }
+    }
+};
