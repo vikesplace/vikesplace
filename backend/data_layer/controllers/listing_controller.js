@@ -26,7 +26,17 @@ export const getSortedListings = async (req, res) => {
   }
 
   //build findAndCountAll options object
-  const options = {where, order};
+  const options = {where, order, attributes: [
+    ["seller_id", "sellerId"],
+    ["listing_id", "listingId"],
+    "location",
+    "price",
+    ["listed_at", "listedAt"],
+    "status",
+    "title",
+    "lat_long",
+    ["last_updated_at", "lastUpdatedAt"],
+  ]};
 
   //add limit and offset if they exist
   if (pullLimit) {
