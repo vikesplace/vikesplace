@@ -1,9 +1,9 @@
-import Reviews from "../models/review_models.js";
+import Review from "../models/review_models.js";
 
 export const createReview = async (req, res) => {
     try {
         const reviewResult = await Review.create({
-            listing_id: req.params.listingId,
+            listing_id: req.body.listing_id,
             user_id: req.body.user_id,
             review_content: req.body.review_content,
             rating_id: req.body.rating_id
@@ -23,7 +23,7 @@ export const createReview = async (req, res) => {
 
 export const getAllReviews = async (req, res) => {
     try {
-        const reviews = await Reviews.findAll({
+        const reviews = await Review.findAll({
             where: {
                 listing_id: req.params.listingId
             },
