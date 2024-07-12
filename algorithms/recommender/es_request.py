@@ -123,29 +123,23 @@ def recommendation_current_item(user_id, listing_id):
     return results['hits']['hits']
 
 
-def recommendation_most_popular():
+def get_items(listings):
     es = Elasticsearch(
         f"https://{ES_HOST}:{ES_PORT}/",
         ca_certs='./ca.crt',
         basic_auth=(ES_USER, ES_PASS)
     )
-    
-    most_pop_items = mongodb_request.get_top_10_popular()
 
-    listing_ids = []
-
-    for item in most_pop_items:
-        listing_ids.append(item['listing_id'])
+    listing_ids = [item['listing_id'] for item in listings]
 
     results = es.search(
-        index="listings", 
+        index="listings",
         query={
             "terms": {
                 "_id": listing_ids
             }
         })
-    
+
     results['hits']['hits'] = [x['_source'] for x in results['hits']['hits']]
-    print(f"recommendation_most_popular:>>>>>>>>> {results['hits']['hits']}")
 
     return results['hits']['hits']
