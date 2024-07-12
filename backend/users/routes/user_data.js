@@ -6,10 +6,11 @@ import { getUserSearchHistory } from "../controller/get_user_search_history.js";
 
 const router = express.Router();
 
+//get user search history
+router.get("/me/searches", getUserSearchHistory)
+
 //get data of the user who is logged in
 router.get("/me", getUserMe);
-
-router.get("/:userId/searches", getUserSearchHistory)
 
 //get another user's data
 router.get("/:userId", getUserData);
