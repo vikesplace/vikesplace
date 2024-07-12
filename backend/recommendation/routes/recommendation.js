@@ -1,4 +1,5 @@
 import express from "express";
+import { ignoreRecommendation } from "../controller/ignore_recommendation.js";
 
 const router = express.Router();
 
@@ -8,8 +9,6 @@ router.get("/", (req, res) => {
 });
 
 //Ignore recommendation
-router.post("/:listingId/ignore", (req, res) => {
-  res.json({ message: "Ignore Recommendation" });
-});
+router.post("/:listingId/ignore", ignoreRecommendation);
 
 export default router;
