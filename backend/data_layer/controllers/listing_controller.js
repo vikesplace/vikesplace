@@ -36,6 +36,7 @@ export const getSortedListings = async (req, res) => {
     "title",
     "lat_long",
     ["last_updated_at", "lastUpdatedAt"],
+    ["for_charity", "forCharity"]
   ]};
 
   //add limit and offset if they exist
@@ -71,6 +72,7 @@ export const createListing = async (req, res) => {
       location: req.body.location,
       status: "AVAILABLE",
       category: req.body.category,
+      for_charity: req.body.forCharity,
     });
     res.json(createResult.dataValues.listing_id);
   } catch (error) {
@@ -87,6 +89,18 @@ export const createListing = async (req, res) => {
 export const getSellerListings = async (req, res) => {
   try {
     const listings = await Listing.findAll({
+      attributes: [
+        ["seller_id", "sellerId"],
+        ["listing_id", "listingId"],
+        "location",
+        "price",
+        ["listed_at", "listedAt"],
+        "status",
+        "title",
+        "lat_long",
+        ["last_updated_at", "lastUpdatedAt"],
+        ["for_charity", "forCharity"]
+      ],
       where: {
         seller_id: req.query.seller_id,
       },
@@ -105,16 +119,17 @@ export const getListingInfo = async (req, res) => {
           console.error("Listing not found");
           return res.status(500).send();
         }
-        const {listing_id, seller_id, buyer_username, title, price, location, status, listed_at, lastupdated_at, category} = listing;
+        const {listing_id, seller_id, buyer_username, title, price, location, status, listed_at, lastupdated_at, category, for_charity} = listing;
         res.json({
-            seller_id: seller_id,
-            listing_id: listing_id,
+            sellerId: seller_id,
+            listingId: listing_id,
             title: title,
             price: price,
             location: location,
             status: status,
-            listed_at: listed_at,
-            lastupdated_at: lastupdated_at
+            listedAt: listed_at,
+            lastupdatedAt: lastupdated_at,
+            forCharity: for_charity,
         });
     } catch (error) {
         console.error(error);
@@ -136,6 +151,7 @@ export const updateListing = async (req, res) => {
         listing.category = req.body.category;
         listing.location = req.body.location;
         listing.buyer_username = req.body.buyer_username; 
+        listing.for_charity = req.body.for_charity;
         await listing.save();
         res.json({});
     } catch (error) {

@@ -52,6 +52,11 @@ services:
       file: backend/docker-compose.yml
       service: listing
 
+  charity:
+    extends:
+      file: backend/docker-compose.yml
+      service: charity
+
   be-recommendation:
     extends:
       file: backend/docker-compose.yml
@@ -89,6 +94,7 @@ services:
       - users
       - ratings
       - account
+      - charity
 
   # Referencing algorithm services
   setup:

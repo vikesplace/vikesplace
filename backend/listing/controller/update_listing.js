@@ -9,7 +9,8 @@ export const updateListing = async (req, res) => {
                     lat_long: req.body.lat_long,
                     category: req.body.category || null,
                     location: req.body.location,
-                    buyer_username: req.body.buyer_username || null
+                    buyer_username: req.body.buyer_username || null,
+                    for_charity: req.body.for_charity || false
                 });
                 res.json(response.data);
     }
