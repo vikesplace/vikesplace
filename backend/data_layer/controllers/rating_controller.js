@@ -18,3 +18,18 @@ export const createRating = async (req, res) => {
     }
   }
 };
+
+
+export const getAllRatings = async (req, res) => {    
+    try {
+        const ratings = await Rating.findAll({
+            where: {
+                listing_id: req.params.listingId
+            }
+        })
+        res.json(ratings);
+    } catch(error) {
+        console.error(error);
+        res.status(500).send();
+    };
+};
