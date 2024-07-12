@@ -145,7 +145,6 @@ def delete_user_activity(user_id, listing_id):
     # Get user doc, find listing_id, get latest listing_id
     user = collection.find_one({"_id": int(user_id)})
     listings = [x for x in user["listings"] if x["listing_id"] == listing_id]
-
     latest_listing = max(listings, key=lambda item: item["timestamp"])
 
     # Delete latest_listing_id from document

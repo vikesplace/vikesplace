@@ -310,7 +310,6 @@ def test_search_non_existing_user():
 
 def test_view_listings_visited():
     user_id = 1
-    listing_id = 1
     response = requests.get(f"{BASE_URL}/users/{user_id}/listings")
     response_obj = response.json()
 
@@ -318,7 +317,7 @@ def test_view_listings_visited():
     assert len(response_obj['results']) >= 1
     for i in response_obj['results']:
         assert i['listing_id'] is not None
-        assert i['timestamp'] is not None
+        assert i['visited_at'] is not None
 
 
 def test_save_listing_view_and_delete_listing_view():

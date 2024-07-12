@@ -2,7 +2,7 @@ import os
 
 from dotenv import load_dotenv
 from elasticsearch import Elasticsearch
-
+from search import mongodb_request
 
 load_dotenv()
 
@@ -88,7 +88,7 @@ def search(query, lat_long, category=None, status=None):
 
     results["users"] = es.search(index="users", query=query_users,
                                  allow_partial_search_results=True)['hits']['hits']
-    
+
     results['listings'] = [x['_source'] for x in results['listings']]
     results['users'] = [x['_source'] for x in results['users']]
 
@@ -100,3 +100,25 @@ def search(query, lat_long, category=None, status=None):
 
     print(results)
     return results  # Return only the hits
+
+
+def get_items(listings):
+    es = Elasticsearch(
+        f"https://{ES_HOST}:{ES_PORT}/",
+        ca_certs='./ca.crt',
+        basic_auth=(ES_USER, ES_PASS)
+    )
+
+    listing_ids = [item['listing_id'] for item in listings]
+
+    results = es.search(
+        index="listings",
+        query={
+            "terms": {
+                "_id": listing_ids
+            }
+        })
+
+    results['hits']['hits'] = [x['_source'] for x in results['hits']['hits']]
+
+    return results['hits']['hits']

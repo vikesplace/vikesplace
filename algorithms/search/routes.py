@@ -1,5 +1,3 @@
-from typing import Annotated
-
 import search.es_request as es_request
 import search.mongodb_request as mongodb_request
 from fastapi import FastAPI, Path, Query
@@ -70,7 +68,14 @@ async def search(
     userId: int = Path(..., description="The ID of the user"),
 ):
     # Assuming es_request.search can handle these parameters
-    results = mongodb_request.user_activity(userId)
+    listings = mongodb_request.user_activity(userId)
+    results = es_request.get_items(listings)
+
+    # add when listing was visited to results
+    for i in results:
+        i['visited_at'] = [x for x in listings if x['listing_id']
+                           == i['listing_id']][0]['timestamp']
+
     print(results)
     return {
         "status": 200,
