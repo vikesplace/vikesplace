@@ -1,9 +1,10 @@
 import axios from "axios";
+import { apiConfig } from "../config/apiConfig.js";
 
 export const getUserMe = async (req, res) => {
   try {
     const userId = res.locals.decodedToken.userId;
-    const userData = await axios.get(`user/me/${userId}`);
+    const userData = await axios.get(`${apiConfig.DATA_LAYER}user/me/${userId}`);
     res.json(userData.data);
   } catch (error) {
     if (error.response && error.response.status == 400) {
