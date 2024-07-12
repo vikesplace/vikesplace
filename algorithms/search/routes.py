@@ -7,12 +7,15 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
+
 class SearchQuery(BaseModel):
     query: str
+
 
 @app.get("/")
 async def root():
     return {"message": "VikesPlace Search Service"}
+
 
 @app.get("/search")
 async def search(
@@ -32,6 +35,7 @@ async def search(
         "results": results
     }
 
+
 @app.get("/users/{userId}/searches")
 async def search(
     userId: int = Path(..., description="The ID of the user"),
@@ -42,7 +46,7 @@ async def search(
     return {
         "status": 200,
         "message": "Search history successful",
-        "results": results 
+        "results": results
     }
 
 
@@ -57,5 +61,41 @@ async def search(userId: int, item: SearchQuery):
     return {
         "status": 200,
         "message": "Search query saved",
-        "results": results 
+        "results": results
     }
+
+
+@app.get("/users/{userId}/listings")
+async def search(
+    userId: int = Path(..., description="The ID of the user"),
+):
+    # Assuming es_request.search can handle these parameters
+    results = mongodb_request.user_activity(userId)
+    print(results)
+    return {
+        "status": 200,
+        "message": "Listings browsing history successful",
+        "results": results
+    }
+
+
+@app.post("/users/{userId}/listings/{listingId}")
+async def search(userId: int, listingId: int):
+    results = mongodb_request.write_user_activity(userId, listingId)
+
+    return {
+        "status": 200,
+        "message": "Listing view saved",
+        "results": results
+    }
+
+
+# @app.delete("/users/{userId}/listings/{listingId}")
+# async def search(userId: int, listingId: int):
+#     results = mongodb_request.delete_user_activity(userId, listingId)
+
+#     return {
+#         "status": 200,
+#         "message": "Listing view deleted",
+#         "results": results
+#     }
