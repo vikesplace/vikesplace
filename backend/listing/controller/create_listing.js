@@ -25,7 +25,8 @@ export const createListing = async (req, res) => {
             price: req.body.price,
             lat_long: geoPointLocation,
             location: req.body.location,
-            category: req.body.category
+            category: req.body.category,
+            forCharity: req.body.forCharity
         });
         return res.json(response.data);
 
