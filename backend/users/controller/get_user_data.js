@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { apiConfig } from '../config/apiConfig.js';
 
 export const getUserData = async (req, res) => {
     try{
-        const response = await axios.get(`/user/${req.params.userId}`);
+        const response = await axios.get(`${apiConfig.DATA_LAYER}user/${req.params.userId}`);
         res.json(response.data);
     }
     catch(err){
