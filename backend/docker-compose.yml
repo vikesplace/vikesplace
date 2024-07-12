@@ -121,6 +121,19 @@ services:
       - ALG_SEARCH=${ALG_SEARCH}
       - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
       - DATA_LAYER=${DATA_LAYER}
+
+  charity:
+    container_name: charity
+    build:
+      context: ./charity
+    volumes:
+      - ./charity:/home/node/app
+      - /home/node/app/node_module
+    ports:
+      - "5008:5000"
+    environment:
+      - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
+      - DATA_LAYER=${DATA_LAYER}
   
   data_layer:
     container_name: data_layer
