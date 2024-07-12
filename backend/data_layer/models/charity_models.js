@@ -1,7 +1,7 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "../config/database.js";
 
-class Charity extends Model {}
+class Charity extends Model { }
 
 Charity.init(
     {
@@ -52,4 +52,3 @@ Charity.init(
 
 export default Charity;
 
-    
