@@ -1,20 +1,35 @@
-import Rating from "../models/rating_models.js"
+import Rating from "../models/rating_models.js";
 
-export const createRating = (req, res) => {
-    Rating.create({
-        listing_id: req.body.listing_id,
-        user_id: req.body.user_id,
-        rating_value: req.body.rating_value
-    })
-    .then((result) => {
-        return res.json({
-            message: "Created Rating"
-        });
-    })
-    .catch((error) => {
-        console.log(error);
-        return res.json({
-            message: "Unable to create rating"
-        });
+export const createRating = async (req, res) => {
+  try {
+    const ratingResult = await Rating.create({
+      listing_id: req.body.listing_id,
+      user_id: req.body.user_id,
+      rating_value: req.body.rating_value,
     });
-}
+    res.json(ratingResult.dataValues);
+  } catch (error) {
+    if (error.name === "SequelizeValidationError") {
+      console.error(error);
+      res.status(400).json({ message: error.message });
+    } else {
+      console.error(error);
+      res.status(500).send();
+    }
+  }
+};
+
+
+export const getAllRatings = async (req, res) => {    
+    try {
+        const ratings = await Rating.findAll({
+            where: {
+                listing_id: req.params.listingId
+            }
+        })
+        res.json(ratings);
+    } catch(error) {
+        console.error(error);
+        res.status(500).send();
+    };
+};
