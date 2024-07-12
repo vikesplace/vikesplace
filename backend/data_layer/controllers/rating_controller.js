@@ -25,9 +25,16 @@ export const getAllRatings = async (req, res) => {
         const ratings = await Rating.findAll({
             where: {
                 listing_id: req.params.listingId
-            }
+            },
+            attributes: [["rating_value", "ratingValue"]]
         })
-        res.json(ratings);
+        if (!ratings) {
+            console.error("Listing not found");
+            return res.status(500).send();
+        }
+        return res.status(200).json({
+            ratingValue: ratings
+        });
     } catch(error) {
         console.error(error);
         res.status(500).send();

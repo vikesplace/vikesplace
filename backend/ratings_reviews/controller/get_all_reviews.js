@@ -3,7 +3,10 @@ import axios from "axios";
 export const getAllReviews = async (req, res) => {
     try {
         const response = await axios.get(`/review/${req.params.listingId}`);
-        res.json(response.data);
+        const reviews = response.data.reviewContent.map((review) => {
+            return review.reviewContent;
+        });
+        return res.json({reviews: reviews});
     } catch (err) {
         if (err.response && (err.response.status == 400)) { // if bad request, return error to client
             return res.status(400).json({ message: err.response.data.message });
