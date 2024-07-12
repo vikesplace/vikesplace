@@ -5,12 +5,12 @@ class Reviews extends Model {}
 
 Reviews.init(
   {
-    listing_review_id: {
+    review_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    reviewed_listing_id: {
+    listing_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       unique: true,
@@ -20,7 +20,7 @@ Reviews.init(
       },
       onDelete: "CASCADE",
     },
-    review_user_id: {
+    user_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       unique: true,
@@ -52,6 +52,7 @@ Reviews.init(
   },
   {
     sequelize,
+    freezeTableName: true,
     timestamps: false,
   }
 );

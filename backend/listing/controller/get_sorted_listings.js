@@ -4,8 +4,8 @@ import { calculateDistance } from "../helper/calculate_distance.js";
 export const getSortedListings = async (req, res) => {
   try {
     const userId = res.locals.decodedToken.userId;
-    const user = await axios.get(`/user/${userId}`);
-    const userCoordinates = user.data.user.location.coordinates;
+    const user = await axios.get(`/user/getUserLatLong/${userId}`);
+    const userCoordinates = user.data.lat_long.coordinates;
 
     const response = await axios.get(`/listing`, {
       params: {
@@ -22,10 +22,10 @@ export const getSortedListings = async (req, res) => {
     if (response.data.rows) {
       const filteredKm = response.data.rows.filter((listing) => {
         if (
-          calculateDistance(userCoordinates, listing.location.coordinates) ===
+          calculateDistance(userCoordinates, listing.lat_long.coordinates) ===
           true
         ) {
-          return true;
+          return listing;
         }
       });
       res.json(filteredKm);

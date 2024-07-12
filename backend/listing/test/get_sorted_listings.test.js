@@ -1,203 +1,164 @@
 import axios from "axios";
 import { getSortedListings } from "../controller/get_sorted_listings";
+import { calculateDistance } from "../helper/calculate_distance";
 
 jest.mock("axios");
+jest.mock("../helper/calculate_distance");
 
 describe("Get Sorted Listings Tests", () => {
-  it("should get listings filtered by choice and sorted by price", async () => {
-    axios.get.mockImplementation(() =>
-      Promise.resolve({
-        data: {
-          count: 3,
-          rows: [
-            {
-              listing_id: 3,
-              seller_id: 123,
-              buyer_username: "joe",
-              title: "test",
-              price: 0,
-              location: { type: "Point", coordinates: [1, -1] },
-              status: "AVAILABLE",
-              listed_at: "2021-09-01",
-              lastupdated_at: "2021-09-01",
-              category: "BOOKS",
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("should return all listings for user", async () => {
+    const mockUser = {
+      data: {
+          lat_long: {
+            coordinates: [1, -1],
+          },
+      },
+    };
+    const mockListings = {
+      data: {
+        rows: [
+          {
+            listingId: 1,
+            sellerId: 1,
+            title: "test1",
+            price: "50.00",
+            lat_long: {
+              coordinates: [2, -2],
             },
-            {
-              listing_id: 2,
-              seller_id: 124,
-              buyer_username: "maria",
-              title: "test",
-              price: 2,
-              location: { type: "Point", coordinates: [1, -1] },
-              status: "AVAILABLE",
-              listed_at: "2021-09-01",
-              lastupdated_at: "2021-09-01",
-              category: "BOOKS",
+            status: "AVAILABLE",
+          },
+          {
+            listingId: 2,
+            sellerId: 1,
+            title: "test2",
+            price: "50.00",
+            lat_long: {
+              coordinates: [3, -3],
             },
-            {
-              listing_id: 1,
-              seller_id: 123,
-              buyer_username: "joe",
-              title: "test",
-              price: 3,
-              location: { type: "Point", coordinates: [1, -1] },
-              status: "AVAILABLE",
-              listed_at: "2021-09-01",
-              lastupdated_at: "2021-09-01",
-              category: "BOOKS",
-            },
-          ],
-        },
-      })
-    );
+            status: "AVAILABLE",
+          },
+        ],
+      },
+    };
+
+    axios.get
+      .mockResolvedValueOnce(mockUser)
+      .mockResolvedValueOnce(mockListings);
+
+    calculateDistance.mockReturnValue(true);
+
     let responseObject = {};
-    const mockRes = {
-      body: {},
+    const mockGetRes = {
       json: jest.fn().mockImplementation((result) => {
         responseObject = result;
       }),
-      status: jest.fn(),
+      status: jest.fn().mockReturnThis(),
+      locals: { decodedToken: { userId: 1 } },
     };
-    await getSortedListings(
-      {
-        query: {
-          pullLimit: 5,
-          pageOffset: 0,
-          minPrice: 0,
-          maxPrice: 100,
-          status: "AVAILABLE",
-          sortBy: "price",
-          isDescending: false,
-        },
+
+    await getSortedListings({ query: {} }, mockGetRes);
+    expect(responseObject).toEqual(mockListings.data.rows);
+  });
+
+  it("should return filtered listings based on distance", async () => {
+    const mockUser = {
+      data: {
+          lat_long: {
+            coordinates: [1, -1],
+          },
       },
-      mockRes
-    );
-    expect(responseObject).toEqual({
-      count: 3,
-      rows: [
-        {
-          listing_id: 3,
-          seller_id: 123,
-          buyer_username: "joe",
-          title: "test",
-          price: 0,
-          location: { type: "Point", coordinates: [1, -1] },
-          status: "AVAILABLE",
-          listed_at: "2021-09-01",
-          lastupdated_at: "2021-09-01",
-          category: "BOOKS",
-        },
-        {
-          listing_id: 2,
-          seller_id: 124,
-          buyer_username: "maria",
-          title: "test",
-          price: 2,
-          location: { type: "Point", coordinates: [1, -1] },
-          status: "AVAILABLE",
-          listed_at: "2021-09-01",
-          lastupdated_at: "2021-09-01",
-          category: "BOOKS",
-        },
-        {
-          listing_id: 1,
-          seller_id: 123,
-          buyer_username: "joe",
-          title: "test",
-          price: 3,
-          location: { type: "Point", coordinates: [1, -1] },
-          status: "AVAILABLE",
-          listed_at: "2021-09-01",
-          lastupdated_at: "2021-09-01",
-          category: "BOOKS",
-        },
-      ],
+    };
+    const mockListings = {
+      data: {
+        rows: [
+          {
+            listingId: 1,
+            sellerId: 1,
+            title: "test1",
+            price: "50.00",
+            lat_long: {
+              coordinates: [2, -2],
+            },
+            status: "AVAILABLE",
+          },
+          {
+            listingId: 2,
+            sellerId: 1,
+            title: "test2",
+            price: "50.00",
+            lat_long: {
+              coordinates: [100, 100],
+            },
+            status: "AVAILABLE",
+          },
+        ],
+      },
+    };
+
+    axios.get
+      .mockResolvedValueOnce(mockUser)
+      .mockResolvedValueOnce(mockListings);
+
+    calculateDistance.mockImplementation((userCoords, listingCoords) => {
+      return listingCoords[0] !== 100 && listingCoords[1] !== 100;
     });
-  });
 
-  it("should throw error for invalid price range", async () => {
-    axios.get.mockImplementation(() =>
-      Promise.resolve({ data: { message: "Invalid price range" } })
-    );
     let responseObject = {};
-    const mockRes = {
-      body: {},
+    const mockGetRes = {
       json: jest.fn().mockImplementation((result) => {
         responseObject = result;
       }),
-      status: jest.fn(),
+      status: jest.fn().mockReturnThis(),
+      locals: { decodedToken: { userId: 1 } },
     };
-    await getSortedListings(
-      {
-        query: {
-          pullLimit: 5,
-          pageOffset: 0,
-          minPrice: 0,
-          status: "AVAILABLE",
-          sortBy: "price",
-          isDescending: false,
-        },
-      },
-      mockRes
-    );
-    expect(responseObject).toEqual({ message: "Invalid price range" });
+
+    await getSortedListings({ query: {} }, mockGetRes);
+    expect(responseObject).toEqual([mockListings.data.rows[0]]);
   });
 
-  it("should throw error for invalid price range", async () => {
-    axios.get.mockImplementation(() =>
-      Promise.resolve({ data: { message: "Invalid price range" } })
-    );
+  it("should return error if user not found", async () => {
+    axios.get.mockRejectedValueOnce({
+      response: {
+        status: 400,
+        data: { message: "User does not exist" },
+      },
+    });
+
     let responseObject = {};
-    const mockRes = {
-      body: {},
+    const mockGetRes = {
       json: jest.fn().mockImplementation((result) => {
         responseObject = result;
       }),
-      status: jest.fn(),
+      status: jest.fn().mockReturnThis(),
+      locals: { decodedToken: { userId: 1 } },
     };
-    await getSortedListings(
-      {
-        query: {
-          pullLimit: 5,
-          pageOffset: 0,
-          minPrice: 100,
-          maxPrice: 0,
-          status: "AVAILABLE",
-          sortBy: "price",
-          isDescending: false,
-        },
-      },
-      mockRes
-    );
-    expect(responseObject).toEqual({ message: "Invalid price range" });
+
+    await getSortedListings({ query: {} }, mockGetRes);
+    expect(mockGetRes.status).toHaveBeenCalledWith(400);
+    expect(responseObject).toEqual({ message: "User does not exist" });
   });
 
-  it("should fail to get sorted listings", async () => {
-    axios.get.mockImplementation(() =>
-      Promise.resolve({ data: { message: "Invalid input data" } })
-    );
+  it("should return internal server error", async () => {
+    axios.get.mockRejectedValueOnce(new Error("Internal Server Error"));
+
     let responseObject = {};
-    const mockRes = {
-      body: {},
+    const mockGetRes = {
       json: jest.fn().mockImplementation((result) => {
         responseObject = result;
       }),
-      status: jest.fn(),
+      status: jest.fn().mockReturnThis(),
+      locals: { decodedToken: { userId: 1 } },
     };
-    await getSortedListings(
-      {
-        query: {
-          pullLimit: 5,
-          pageOffset: 0,
-          minPrice: 0,
-          maxPrice: 100,
-          status: "AVAILABLE",
-          sortBy: "price",
-          isDescending: false,
-        },
-      },
-      mockRes
-    );
-    expect(responseObject).toEqual({ message: "Invalid input data" });
+
+    const spyConsoleLog = jest.spyOn(console, "error");
+    await getSortedListings({ query: {} }, mockGetRes);
+
+    expect(spyConsoleLog).toHaveBeenCalled();
+    expect(mockGetRes.status).toHaveBeenCalledWith(500);
+    expect(responseObject).toEqual({ message: "Failed to get listings" });
   });
 });

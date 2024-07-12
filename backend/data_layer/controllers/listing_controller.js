@@ -26,7 +26,17 @@ export const getSortedListings = async (req, res) => {
   }
 
   //build findAndCountAll options object
-  const options = {where, order};
+  const options = {where, order, attributes: [
+    ["seller_id", "sellerId"],
+    ["listing_id", "listingId"],
+    "location",
+    "price",
+    ["listed_at", "listedAt"],
+    "status",
+    "title",
+    "lat_long",
+    ["last_updated_at", "lastUpdatedAt"],
+  ]};
 
   //add limit and offset if they exist
   if (pullLimit) {
@@ -52,13 +62,13 @@ export const getSortedListings = async (req, res) => {
 
 export const createListing = async (req, res) => {
   try {
-    const coordinate = { type: 'Point', coordinates: [req.body.location.latitude,req.body.location.longitude]}
+    const coordinate = { type: 'Point', coordinates: [req.body.lat_long.latitude,req.body.lat_long.longitude]}
     const createResult = await Listing.create({
       seller_id: req.body.seller_id,
       title: req.body.title,
       price: req.body.price,
-      location: coordinate,
-      postal_code: req.body.postal_code,
+      lat_long: coordinate,
+      location: req.body.location,
       status: "AVAILABLE",
       category: req.body.category,
     });
@@ -122,9 +132,9 @@ export const updateListing = async (req, res) => {
         listing.title = req.body.title;
         listing.price = req.body.price;
         listing.status = req.body.status;
-        listing.location = req.body.location;
+        listing.lat_long = req.body.lat_long;
         listing.category = req.body.category;
-        listing.postal_code = req.body.postal_code;
+        listing.location = req.body.location;
         listing.buyer_username = req.body.buyer_username; 
         await listing.save();
         res.json({});

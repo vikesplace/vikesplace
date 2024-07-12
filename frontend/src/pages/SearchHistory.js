@@ -2,16 +2,22 @@ import React from 'react';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import '../App.css';
-import AuthService from '../services/AuthService';
 import DataService from '../services/DataService';
 
 function SearchHistory() {
-  const authService = new AuthService();
   const dataService = new DataService();
-  const id = authService.getCurrentUserId();
+  
+  let id = "";
+  let response = dataService.getMyUserData();
+  if (response !== undefined && response !== null) {
+    id = response.data.userId;
+  } else {
+    // TODO remove once api works
+    id = "12345";
+  }
 
   let history = [];
-  let response = dataService.getUserSearchHistory(id);
+  response = dataService.getUserSearchHistory(id);
   if (response !== undefined) {
     history = response.data;
   }

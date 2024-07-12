@@ -1,5 +1,4 @@
 import axios from 'axios';
-import authHeader from './AuthHeaderHelper';
 import httpErrorHandler from './httpErrorHandler';
 
 const API_URL = 'http://localhost:8080/';
@@ -7,39 +6,35 @@ const API_URL = 'http://localhost:8080/';
 class DataService {
     createListing(title, price, location, status, category) {
         axios.post(API_URL + 'listings', {
-            headers: authHeader(),
             title,
             price,
             location,
             status,
             category
-        })
+        }, {withCredentials: true})
         .catch(httpErrorHandler);
     }
 
     updateListing(id, title, price, location, status, buyerUsername, category) {
         axios.patch(API_URL + 'listings/' + { id }, {
-            headers: authHeader(),
             title,
             price,
             location,
             status,
             buyerUsername,
             category
-        })
+        }, {withCredentials: true})
         .catch(httpErrorHandler);
     }
 
     deleteListing(id) {
-        axios.delete(API_URL + 'listings/' + { id }, {
-            headers: authHeader()
-        })
+        axios.delete(API_URL + 'listings/' + { id }, 
+            {withCredentials: true})
         .catch(httpErrorHandler);
     }
 
     getSortedListings(minPrice, maxPrice, status, sortBy, isDescending, pullLimit, pageLimit) {
         axios.get(API_URL + 'listings', {
-            headers: authHeader(),
             minPrice,
             maxPrice,
             status,
@@ -47,136 +42,118 @@ class DataService {
             isDescending,
             // pullLimit,
             // pageLimit
-        })
+        }, {withCredentials: true})
         .catch(httpErrorHandler);
     }
 
     getListing(id) {
-        axios.get(API_URL + 'listings/' + { id }, {
-            headers: authHeader()
-        })
+        axios.get(API_URL + 'listings/' + { id }, 
+            {withCredentials: true})
         .catch(httpErrorHandler);
     }
 
     getSellerListings() {
-        axios.get(API_URL + 'listings/me', {
-            headers: authHeader()
-        })
+        axios.get(API_URL + 'listings/me', 
+            {withCredentials: true})
         .catch(httpErrorHandler);
     }
 
     updateUserData(id, location) {
         axios.patch(API_URL + 'users/' + id, {
-            headers: authHeader(),
             location
-        })
+        }, {withCredentials: true})
         .catch(httpErrorHandler);
     }
 
     getMyUserData() {
-        axios.get(API_URL + 'users/me', {
-            headers: authHeader()
-        })
+        axios.get(API_URL + 'users/me', 
+            {withCredentials: true})
         .catch(httpErrorHandler);
     }
 
     getUserData(id) {
-        axios.get(API_URL + 'users/' + id, {
-            headers: authHeader()
-        })
+        axios.get(API_URL + 'users/' + id, 
+            {withCredentials: true})
         .catch(httpErrorHandler);
     }
 
     getUserSearchHistory(id) {
-        axios.get(API_URL + 'users/' + { id } + '/searches', {
-            headers: authHeader()
-        })
+        axios.get(API_URL + 'users/' + { id } + '/searches', 
+            {withCredentials: true})
         .catch(httpErrorHandler);
     }
 
     search(query) {
-        axios.get(API_URL + 'search?query=' + { query }, {
-            headers: authHeader(),
-            query
-        })
+        axios.get(API_URL + 'search?query=' + { query }, 
+            {withCredentials: true})
         .catch(httpErrorHandler);
     }
 
     getReviews(id) {
-        axios.get(API_URL + 'review/' + { id }, {
-            headers: authHeader()
-        })
+        axios.get(API_URL + 'review/' + { id }, 
+            {withCredentials: true})
         .catch(httpErrorHandler);
     }
 
     getRatings(id) {
-        axios.get(API_URL + 'rating/' + { id }, {
-            headers: authHeader()
-        })
+        axios.get(API_URL + 'rating/' + { id }, 
+            {withCredentials: true})
         .catch(httpErrorHandler);
     }
 
     createReview(id, reviewContent) {
         axios.post(API_URL + 'review/' + { id }, {
-            headers: authHeader(),
             reviewContent
-        })
+        }, {withCredentials: true})
         .catch(httpErrorHandler);
     }
 
     createRating(id, ratingValue) {
         axios.post(API_URL + 'rating/' + { id }, {
-            headers: authHeader(),
             ratingValue
-        })
+        }, {withCredentials: true})
         .catch(httpErrorHandler);
     }
 
     getRecommendations() {
-        axios.get(API_URL + 'recommendations', {
-            headers: authHeader()
-        })
+        axios.get(API_URL + 'recommendations', 
+            {withCredentials: true})
         .catch(httpErrorHandler);
     }
 
     ignoreRecommendation(id) {
         axios.post(API_URL + 'recommendations/' + { id } + '/ignore', {
-            headers: authHeader(),
             ignore: true
-        })
+        }, {withCredentials: true})
         .catch(httpErrorHandler);
     }
 
     getChats(id) {
         axios.get(API_URL + 'chats', {
-            headers: authHeader(),
             id
-        })
+        }, {withCredentials: true})
         .catch(httpErrorHandler);
     }
 
     getChatMessages(id) {
         axios.get(API_URL + 'messages/' + { id }, {
-            headers: authHeader(),
             id
-        })
+        }, {withCredentials: true})
         .catch(httpErrorHandler);
     }
 
     getChatInformation(id) {
         axios.get(API_URL + 'chats/' + { id }, {
-            headers: authHeader(),
             id
-        })
+        }, {withCredentials: true})
         .catch(httpErrorHandler);
 
     }
 
     sendMessage(message) {
         axios.post(API_URL + 'messages/updates', {
-            headers: authHeader(),
             message
-        })
+        }, {withCredentials: true})
         .catch(httpErrorHandler);
     }
 }
