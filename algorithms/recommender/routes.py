@@ -45,16 +45,6 @@ async def recommendation_current_item(
     )
 
 
-@app.get("/recommendations_most_popular")
-async def recommendations_most_popular():
-    results = es_request.recommendation_most_popular()
-
-    return JSONResponse(
-        status_code=status.HTTP_200_OK,
-        content=results
-    )
-
-
 @app.post("/recommendations/{listing_id}/ignore")
 async def recommendation_ignore(
     user_id: str = Path(..., description="The ID of the user")
