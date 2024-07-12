@@ -5,55 +5,50 @@ jest.mock("axios");
 
 describe("Update User Data Tests", () => {
     it("should update user data", async () => {
-        axios.patch.mockImplementation(() => Promise.resolve({ data: 1 }));
+        axios.get.mockImplementation(() => Promise.resolve({ data: { latitude: 1, longitude: -1 } }));
+        axios.patch.mockImplementation(() => Promise.resolve({ data: { location: "V8P5C2" } }));
         let responseObject = {};
         const mockRes = {
-        body: {},
-        json: jest.fn().mockImplementation((result) => {
-            responseObject = result;
-        }),
-        status: jest.fn(),
+            body: {},
+            json: jest.fn().mockImplementation((result) => {
+                responseObject = result;
+            }),
+            status: jest.fn(),
         };
         await updateUserData(
-        {
-            body: {
-                location: { type: "Point", coordinates: [1, -1] },
-                postal_code: "V8R6N2",
-              },
-              params: {
-                user_id: "1",
-              },
-        },
-        mockRes
+            {
+                body: {
+                    location: "V8P5C2",
+                },
+                params: {
+                    user_id: "1",
+                },
+            },
+            mockRes
         );
-        expect(responseObject).toEqual(1);
+        expect(responseObject).toEqual({ location: "V8P5C2" });
     });
 
     it("it should fail to update", async () => {
-        axios.patch.mockImplementation(() =>
-        Promise.resolve({
-            data: { message: "Unable to update user with id: 1" },
-        })
-        );
+        axios.patch.mockImplementation(() => Promise.resolve({ data: { message: "Unable to update user with id: 1" } }));
         let responseObject = {};
         const mockRes = {
-        body: {},
-        json: jest.fn().mockImplementation((result) => {
-            responseObject = result;
-        }),
-        status: jest.fn(),
+            body: {},
+            json: jest.fn().mockImplementation((result) => {
+                responseObject = result;
+            }),
+            status: jest.fn(),
         };
         await updateUserData(
-        {
-            body: {
-                location: { type: "Point", coordinates: [1, -1] },
-                postal_code: "V8R6N2",
-              },
-              params: {
-                user_id: "1",
-              },
-        },
-        mockRes
+            {
+                body: {
+                    location: "V8P5C2",
+                },
+                params: {
+                    user_id: "1",
+                },
+            },
+            mockRes
         );
         expect(responseObject).toEqual({ message: "Unable to update user with id: 1" });
     });
