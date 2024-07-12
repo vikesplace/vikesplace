@@ -1,15 +1,14 @@
 import axios from "axios";
-import { apiConfig } from "../config/apiConfig";
+import { apiConfig } from "../config/apiConfig.js";
 
 export const ignoreRecommendation = async (req, res) => {
   try {
     const userId = res.locals.decodedToken.userId;
+    const listingId = req.params.listingId;
     const response = await axios.post(
-      `${apiConfig.ALG_RECOMMENDATION}recommendations/${req.params.listingId}`,
+      `${apiConfig.ALG_RECOMMENDATION}recommendations/${listingId}/ignore`,
       {
-        params: {
-          user_id: userId,
-        },
+        user_id: userId,
       }
     );
 
