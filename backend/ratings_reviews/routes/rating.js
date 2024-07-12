@@ -1,4 +1,5 @@
 import express from "express";
+import { createRating } from "../controllers/createRating.js";
 
 const router = express.Router();
 
@@ -9,11 +10,7 @@ const router = express.Router();
 //   res.json({ message: "Get All Ratings" });
 // });
 
-// //Leave a Rating for a Listing
-// router.post("/:listingId", (req, res) => {
-//   // Handle login logic
-//   // ...
-//   res.json({ message: "Leave Rating" });
-// });
+//Leave a Rating for a Listing
+router.post("/:listingId", createRating);
 
 export default router;
