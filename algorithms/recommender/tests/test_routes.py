@@ -43,8 +43,11 @@ def test_recommender_with_no_activity_history():
         f"{BASE_URL}/recommendations", params=params)
     response_obj = response.json()
 
+    # should receive most popular items since user has not activity history
     assert response.status_code == status.HTTP_200_OK
-    assert response_obj == None
+    assert len(response_obj) == 10
+    for obj in response_obj:
+        assert obj["title"] != None
 
 
 def test_recommender_current_item():
@@ -62,16 +65,6 @@ def test_recommender_current_item():
     assert len(response_obj) == 5
     for obj in response_obj:
         assert obj['seller_id'] != user_id
-
-
-def test_recommender_most_popular_items():
-    response = requests.get(f"{BASE_URL}/recommendations_most_popular")
-    response_obj = response.json()
-
-    assert response.status_code == status.HTTP_200_OK
-    assert len(response_obj) == 10
-    for obj in response_obj:
-        assert obj["title"] != None
 
 
 def test_view_listings_ignored():
