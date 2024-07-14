@@ -139,7 +139,6 @@ export default function ManageListing({ listing }) {
 
         if (validForm) {
             let response = await dataService.updateListing(listing.listingId, title, price, postalCode, status, buyer, forCharity);
-            console.log(response);
             if (response === undefined) {
                 alert("Connection error. Please try again.");
             } else if (response.status === 200) {
