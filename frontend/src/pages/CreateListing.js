@@ -14,7 +14,6 @@ import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import DataService from '../services/DataService';
-import { SAMPLE_DATA } from '../utils/SampleRecommenderData';
 import { categories } from '../utils/ListingData';
 
 function CreateListing() {
@@ -109,16 +108,19 @@ function CreateListing() {
         }
     }
 
-    const handleSubmit = (event) => {
+    async function handleSubmit (event) {
         event.preventDefault();
         var validForm = validateTitle() && validatePrice() && validatePostalCode() && validateCategory();
 
         if (validForm) {
-            let response = dataService.createListing(title, price, postalCode, category, forCharity); 
+            let response = await dataService.createListing(title, price, postalCode, category, forCharity); 
             if (response === undefined) {
+                alert("Connection error. Please try again.");
+            } else if (response.status === 200) {
                 navigate(`/manage-listings`);
             } else {
-                alert("Connection error. Please try again.")
+                console.log(response.message);
+                alert("Unable to create listing, please try again.");
             }
         }
     }
