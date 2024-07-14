@@ -270,8 +270,8 @@ function ViewListings() {
                 onChange={handleStatusFilterChange}
               >
                 <MenuItem value=""><em>None</em></MenuItem>
-                <MenuItem value="Available">Available</MenuItem>
-                <MenuItem value="Sold">Sold</MenuItem>
+                <MenuItem value="AVAILABLE">Available</MenuItem>
+                <MenuItem value="SOLD">Sold</MenuItem>
               </Select>
             </FormControl>
             <FormControl fullWidth sx={{ mt: 2 }}>
