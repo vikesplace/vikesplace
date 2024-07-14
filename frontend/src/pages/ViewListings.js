@@ -64,8 +64,7 @@ function ViewListings() {
       setLocation(currLocation); 
       // update listings after location
     }, 1000);
-  }, []);
-
+  }, [currLocation]);
 
   const handleListingClick = (id) => {
     navigate(`/listings/${id}`);
