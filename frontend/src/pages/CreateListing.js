@@ -119,7 +119,6 @@ function CreateListing() {
             } else if (response.status === 200) {
                 navigate(`/manage-listings`);
             } else {
-                console.log(response.message);
                 alert("Unable to create listing, please try again.");
             }
         }
