@@ -20,10 +20,7 @@ import SearchBar from '../components/SearchBar';
 import { Typography } from '@mui/material';
 import DataService from '../services/DataService';
 import { SAMPLE_DATA } from '../utils/SampleRecommenderData';
-
-const categories = [
-  'Electronics', 'Phones', 'Vehicles', 'Entertainment', 'Garden', 'Outdoor', 'Sports', 'Kitchen Supplies', 'Furniture', 'Musical Instruments', 'Office Supplies', 'Apparel', 'Books', 'Beauty', 'Health'
-];
+import { categories } from '../utils/ListingData';
 
 
 function ViewListings() {
@@ -45,7 +42,9 @@ function ViewListings() {
   const [newLocation, setNewLocation] = useState('');
   const [postalCodeError, setPostalCodeError] = useState(false);
 
-  let response = dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, false); 
+  let response = undefined;
+  // TODO fix
+  // dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, false); 
   if (response !== undefined) {
     setListings(response.data);
   }
@@ -213,12 +212,12 @@ function ViewListings() {
           </Button>
         </Box>
         <Box mt={2}>
-          {(listings.length === 0) && 
+          {(listings === undefined || listings.length === 0) && 
             <Typography align="center" variant='h6'>
               No Listings Meet Criteria
             </Typography>
           }
-          {listings.map((listing) => (
+          {listings !== undefined && listings.map((listing) => (
             <div key={listing.id} onClick={() => handleListingClick(listing.id)}>
               <ListingCard
                 id={listing.id}

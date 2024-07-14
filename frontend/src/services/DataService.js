@@ -82,10 +82,13 @@ class DataService {
         .catch(httpErrorHandler);
     }
 
-    getMyUserData() {
-        return axios.get(API_URL + 'users/me', 
-            {withCredentials: true})
-        .catch(httpErrorHandler);
+    async getMyUserData() {
+        try {
+            return await axios.get(API_URL + 'users/me',
+                { withCredentials: true });
+        } catch (error) {
+            return httpErrorHandler(error);
+        }
     }
 
     getUserData(id) {
