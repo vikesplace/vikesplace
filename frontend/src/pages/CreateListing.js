@@ -4,7 +4,9 @@ import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import '../App.css';
 import Button from '@mui/material/Button';
+import Checkbox from '@mui/material/Checkbox';
 import FormControl from '@mui/material/FormControl';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import Grid from '@mui/material/Grid';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -13,23 +15,7 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import DataService from '../services/DataService';
 import { SAMPLE_DATA } from '../utils/SampleRecommenderData';
-
-const categories = [
-    { value: 'Furniture', label: 'Furniture' },
-    { value: 'Office Supplies', label: 'Office Supplies' },
-    { value: 'Electronics', label: 'Electronics' },
-    { value:'Vehicles', label:'Vehicles'},
-    { value:'Phones', label:'Phones'},
-    { value:'Entertainment', label: 'Entertainment'},
-    { value:'Garden', label:'Garden'},
-    { value:'Outdoor', label:'Outdoor'},
-    { value:'Sports', label:'Sports'},
-    { value:'Kicthen Supplies', label:'Kitchen Supplies'},
-    { value:'Musical Instruments', label:'Musical Instruments'},
-    { value:'Apparel', label:'Apparel'},
-    { value: 'Beauty', label:'Beauty'},
-    { value:'Health', label:'Health'}
-];
+import { categories } from '../utils/ListingData';
 
 function CreateListing() {
     const dataService = new DataService();
@@ -43,6 +29,7 @@ function CreateListing() {
     const [postalCode, setPostalCode] = useState("");
     const [postalCodeError, setPostalCodeError] = useState(false);
     const [category, setCategory] = useState("");
+    const [forCharity, setForCharity] = useState(false);
 
     const handleTitleChange = (event) => {
         setTitle(event.target.value);
@@ -73,6 +60,10 @@ function CreateListing() {
 
     const handleCategoryChange = (event) => {
         setCategory(event.target.value);
+    };
+
+    const handleForCharityChange = (event) => {
+        setForCharity(!forCharity);
     };
 
     function validateTitle() {
@@ -125,7 +116,7 @@ function CreateListing() {
         var validForm = validateTitle() && validatePrice() && validatePostalCode() && validateCategory();
 
         if (validForm) {
-            let response = dataService.createListing(title, price, postalCode, "AVAILABLE", category); 
+            let response = dataService.createListing(title, price, postalCode, category, forCharity); 
             if (response !== undefined) {
                 navigate(`/manage-listings`);
             } else {
@@ -218,6 +209,15 @@ function CreateListing() {
                       ))}
                     </Select>
                   </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                    <FormControlLabel 
+                      required 
+                      control={<Checkbox />} 
+                      label="Donate the funds from this listing to charity?" 
+                      value={forCharity}
+                      onChange={handleForCharityChange}
+                    />
                 </Grid>
                 <Button
                     type="submit"

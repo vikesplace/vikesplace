@@ -4,13 +4,13 @@ import httpErrorHandler from './httpErrorHandler';
 const API_URL = 'http://localhost:8080/';
 
 class DataService {
-    createListing(title, price, location, status, category) {
+    createListing(title, price, location, category, forCharity) {
         axios.post(API_URL + 'listings', {
             title,
             price,
             location,
-            status,
-            category
+            category,
+            forCharity
         }, {withCredentials: true})
         .catch(httpErrorHandler);
     }
