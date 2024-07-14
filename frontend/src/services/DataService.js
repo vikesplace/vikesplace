@@ -75,11 +75,14 @@ class DataService {
         }
     }
 
-    updateUserData(id, location) {
-        return axios.patch(API_URL + 'users/' + id, {
-            location
-        }, {withCredentials: true})
-        .catch(httpErrorHandler);
+    async updateUserData(id, location) {
+        try {
+            return await axios.patch(API_URL + 'users/' + id, {
+                location
+            }, { withCredentials: true });
+        } catch (error) {
+            return httpErrorHandler(error);
+        }
     }
 
     async getMyUserData() {
@@ -91,16 +94,22 @@ class DataService {
         }
     }
 
-    getUserData(id) {
-        return axios.get(API_URL + 'users/' + id, 
-            {withCredentials: true})
-        .catch(httpErrorHandler);
+    async getUserData(id) {
+        try {
+            return await axios.get(API_URL + 'users/' + id,
+                { withCredentials: true });
+        } catch (error) {
+            return httpErrorHandler(error);
+        }
     }
 
-    getUserSearchHistory(id) {
-        return axios.get(API_URL + 'users/' + id + '/searches', 
-            {withCredentials: true})
-        .catch(httpErrorHandler);
+    async getUserSearchHistory(id) {
+        try {
+            return await axios.get(API_URL + 'users/' + id + '/searches',
+                { withCredentials: true });
+        } catch (error) {
+            return httpErrorHandler(error);
+        }
     }
 
     search(query) {
@@ -109,72 +118,110 @@ class DataService {
         .catch(httpErrorHandler);
     }
 
-    getReviews(id) {
-        return axios.get(API_URL + 'review/' + id, 
-            {withCredentials: true})
-        .catch(httpErrorHandler);
+    async getReviews(id) {
+        try {
+            return await axios.get(API_URL + 'review/' + id,
+                { withCredentials: true });
+        } catch (error) {
+            return httpErrorHandler(error);
+        }
     }
 
-    getRatings(id) {
-        return axios.get(API_URL + 'rating/' + id, 
-            {withCredentials: true})
-        .catch(httpErrorHandler);
+    async getRatings(id) {
+        try {
+            return await axios.get(API_URL + 'rating/' + id,
+                { withCredentials: true });
+        } catch (error) {
+            return httpErrorHandler(error);
+        }
     }
 
-    createReview(id, reviewContent) {
-        return axios.post(API_URL + 'review/' + id, {
-            reviewContent
-        }, {withCredentials: true})
-        .catch(httpErrorHandler);
+    async createReview(id, reviewContent) {
+        try {
+            return await axios.post(API_URL + 'review/' + id, {
+                reviewContent
+            }, { withCredentials: true });
+        } catch (error) {
+            return httpErrorHandler(error);
+        }
     }
 
-    createRating(id, ratingValue) {
-        return axios.post(API_URL + 'rating/' + id, {
-            ratingValue
-        }, {withCredentials: true})
-        .catch(httpErrorHandler);
+    async createRating(id, ratingValue) {
+        try {
+            return await axios.post(API_URL + 'rating/' + id, {
+                ratingValue
+            }, { withCredentials: true });
+        } catch (error) {
+            return httpErrorHandler(error);
+        }
     }
 
-    getRecommendations() {
-        return axios.get(API_URL + 'recommendations', 
-            {withCredentials: true})
-        .catch(httpErrorHandler);
+    async getRecommendations() {
+        try {
+            return await axios.get(API_URL + 'recommendations',
+                { withCredentials: true });
+        } catch (error) {
+            return httpErrorHandler(error);
+        }
     }
 
-    ignoreRecommendation(id) {
-        return axios.post(API_URL + 'recommendations/' + id + '/ignore', {
-            ignore: true
-        }, {withCredentials: true})
-        .catch(httpErrorHandler);
+    async ignoreRecommendation(id) {
+        try {
+            return await axios.post(API_URL + 'recommendations/' + id + '/ignore', {
+                ignore: true
+            }, { withCredentials: true });
+        } catch (error) {
+            return httpErrorHandler(error);
+        }
     }
 
-    getChats(id) {
-        return axios.get(API_URL + 'chats', {
-            id
-        }, {withCredentials: true})
-        .catch(httpErrorHandler);
+    async getChats(id) {
+        try {
+            return await axios.get(API_URL + 'chats', {
+                id
+            }, { withCredentials: true });
+        } catch (error) {
+            return httpErrorHandler(error);
+        }
     }
 
-    getChatMessages(id) {
-        return axios.get(API_URL + 'messages/' + id, {
-            id
-        }, {withCredentials: true})
-        .catch(httpErrorHandler);
+    async createNewChat(id) {
+        try {
+            return await axios.post(API_URL + 'chats/' + id, 
+                { withCredentials: true });
+        } catch (error) {
+            return httpErrorHandler(error);
+        }
     }
 
-    getChatInformation(id) {
-        return axios.get(API_URL + 'chats/' + id, {
-            id
-        }, {withCredentials: true})
-        .catch(httpErrorHandler);
+    async getChatMessages(id) {
+        try {
+            return await axios.get(API_URL + 'messages/' + id, {
+                id
+            }, { withCredentials: true });
+        } catch (error) {
+            return httpErrorHandler(error);
+        }
+    }
+
+    async getChatInformation(id) {
+        try {
+            return await axios.get(API_URL + 'chats/' + id,
+                { withCredentials: true });
+        } catch (error) {
+            return httpErrorHandler(error);
+        }
 
     }
 
-    sendMessage(message) {
-        return axios.post(API_URL + 'messages/updates', {
-            message
-        }, {withCredentials: true})
-        .catch(httpErrorHandler);
+    async sendMessage(id, content) {
+        try {
+            return await axios.post(API_URL + 'messages/' + id, {
+                content
+            }, { withCredentials: true });
+        } catch (error) {
+            return httpErrorHandler(error);
+        }
     }
 }
 
