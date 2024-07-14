@@ -111,19 +111,14 @@ function CreateListing() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        // const data = new FormData(event.currentTarget);
-
         var validForm = validateTitle() && validatePrice() && validatePostalCode() && validateCategory();
 
         if (validForm) {
             let response = dataService.createListing(title, price, postalCode, category, forCharity); 
-            if (response !== undefined) {
+            if (response === undefined) {
                 navigate(`/manage-listings`);
             } else {
-                // TODO remove once we expect api to succeed
-                let id = SAMPLE_DATA.length + 1;
-                SAMPLE_DATA.push({ id: id, title: title, price: price, location: 'postalCode', status: 'AVAILABLE', category: category })
-                navigate(`/manage-listings`);
+                alert("Connection error. Please try again.")
             }
         }
     }
