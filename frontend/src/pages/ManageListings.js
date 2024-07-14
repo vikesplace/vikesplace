@@ -41,7 +41,7 @@ function ManageListings() {
             </Typography>
           }
           {listings.map((listing) => (
-            <div key={'div' + listing.listingId} onClick={() => handleListingClick(listing.id)}>
+            <div key={'div' + listing.listingId} onClick={() => handleListingClick(listing.listingId)}>
               <ListingCard
                 id={listing.listingId}
                 title={listing.title}

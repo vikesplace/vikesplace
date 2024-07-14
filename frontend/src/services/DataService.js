@@ -18,22 +18,28 @@ class DataService {
         }
     }
 
-    updateListing(id, title, price, location, status, buyerUsername, category) {
-        return axios.patch(API_URL + 'listings/' + id, {
-            title,
-            price,
-            location,
-            status,
-            buyerUsername,
-            category
-        }, {withCredentials: true})
-        .catch(httpErrorHandler);
+    async updateListing(id, title, price, location, status, buyerUsername, category) {
+        try {
+            return await axios.patch(API_URL + 'listings/' + id, {
+                title,
+                price,
+                location,
+                status,
+                buyerUsername,
+                category
+            }, { withCredentials: true });
+        } catch (error) {
+            return httpErrorHandler(error);
+        }
     }
 
-    deleteListing(id) {
-        return axios.delete(API_URL + 'listings/' + id, 
-            {withCredentials: true})
-        .catch(httpErrorHandler);
+    async deleteListing(id) {
+        try {
+            return await axios.delete(API_URL + 'listings/' + id,
+                { withCredentials: true });
+        } catch (error) {
+            return httpErrorHandler(error);
+        }
     }
 
     getSortedListings(minPrice, maxPrice, status, sortBy, isDescending, pullLimit, pageLimit) {
@@ -49,10 +55,13 @@ class DataService {
         .catch(httpErrorHandler);
     }
 
-    getListing(id) {
-        return axios.get(API_URL + 'listings/' + id, 
-            {withCredentials: true})
-        .catch(httpErrorHandler);
+    async getListing(id) {
+        try {
+            return await axios.get(API_URL + 'listings/' + id,
+                { withCredentials: true });
+        } catch (error) {
+            return httpErrorHandler(error);
+        }
     }
 
     async getSellerListings() {

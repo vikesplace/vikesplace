@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
@@ -6,23 +6,28 @@ import Typography from '@mui/material/Typography';
 import ManageListing from '../components/ManageListing.js';
 import '../App.css';
 import DataService from '../services/DataService.js';
-import { SAMPLE_DATA } from '../utils/SampleRecommenderData.js';
 
 function EditListing() {
-  const dataService = new DataService();
-
   const { id } = useParams();
+  const [listing, setListing] = useState(undefined);
 
-  let listing = undefined;
-  let response = dataService.getListing(id);
-  if (response !== undefined) {
-    listing = response.data;
-  } else {
-    // TODO remove once we expect api to succeed
-    listing = SAMPLE_DATA.find((listing) => listing.id === id);
-  }
+  useEffect(() => {
+    async function getMyListings() {
+      const dataService = new DataService();
+      const response = await dataService.getListing(id);
+      if (response === undefined) {
+        alert("Connection error. Please try again.");
+      } else if (response.status === 200) {
+        setListing(response.data);
+      } else {
+        alert("Unable to get your listings, please try again.");
+      }
+    }
 
-  if (!listing) {
+    getMyListings();
+  }, [id]);
+
+  if (listing === undefined) {
     return <div>
       <Typography align="center" variant='h6' sx={{mt: 2}}>
         No Listing Found
