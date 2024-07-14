@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
@@ -6,21 +6,26 @@ import Typography from '@mui/material/Typography';
 import ListingCard from '../components/ListingCard';
 import '../App.css';
 import DataService from '../services/DataService';
-import { SAMPLE_DATA } from '../utils/SampleRecommenderData';
 
 function ManageListings() {
-  const dataService = new DataService();
-
   const navigate = useNavigate();
+  const [listings, setListings] = useState([]);
 
-  let listings = []; 
-  let response = dataService.getSellerListings(); 
-  if (response !== undefined) {
-    listings = response.data;
-  } else {
-    // TODO remove once we expect api to succeed
-    listings = SAMPLE_DATA;
-  }
+  useEffect(() => {
+    async function getMyListings() {
+      const dataService = new DataService();
+      const response = await dataService.getSellerListings();
+      if (response === undefined) {
+        alert("Connection error. Please try again.");
+      } else if (response.status === 200) {
+        setListings(response.data);
+      } else {
+        alert("Unable to get your listings, please try again.");
+      }
+    }
+
+    getMyListings();
+  }, []);
 
   const handleListingClick = (id) => {
     navigate(`/edit-listing/${id}`);
@@ -36,14 +41,17 @@ function ManageListings() {
             </Typography>
           }
           {listings.map((listing) => (
-            <div key={'div' + listing.id} onClick={() => handleListingClick(listing.id)}>
+            <div key={'div' + listing.listingId} onClick={() => handleListingClick(listing.id)}>
               <ListingCard
-                id={listing.id}
+                id={listing.listingId}
                 title={listing.title}
                 price={listing.price}
                 location={listing.location}
                 status={listing.status}
-                category={listing.category}          
+                listedAt={listing.listedAt} 
+                lastUpdatedAt={listing.lastUpdatedAt} 
+                foroCharity={listing.forCharity}   
+                sellerId={listing.sellerId}         
               />
               <br />
             </div>

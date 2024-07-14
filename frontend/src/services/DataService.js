@@ -55,10 +55,13 @@ class DataService {
         .catch(httpErrorHandler);
     }
 
-    getSellerListings() {
-        return axios.get(API_URL + 'listings/me', 
-            {withCredentials: true})
-        .catch(httpErrorHandler);
+    async getSellerListings() {
+        try {
+            return await axios.get(API_URL + 'listings/me',
+                { withCredentials: true });
+        } catch (error) {
+            return httpErrorHandler(error);
+        }
     }
 
     updateUserData(id, location) {
