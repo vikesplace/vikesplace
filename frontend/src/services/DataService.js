@@ -16,7 +16,7 @@ class DataService {
     }
 
     updateListing(id, title, price, location, status, buyerUsername, category) {
-        axios.patch(API_URL + 'listings/' + { id }, {
+        axios.patch(API_URL + 'listings/' + id, {
             title,
             price,
             location,
@@ -28,7 +28,7 @@ class DataService {
     }
 
     deleteListing(id) {
-        axios.delete(API_URL + 'listings/' + { id }, 
+        axios.delete(API_URL + 'listings/' + id, 
             {withCredentials: true})
         .catch(httpErrorHandler);
     }
@@ -47,7 +47,7 @@ class DataService {
     }
 
     getListing(id) {
-        axios.get(API_URL + 'listings/' + { id }, 
+        axios.get(API_URL + 'listings/' + id, 
             {withCredentials: true})
         .catch(httpErrorHandler);
     }
@@ -78,7 +78,7 @@ class DataService {
     }
 
     getUserSearchHistory(id) {
-        axios.get(API_URL + 'users/' + { id } + '/searches', 
+        axios.get(API_URL + 'users/' + id + '/searches', 
             {withCredentials: true})
         .catch(httpErrorHandler);
     }
@@ -90,26 +90,26 @@ class DataService {
     }
 
     getReviews(id) {
-        axios.get(API_URL + 'review/' + { id }, 
+        axios.get(API_URL + 'review/' + id, 
             {withCredentials: true})
         .catch(httpErrorHandler);
     }
 
     getRatings(id) {
-        axios.get(API_URL + 'rating/' + { id }, 
+        axios.get(API_URL + 'rating/' + id, 
             {withCredentials: true})
         .catch(httpErrorHandler);
     }
 
     createReview(id, reviewContent) {
-        axios.post(API_URL + 'review/' + { id }, {
+        axios.post(API_URL + 'review/' + id, {
             reviewContent
         }, {withCredentials: true})
         .catch(httpErrorHandler);
     }
 
     createRating(id, ratingValue) {
-        axios.post(API_URL + 'rating/' + { id }, {
+        axios.post(API_URL + 'rating/' + id, {
             ratingValue
         }, {withCredentials: true})
         .catch(httpErrorHandler);
@@ -122,7 +122,7 @@ class DataService {
     }
 
     ignoreRecommendation(id) {
-        axios.post(API_URL + 'recommendations/' + { id } + '/ignore', {
+        axios.post(API_URL + 'recommendations/' + id + '/ignore', {
             ignore: true
         }, {withCredentials: true})
         .catch(httpErrorHandler);
@@ -136,14 +136,14 @@ class DataService {
     }
 
     getChatMessages(id) {
-        axios.get(API_URL + 'messages/' + { id }, {
+        axios.get(API_URL + 'messages/' + id, {
             id
         }, {withCredentials: true})
         .catch(httpErrorHandler);
     }
 
     getChatInformation(id) {
-        axios.get(API_URL + 'chats/' + { id }, {
+        axios.get(API_URL + 'chats/' + id, {
             id
         }, {withCredentials: true})
         .catch(httpErrorHandler);
