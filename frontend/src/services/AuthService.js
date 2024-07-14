@@ -45,7 +45,7 @@ class AuthService {
 
     async requestPasswordChange(email) {
         try {
-            return await axios.post(API_URL + "verify_password", {
+            return await axios.post(API_URL + "request_reset", {
                 email
             });
         } catch (error) {
@@ -53,9 +53,10 @@ class AuthService {
         }
     }
 
-    async completePasswordChange(password) {
+    async completePasswordChange(jwt, password) {
         try {
-            return await axios.post(API_URL + "reset_password", {
+            return await axios.post(API_URL + "verify_reset", {
+                jwt, 
                 password
             });
         } catch (error) {

@@ -112,28 +112,21 @@ function VerifyAccount() {
         }
     }
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        // const data = new FormData(event.currentTarget);
-        
+    async function handleSubmit (event) {
+        event.preventDefault();        
         var validForm = validateUsername() && validatePassword() && validateConfirmPassword() && validatePostalCode();
-        if (validForm) {
-            let response = authService.verify(jwt, username, password, postalCode);
-            if (response !== undefined && response.data !== undefined) {
-                let message = response.data.message;
-                if (message !== undefined) {
-                    // TODO, use exact error messages
-                    if (message.includes("username")) {
-                        setUsernameError("Username is already taken, please choose another");
-                    }
 
-                    navigate("/verified");
-                }
+        if (validForm) {
+            let response = await authService.verify(jwt, username, password, postalCode);
+            if (response === undefined) {
+                alert("Connection error, please try again.");
+            } else if (response.status === 201) {
+                navigate('/verified');
+            } else if (response.data?.message === "Username or email already exists") {
+                setUsernameError("Username or email already exists, please choose another");
             } else {
-                console.log(response)
-                navigate("/verified");
-            }
-            
+                alert("Unable to create account, please try again.");
+            }           
         }
     }
     

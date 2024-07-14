@@ -6,16 +6,17 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import AuthService from '../services/AuthService';
 
 function CompletePasswordChange() {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const jwt = location.search.replace("?jwt=", "");
+
     const authService = new AuthService();
     const [password, setPassword] = useState("");
     const [passwordError, setPasswordError] = useState(false);
-    
-
-    const navigate = useNavigate();
 
     const handlePasswordChange = (event) => {
         setPassword(event.target.value);
@@ -40,17 +41,19 @@ function CompletePasswordChange() {
         }
     }
 
-    const handleSubmit = (event) => {
+    async function handleSubmit (event) {
         event.preventDefault();
-        // const data = new FormData(event.currentTarget);
-
         var validForm = validatePassword();
 
         if (validForm) {
-            let response = authService.completePasswordChange(password);
-            if (response !== undefined) {
+            let response = await authService.completePasswordChange(jwt, password);
+            if (response === undefined) {
+                alert("Connection error, please try again.");
+            } else if (response.status === 200) {
                 navigate('/password-updated');
-            }
+            } else {
+                alert("Unable to request change, please try again.");
+            }  
         }
     }
 

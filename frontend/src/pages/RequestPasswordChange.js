@@ -34,7 +34,7 @@ function RequestPasswordChange() {
             setEmailError("");
             return false;
         } else if (!format.test(email)) {
-            setEmailError("Must be a valid @uvic.ca emailEmail is required");
+            setEmailError("Must be a valid @uvic.ca email");
             return false;
         } else {
             setEmailError("");
@@ -42,18 +42,19 @@ function RequestPasswordChange() {
         }
     }
 
-    const handleSubmit = (event) => {
+    async function handleSubmit (event) {
         event.preventDefault();
-        // const data = new FormData(event.currentTarget);
-
         var validForm = validateEmail();
 
         if (validForm) {
-            let response = authService.requestPasswordChange(email);
-            if (response !== undefined) {
-                // TODO confirm success
+            let response = await authService.requestPasswordChange(email);
+            if (response === undefined) {
+                alert("Connection error, please try again.");
+            } else if (response.status === 200) {
                 navigate('/check-email');
-            }
+            } else {
+                alert("Unable to request change, please try again.");
+            }  
             
         }
     }
