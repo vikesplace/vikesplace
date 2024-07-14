@@ -22,9 +22,7 @@ export default function ManageListing({ listing }) {
     const currTitle = listing.title;
     const currPrice = listing.price;
     const currPostalCode = listing.location;
-    const currCategory = listing.category;
     const currStatus = listing.status;
-
 
     const [title, setTitle] = useState(currTitle);
     const [titleError, setTitleError] = useState(false);
@@ -32,7 +30,6 @@ export default function ManageListing({ listing }) {
     const [priceError, setPriceError] = useState(false);
     const [postalCode, setPostalCode] = useState(currPostalCode);
     const [postalCodeError, setPostalCodeError] = useState(false);
-    const [category, setCategory] = useState(currCategory);
     const [status, setStatus] = useState(currStatus);
     const [buyer, setBuyer] = useState("");
     const [buyerError, setBuyerError] = useState(false);
@@ -62,10 +59,6 @@ export default function ManageListing({ listing }) {
     const handlePostalCodeBlur = (event) => {
         setPostalCode(event.target.value);
         validatePostalCode();
-    };
-
-    const handleCategoryChange = (event) => {
-        setCategory(event.target.value);
     };
 
     const handleStatusChange = (event) => {
@@ -119,14 +112,6 @@ export default function ManageListing({ listing }) {
         }
     }
 
-    function validateCategory() {
-        if (category === null || category === "") {
-          return false;
-        } else {
-            return true;
-        }
-    }
-
     function validateBuyer() {
         if ( status !== 'SOLD'|| buyer) {
             if (buyer.includes(' ')) {
@@ -144,10 +129,10 @@ export default function ManageListing({ listing }) {
         event.preventDefault();
         // const data = new FormData(event.currentTarget);
 
-        var validForm = validateTitle() && validatePrice() && validatePostalCode() && validateCategory() && validateBuyer();
+        var validForm = validateTitle() && validatePrice() && validatePostalCode() && validateBuyer();
 
         if (validForm) {
-            let response = dataService.updateListing(listing.id, title, price, postalCode, status, buyer, category);
+            let response = dataService.updateListing(listing.id, title, price, postalCode, status, buyer);
             if (response !== undefined) {
                 // TODO check success
                 navigate(`/manage-listings`);
@@ -231,23 +216,6 @@ export default function ManageListing({ listing }) {
                             postalCodeError ? "Please enter a valid postal code with format A1A1A1" : ""
                         }
                     />
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControl fullWidth>
-                    <InputLabel id="category-label">Category</InputLabel>
-                    <Select
-                      required
-                      label="Category"
-                      labelId="category-label"
-                      id="category"
-                      value={category}
-                      onChange={handleCategoryChange}
-                    >
-                      {categories.map((category) => (
-                        <MenuItem key={category.value} value={category.value}>{category.label}</MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
                 </Grid>
                 <Grid item xs={12}>
                   <FormControl fullWidth>
