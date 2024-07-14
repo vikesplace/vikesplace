@@ -4,7 +4,9 @@ import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import '../App.css';
 import Button from '@mui/material/Button';
+import Checkbox from '@mui/material/Checkbox';
 import FormControl from '@mui/material/FormControl';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import Grid from '@mui/material/Grid';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -12,7 +14,7 @@ import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import DataService from '../services/DataService.js';
-import { categories, statuses } from '../utils/ListingData.js';
+import { statuses } from '../utils/ListingData.js';
 
 export default function ManageListing({ listing }) {
     const dataService = new DataService();
@@ -23,6 +25,7 @@ export default function ManageListing({ listing }) {
     const currPrice = listing.price;
     const currPostalCode = listing.location;
     const currStatus = listing.status;
+    const currCharity = listing.forCharity;
 
     const [title, setTitle] = useState(currTitle);
     const [titleError, setTitleError] = useState(false);
@@ -33,6 +36,7 @@ export default function ManageListing({ listing }) {
     const [status, setStatus] = useState(currStatus);
     const [buyer, setBuyer] = useState("");
     const [buyerError, setBuyerError] = useState(false);
+    const [forCharity, setForCharity] = useState(currCharity);
 
     const handleTitleChange = (event) => {
         setTitle(event.target.value);
@@ -75,6 +79,10 @@ export default function ManageListing({ listing }) {
     const handleBuyerBlur = (event) => {
         setBuyer(event.target.value);
         validateBuyer();
+    };
+
+    const handleForCharityChange = (event) => {
+        setForCharity(!forCharity);
     };
 
     function validateTitle() {
@@ -125,30 +133,32 @@ export default function ManageListing({ listing }) {
         }
     }
 
-    const handleSubmit = (event) => {
+    async function handleSubmit (event) {
         event.preventDefault();
-        // const data = new FormData(event.currentTarget);
-
         var validForm = validateTitle() && validatePrice() && validatePostalCode() && validateBuyer();
 
         if (validForm) {
-            let response = dataService.updateListing(listing.id, title, price, postalCode, status, buyer);
-            if (response !== undefined) {
-                // TODO check success
+            let response = await dataService.updateListing(listing.listingId, title, price, postalCode, status, buyer, forCharity);
+            console.log(response);
+            if (response === undefined) {
+                alert("Connection error. Please try again.");
+            } else if (response.status === 200) {
                 navigate(`/manage-listings`);
             } else {
-                navigate(`/manage-listings`);
+                alert("Unable to edit listing, please try again.");
             }
         }      
     }
 
-    const handleDelete = (event) => {
-        let response = dataService.deleteListing(listing.id);
-        if (response !== undefined) {
-            // TODO check success
+    async function handleDelete (event) {
+        event.preventDefault();
+        let response = await dataService.deleteListing(listing.listingId);
+        if (response === undefined) {
+            alert("Connection error. Please try again.");
+        } else if (response.status === 200) {
             navigate(`/manage-listings`);
         } else {
-            navigate(`/manage-listings`);
+            alert("Unable to delete listing, please try again.");
         }
     }
 
@@ -251,6 +261,15 @@ export default function ManageListing({ listing }) {
                         }
                     />
                 </Grid>}
+                <Grid item xs={12}>
+                    <FormControlLabel 
+                      required 
+                      control={<Checkbox checked={forCharity}/>} 
+                      label="Donate the funds from this listing to charity?" 
+                      value={forCharity}
+                      onChange={handleForCharityChange}
+                    />
+                </Grid>
                 <Button
                     type="submit"
                     name="submit"

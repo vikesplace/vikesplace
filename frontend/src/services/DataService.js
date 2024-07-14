@@ -10,6 +10,7 @@ class DataService {
                 title,
                 price,
                 location,
+                status: "AVAILABLE",
                 category,
                 forCharity
             }, { withCredentials: true });
@@ -18,7 +19,7 @@ class DataService {
         }
     }
 
-    async updateListing(id, title, price, location, status, buyerUsername, category) {
+    async updateListing(id, title, price, location, status, buyerUsername, forCharity) {
         try {
             return await axios.patch(API_URL + 'listings/' + id, {
                 title,
@@ -26,7 +27,8 @@ class DataService {
                 location,
                 status,
                 buyerUsername,
-                category
+                // optional: category
+                forCharity
             }, { withCredentials: true });
         } catch (error) {
             return httpErrorHandler(error);
