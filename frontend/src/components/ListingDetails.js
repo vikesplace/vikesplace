@@ -30,7 +30,7 @@ const ListingDetails = ({ listing }) => {
     // Chat Does Not: dataService.createNewChat, then send messsage
     let response = await dataService.sendMessage(listing.listingId, message);
     if (response === undefined) {
-      alert("Connection error. Please try again.");
+      alert("Connection error, please try again.");
     } else if (response.status === 200) {
         handleClose();
     } else {

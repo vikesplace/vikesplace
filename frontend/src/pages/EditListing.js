@@ -16,7 +16,7 @@ function EditListing() {
       const dataService = new DataService();
       const response = await dataService.getListing(id);
       if (response === undefined) {
-        alert("Connection error. Please try again.");
+        alert("Connection error, please try again.");
       } else if (response.status === 200) {
         setListing(response.data);
       } else {

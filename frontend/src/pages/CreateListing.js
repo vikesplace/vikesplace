@@ -115,7 +115,7 @@ function CreateListing() {
         if (validForm) {
             let response = await dataService.createListing(title, price, postalCode, category, forCharity); 
             if (response === undefined) {
-                alert("Connection error. Please try again.");
+                alert("Connection error, please try again.");
             } else if (response.status === 200) {
                 navigate(`/manage-listings`);
             } else {

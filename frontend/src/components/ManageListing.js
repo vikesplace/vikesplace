@@ -140,7 +140,7 @@ export default function ManageListing({ listing }) {
         if (validForm) {
             let response = await dataService.updateListing(listing.listingId, title, price, postalCode, status, buyer, forCharity);
             if (response === undefined) {
-                alert("Connection error. Please try again.");
+                alert("Connection error, please try again.");
             } else if (response.status === 200) {
                 navigate(`/manage-listings`);
             } else {
@@ -153,7 +153,7 @@ export default function ManageListing({ listing }) {
         event.preventDefault();
         let response = await dataService.deleteListing(listing.listingId);
         if (response === undefined) {
-            alert("Connection error. Please try again.");
+            alert("Connection error, please try again.");
         } else if (response.status === 200) {
             navigate(`/manage-listings`);
         } else {
