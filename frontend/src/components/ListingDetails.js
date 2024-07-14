@@ -24,13 +24,17 @@ const ListingDetails = ({ listing }) => {
     setOpen(false);
   };
 
-  const handleSendMessage = () => {
-    let response = dataService.sendMessage(message);
-    if (response !== undefined) {
-      handleClose();
+  async function handleSendMessage () {
+    // TODO: check if chat already exists...
+    // Chat Exists: send message
+    // Chat Does Not: dataService.createNewChat, then send messsage
+    let response = await dataService.sendMessage(listing.listingId, message);
+    if (response === undefined) {
+      alert("Connection error. Please try again.");
+    } else if (response.status === 200) {
+        handleClose();
     } else {
-      // TODO remove once we expect api to succeed
-      handleClose();
+        alert("Unable to send message, please try again.");
     }
   };
 
