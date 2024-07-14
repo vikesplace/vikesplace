@@ -66,11 +66,11 @@ function Login() {
             let response = await authService.login(username, password);
             if (response === undefined) {
                 alert("Connection error, please try again.");
-              } else if (response.status === 200) {
-                  navigate('/');
-              } else {
-                  alert("Unable to login, please try again.");
-              }
+            } else if (response.status === 200) {
+                navigate('/');
+            } else {
+                alert("Unable to login, please try again.");
+            }
         }
     }
 

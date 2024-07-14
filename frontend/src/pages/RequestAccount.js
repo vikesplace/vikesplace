@@ -41,17 +41,18 @@ function RequestAccount() {
         }
     }
 
-    const handleSubmit = (event) => {
+    async function handleSubmit (event) {
         event.preventDefault();
-        // const data = new FormData(event.currentTarget);
-
         var validForm = validateEmail();
 
         if (validForm) {
-            let response = authService.register(email);
-            if (response !== undefined) {
-                // TODO confirm success
-                navigate('/check-email ');
+            let response = await authService.register(email);
+            if (response === undefined) {
+                alert("Connection error, please try again.");
+            } else if (response.status === 200) {
+                navigate('/check-email');
+            } else {
+                alert("Unable to request account, please try again.");
             }
         }
     }
