@@ -9,12 +9,15 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import DataService from '../services/DataService.js';
+import { useNavigate } from 'react-router-dom';
 
 const ListingDetails = ({ listing }) => {
   const dataService = new DataService();
 
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
+
+  const navigate = useNavigate();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -36,6 +39,10 @@ const ListingDetails = ({ listing }) => {
 
   const handleChangeMessage = (event) => {
     setMessage(event.target.value);
+  };
+
+  const handleClickReview = (id) => {
+    navigate(`/view-reviews/${id}`);
   };
 
   return (
@@ -80,8 +87,21 @@ const ListingDetails = ({ listing }) => {
           >
             Message Seller
           </Button>
-          <Button variant="contained" color="secondary">
+          <Button 
+          variant="contained" 
+          color="secondary"
+          sx={{ mb: 2 }}
+          >
             Add Review
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            //onClick={handleClickReview}
+            onClick={() => handleClickReview(listing.id)}
+            sx={{ mb : 2 }}
+            >
+            View Reviews
           </Button>
         </Box>
       </Box>
