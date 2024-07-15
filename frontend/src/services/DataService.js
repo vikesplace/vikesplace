@@ -44,16 +44,33 @@ class DataService {
         }
     }
 
-    getSortedListings(minPrice, maxPrice, status, sortBy, isDescending, pullLimit, pageLimit) {
-        return axios.get(API_URL + 'listings', {
-            minPrice,
-            maxPrice,
-            status,
-            sortBy,
-            isDescending,
-            // pullLimit,
-            // pageLimit
-        }, {withCredentials: true})
+    getSortedListings(minPrice, maxPrice, status, sortBy, isDescending, pullLimit, pageOffset) {
+        let paramString = "";
+        if (pullLimit) {
+            paramString += "pullLimit=" + pullLimit;
+
+        }
+        if (pageOffset) {
+            paramString += "pageOffset=" + pageOffset;
+        } 
+        if (minPrice) {
+            paramString += (paramString ? "&" : "") + "minPrice=" + minPrice;
+        }         
+        if (maxPrice) {
+            paramString += (paramString ? "&" : "") + "maxPrice=" + maxPrice;
+        }
+        if (status) {
+            paramString += (paramString ? "&" : "") + "status=" + status;
+        }  
+        if (sortBy) {
+            paramString += (paramString ? "&" : "") + "sortBy=" + sortBy;
+        } 
+        if (isDescending) {
+            paramString += (paramString ? "&" : "") + "isDescending=" + isDescending;
+        }
+
+        return axios.get(API_URL + 'listings?' + paramString, 
+            {withCredentials: true})
         .catch(httpErrorHandler);
     }
 
@@ -75,9 +92,9 @@ class DataService {
         }
     }
 
-    async updateUserData(id, location) {
+    async updateUserData(location) {
         try {
-            return await axios.patch(API_URL + 'users/' + id, {
+            return await axios.patch(API_URL + 'users/me', {
                 location
             }, { withCredentials: true });
         } catch (error) {
@@ -103,9 +120,9 @@ class DataService {
         }
     }
 
-    async getUserSearchHistory(id) {
+    async getUserSearchHistory() {
         try {
-            return await axios.get(API_URL + 'users/' + id + '/searches',
+            return await axios.get(API_URL + 'users/me' + '/searches',
                 { withCredentials: true });
         } catch (error) {
             return httpErrorHandler(error);
