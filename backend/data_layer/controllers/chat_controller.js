@@ -3,16 +3,25 @@ import Listings from "../models/listing_models.js";
 
 export const getChatData = async (req, res) => {
     try {
-        const entry = await Chats.findByPk(req.params.chatId);
-        if (!entry) {
+        const chatData = await Chats.findOne({
+            where: {
+                chat_id: req.params.chatId
+            },
+            attributes: [
+                "user_id_one",
+                "user_id_two",
+                ["listing_id", "listingId"],
+                ["last_message_time", "lastMessageTime"]
+            ]
+        });
+        if (!chatData) {
             console.error("Chat not found");
             return res.status(500).send();
         }
-        const {chat_id, user_id_one, user_id_two, listing_id, timestamp, last_message_time} = entry;
-        res.json({
-            users: [user_id_one, user_id_two],
-            listing_id: listing_id,
-            last_message_time: last_message_time
+        return res.status(200).json({
+            users: [chatData.dataValues.user_id_one, chatData.dataValues.user_id_two],
+            listingId: chatData.dataValues.listingId,
+            lastMessageTime: chatData.dataValues.lastMessageTime
         });
     } catch (error) {
         console.error(error);
