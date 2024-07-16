@@ -1,6 +1,9 @@
 from confluent_kafka import Consumer, KafkaException
 import json
-from neo4j_api import add_relation
+from neo4j_api import add_relation, add_postal_codes
+
+# Add postal codes to Neo4j
+add_postal_codes()
 
 # Kafka consumer setup
 consumer = Consumer({

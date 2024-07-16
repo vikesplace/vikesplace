@@ -30,3 +30,22 @@ async def recommendations(
     except Exception as e:
         print(f"Error: {e}")
         return JSONResponse(content={"error": "Failed to get recommendations"}, status_code=500)
+    
+@app.get("/recommendations_for_new_user")
+async def recommendations(
+    user_id: int = Query(None), 
+    # latitude: float = 48.437326,
+    # longitude: float = -123.329773,
+):
+    # location = (latitude, longitude)
+    try:
+        results = neo4j_request.get_top_items_within_same_postal_code(user_id)
+        print(results)
+
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content={"results":results}
+        )
+    except Exception as e:
+        print(f"Error: {e}")
+        return JSONResponse(content={"error": "Failed to get recommendations"}, status_code=500)
