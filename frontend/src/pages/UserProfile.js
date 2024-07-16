@@ -1,20 +1,36 @@
-import React from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import '../App.css';
 import { Typography } from '@mui/material';
 import DataService from '../services/DataService';
-import { SAMPLE_USER } from '../utils/SampleRecommenderData';
 
 function UserProfile() {
-  const dataService = new DataService();
+  const dataService = useMemo(() => new DataService(), []);
+  const [user, setUser] = useState(undefined);
 
-  let user = {};
-  let response = dataService.getMyUserData();
-  if (response !== undefined) {
-    user = response.data;
-  } else{
-    user = SAMPLE_USER;
+  useEffect(() => {
+    const fetchUser = async () => {
+      const response = await dataService.getMyUserData(); 
+      if (response === undefined) {
+        alert("Connection error, please try again.");
+      } else if (response.status === 200) {
+        console.log(response.data);
+        setUser(response.data);
+      } else {
+        alert("Unable to get listings, please try again.");
+      }
+    };
+
+    fetchUser();
+  }, [dataService]);
+
+  if (user === undefined) {
+    return <div>
+      <Typography align="center" variant='h6' sx={{mt: 2}}>
+        No User Found
+      </Typography>
+    </div>;
   }
 
   return (
@@ -62,7 +78,7 @@ function UserProfile() {
                Date Joined:
             </Typography> 
             <Typography variant='body2'>
-                {user.createDate}
+                {user.joininhDate}
             </Typography> 
             <br />
         </Box>
