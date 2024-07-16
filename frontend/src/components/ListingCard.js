@@ -6,11 +6,11 @@ import Typography from '@mui/material/Typography';
 import { CardActionArea, CardHeader } from '@mui/material';
 import { Link } from 'react-router-dom';
 
-export default function ListingCard({ id, title, price, location, status, category}) {
+export default function ListingCard({ id, title, price, location, status }) {
   return (
     <Card data-testid="listing-card">
       <CardActionArea component={Link} to={`/listings/${id}`}>
-        <CardHeader title={title} subheader={category}/>
+        <CardHeader title={title} />
         <CardContent>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Box sx={{ display: 'flex', width: 1 / 3, flexDirection: 'column', mx: 2, alignItems: 'start' }}>
