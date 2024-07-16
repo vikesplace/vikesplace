@@ -29,7 +29,6 @@ function ViewListings() {
   const [sortCategory, setSortCategory] = useState('');
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
   const [statusFilter, setStatusFilter] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('');
   const [location, setLocation] = useState('Fetching...');
   const [listings, setListings] = useState([]);
   const [openFilterDialog, setOpenFilterDialog] = useState(false);
@@ -84,10 +83,6 @@ function ViewListings() {
 
   const handleStatusFilterChange = (event) => {
     setStatusFilter(event.target.value);
-  };
-
-  const handleCategoryFilterChange = (event) => {
-    setCategoryFilter(event.target.value);
   };
 
   const applyFilters = async () => {
@@ -156,9 +151,9 @@ function ViewListings() {
               onChange={handleSortChange}
             >
               <MenuItem value=""><em>None</em></MenuItem>
-              <MenuItem value="price">Price</MenuItem>
-              <MenuItem value="location">Location</MenuItem>
-              <MenuItem value="status">Status</MenuItem>
+              <MenuItem value="PRICE">Price</MenuItem>
+              <MenuItem value="LOCATION">Distance</MenuItem>
+              <MenuItem value="TIME">Time</MenuItem>
             </Select>
           </FormControl>
           <Button
@@ -233,21 +228,6 @@ function ViewListings() {
                 <MenuItem value=""><em>None</em></MenuItem>
                 <MenuItem value="AVAILABLE">Available</MenuItem>
                 <MenuItem value="SOLD">Sold</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl sx={{ minWidth: 120, mt: 2, width: '100%' }}>
-              <InputLabel id="category-filter-label">Category</InputLabel>
-              <Select
-                labelId="category-filter-label"
-                id="category-filter"
-                value={categoryFilter}
-                label="Category"
-                onChange={handleCategoryFilterChange}
-              >
-                <MenuItem value=""><em>None</em></MenuItem>
-                {categories.map((category) => (
-                  <MenuItem key={category} value={category}>{category}</MenuItem>
-                ))}
               </Select>
             </FormControl>
           </DialogContent>
