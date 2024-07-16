@@ -19,7 +19,6 @@ import ListingCard from '../components/ListingCard';
 import SearchBar from '../components/SearchBar';
 import { Typography } from '@mui/material';
 import DataService from '../services/DataService';
-import { categories } from '../utils/ListingData';
 
 
 function ViewListings() {
