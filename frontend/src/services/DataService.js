@@ -84,6 +84,7 @@ class DataService {
     }
 
     search(query) {
+        console.log(query)
         axios.get(API_URL + 'search?query=' + { query }, 
             {withCredentials: true})
         .catch(httpErrorHandler);

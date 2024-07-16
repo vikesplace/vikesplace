@@ -23,8 +23,9 @@ import DataService from '../services/DataService';
 
 function SearchBar() {
   const dataService = new DataService();
-
   const [input, setInput] = useState('');
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleUserInput = (event) => {
     setInput(event.target.value);
@@ -32,8 +33,11 @@ function SearchBar() {
   };
 
   const handleSearchQuery= (event) => {
+    if(location.pathname ="/"){
+      navigate("/view-listings")
+    }
     let response = dataService.search(input)
-    console.log(response.data)
+    console.log(response)
     
   }
   return (
@@ -50,11 +54,11 @@ function SearchBar() {
           inputProps={{ 'aria-label': 'search vikes place' }}
           onChange={handleUserInput}
         />
-        <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
+        <IconButton type="button" sx={{ p: '10px' }} aria-label="search" onClick={handleSearchQuery}>
           <SearchIcon />
         </IconButton>
         <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-        <IconButton color="primary" sx={{ p: '10px' }} aria-label="directions">
+        <IconButton color="primary" sx={{ p: '10px' }} aria-label="search-history">
           <HistoryIcon />
         </IconButton>
       </Paper>
