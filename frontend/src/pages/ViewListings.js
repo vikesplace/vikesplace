@@ -19,13 +19,15 @@ import ListingCard from '../components/ListingCard';
 import SearchBar from '../components/SearchBar';
 import { Typography } from '@mui/material';
 import DataService from '../services/DataService';
-
+import SwapVertIcon from '@mui/icons-material/SwapVert';
+import IconButton from '@mui/material/IconButton';
 
 function ViewListings() {
   const dataService = useMemo(() => new DataService(), []);
   const navigate = useNavigate();
 
   const [sortCategory, setSortCategory] = useState("listed_at");
+  const [sortOrder, setSortOrder] = useState(false);
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
   const [statusFilter, setStatusFilter] = useState('');
   const [location, setLocation] = useState('Fetching...');
@@ -38,7 +40,7 @@ function ViewListings() {
 
   useEffect(() => {
     const fetchListings = async () => {
-      const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, false); 
+      const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder); 
       if (response === undefined) {
         alert("Connection error, please try again.");
       } else if (response.status === 200) {
@@ -55,7 +57,7 @@ function ViewListings() {
 
     fetchListings();
     fetchLocation();
-  }, [dataService, priceRange, statusFilter, sortCategory]);
+  }, [dataService, priceRange, statusFilter, sortCategory, sortOrder]);
 
   const handleListingClick = (id) => {
     navigate(`/listings/${id}`);
@@ -65,7 +67,21 @@ function ViewListings() {
     const category = event.target.value;
     setSortCategory(category);
 
-    const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, false); 
+    const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder); 
+    if (response === undefined) {
+      alert("Connection error, please try again.");
+    } else if (response.status === 200) {
+      setListings(response.data);
+    } else {
+      alert("Unable to get listings, please try again.");
+    }
+  };
+
+  const handleSortOrderClick = async () => {
+    const currOrder = sortOrder;
+    setSortOrder(!currOrder);
+
+    const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder); 
     if (response === undefined) {
       alert("Connection error, please try again.");
     } else if (response.status === 200) {
@@ -85,7 +101,7 @@ function ViewListings() {
   };
 
   const applyFilters = async () => {
-    const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, false); 
+    const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder); 
     if (response === undefined) {
       alert("Connection error, please try again.");
     } else if (response.status === 200) {
@@ -140,20 +156,25 @@ function ViewListings() {
       <Container>
         <SearchBar />
         <Box mt={2} display="flex" justifyContent="space-between" alignItems="center">
-          <FormControl sx={{ minWidth: 120, mr: 2 }}>
-            <InputLabel id="sort-select-label">Sort By</InputLabel>
-            <Select
-              labelId="sort-select-label"
-              id="sort-select"
-              value={sortCategory}
-              label="Sort By"
-              onChange={handleSortChange}
-            >
-              <MenuItem value="listed_at"><em>Time</em></MenuItem>
-              <MenuItem value="price">Price</MenuItem>
-              {/* <MenuItem value="location">Distance</MenuItem> */}
-            </Select>
-          </FormControl>
+          <Box id="sort-options" display="flex"> 
+            <FormControl sx={{ minWidth: 120, mr: 2 }}>
+              <InputLabel id="sort-select-label">Sort By</InputLabel>
+              <Select
+                labelId="sort-select-label"
+                id="sort-select"
+                value={sortCategory}
+                label="Sort By"
+                onChange={handleSortChange}
+              >
+                <MenuItem value="listed_at"><em>Time</em></MenuItem>
+                <MenuItem value="price">Price</MenuItem>
+                {/* <MenuItem value="location">Distance</MenuItem> */}
+              </Select>
+            </FormControl>
+            <IconButton aria-label="change sorting order" onClick={handleSortOrderClick}>
+              <SwapVertIcon />
+            </IconButton>
+          </Box>
           <Button
             variant="outlined"
             color="primary"
