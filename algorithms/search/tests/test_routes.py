@@ -1,6 +1,7 @@
+import pytest
 import requests
-from fastapi import status
 import search.mongodb_request as mongodb_request
+from fastapi import status
 
 # Base URL for the deployed FastAPI instance
 BASE_URL = "http://localhost:8000"
