@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
@@ -19,85 +19,62 @@ import ListingCard from '../components/ListingCard';
 import SearchBar from '../components/SearchBar';
 import { Typography } from '@mui/material';
 import DataService from '../services/DataService';
-import { SAMPLE_DATA } from '../utils/SampleRecommenderData';
 import { categories } from '../utils/ListingData';
 
 
 function ViewListings() {
-  const dataService = new DataService();
+  const dataService = useMemo(() => new DataService(), []);
   const navigate = useNavigate();
-
-  // TODO remove once api is working
-  let initialListings = SAMPLE_DATA;
 
   const [sortCategory, setSortCategory] = useState('');
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
   const [statusFilter, setStatusFilter] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
   const [location, setLocation] = useState('Fetching...');
-  // TODO change intial state once api's working
-  const [listings, setListings] = useState(initialListings);
+  const [listings, setListings] = useState([]);
   const [openFilterDialog, setOpenFilterDialog] = useState(false);
   const [openLocationDialog, setOpenLocationDialog] = useState(false);
   const [newLocation, setNewLocation] = useState('');
   const [postalCodeError, setPostalCodeError] = useState(false);
 
-  let response = undefined;
-  // TODO fix
-  // dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, false); 
-  if (response !== undefined) {
-    setListings(response.data);
-  }
-
-  let currLocation = '';
-  response = dataService.getMyUserData();
-  if (response !== undefined) {
-    currLocation = response.data;
-  } else {
-    // TODO remove once we expect api to succeed
-    currLocation = "V8V2G4"
-  }
 
   useEffect(() => {
-    setTimeout(() => {
-      setLocation(currLocation); 
-      // update listings after location
-    }, 1000);
-  }, [currLocation]);
+    const fetchListings = async () => {
+      const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, false); 
+      if (response === undefined) {
+        alert("Connection error, please try again.");
+      } else if (response.status === 200) {
+        setListings(response.data);
+      } else {
+        alert("Unable to get listings, please try again.");
+      }
+    };
+
+    const fetchLocation = async () => {
+      const response = await dataService.getMyUserData();
+      setLocation(response !== undefined ? response.data.location : "V8V2G4");
+    };
+
+    fetchListings();
+    fetchLocation();
+  }, [dataService, priceRange, statusFilter, sortCategory]);
 
   const handleListingClick = (id) => {
     navigate(`/listings/${id}`);
   };
 
-  const handleSortChange = (event) => {
+  const handleSortChange = async (event) => {
     const category = event.target.value;
     setSortCategory(category);
 
-    // TODO remove all until api call once working
-    let sortedListings = [...listings];
-    switch (category) {
-      case 'price':
-        sortedListings.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
-        break;
-      case 'location':
-        sortedListings.sort((a, b) => a.location.localeCompare(b.location));
-        break;
-      case 'status':
-        sortedListings.sort((a, b) => a.status.localeCompare(b.status));
-        break;
-      case 'category':
-        sortedListings.sort((a, b) => a.category.localeCompare(b.category));
-        break;
-      default:
-        sortedListings = initialListings;
-        break;
-    }
-    setListings(sortedListings);
-
-    response = dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, false); 
-    if (response !== undefined) {
+    const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, false); 
+    if (response === undefined) {
+      alert("Connection error, please try again.");
+    } else if (response.status === 200) {
       setListings(response.data);
-    } 
+    } else {
+      alert("Unable to get listings, please try again.");
+    }
   };
 
   const handlePriceRangeChange = (event) => {
@@ -113,21 +90,15 @@ function ViewListings() {
     setCategoryFilter(event.target.value);
   };
 
-  const applyFilters = () => {
-    // TODO remove all until api call once working
-    const filteredListings = initialListings.filter(listing => {
-      const inPriceRange = (priceRange.min === '' || parseFloat(listing.price) >= parseFloat(priceRange.min)) &&
-                          (priceRange.max === '' || parseFloat(listing.price) <= parseFloat(priceRange.max));
-      const matchesStatus = statusFilter === '' || listing.status === statusFilter;
-      const matchesCategory = categoryFilter === '' || listing.category === categoryFilter;
-      return inPriceRange && matchesStatus && matchesCategory;
-    });
-    setListings(filteredListings);
-
-    response = dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, false); 
-    if (response !== undefined) {
+  const applyFilters = async () => {
+    const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, false); 
+    if (response === undefined) {
+      alert("Connection error, please try again.");
+    } else if (response.status === 200) {
       setListings(response.data);
-    } 
+    } else {
+      alert("Unable to get listings, please try again.");
+    }
     setOpenFilterDialog(false);
   };
 
@@ -188,7 +159,6 @@ function ViewListings() {
               <MenuItem value="price">Price</MenuItem>
               <MenuItem value="location">Location</MenuItem>
               <MenuItem value="status">Status</MenuItem>
-              <MenuItem value="category">Category</MenuItem>
             </Select>
           </FormControl>
           <Button
@@ -218,14 +188,13 @@ function ViewListings() {
             </Typography>
           }
           {listings !== undefined && listings.map((listing) => (
-            <div key={listing.id} onClick={() => handleListingClick(listing.id)}>
+            <div key={listing.listingId} onClick={() => handleListingClick(listing.listingId)}>
               <ListingCard
-                id={listing.id}
+                id={listing.listingId}
                 title={listing.title}
                 price={listing.price}
                 location={listing.location}
                 status={listing.status}
-                category={listing.category}
               />
               <br />
             </div>
