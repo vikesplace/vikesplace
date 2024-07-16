@@ -5,17 +5,16 @@ const API_URL = "http://localhost:8080/";
 
 class AuthService {
     login(username, password) {
-        const response = axios
+        return axios
             .post(API_URL + "login", {
                 username,
                 password
-            }, {withCredentials: true})
+            }, { withCredentials: true })
             .catch(httpErrorHandler);
-        return response;
     }
   
     logout() {
-        // TODO remove from cookies
+        // TODO: Remove from cookies or local storage
         localStorage.removeItem("user");
     }
 
@@ -47,6 +46,14 @@ class AuthService {
     completePasswordChange(password) {
         return axios.post(API_URL + "reset_password", {
             password
+        })
+        .catch(httpErrorHandler);
+    }
+
+    updateLocation(userId, newLocation) {
+        return axios.post(API_URL + "update_location", {
+            userId,
+            newLocation
         })
         .catch(httpErrorHandler);
     }
