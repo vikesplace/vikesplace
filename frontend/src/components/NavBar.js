@@ -11,7 +11,7 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
-import logo from '../utils/vikesplace_logo_v2.png';
+import { useNavigate } from 'react-router-dom';
 
 const pages = [
   { name: 'View Listings', path: '/view-listings' },
@@ -26,6 +26,8 @@ function NavBar() {
   const location = useLocation();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+  const navigate = useNavigate();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -52,14 +54,9 @@ function NavBar() {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-        
+          
           {!hideButtons &&(
             <>  
-              <div className="logo">
-                <Link to="/">
-                  <img src={logo} alt="Logo" />
-                </Link>
-              </div>
               <Typography
                 variant="h6"
                 noWrap
@@ -80,11 +77,6 @@ function NavBar() {
 
           {hideButtons &&(
             <>  
-              <div className="logo">
-                <Link to="/login">
-                  <img src={logo} alt="Logo" />
-                </Link>
-              </div>
               <Typography
                 variant="h6"
                 noWrap
