@@ -11,7 +11,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import DataService from '../services/DataService.js';
 
-const ListingDetails = ({ listing }) => {
+const ListingDetails = ({ listing, hideButton }) => {
   const dataService = new DataService();
   const navigate = useNavigate();
 
@@ -73,22 +73,24 @@ const ListingDetails = ({ listing }) => {
         <Typography variant="body1" gutterBottom>
           Location: {listing.location}
         </Typography>
-        <Box display="flex" flexDirection="column" mt={5} width="100%">
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleClickOpen}
-            sx={{ mb: 2 }}
-          >
-            Message Seller
-          </Button>
-          <Button variant="contained" color="secondary" 
-            onClick={(event) => {
-                navigate("/create-review/" + listing.listidId);
-            }}>
-            Add Review
-          </Button>
-        </Box>
+        {(hideButton === undefined || hideButton === false) &&
+          <Box display="flex" flexDirection="column" mt={5} width="100%">
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleClickOpen}
+              sx={{ mb: 2 }}
+            >
+              Message Seller
+            </Button>
+            <Button variant="contained" color="secondary" 
+              onClick={(event) => {
+                  navigate("/create-review/" + listing.listidId);
+              }}>
+              Add Review
+            </Button>
+          </Box>
+        }
       </Box>
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
         <DialogTitle>Send Message to Seller</DialogTitle>

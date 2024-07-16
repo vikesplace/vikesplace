@@ -76,7 +76,7 @@ const CreateReview = () => {
   return (
     <Grid container spacing={1} >
       <Grid item xs={12} md={6}>
-        <ListingDetails listing={listing} />
+        <ListingDetails listing={listing} hideButton={true} />
       </Grid>
       <Grid item xs={12} md={6}>
             <Box
