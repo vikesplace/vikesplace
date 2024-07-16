@@ -108,6 +108,6 @@ def test_remove_item_similar_to_ignored_from_recommendations():
 
     new_rec = similarity.remove_from_recommendations(ignored, recommendations)
 
-    assert 'Laptop Case Macbook 13"' not in new_rec
-    assert 'XPS 15 Laptop' not in new_rec
+    assert {'title': 'Laptop Case Macbook 13"'} not in new_rec
+    assert {'title': 'XPS 15 Laptop'} not in new_rec
     assert len(new_rec) < 5
