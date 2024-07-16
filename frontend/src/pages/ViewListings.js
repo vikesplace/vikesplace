@@ -25,7 +25,7 @@ function ViewListings() {
   const dataService = useMemo(() => new DataService(), []);
   const navigate = useNavigate();
 
-  const [sortCategory, setSortCategory] = useState('');
+  const [sortCategory, setSortCategory] = useState("listed_at");
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
   const [statusFilter, setStatusFilter] = useState('');
   const [location, setLocation] = useState('Fetching...');
@@ -149,10 +149,9 @@ function ViewListings() {
               label="Sort By"
               onChange={handleSortChange}
             >
-              <MenuItem value=""><em>None</em></MenuItem>
-              <MenuItem value="PRICE">Price</MenuItem>
-              <MenuItem value="LOCATION">Distance</MenuItem>
-              <MenuItem value="TIME">Time</MenuItem>
+              <MenuItem value="listed_at"><em>Time</em></MenuItem>
+              <MenuItem value="price">Price</MenuItem>
+              {/* <MenuItem value="location">Distance</MenuItem> */}
             </Select>
           </FormControl>
           <Button
