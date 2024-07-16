@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
@@ -12,6 +13,7 @@ import DataService from '../services/DataService.js';
 
 const ListingDetails = ({ listing }) => {
   const dataService = new DataService();
+  const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
@@ -80,7 +82,10 @@ const ListingDetails = ({ listing }) => {
           >
             Message Seller
           </Button>
-          <Button variant="contained" color="secondary">
+          <Button variant="contained" color="secondary" 
+            onClick={(event) => {
+                navigate("/create-review/" + listing.listidId);
+            }}>
             Add Review
           </Button>
         </Box>

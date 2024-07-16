@@ -19,7 +19,7 @@ import UserProfile from './pages/UserProfile.js';
 import RequestPasswordChange from './pages/RequestPasswordChange.js';
 import CompletePasswordChange from './pages/CompletePasswordChange.js';
 import PasswordUpdated from './pages/PasswordUpdated.js';
-
+import CreateReview from './pages/CreateReview.js';
 
 function App() {  
   return (
@@ -44,7 +44,7 @@ function App() {
         <Route path="/password-change" element={<RequestPasswordChange />} />
         <Route path="/password-update" element={<CompletePasswordChange />} />
         <Route path="/password-updated" element={<PasswordUpdated />} />
-        {/* Add other routes here */}
+        <Route path="/create-review/:id" element={<CreateReview />} />
       </Routes>
     </Router>
   );
