@@ -14,6 +14,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import Pagination from '@mui/lab/Pagination';
 import '../App.css';
 import ListingCard from '../components/ListingCard';
 import SearchBar from '../components/SearchBar';
@@ -36,7 +37,8 @@ function ViewListings() {
   const [openLocationDialog, setOpenLocationDialog] = useState(false);
   const [newLocation, setNewLocation] = useState('');
   const [postalCodeError, setPostalCodeError] = useState(false);
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   useEffect(() => {
     const fetchListings = async () => {
@@ -139,17 +141,22 @@ function ViewListings() {
     }
   };
 
-  const applyNewLocation = () => {
+  const applyNewLocation = async () => {
     if (validatePostalCode(newLocation)) {
       setLocation(newLocation);
-      // update listings based on new location 
-      let response = dataService.updateUserData(newLocation);
+      const response = await dataService.updateUserData(newLocation);
       if (response !== undefined) {
         // check error messages
       }
       setOpenLocationDialog(false);
     }
   };
+
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
+  };
+
+  const paginatedListings = listings.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
     <div className="ViewListings">
@@ -195,13 +202,19 @@ function ViewListings() {
             Change Location
           </Button>
         </Box>
+        <Pagination 
+          count={Math.ceil(listings.length / itemsPerPage)} 
+          page={currentPage} 
+          onChange={handlePageChange} 
+          sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}
+        />
         <Box mt={2}>
           {(listings === undefined || listings.length === 0) && 
             <Typography align="center" variant='h6'>
               No Listings Meet Criteria
             </Typography>
           }
-          {listings !== undefined && listings.map((listing) => (
+          {listings !== undefined && paginatedListings.map((listing) => (
             <div key={listing.listingId} onClick={() => handleListingClick(listing.listingId)}>
               <ListingCard
                 id={listing.listingId}
@@ -214,6 +227,12 @@ function ViewListings() {
             </div>
           ))}
         </Box>
+        <Pagination 
+          count={Math.ceil(listings.length / itemsPerPage)} 
+          page={currentPage} 
+          onChange={handlePageChange} 
+          sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}
+        />
         <Dialog open={openFilterDialog} onClose={handleCloseFilterDialog}>
           <DialogTitle>Apply Filters</DialogTitle>
           <DialogContent>
@@ -235,7 +254,7 @@ function ViewListings() {
               sx={{ mt: 2 }}
               fullWidth
             />
-            <FormControl sx={{ minWidth: 120, mt: 2, width: '100%' }}>
+            <FormControl fullWidth sx={{ mt: 2 }}>
               <InputLabel id="status-filter-label">Status</InputLabel>
               <Select
                 labelId="status-filter-label"
@@ -251,35 +270,26 @@ function ViewListings() {
             </FormControl>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseFilterDialog} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={applyFilters} color="primary">
-              OK
-            </Button>
+            <Button onClick={handleCloseFilterDialog}>Cancel</Button>
+            <Button onClick={applyFilters}>Apply</Button>
           </DialogActions>
         </Dialog>
         <Dialog open={openLocationDialog} onClose={handleCloseLocationDialog}>
-          <DialogTitle>Change Location</DialogTitle>
+          <DialogTitle>Enter New Location</DialogTitle>
           <DialogContent>
             <TextField
-              label="New Location"
-              type="text"
+              label="Postal Code"
               value={newLocation}
               onChange={(e) => setNewLocation(e.target.value)}
               fullWidth
-              sx={{ mt: 2 }}
               error={postalCodeError}
               helperText={postalCodeError ? "Invalid postal code format" : ""}
+              sx={{ mt: 2 }}
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseLocationDialog} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={applyNewLocation} color="primary">
-              OK
-            </Button>
+            <Button onClick={handleCloseLocationDialog}>Cancel</Button>
+            <Button onClick={applyNewLocation}>Apply</Button>
           </DialogActions>
         </Dialog>
       </Container>
