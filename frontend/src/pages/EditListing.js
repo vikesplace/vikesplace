@@ -12,40 +12,19 @@ function EditListing() {
   const [listing, setListing] = useState(undefined);
 
   useEffect(() => {
-    async function getMyUser() {
+    async function getMyListings() {
       const dataService = new DataService();
-      const response = await dataService.getMyUserData();
+      const response = await dataService.getListing(id);
       if (response === undefined) {
         alert("Connection error, please try again.");
-        return -1;
       } else if (response.status === 200) {
-        return response.data.userId;
+        setListing(response.data);
       } else {
         alert("Unable to get your listings, please try again.");
-        return -1;
       }
     }
 
-    async function getMyListings(userId) {
-      if (sellerId !== -1) {
-        const dataService = new DataService();
-        const response = await dataService.getListing(id);
-        if (response === undefined) {
-          alert("Connection error, please try again.");
-        } else if (response.status === 200) {
-          if (response.data.sellerId === userId) {
-            setListing(response.data);
-          } else {
-            alert("Permission denied.");
-          }
-        } else {
-          alert("Unable to get your listing, please try again.");
-        }
-      }      
-    }
-
-    userId = getMyUser();
-    getMyListings(userId);
+    getMyListings();
   }, [id]);
 
   if (listing === undefined) {
