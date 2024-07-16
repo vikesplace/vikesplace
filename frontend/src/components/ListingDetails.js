@@ -89,7 +89,7 @@ const ListingDetails = ({ listing, hideButton }) => {
             </Button>
             <Button variant="contained" color="secondary" 
               onClick={(event) => {
-                  navigate("/create-review/" + listing.listidId);
+                  navigate("/create-review/" + listing.listingId);
               }}>
               Add Review
             </Button>

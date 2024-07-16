@@ -36,7 +36,7 @@ const CreateReview = () => {
 
   const validateForm = () => {
     if (rating === null) {
-
+      // set error
     }
 
     if (review === null) {
