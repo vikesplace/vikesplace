@@ -44,34 +44,29 @@ class DataService {
         }
     }
 
-    getSortedListings(minPrice, maxPrice, status, sortBy, isDescending, pullLimit, pageOffset) {
-        let paramString = "";
-        if (pullLimit) {
-            paramString += "pullLimit=" + pullLimit;
+    async getSortedListings(minPrice, maxPrice, status, sortBy, isDescending, pullLimit, pageOffset) {
+        let searchParam = new URLSearchParams();
+        if (pullLimit && pullLimit !== "")
+            searchParam.append("pullLimit", pullLimit);
+        if (pageOffset && pageOffset !== "")
+            searchParam.append("pageOffset", pageOffset);
+        if (minPrice && minPrice !== "")
+            searchParam.append("minPrice", minPrice);
+        if (maxPrice && maxPrice !== "")
+            searchParam.append("maxPrice", maxPrice);
+        if (status && status !== "")
+            searchParam.append("status", status);
+        if (sortBy && sortBy !== "")
+            searchParam.append("sortBy", sortBy);
+        if (isDescending !== undefined && isDescending !== null)
+            searchParam.append("isDescending", isDescending);
 
+        try {
+            return await axios.get(API_URL + 'listings?' + searchParam.toString(),
+                { withCredentials: true });
+        } catch (error) {
+            return httpErrorHandler(error);
         }
-        if (pageOffset) {
-            paramString += "pageOffset=" + pageOffset;
-        } 
-        if (minPrice) {
-            paramString += (paramString ? "&" : "") + "minPrice=" + minPrice;
-        }         
-        if (maxPrice) {
-            paramString += (paramString ? "&" : "") + "maxPrice=" + maxPrice;
-        }
-        if (status) {
-            paramString += (paramString ? "&" : "") + "status=" + status;
-        }  
-        if (sortBy) {
-            paramString += (paramString ? "&" : "") + "sortBy=" + sortBy;
-        } 
-        if (isDescending) {
-            paramString += (paramString ? "&" : "") + "isDescending=" + isDescending;
-        }
-
-        return axios.get(API_URL + 'listings?' + paramString, 
-            {withCredentials: true})
-        .catch(httpErrorHandler);
     }
 
     async getListing(id) {
