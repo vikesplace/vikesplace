@@ -15,7 +15,6 @@ function UserProfile() {
       if (response === undefined) {
         alert("Connection error, please try again.");
       } else if (response.status === 200) {
-        console.log(response.data);
         setUser(response.data);
       } else {
         alert("Unable to get listings, please try again.");
@@ -59,13 +58,6 @@ function UserProfile() {
             <Typography variant='body2'>
               {user.username}
             </Typography>
-            <br /> 
-            <Typography variant='h6'>
-               Email:
-            </Typography> 
-            <Typography variant='body2'>
-                {user.email}
-            </Typography> 
             <br />
             <Typography variant='h6'>
                Postal Code:
@@ -78,7 +70,7 @@ function UserProfile() {
                Date Joined:
             </Typography> 
             <Typography variant='body2'>
-                {user.joininhDate}
+                {new Date(user.joiningDate).toLocaleDateString('en-us', {year:"numeric", month:"short", day:"numeric"})}
             </Typography> 
             <br />
         </Box>
