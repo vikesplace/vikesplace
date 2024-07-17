@@ -17,7 +17,8 @@ export const updateUserData = async (req, res) => {
         }
     }
     try{
-        const response = await axios.patch(`${apiConfig.DATA_LAYER}user/${req.params.userId}`,{
+        const userId = res.locals.decodedToken.userId;
+        const response = await axios.patch(`${apiConfig.DATA_LAYER}user/${userId}`,{
                 lat_long: geoPointLocation,
                 location: req.body.location,
         });
