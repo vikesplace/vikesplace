@@ -187,10 +187,11 @@ class DataService {
         }
     }
 
-    async getChats() {
+    async getChats(id) {
         try {
-            return await axios.get(API_URL + 'chats', 
-                { withCredentials: true });
+            return await axios.get(API_URL + 'chats', {
+                id
+            }, { withCredentials: true });
         } catch (error) {
             return httpErrorHandler(error);
         }
