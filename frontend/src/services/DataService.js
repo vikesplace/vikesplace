@@ -224,10 +224,10 @@ class DataService {
     *   (listingReviewId, reviewedListingId (same as listingId), timestamp)
     * Error: returns message
     */
-    async createReview(listingId, review_content) {
+    async createReview(listingId, reviewContent) {
         try {
             return await axios.post(API_URL + 'review/' + listingId, {
-                review_content
+                reviewContent
             }, { withCredentials: true });
         } catch (error) {
             return httpErrorHandler(error);
