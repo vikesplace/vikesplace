@@ -30,7 +30,7 @@ def get_top_items_within_same_postal_code(user_id_raw):
         results = driver.execute_query(
             f"""
             MATCH (u:User {{id: "{user_id}"}})
-            WITH u.location_lat AS lat, u.location_lon AS lon, 5 AS radius
+            WITH u.lat_long_lat AS lat, u.lat_long_lon AS lon, 5 AS radius
             MATCH (p:PostalCode)
             WITH p, lat, lon, radius, 
                  point({{latitude: p.latitude, longitude: p.longitude}}) AS nodePoint,
