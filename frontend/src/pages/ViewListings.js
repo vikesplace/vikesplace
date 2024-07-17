@@ -131,7 +131,7 @@ function ViewListings() {
   };
 
   const validatePostalCode = (code) => {
-    var format = new RegExp("^[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]$");
+    var format = new RegExp("^[ABCEGHJKLMNPRSTVXYabceghjklmnprstvxy][0-9][ABCEGHJKLMNPRSTVWXYZabceghjklmnprstvwxyz][0-9][ABCEGHJKLMNPRSTVWXYZabceghjklmnprstvwxyz][0-9]$");
     if (!format.test(code)) {
         setPostalCodeError(true);
         return false;
@@ -143,11 +143,12 @@ function ViewListings() {
 
   const applyNewLocation = async () => {
     if (validatePostalCode(newLocation)) {
-      const response = await dataService.updateUserData(newLocation);
+      const upperPostal = newLocation.toUpperCase();
+      const response = await dataService.updateUserData(upperPostal);
       if (response === undefined) {
         alert("Connection error, please try again.");
       } else if (response.status === 200) {
-        setLocation(newLocation);
+        setLocation(upperPostal);
       } else {
         alert("Unable to get listings, please try again.");
       }

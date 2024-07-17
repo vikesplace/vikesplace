@@ -90,7 +90,7 @@ function CreateListing() {
     }
 
     function validatePostalCode() {
-        var format = new RegExp("^[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ][0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]$");
+        var format = new RegExp("^[ABCEGHJKLMNPRSTVXYabceghjklmnprstvxy][0-9][ABCEGHJKLMNPRSTVWXYZabceghjklmnprstvwxyz][0-9][ABCEGHJKLMNPRSTVWXYZabceghjklmnprstvwxyz][0-9]$");
         if (!format.test(postalCode)) {
             setPostalCodeError(true);
             return false;
@@ -113,7 +113,8 @@ function CreateListing() {
         var validForm = validateTitle() && validatePrice() && validatePostalCode() && validateCategory();
 
         if (validForm) {
-            let response = await dataService.createListing(title, price, postalCode, category, forCharity); 
+            const upperPostal = postalCode.toUpperCase();
+            let response = await dataService.createListing(title, price, upperPostal, category, forCharity); 
             if (response === undefined) {
                 alert("Connection error, please try again.");
             } else if (response.status === 200) {
