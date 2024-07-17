@@ -13,7 +13,10 @@ db.user_activity.insertMany([
       { listing_id: 30, timestamp: ISODate("2024-06-14T01:00:00.000Z") },
       { listing_id: 35, timestamp: ISODate("2024-06-14T01:00:00.000Z") }
     ],
-    latest_update: ISODate("2024-06-14T03:00:00.000Z")
+    ignored: [
+      { listing_id: 21, timestamp: ISODate("2024-06-15T01:00:00.000Z") },
+      { listing_id: 59, timestamp: ISODate("2024-06-16T01:00:00.000Z") },
+    ]
   },
   {
     _id: 2,
@@ -26,7 +29,10 @@ db.user_activity.insertMany([
       { listing_id: 58, timestamp: ISODate("2024-06-14T07:00:00.000Z") },
       { listing_id: 43, timestamp: ISODate("2024-06-14T08:00:00.000Z") }
     ],
-    latest_update: ISODate("2024-06-14T03:00:00.000Z")
+    ignored: [
+      { listing_id: 3, timestamp: ISODate("2024-06-15T01:00:00.000Z") },
+      { listing_id: 8, timestamp: ISODate("2024-06-16T01:00:00.000Z") },
+    ]
   },
   {
     _id: 3,
@@ -39,7 +45,10 @@ db.user_activity.insertMany([
       { listing_id: 28, timestamp: ISODate("2024-06-14T03:00:00.000Z") },
       { listing_id: 19, timestamp: ISODate("2024-06-14T03:00:00.000Z") }
     ],
-    latest_update: ISODate("2024-06-14T03:00:00.000Z")
+    ignored: [
+      { listing_id: 7, timestamp: ISODate("2024-06-15T01:00:00.000Z") },
+      { listing_id: 9, timestamp: ISODate("2024-06-16T01:00:00.000Z") },
+    ]
   },
   {
     _id: 4,
@@ -50,7 +59,9 @@ db.user_activity.insertMany([
     listings: [
       { listing_id: 16, timestamp: ISODate("2024-06-14T04:00:00.000Z") },
     ],
-    latest_update: ISODate("2024-06-14T03:00:00.000Z")
+    ignored: [
+      { listing_id: 32, timestamp: ISODate("2024-06-16T01:00:00.000Z") },
+    ]
   },
   {
     _id: 5,
@@ -61,7 +72,9 @@ db.user_activity.insertMany([
     listings: [
       { listing_id: 7, timestamp: ISODate("2024-06-14T05:00:00.000Z") },
     ],
-    latest_update: ISODate("2024-06-14T03:00:00.000Z")
+    ignored: [
+      { listing_id: 21, timestamp: ISODate("2024-06-15T01:00:00.000Z") },
+    ]
   },
   {
     _id: 6,
@@ -72,7 +85,9 @@ db.user_activity.insertMany([
     listings: [
       { listing_id: 21, timestamp: ISODate("2024-06-14T06:00:00.000Z") },
     ],
-    latest_update: ISODate("2024-06-14T03:00:00.000Z")
+    ignored: [
+      { listing_id: 7, timestamp: ISODate("2024-06-15T01:00:00.000Z") },
+    ]
   },
   {
     _id: 7,
@@ -87,7 +102,9 @@ db.user_activity.insertMany([
       { listing_id: 29, timestamp: ISODate("2024-06-14T10:00:00.000Z") },
       { listing_id: 81, timestamp: ISODate("2024-06-14T10:00:00.000Z") }
     ],
-    latest_update: ISODate("2024-06-14T03:00:00.000Z")
+    ignored: [
+      { listing_id: 78, timestamp: ISODate("2024-06-15T01:00:00.000Z") }
+    ]
   },
   {
     _id: 8,
@@ -100,7 +117,9 @@ db.user_activity.insertMany([
       { listing_id: 29, timestamp: ISODate("2024-06-14T10:00:00.000Z") },
       { listing_id: 81, timestamp: ISODate("2024-06-14T10:00:00.000Z") }
     ],
-    latest_update: ISODate("2024-06-14T03:00:00.000Z")
+    ignored: [
+      { listing_id: 21, timestamp: ISODate("2024-06-15T01:00:00.000Z") }
+    ]
   },
   {
     _id: 9,
@@ -114,7 +133,9 @@ db.user_activity.insertMany([
       { listing_id: 29, timestamp: ISODate("2024-06-14T10:00:00.000Z") },
       { listing_id: 81, timestamp: ISODate("2024-06-14T10:00:00.000Z") }
     ],
-    latest_update: ISODate("2024-06-14T03:00:00.000Z")
+    ignored: [
+      { listing_id: 62, timestamp: ISODate("2024-06-15T01:00:00.000Z") }
+    ]
   },
   {
     _id: 10,
@@ -124,8 +145,7 @@ db.user_activity.insertMany([
     listings: [
       { listing_id: 29, timestamp: ISODate("2024-06-14T10:00:00.000Z") },
       { listing_id: 81, timestamp: ISODate("2024-06-14T10:00:00.000Z") }
-    ],
-    latest_update: ISODate("2024-06-14T03:00:00.000Z")
+    ]
   }
 ]);
 

@@ -24,13 +24,17 @@ const ListingDetails = ({ listing }) => {
     setOpen(false);
   };
 
-  const handleSendMessage = () => {
-    let response = dataService.sendMessage(message);
-    if (response !== undefined) {
-      handleClose();
+  async function handleSendMessage () {
+    // TODO: check if chat already exists...
+    // Chat Exists: send message
+    // Chat Does Not: dataService.createNewChat, then send messsage
+    let response = await dataService.sendMessage(listing.listingId, message);
+    if (response === undefined) {
+      alert("Connection error, please try again.");
+    } else if (response.status === 200) {
+        handleClose();
     } else {
-      // TODO remove once we expect api to succeed
-      handleClose();
+        alert("Unable to send message, please try again.");
     }
   };
 
@@ -59,17 +63,17 @@ const ListingDetails = ({ listing }) => {
         <Typography variant="h4" component="h3" gutterBottom>
           {listing.title}
         </Typography>
-        <Typography variant="body1" component="h3" gutterBottom>
-          {listing.category}
-        </Typography>
         <Typography variant="h6" gutterBottom>
           Price: ${listing.price}
         </Typography>
         <Typography variant="body1" gutterBottom>
-          {listing.description || "No description available."}
+          Location: {listing.location}
         </Typography>
         <Typography variant="body1" gutterBottom>
-          Location: {listing.location}
+          Posted: {new Date(listing.listedAt).toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric", hour:"numeric"})}
+        </Typography>
+        <Typography variant="body1" gutterBottom>
+          {listing.forCharity ? "Funds to Charity" : ""}
         </Typography>
         <Box display="flex" flexDirection="column" mt={5} width="100%">
           <Button

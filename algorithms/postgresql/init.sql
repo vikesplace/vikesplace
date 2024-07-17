@@ -156,53 +156,53 @@ INSERT INTO "Listings" (seller_id, buyer_username, title, price, lat_long, locat
 (20, NULL, 'Desk Lamp',30,'POINT(48.478400 -123.315600)'::GEOMETRY, 'V8N5M3', 'AVAILABLE', '2024-02-20 14:00:00', '2024-02-20 14:00:00', 'Furniture');
 
 
--- Insert 4k users
-CREATE TEMP TABLE temp_users (
-    firstName VARCHAR(255),
-    lastName VARCHAR(255),
-    randomNum INT,
-    username VARCHAR(255),
-    email VARCHAR(255),
-    password VARCHAR(255),
-    location VARCHAR(255),
-    latitude FLOAT,
-    longitude FLOAT,
-    joining_date TIMESTAMP
-);
+-- -- Insert 4k users
+-- CREATE TEMP TABLE temp_users (
+--     firstName VARCHAR(255),
+--     lastName VARCHAR(255),
+--     randomNum INT,
+--     username VARCHAR(255),
+--     email VARCHAR(255),
+--     password VARCHAR(255),
+--     location VARCHAR(255),
+--     latitude FLOAT,
+--     longitude FLOAT,
+--     joining_date TIMESTAMP
+-- );
 
-COPY temp_users(firstName, lastName, randomNum, username, email, password, location, latitude, longitude, joining_date)
-FROM '/docker-entrypoint-initdb.d/users.csv' DELIMITER ',' CSV HEADER;
+-- COPY temp_users(firstName, lastName, randomNum, username, email, password, location, latitude, longitude, joining_date)
+-- FROM '/docker-entrypoint-initdb.d/users.csv' DELIMITER ',' CSV HEADER;
 
-INSERT INTO "Users" (username, email, password, lat_long, location, joining_date)
-SELECT username, email, password,
-       CONCAT('POINT(',latitude,' ',longitude ,')')::GEOMETRY,
-       location, joining_date
-FROM temp_users;
+-- INSERT INTO "Users" (username, email, password, lat_long, location, joining_date)
+-- SELECT username, email, password,
+--        CONCAT('POINT(',latitude,' ',longitude ,')')::GEOMETRY,
+--        location, joining_date
+-- FROM temp_users;
 
-DROP TABLE temp_users;
+-- DROP TABLE temp_users;
 
 
--- Insert 150k listings
-CREATE TEMP TABLE temp_listings (
-    seller_id INT,
-    title TEXT,
-    price DECIMAL(10, 2),
-    latitude FLOAT,
-    longitude FLOAT,
-    postal_code VARCHAR(255),
-    status VARCHAR(255),
-    listed_at TIMESTAMP,
-    last_updated_at TIMESTAMP,
-    category VARCHAR(255)
-);
+-- -- Insert 150k listings
+-- CREATE TEMP TABLE temp_listings (
+--     seller_id INT,
+--     title TEXT,
+--     price DECIMAL(10, 2),
+--     latitude FLOAT,
+--     longitude FLOAT,
+--     postal_code VARCHAR(255),
+--     status VARCHAR(255),
+--     listed_at TIMESTAMP,
+--     last_updated_at TIMESTAMP,
+--     category VARCHAR(255)
+-- );
 
-COPY temp_listings(seller_id, title, price, latitude, longitude, postal_code, status, listed_at, last_updated_at, category) 
-FROM '/docker-entrypoint-initdb.d/listings.csv' DELIMITER ',' CSV HEADER;
+-- COPY temp_listings(seller_id, title, price, latitude, longitude, postal_code, status, listed_at, last_updated_at, category) 
+-- FROM '/docker-entrypoint-initdb.d/listings.csv' DELIMITER ',' CSV HEADER;
 
-INSERT INTO "Listings" (seller_id, title, price, lat_long, location, status, listed_at, last_updated_at, category)
-SELECT seller_id, title, price, 
-       CONCAT('POINT(',latitude,' ',longitude ,')')::GEOMETRY,
-       postal_code, status, listed_at, last_updated_at, category
-FROM temp_listings;
+-- INSERT INTO "Listings" (seller_id, title, price, lat_long, location, status, listed_at, last_updated_at, category)
+-- SELECT seller_id, title, price, 
+--        CONCAT('POINT(',latitude,' ',longitude ,')')::GEOMETRY,
+--        postal_code, status, listed_at, last_updated_at, category
+-- FROM temp_listings;
 
-DROP TABLE temp_listings;
+-- DROP TABLE temp_listings;
