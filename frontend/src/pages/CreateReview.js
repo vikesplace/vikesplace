@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Form, useNavigate, useParams } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
@@ -8,6 +8,11 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import ListingDetails from '../components/ListingDetails';
 import DataService from '../services/DataService.js';
+import FormLabel from '@mui/material/FormLabel';
+import FormControl from '@mui/material/FormControl';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormHelperText from '@mui/material/FormHelperText';
 
 const CreateReview = () => {
   const dataService = useMemo(() => new DataService(), []);
@@ -16,7 +21,8 @@ const CreateReview = () => {
 
   const [listing, setListing] = useState(undefined);
   const [rating, setRating] = React.useState(null);
-  const [review, setReview] = React.useState(null);
+  const [review, setReview] = React.useState("");
+  const [ratingError, setRatingError] = React.useState(false);
   const [reviewError, setReviewError] = React.useState(false);
 
   useEffect(() => {
@@ -34,35 +40,48 @@ const CreateReview = () => {
     getMyListings();
   }, [id, dataService]);
 
-  const validateForm = () => {
+  const validateRating = () => {
     if (rating === null) {
-      // set error
+      setRatingError(true);
+      return false;
+    } else {
+      setRatingError(false);
+      return true;
     }
+  }
 
-    if (review === null) {
-        setReviewError(true);
+  const validateReview = () => {
+    if (review === "") {
+      setReviewError(true);
+      return false;
+    } else {
+      setReviewError(false);
+      return true;
     }
   }
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    validateForm();
+    const validForm = validateRating() & validateReview();
 
-    let response = await dataService.createRating(id, rating);
-    if (response === undefined) {
-      alert("Connection error, please try again.");
-    } else if (response.status !== 200 && response.status !== 201) {
-      alert("Unable to create rating, please try again.");
-    }
+    if (validForm) {
+      let response = await dataService.createRating(id, rating);
+      if (response === undefined) {
+        alert("Connection error, please try again.");
+      } else if (response.status !== 200 && response.status !== 201) {
+        alert("Unable to create rating, please try again.");
+      }
 
-    response = await dataService.createReview(id, review);
-    if (response === undefined) {
-      alert("Connection error, please try again.");
-    } else if (response.status === 200 || response.status === 201) {
-      navigate("/listings/" + id);
-    } else {
-      alert("Unable to create review, please try again.");
+      response = await dataService.createReview(id, review);
+      if (response === undefined) {
+        alert("Connection error, please try again.");
+      } else if (response.status === 200 || response.status === 201) {
+        navigate("/listings/" + id);
+      } else {
+        alert("Unable to create review, please try again.");
+      }
     }
+    
   }
 
   if (listing === undefined) {
@@ -74,11 +93,11 @@ const CreateReview = () => {
   }
 
   return (
-    <Grid container spacing={1} >
-      <Grid item xs={12} md={6}>
+    <Grid container >
+      <Grid item xs={12} md={5}>
         <ListingDetails listing={listing} hideButton={true} />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item xs={12} md={7}>
             <Box
             display="flex"
             justifyContent="center"
@@ -91,7 +110,6 @@ const CreateReview = () => {
                     borderRadius={5}
                     borderColor="grey.300"
                     p={4}
-                    width="30%"
                     textAlign="left"
                     boxShadow={3}
                     mt={-20} 
@@ -99,13 +117,28 @@ const CreateReview = () => {
                     <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                         <Grid container spacing={1}>
                             <Grid item xs={12}>
-                            <Rating
-                                name="simple-controlled"
-                                value={rating}
-                                onChange={(event, newRating) => {
-                                    setRating(newRating);
-                                }}
-                            />
+                            <FormControl id="rating-control" required error={ratingError} variant="standard" component="fieldset">
+                              <FormLabel id="rating-label" component="legend">
+                              Rating
+                              </FormLabel>
+                              <FormGroup name="rating-group">
+                                <FormControlLabel
+                                control={
+                                <Rating
+                                    id="rating"
+                                    name="rating"
+                                    value={rating}
+                                    getLabelText={function defaultLabelText(value) {
+                                      return `${value} out of 5 stars`;
+                                    }}
+                                    onChange={(event, value) => {
+                                        setRating(value);
+                                    }}
+                                    style={{ paddingLeft: '8px' }}
+                                />}></FormControlLabel>
+                              </FormGroup>
+                              <FormHelperText id="rating-error">{ratingError ? "Rating is required" : ""}</FormHelperText>
+                            </FormControl>
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
@@ -116,8 +149,13 @@ const CreateReview = () => {
                                     id="review"
                                     placeholder="Enter your review"
                                     value={review}
-                                    onChange={(event, newReview) => {
-                                        setReview(newReview);
+                                    multiline
+                                    minRows={3}
+                                    onChange={(event) => {
+                                        setReview(event.target.value);
+                                    }}
+                                    onBlur={(event) => {
+                                      validateReview();
                                     }}
                                     error={reviewError}
                                     helperText={
@@ -130,6 +168,7 @@ const CreateReview = () => {
                                 type="submit"
                                 fullWidth
                                 variant="contained"
+                                id="submit"
                                 sx={{ mt: 3, mb: 2 }}
                              >
                                 Submit
