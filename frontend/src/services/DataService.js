@@ -355,7 +355,7 @@ class DataService {
 
     /*
     * Charity: Create Charity Endpoint
-    * Success (201): returns charity object
+    * Success (200): returns charity object
     *   (start_date, charity_id, name, status, fund, logo_url, end_date, num_listings)
     * Error: returns message
     */
