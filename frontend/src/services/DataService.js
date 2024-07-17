@@ -363,7 +363,7 @@ class DataService {
         try {
             return await axios.post(API_URL + 'charity', {
                 name, 
-                status: "",
+                status: "OPEN",
                 fund: 0,
                 logo_url, 
                 end_date,
