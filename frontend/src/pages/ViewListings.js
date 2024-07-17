@@ -54,7 +54,7 @@ function ViewListings() {
 
     const fetchLocation = async () => {
       const response = await dataService.getMyUserData();
-      setLocation(response !== undefined ? response.data.location : "V8V2G4");
+      setLocation(response !== undefined ? response.data.location : "Please Reload");
     };
 
     fetchListings();
