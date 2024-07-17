@@ -32,7 +32,10 @@ def user_activity(user_id):
         filter={"_id": int(user_id)}, sort={"timestamp": -1}))
 
     if len(user_document) > 0:
-        return user_document[0]["listings"]
+        try:
+            return user_document[0]["listings"]
+        except:
+            return None
     else:
         return None
 
@@ -77,7 +80,7 @@ def get_top_10_popular():
     return results
 
 
-def ignored_listings(user_id):
+def ignored_listings(user_id, num_items=None):
     # Create a connection to the MongoDB server
     client = MongoClient(MONGO_URI)
     # mongodb://mongoadmin:secret@mongodb:27017/vikesplace?replicaSet=rs0
@@ -92,6 +95,9 @@ def ignored_listings(user_id):
     user_document = collection.find_one({"_id": int(user_id)})
 
     if user_document:
+        if num_items:
+            # return last x items.
+            return user_document["ignored"][-num_items:]
         return user_document["ignored"]
     else:
         return None
