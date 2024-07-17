@@ -32,7 +32,10 @@ def user_activity(user_id):
         filter={"_id": int(user_id)}, sort={"timestamp": -1}))
 
     if len(user_document) > 0:
-        return user_document[0]["listings"]
+        try:
+            return user_document[0]["listings"]
+        except:
+            return None
     else:
         return None
 
