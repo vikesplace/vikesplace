@@ -27,6 +27,12 @@ async def search(
     # Assuming es_request.search can handle these parameters
     lat_long = (latitude, longitude)
     results = es_request.search(query, lat_long, category, status)
+
+    try:
+        results['listings'] = [item['listing_id'] for item in results['listings']]
+    except:
+        results['listings'] = []
+
     return {
         "status": 200,
         "message": "Search successful",
