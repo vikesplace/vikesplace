@@ -1,20 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import '../App.css';
 import { Typography } from '@mui/material';
 import DataService from '../services/DataService';
-import { SAMPLE_USER } from '../utils/SampleRecommenderData';
 
 function UserProfile() {
-  const dataService = new DataService();
+  const dataService = useMemo(() => new DataService(), []);
+  const [user, setUser] = useState(undefined);
 
-  let user = {};
-  let response = dataService.getMyUserData();
-  if (response !== undefined) {
-    user = response.data;
-  } else{
-    user = SAMPLE_USER;
+  useEffect(() => {
+    const fetchUser = async () => {
+      const response = await dataService.getMyUserData(); 
+      if (response === undefined) {
+        alert("Connection error, please try again.");
+      } else if (response.status === 200) {
+        setUser(response.data);
+      } else {
+        alert("Unable to get listings, please try again.");
+      }
+    };
+
+    fetchUser();
+  }, [dataService]);
+
+  if (user === undefined) {
+    return <div>
+      <Typography align="center" variant='h6' sx={{mt: 2}}>
+        No User Found
+      </Typography>
+    </div>;
   }
 
   return (
@@ -43,13 +58,6 @@ function UserProfile() {
             <Typography variant='body2'>
               {user.username}
             </Typography>
-            <br /> 
-            <Typography variant='h6'>
-               Email:
-            </Typography> 
-            <Typography variant='body2'>
-                {user.email}
-            </Typography> 
             <br />
             <Typography variant='h6'>
                Postal Code:
@@ -62,7 +70,7 @@ function UserProfile() {
                Date Joined:
             </Typography> 
             <Typography variant='body2'>
-                {user.createDate}
+                {new Date(user.joiningDate).toLocaleDateString('en-us', {year:"numeric", month:"short", day:"numeric"})}
             </Typography> 
             <br />
         </Box>
