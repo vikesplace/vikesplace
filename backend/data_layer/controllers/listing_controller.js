@@ -114,22 +114,38 @@ export const getSellerListings = async (req, res) => {
 
 export const getListingInfo = async (req, res) => {
     try {
-        const listing = await Listing.findByPk(req.params.listingId);
+        const listing = await Listing.findOne({
+            where: {
+                listing_id: req.params.listingId,
+            },
+            attributes: [
+                ["listing_id", "listingId"],
+                ["seller_id", "sellerId"],
+                "buyer_username",
+                "title",
+                "price",
+                "location",
+                "status",
+                ["listed_at", "listedAt"],
+                ["last_updated_at", "lastUpdatedAt"],
+                "category",
+                ["for_charity", "forCharity"]
+            ]
+        });
         if (!listing) {
           console.error("Listing not found");
           return res.status(500).send();
         }
-        const {listing_id, seller_id, buyer_username, title, price, location, status, listed_at, lastupdated_at, category, for_charity} = listing;
-        res.json({
-            sellerId: seller_id,
-            listingId: listing_id,
-            title: title,
-            price: price,
-            location: location,
-            status: status,
-            listedAt: listed_at,
-            lastupdatedAt: lastupdated_at,
-            forCharity: for_charity,
+        return res.status(200).json({
+            sellerId: listing.dataValues.sellerId,
+            listingId: listing.dataValues.listingId,
+            title: listing.dataValues.title,
+            price: listing.dataValues.price,
+            location: listing.dataValues.location,
+            status: listing.dataValues.status,
+            listedAt: listing.dataValues.listedAt,
+            lastupdatedAt: listing.dataValues.lastUpdatedAt,
+            forCharity: listing.dataValues.forCharity,
         });
     } catch (error) {
         console.error(error);
