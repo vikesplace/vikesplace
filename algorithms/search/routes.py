@@ -22,11 +22,16 @@ async def search(
     latitude: float = 48.437326,
     longitude: float = -123.329773,
     category: str = Query(None),
-    status: str = Query(None)
+    status: str = Query(None),
+    minPrice: float = Query(None),
+    maxPrice: float = Query(None),
+    sortBy: str = "last_updated_at",
+    isDescending: bool = Query(None)
 ):
     # Assuming es_request.search can handle these parameters
     lat_long = (latitude, longitude)
-    results = es_request.search(query, lat_long, category, status)
+    results = es_request.search(query, lat_long, category, status, 
+                                minPrice, maxPrice, sortBy, isDescending)
     return {
         "status": 200,
         "message": "Search successful",
