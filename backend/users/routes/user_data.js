@@ -16,7 +16,7 @@ router.get("/me", getUserMe);
 router.get("/:userId", getUserData);
 
 //update user data
-router.patch("/:userId", updateUserData);
+router.patch("/me", updateUserData);
 
 export default router;
 

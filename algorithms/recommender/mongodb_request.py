@@ -1,3 +1,4 @@
+import datetime
 import os
 
 from dotenv import load_dotenv
@@ -14,6 +15,7 @@ MONGO_PASS = os.getenv("MONGO_INITDB_ROOT_PASSWORD")
 MONGO_DB = os.getenv("MONGO_INITDB_DATABASE")
 
 MONGO_URI = f"mongodb://{MONGO_USER}:{MONGO_PASS}@{MONGO_HOST}:{MONGO_PORT}/{MONGO_DB}?replicaSet=rs0"
+
 
 def user_activity(user_id):
     # Create a connection to the MongoDB server
@@ -68,8 +70,79 @@ def get_top_10_popular():
     ]
 
     results = list(collection.aggregate(pipeline))
-    # rename _id to listing_id 
+    # rename _id to listing_id
     for i in results:
         i["listing_id"] = i.pop("_id")
 
     return results
+
+
+def ignored_listings(user_id):
+    # Create a connection to the MongoDB server
+    client = MongoClient(MONGO_URI)
+    # mongodb://mongoadmin:secret@mongodb:27017/vikesplace?replicaSet=rs0
+
+    # Access the database
+    db = client[MONGO_DB]
+
+    # Access a collection
+    collection = db["user_activity"]  # Replace with your collection name
+
+    # Query the database based on user ID
+    user_document = collection.find_one({"_id": int(user_id)})
+
+    if user_document:
+        return user_document["ignored"]
+    else:
+        return None
+
+
+def write_ignored(user_id, listing_id):
+    # Create a connection to the MongoDB server
+    client = MongoClient(MONGO_URI)
+
+    # Access the database
+    db = client[MONGO_DB]
+
+    # Access a collection
+    collection = db["user_activity"]
+
+    # Using 'upsert', updates doc if it exits, otherwise create a new doc.
+    result = collection.update_one(
+        filter={"_id": user_id},
+        update={"$push": {
+            "ignored": {
+                "listing_id": listing_id,
+                "timestamp": datetime.datetime.now()
+            }
+        }},
+        upsert=True
+    )
+
+    return result.modified_count
+
+
+def delete_ignored(user_id, listing_id):
+    # Create a connection to the MongoDB server
+    client = MongoClient(MONGO_URI)
+
+    # Access the database
+    db = client[MONGO_DB]
+
+    # Access a collection
+    collection = db["user_activity"]
+
+    # Get user doc, find listing_id, get latest listing_id
+    user = collection.find_one({"_id": int(user_id)})
+    listings = [x for x in user["ignored"] if x["listing_id"] == listing_id]
+    latest_listing = max(listings, key=lambda item: item["timestamp"])
+
+    # Delete latest_listing_id from document
+    result = collection.update_one(
+        filter={"_id": int(user_id)},
+        update={"$pull": {"ignored": {
+            "listing_id": latest_listing["listing_id"],
+            "timestamp": latest_listing["timestamp"]
+        }}})
+
+    return result.modified_count
