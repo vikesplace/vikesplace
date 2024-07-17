@@ -355,7 +355,7 @@ class DataService {
 
     /*
     * Charity: Create Charity Endpoint
-    * Success (200): returns nothing
+    * Success (201): returns nothing
     * Error: returns message
     */
     async createCharity(name, logoUrl, endDate) {
