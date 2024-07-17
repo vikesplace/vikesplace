@@ -143,10 +143,13 @@ function ViewListings() {
 
   const applyNewLocation = async () => {
     if (validatePostalCode(newLocation)) {
-      setLocation(newLocation);
       const response = await dataService.updateUserData(newLocation);
-      if (response !== undefined) {
-        // check error messages
+      if (response === undefined) {
+        alert("Connection error, please try again.");
+      } else if (response.status === 200) {
+        setLocation(newLocation);
+      } else {
+        alert("Unable to get listings, please try again.");
       }
       setOpenLocationDialog(false);
     }
