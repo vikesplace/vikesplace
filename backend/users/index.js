@@ -17,7 +17,7 @@ app.use(cors({
 app.use(cookieParser());
 app.use(express.json());
 app.use(identification);
-app.use("/userdata", userdata);
+app.use("/users", userdata);
 app.use("/searchhistory", searchhistory);
 
 function identification(req, res, next) {

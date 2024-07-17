@@ -1,15 +1,13 @@
 import express from "express";
+import { ignoreRecommendation } from "../controller/ignore_recommendation.js";
+import { getRecommendations } from "../controller/get_recommendations.js";
 
 const router = express.Router();
 
 //Get recommendations
-router.get("/", (req, res) => {
-  res.json({ message: "Get Recommendations" });
-});
+router.get("/", getRecommendations);
 
 //Ignore recommendation
-router.post("/:listingId/ignore", (req, res) => {
-  res.json({ message: "Ignore Recommendation" });
-});
+router.post("/:listingId/ignore", ignoreRecommendation);
 
 export default router;

@@ -49,6 +49,7 @@ services:
       - "5003:5000"
     environment:
       - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
+      - DATA_LAYER=${DATA_LAYER}
   
   users:
     container_name: users
@@ -61,6 +62,8 @@ services:
       - "5004:5000"
     environment:
       - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
+      - DATA_LAYER=${DATA_LAYER}
+      - ALG_SEARCH=${ALG_SEARCH}
   
   messages:
     container_name: messages
@@ -105,6 +108,8 @@ services:
       - "5006:5000"
     environment:
       - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
+      - ALG_RECOMMENDATION=${ALG_RECOMMENDATION}
+      - DATA_LAYER=${DATA_LAYER}
   
   search:
     container_name: search
@@ -117,6 +122,19 @@ services:
       - "5007:5000"
     environment:
       - ALG_SEARCH=${ALG_SEARCH}
+      - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
+      - DATA_LAYER=${DATA_LAYER}
+
+  charity:
+    container_name: charity
+    build:
+      context: ./charity
+    volumes:
+      - ./charity:/home/node/app
+      - /home/node/app/node_module
+    ports:
+      - "5008:5000"
+    environment:
       - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
       - DATA_LAYER=${DATA_LAYER}
   

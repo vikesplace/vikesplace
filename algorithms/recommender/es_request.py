@@ -15,63 +15,76 @@ ES_CERT_PATH = os.getenv("ES_CERT_PATH")
 
 
 def recommendation(user_id, user_loc):
-
-    # Grab listings viewed by user
-    listings = mongodb_request.user_activity(user_id)
-
-    # Users must visit at least one listing before getting any recommendations
-    if listings is None:
-        return None
-
-    # build "like" part of the query, see readme.md
-    activity = []
-    for i in listings:
-        activity.append({"_index": "listings", "_id": f"{i['listing_id']}"})
-
     es = Elasticsearch(
         f"https://{ES_HOST}:{ES_PORT}/",
         ca_certs='./ca.crt',
         basic_auth=(ES_USER, ES_PASS)
     )
 
-    q = {
-        "bool": {
-            "must": {
-                "more_like_this": {
-                    "fields": ["title"],
-                    "like": activity,
-                    "min_term_freq": 1,
-                    "max_query_terms": 12
+    # Grab listings viewed by user
+    listings = mongodb_request.user_activity(user_id)
+
+    # If user has no browsing history, return most popular items
+    if listings is None:
+        most_pop_items = mongodb_request.get_top_10_popular()
+
+        listing_ids = [item['listing_id'] for item in most_pop_items]
+
+        results = es.search(
+            index="listings", 
+            query={
+                "terms": {
+                    "_id": listing_ids
                 }
-            },
-            "must_not": [
-                {
-                    "term": {
-                        "seller_id": user_id
+            })
+        
+        results['hits']['hits'] = [x['_source'] for x in results['hits']['hits']]
+        return results['hits']['hits']
+
+    else:
+        # build "like" part of the query, see readme.md
+        activity = []
+        for i in listings:
+            activity.append({"_index": "listings", "_id": f"{i['listing_id']}"})
+
+        q = {
+            "bool": {
+                "must": {
+                    "more_like_this": {
+                        "fields": ["title"],
+                        "like": activity,
+                        "min_term_freq": 1,
+                        "max_query_terms": 12
                     }
-                }
-            ]
-        }
-    }
-    sort = [
-        {
-            "_geo_distance": {
-                "location": {
-                    "lat": user_loc[0],
-                    "lon": user_loc[1]
                 },
-                "order": "asc",
-                "unit": "km"
+                "must_not": [
+                    {
+                        "term": {
+                            "seller_id": user_id
+                        }
+                    }
+                ]
             }
         }
-    ]
+        sort = [
+            {
+                "_geo_distance": {
+                    "lat_long": {
+                        "lat": user_loc[0],
+                        "lon": user_loc[1]
+                    },
+                    "order": "asc",
+                    "unit": "km"
+                }
+            }
+        ]
 
-    results = es.search(index="listings", query=q, sort=sort, from_=0, size=5)
+        results = es.search(index="listings", query=q, sort=sort, from_=0, size=5)
 
-    results['hits']['hits'] = [x['_source'] for x in results['hits']['hits']]
-    print(f"recommendation:>>>>>>>>> {results['hits']['hits']}")
+        results['hits']['hits'] = [x['_source'] for x in results['hits']['hits']]
+        print(f"recommendation:>>>>>>>>> {results['hits']['hits']}")
 
-    return results['hits']['hits']
+        return results['hits']['hits']
 
 
 def recommendation_current_item(user_id, listing_id):
@@ -110,29 +123,23 @@ def recommendation_current_item(user_id, listing_id):
     return results['hits']['hits']
 
 
-def recommendation_most_popular():
+def get_items(listings):
     es = Elasticsearch(
         f"https://{ES_HOST}:{ES_PORT}/",
         ca_certs='./ca.crt',
         basic_auth=(ES_USER, ES_PASS)
     )
-    
-    most_pop_items = mongodb_request.get_top_10_popular()
 
-    listing_ids = []
-
-    for item in most_pop_items:
-        listing_ids.append(item['listing_id'])
+    listing_ids = [item['listing_id'] for item in listings]
 
     results = es.search(
-        index="listings", 
+        index="listings",
         query={
             "terms": {
                 "_id": listing_ids
             }
         })
-    
+
     results['hits']['hits'] = [x['_source'] for x in results['hits']['hits']]
-    print(f"recommendation_most_popular:>>>>>>>>> {results['hits']['hits']}")
 
     return results['hits']['hits']

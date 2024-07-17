@@ -1,6 +1,5 @@
 import axios from "axios";
 import { createChat } from "../controller/create_chat";
-import { getAllMessages } from "../controller/get_all_messages";
 jest.mock("axios");
 
 describe("Create Chat Tests", () => {
@@ -56,16 +55,6 @@ describe("Create Chat Tests", () => {
       locals: { decodedToken: { userId: 1 } },
     };
 
-    await getAllMessages(
-      {
-        body: {
-          content: "Hello",
-        },
-        params: { chatId: "123" },
-      },
-      mockRes
-    );
-    expect(responseObject).toEqual({});
     await createChat(
       {
         params: {

@@ -1,5 +1,3 @@
-from typing import Annotated
-
 import search.es_request as es_request
 import search.mongodb_request as mongodb_request
 from fastapi import FastAPI, Path, Query
@@ -7,12 +5,15 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
+
 class SearchQuery(BaseModel):
     query: str
+
 
 @app.get("/")
 async def root():
     return {"message": "VikesPlace Search Service"}
+
 
 @app.get("/search")
 async def search(
@@ -24,13 +25,14 @@ async def search(
     status: str = Query(None)
 ):
     # Assuming es_request.search can handle these parameters
-    location = (latitude, longitude)
-    results = es_request.search(query, location, category, status)
+    lat_long = (latitude, longitude)
+    results = es_request.search(query, lat_long, category, status)
     return {
         "status": 200,
         "message": "Search successful",
         "results": results
     }
+
 
 @app.get("/users/{userId}/searches")
 async def search(
@@ -42,7 +44,7 @@ async def search(
     return {
         "status": 200,
         "message": "Search history successful",
-        "results": results 
+        "results": results
     }
 
 
@@ -57,5 +59,48 @@ async def search(userId: int, item: SearchQuery):
     return {
         "status": 200,
         "message": "Search query saved",
-        "results": results 
+        "results": results
     }
+
+
+@app.get("/users/{userId}/listings")
+async def search(
+    userId: int = Path(..., description="The ID of the user"),
+):
+    # Assuming es_request.search can handle these parameters
+    listings = mongodb_request.user_activity(userId)
+    results = es_request.get_items(listings)
+
+    # add when listing was visited to results
+    for i in results:
+        i['visited_at'] = [x for x in listings if x['listing_id']
+                           == i['listing_id']][0]['timestamp']
+
+    print(results)
+    return {
+        "status": 200,
+        "message": "Listings browsing history successful",
+        "results": results
+    }
+
+
+@app.post("/users/{userId}/listings/{listingId}")
+async def search(userId: int, listingId: int):
+    results = mongodb_request.write_user_activity(userId, listingId)
+
+    return {
+        "status": 200,
+        "message": "Listing view saved",
+        "results": results
+    }
+
+
+# @app.delete("/users/{userId}/listings/{listingId}")
+# async def search(userId: int, listingId: int):
+#     results = mongodb_request.delete_user_activity(userId, listingId)
+
+#     return {
+#         "status": 200,
+#         "message": "Listing view deleted",
+#         "results": results
+#     }

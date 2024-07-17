@@ -26,7 +26,18 @@ export const getSortedListings = async (req, res) => {
   }
 
   //build findAndCountAll options object
-  const options = {where, order};
+  const options = {where, order, attributes: [
+    ["seller_id", "sellerId"],
+    ["listing_id", "listingId"],
+    "location",
+    "price",
+    ["listed_at", "listedAt"],
+    "status",
+    "title",
+    "lat_long",
+    ["last_updated_at", "lastUpdatedAt"],
+    ["for_charity", "forCharity"]
+  ]};
 
   //add limit and offset if they exist
   if (pullLimit) {
@@ -52,15 +63,16 @@ export const getSortedListings = async (req, res) => {
 
 export const createListing = async (req, res) => {
   try {
-    const coordinate = { type: 'Point', coordinates: [req.body.location.latitude,req.body.location.longitude]}
+    const coordinate = { type: 'Point', coordinates: [req.body.lat_long.latitude,req.body.lat_long.longitude]}
     const createResult = await Listing.create({
       seller_id: req.body.seller_id,
       title: req.body.title,
       price: req.body.price,
-      location: coordinate,
-      postal_code: req.body.postal_code,
+      lat_long: coordinate,
+      location: req.body.location,
       status: "AVAILABLE",
       category: req.body.category,
+      for_charity: req.body.forCharity,
     });
     res.json(createResult.dataValues.listing_id);
   } catch (error) {
@@ -77,6 +89,18 @@ export const createListing = async (req, res) => {
 export const getSellerListings = async (req, res) => {
   try {
     const listings = await Listing.findAll({
+      attributes: [
+        ["seller_id", "sellerId"],
+        ["listing_id", "listingId"],
+        "location",
+        "price",
+        ["listed_at", "listedAt"],
+        "status",
+        "title",
+        "lat_long",
+        ["last_updated_at", "lastUpdatedAt"],
+        ["for_charity", "forCharity"]
+      ],
       where: {
         seller_id: req.query.seller_id,
       },
@@ -90,21 +114,38 @@ export const getSellerListings = async (req, res) => {
 
 export const getListingInfo = async (req, res) => {
     try {
-        const listing = await Listing.findByPk(req.params.listingId);
+        const listing = await Listing.findOne({
+            where: {
+                listing_id: req.params.listingId,
+            },
+            attributes: [
+                ["listing_id", "listingId"],
+                ["seller_id", "sellerId"],
+                "buyer_username",
+                "title",
+                "price",
+                "location",
+                "status",
+                ["listed_at", "listedAt"],
+                ["last_updated_at", "lastUpdatedAt"],
+                "category",
+                ["for_charity", "forCharity"]
+            ]
+        });
         if (!listing) {
           console.error("Listing not found");
           return res.status(500).send();
         }
-        const {listing_id, seller_id, buyer_username, title, price, location, status, listed_at, lastupdated_at, category} = listing;
-        res.json({
-            seller_id: seller_id,
-            listing_id: listing_id,
-            title: title,
-            price: price,
-            location: location,
-            status: status,
-            listed_at: listed_at,
-            lastupdated_at: lastupdated_at
+        return res.status(200).json({
+            sellerId: listing.dataValues.sellerId,
+            listingId: listing.dataValues.listingId,
+            title: listing.dataValues.title,
+            price: listing.dataValues.price,
+            location: listing.dataValues.location,
+            status: listing.dataValues.status,
+            listedAt: listing.dataValues.listedAt,
+            lastupdatedAt: listing.dataValues.lastUpdatedAt,
+            forCharity: listing.dataValues.forCharity,
         });
     } catch (error) {
         console.error(error);
@@ -122,10 +163,11 @@ export const updateListing = async (req, res) => {
         listing.title = req.body.title;
         listing.price = req.body.price;
         listing.status = req.body.status;
-        listing.location = req.body.location;
+        listing.lat_long = req.body.lat_long;
         listing.category = req.body.category;
-        listing.postal_code = req.body.postal_code;
+        listing.location = req.body.location;
         listing.buyer_username = req.body.buyer_username; 
+        listing.for_charity = req.body.for_charity;
         await listing.save();
         res.json({});
     } catch (error) {

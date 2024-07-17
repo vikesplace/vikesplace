@@ -6,20 +6,18 @@ import { useNavigate } from 'react-router-dom';
 import "react-chat-elements/dist/main.css";
 import '../App.css';
 import DataService from '../services/DataService';
-import AuthService from '../services/AuthService';
 import { SAMPLE_CHATS } from '../utils/SampleRecommenderData';
 
 function Messages() {
 
   const navigate = useNavigate();
   
-  let authService = new AuthService();
   let dataService = new DataService();
 
   let userId = "";
-  let response = authService.getCurrentUserId();
+  let response = dataService.getMyUserData();
   if (response !== undefined && response !== null) {
-    userId = response.data;
+    userId = response.data.userId;
   } else {
     // TODO remove once api works
     userId = "12345";

@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS "Users" (
     location VARCHAR(255) NOT NULL,
     joining_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     items_sold INT NOT NULL DEFAULT 0,
-    items_bought INT NOT NULL DEFAULT 0
+    items_purchased INT NOT NULL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS "Listings" (
@@ -25,7 +25,8 @@ CREATE TABLE IF NOT EXISTS "Listings" (
     last_updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     category VARCHAR(255) NOT NULL,
     pull_limit INT,
-    page_offset INT
+    page_offset INT,
+    for_charity BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE IF NOT EXISTS "Chats" (
@@ -47,8 +48,36 @@ CREATE TABLE IF NOT EXISTS "Messages" (
     receiver_id INT NOT NULL REFERENCES "Users"(user_id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS "Ratings" (
+    rating_id SERIAL PRIMARY KEY,
+    listing_id INT NOT NULL REFERENCES "Listings"(listing_id) ON DELETE CASCADE,
+    user_id INT NOT NULL REFERENCES "Users"(user_id) ON DELETE CASCADE,
+    rating_value INT NOT NULL CHECK (rating_value >= 1 AND rating_value <= 5),
+    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS "Reviews" (
+    review_id SERIAL PRIMARY KEY,
+    listing_id INT NOT NULL REFERENCES "Listings"(listing_id) ON DELETE CASCADE,
+    user_id INT NOT NULL REFERENCES "Users"(user_id) ON DELETE CASCADE,
+    review_content TEXT NOT NULL,
+    rating_id INT NOT NULL REFERENCES "Ratings"(rating_id) ON DELETE CASCADE,
+    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS "Charity" (
+    charity_id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    status VARCHAR(255) NOT NULL CHECK (status IN ('OPEN', 'CLOSED')),
+    fund DECIMAL(10, 2) NOT NULL,
+    logo_url VARCHAR(255) NOT NULL,
+    start_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    end_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    num_listings INT NOT NULL DEFAULT 0
+);
+
 -- Insert 20 users with unique usernames and emails
-INSERT INTO "Users" (username, email, password, lat_long, location, joining_date, items_sold, items_bought) VALUES
+INSERT INTO "Users" (username, email, password, lat_long, location, joining_date, items_sold, items_purchased) VALUES
 ('Alice', 'alice@example.com', 'password1', 'POINT(48.378400 -123.415600)'::GEOMETRY, 'V8R6N2', '2024-01-01 10:00:00', 0, 0),
 ('Bob', 'bob@example.com', 'password2', 'POINT(48.378400 -123.337822)'::GEOMETRY, 'V9A4L2', '2024-01-02 10:00:00', 0, 0),
 ('Charlie', 'charlie@example.com', 'password3', 'POINT(48.389511 -123.393378)'::GEOMETRY, 'V8W1R7','2024-01-03 10:00:00', 0, 0),
@@ -202,3 +231,36 @@ INSERT INTO "Messages" (listing_id, message_content, timestamp, chat_id, sender_
 (5, 'Sure, I can meet you at the coffee shop.', '2024-02-01 14:05:00', 5, 2, 1),
 (5, 'Great, see you there.', '2024-02-01 14:10:00', 5, 1, 2),
 (6, 'Hello, I am interested in the Guitar.', '2024-02-02 10:00:00', 6, 1, 2);
+
+INSERT INTO "Ratings" (listing_id, user_id, rating_value, timestamp) VALUES
+(1, 2, 5, '2024-02-01 10:00:00'),
+(2, 3, 4, '2024-02-01 11:00:00'),
+(3, 4, 3, '2024-02-01 12:00:00'),
+(4, 5, 2, '2024-02-01 13:00:00'),
+(5, 6, 1, '2024-02-01 14:00:00'),
+(6, 7, 5, '2024-02-02 10:00:00'),
+(7, 8, 4, '2024-02-02 11:00:00'),
+(8, 9, 3, '2024-02-02 12:00:00'),
+(9, 10, 2, '2024-02-02 13:00:00'),
+(10, 11, 1, '2024-02-02 14:00:00'),
+(11, 12, 1, '2024-02-02 14:00:00');
+
+INSERT INTO "Reviews" (listing_id, user_id, review_content, rating_id, timestamp) VALUES
+(1, 2, 'Great bike, would rent again.', 1, '2024-02-01 10:00:00'),
+(1, 2, 'Bad bike, would not rent again.', 1, '2024-02-01 10:00:00'),
+(2, 3, 'Good laptop, would rent again.', 2, '2024-02-01 11:00:00'),
+(3, 4, 'Average desk chair, would not rent again.', 3, '2024-02-01 12:00:00'),
+(4, 5, 'Poor headphones, would not rent again.', 4, '2024-02-01 13:00:00'),
+(5, 6, 'Terrible bookshelf, would not rent again.', 5, '2024-02-01 14:00:00'),
+(6, 7, 'Great guitar, would rent again.', 6, '2024-02-02 10:00:00'),
+(7, 8, 'Good keyboard, would rent again.', 7, '2024-02-02 11:00:00'),
+(8, 9, 'Average monitor, would not rent again.', 8, '2024-02-02 12:00:00'),
+(9, 10, 'Poor dining table, would not rent again.', 9, '2024-02-02 13:00:00'),
+(10, 11, 'Terrible bluetooth speaker, would not rent again.', 10, '2024-02-02 14:00:00');
+
+INSERT INTO "Charity" (name, status, fund, logo_url, start_date, end_date, num_listings) VALUES
+('BC Children''s Hospital', 'OPEN', 1000.00, '12345', '2024-02-01 10:00:00', '2024-02-01 10:00:00', 0),
+('Canadian Red Cross', 'CLOSED', 2000.00, '12345', '2024-02-01 11:00:00', '2024-02-01 11:00:00', 0),
+('World Wildlife Fund', 'OPEN', 3000.00, '12345', '2024-02-01 12:00:00', '2024-02-01 13:00:00', 0),
+('Doctors Without Borders', 'OPEN', 4000.00, '12345', '2024-02-01 13:00:00', '2024-02-01 13:00:00', 0),
+('Salvation Army', 'CLOSED', 5000.00, '12345', '2024-02-01 14:00:00', '2024-02-01 14:00:00', 0);

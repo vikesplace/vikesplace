@@ -6,10 +6,11 @@ export const updateListing = async (req, res) => {
                     title: req.body.title,
                     price: req.body.price,
                     status: req.body.status,
-                    location: req.body.location,
+                    lat_long: req.body.lat_long,
                     category: req.body.category || null,
-                    postal_code: req.body.postal_code,
-                    buyer_username: req.body.buyer_username || null
+                    location: req.body.location,
+                    buyer_username: req.body.buyer_username || null,
+                    for_charity: req.body.for_charity || false
                 });
                 res.json(response.data);
     }

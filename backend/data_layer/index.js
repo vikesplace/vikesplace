@@ -8,6 +8,7 @@ import searchRoutes from "./routes/search_routes.js";
 import recommendationRoutes from "./routes/recommendation_routes.js";
 import messageRoutes from "./routes/message_routes.js";
 import chatRoutes from "./routes/chat_routes.js";
+import charityRoutes from "./routes/charity_routes.js";
 import db from "./config/database.js";
 
 const PORT = process.env.PORT || 5000;
@@ -24,6 +25,7 @@ app.use("/search",searchRoutes);
 app.use("/recommendation",recommendationRoutes);
 app.use("/message", messageRoutes);
 app.use("/chat", chatRoutes);
+app.use("/charity", charityRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

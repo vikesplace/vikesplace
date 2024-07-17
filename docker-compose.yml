@@ -7,11 +7,13 @@ volumes:
     driver: local
   kibanadata:
     driver: local
-  logstashdata:
+  logstashdata-elasticsearch:
     driver: local
   metricbeatdata:
     driver: local
   mongodbdata:
+    driver: local
+  mongo_key:
     driver: local
 
 networks:
@@ -50,6 +52,11 @@ services:
       file: backend/docker-compose.yml
       service: listing
 
+  charity:
+    extends:
+      file: backend/docker-compose.yml
+      service: charity
+
   be-recommendation:
     extends:
       file: backend/docker-compose.yml
@@ -87,6 +94,7 @@ services:
       - users
       - ratings
       - account
+      - charity
 
   # Referencing algorithm services
   setup:
@@ -123,7 +131,7 @@ services:
   logstash:
     extends:
       file: algorithms/docker-compose.yml
-      service: logstash
+      service: logstash-elasticsearch
     depends_on:
       postgresql:
         condition: service_healthy
