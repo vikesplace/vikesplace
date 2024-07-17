@@ -138,7 +138,8 @@ export default function ManageListing({ listing }) {
         var validForm = validateTitle() && validatePrice() && validatePostalCode() && validateBuyer();
 
         if (validForm) {
-            let response = await dataService.updateListing(listing.listingId, title, price, postalCode, status, buyer, forCharity);
+            const upperPostal = postalCode.toUpperCase();
+            let response = await dataService.updateListing(listing.listingId, title, price, upperPostal, status, buyer, forCharity);
             if (response === undefined) {
                 alert("Connection error, please try again.");
             } else if (response.status === 200) {

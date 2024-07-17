@@ -113,7 +113,8 @@ function CreateListing() {
         var validForm = validateTitle() && validatePrice() && validatePostalCode() && validateCategory();
 
         if (validForm) {
-            let response = await dataService.createListing(title, price, postalCode, category, forCharity); 
+            const upperPostal = postalCode.toUpperCase();
+            let response = await dataService.createListing(title, price, upperPostal, category, forCharity); 
             if (response === undefined) {
                 alert("Connection error, please try again.");
             } else if (response.status === 200) {

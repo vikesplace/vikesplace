@@ -118,7 +118,8 @@ function VerifyAccount() {
         
         var validForm = validateUsername() && validatePassword() && validateConfirmPassword() && validatePostalCode();
         if (validForm) {
-            let response = authService.verify(jwt, username, password, postalCode);
+            const upperPostal = postalCode.toUpperCase();
+            let response = authService.verify(jwt, username, password, upperPostal);
             if (response !== undefined && response.data !== undefined) {
                 let message = response.data.message;
                 if (message !== undefined) {
