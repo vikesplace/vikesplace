@@ -47,17 +47,6 @@ async def recommendation_current_item(
     )
 
 
-@app.get("/recommendations_most_popular")
-async def recommendations_most_popular():
-    listings = mongodb_request.get_top_10_popular()
-    results = es_request.get_items(listings)
-
-    return JSONResponse(
-        status_code=status.HTTP_200_OK,
-        content=results
-    )
-
-
 @app.get("/users/{user_id}/recommendations/ignored")
 async def recommendations_ignored(
     user_id: str = Path(..., description="The ID of the user")

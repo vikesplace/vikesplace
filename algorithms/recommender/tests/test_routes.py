@@ -43,8 +43,11 @@ def test_recommender_with_no_activity_history():
         f"{BASE_URL}/recommendations", params=params)
     response_obj = response.json()
 
+    # should receive most popular items since user has not activity history
     assert response.status_code == status.HTTP_200_OK
-    assert response_obj == None
+    assert len(response_obj) == 10
+    for obj in response_obj:
+        assert obj["title"] != None
 
 
 def test_recommender_current_item():
@@ -64,8 +67,24 @@ def test_recommender_current_item():
         assert obj['seller_id'] != user_id
 
 
-def test_recommender_most_popular_items():
-    response = requests.get(f"{BASE_URL}/recommendations_most_popular")
+def test_view_listings_ignored():
+    user_id = 1
+    response = requests.get(
+        f"{BASE_URL}/users/{user_id}/recommendations/ignored")
+    response_obj = response.json()
+
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response_obj['results']) >= 1
+    for i in response_obj['results']:
+        assert i['listing_id'] is not None
+        assert i['ignored_at'] is not None
+
+
+def test_ignore_recommendation_and_delete_ignored_recommendation():
+    user_id = 1
+    listing_id = 65
+    response = requests.post(
+        f"{BASE_URL}/recommendations/{listing_id}/ignore", json={"user_id": user_id})
     response_obj = response.json()
 
     assert response.status_code == status.HTTP_200_OK
