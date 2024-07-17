@@ -355,15 +355,19 @@ class DataService {
 
     /*
     * Charity: Create Charity Endpoint
-    * Success (201): returns nothing
+    * Success (201): returns charity object
+    *   (start_date, charity_id, name, status, fund, logo_url, end_date, num_listings)
     * Error: returns message
     */
-    async createCharity(name, logoUrl, endDate) {
+    async createCharity(name, logo_url, end_date) {
         try {
             return await axios.post(API_URL + 'charity', {
                 name, 
-                logoUrl, 
-                endDate
+                status: "",
+                fund: 0,
+                logo_url, 
+                end_date,
+                num_listings: 0
             }, { withCredentials: true });
         } catch (error) {
             return httpErrorHandler(error);
@@ -373,7 +377,8 @@ class DataService {
     /*
     * Charity: Get All Charities Endpoint
     * Success (200): returns list of charity objects
-    *   (name, logo, num_listing, end_date, funds, status)
+    *   (charity_id, name, status, logo_url, fund, start_date, end_date, num_listing)
+    *   (status can be "OPEN" or "CLOSED")
     * Error: returns message
     */
     async getAllCharities() {
