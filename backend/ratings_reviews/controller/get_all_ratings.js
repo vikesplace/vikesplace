@@ -3,9 +3,9 @@ import axios from "axios";
 export const getAllRatings = async (req, res) => {
     try {
         const response = await axios.get(`/rating/${req.params.listingId}`);
-        
-        //append each rating_value from response.data to a new array
-        const ratings = response.data.map((rating) => rating.rating_value);
+        const ratings = response.data.ratingValue.map((rating) => {
+            return rating.ratingValue;
+        });
         return res.json({ratings: ratings});
     } catch (err) {
         console.error(err);

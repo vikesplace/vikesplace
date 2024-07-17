@@ -27,13 +27,15 @@ export const getAllReviews = async (req, res) => {
             where: {
                 listing_id: req.params.listingId
             },
-            attributes: ["review_content"]
+            attributes: [["review_content", "reviewContent"]]
         });
         if (!reviews) {
             console.error("Listing not found");
             return res.status(500).send();
         }
-        res.json(reviews);
+        return res.status(200).json({
+            reviewContent: reviews
+        });
     } catch (error) {
         console.error(error);
         return res.status(500).send();

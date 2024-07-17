@@ -145,9 +145,6 @@ db.user_activity.insertMany([
     listings: [
       { listing_id: 29, timestamp: ISODate("2024-06-14T10:00:00.000Z") },
       { listing_id: 81, timestamp: ISODate("2024-06-14T10:00:00.000Z") }
-    ],
-    ignored: [
-      { listing_id: 69, timestamp: ISODate("2024-06-15T01:00:00.000Z") }
     ]
   }
 ]);

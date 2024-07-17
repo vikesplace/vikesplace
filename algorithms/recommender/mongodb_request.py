@@ -119,10 +119,7 @@ def write_ignored(user_id, listing_id):
         upsert=True
     )
 
-    if result.upserted_id:
-        return result.upserted_id
-    else:
-        return result.matched_count
+    return result.modified_count
 
 
 def delete_ignored(user_id, listing_id):

@@ -108,6 +108,8 @@ services:
       - "5006:5000"
     environment:
       - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
+      - ALG_RECOMMENDATION=${ALG_RECOMMENDATION}
+      - DATA_LAYER=${DATA_LAYER}
   
   search:
     container_name: search
