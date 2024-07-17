@@ -170,7 +170,7 @@ class DataService {
     */
     async getUserSearchHistory() {
         try {
-            return await axios.get(API_URL + 'users/me' + '/searches',
+            return await axios.get(API_URL + 'users/me/searches',
                 { withCredentials: true });
         } catch (error) {
             return httpErrorHandler(error);
@@ -224,10 +224,10 @@ class DataService {
     *   (listingReviewId, reviewedListingId (same as listingId), timestamp)
     * Error: returns message
     */
-    async createReview(listingId, reviewContent) {
+    async createReview(listingId, review_content) {
         try {
             return await axios.post(API_URL + 'review/' + listingId, {
-                reviewContent
+                review_content
             }, { withCredentials: true });
         } catch (error) {
             return httpErrorHandler(error);
@@ -310,15 +310,14 @@ class DataService {
 
     /*
     * Messages: Get Chat's Messages Endpoint
-    * Success (200): returns key, and list of messages
+    * Success (200): returns list of messages
     *   (messages include messageId, senderId, content, timestamp)
     * Error: returns message
     */
     async getChatMessages(chatId) {
         try {
-            return await axios.get(API_URL + 'messages/' + chatId, {
-                id
-            }, { withCredentials: true });
+            return await axios.get(API_URL + 'messages/' + chatId, 
+                { withCredentials: true });
         } catch (error) {
             return httpErrorHandler(error);
         }
