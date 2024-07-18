@@ -14,7 +14,7 @@
     "key.converter.schemas.enable": "false",
     "value.converter": "org.apache.kafka.connect.json.JsonConverter",
     "value.converter.schemas.enable": "false",
-    "neo4j.topic.cypher.users_topic": "MERGE (u:User {id: 'user_' + toString(event.user_id)}) SET u += event WITH u \nMERGE (p:PostalCode {id: u.postal_code}) \nMERGE (u)-[:LOCATED_IN]->(p)",
-    "neo4j.topic.cypher.listings_topic": "MERGE (l:Listing {id: 'listing_' + toString(event.listing_id)}) SET l += event, l.latitude = toFloat(event.location_lat), l.longitude = toFloat(event.location_lon) WITH l \nMERGE (p:PostalCode {id: l.postal_code}) \nMERGE (l)-[:LOCATED_IN]->(p)"
+    "neo4j.topic.cypher.users_topic": "MERGE (u:User {id: 'user_' + toString(event.user_id)}) SET u += event WITH u \nMERGE (p:PostalCode {id: u.location}) \nMERGE (u)-[:LOCATED_IN]->(p)",
+    "neo4j.topic.cypher.listings_topic": "MERGE (l:Listing {id: 'listing_' + toString(event.listing_id)}) SET l += event, l.latitude = toFloat(event.lat), l.longitude = toFloat(event.lon) WITH l \nMERGE (p:PostalCode {id: l.location}) \nMERGE (l)-[:LOCATED_IN]->(p)"
   }
 }
