@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
+import { useLocation } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -10,10 +11,22 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import DataService from '../services/DataService.js';
+import Grid from '@mui/material/Grid';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import { useNavigate } from 'react-router-dom';
+import { SAMPLE_REVIEWS } from '../utils/SampleRecommenderData.js';
 
 const ListingDetails = ({ listing, hideButton }) => {
   const dataService = new DataService();
   const navigate = useNavigate();
+  const location = useLocation();
+  const reviews = SAMPLE_REVIEWS.filter(review => review.listingId === listing.id);
 
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
@@ -44,41 +57,52 @@ const ListingDetails = ({ listing, hideButton }) => {
     setMessage(event.target.value);
   };
 
+  const handleClickReview = (id) => {
+    navigate(`/view-reviews/${id}`);
+  };
+
+  const handleBackClick = (id) => {
+    navigate(`/listings/${id}`);
+  };
+
+  const isReviews = location.pathname.includes('/view-reviews/');
+
   return (
     <Box
       display="flex"
       justifyContent="center"
-      alignItems="center"
+      alignItems="flex-start"
       minHeight="100vh"
       bgcolor="background.paper"
     >
-      <Box
-        border={1}
-        borderRadius={5}
-        borderColor="grey.300"
-        p={4}
-        width="30%"
-        textAlign="left"
-        boxShadow={3}
-        mt={-20} 
-      >
-        <Typography variant="h4" component="h3" gutterBottom>
-          {listing.title}
-        </Typography>
-        <Typography variant="h6" gutterBottom>
-          Price: ${listing.price}
-        </Typography>
-        <Typography variant="body1" gutterBottom>
-          Location: {listing.location}
-        </Typography>
-        <Typography variant="body1" gutterBottom>
-          Posted: {new Date(listing.listedAt).toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric", hour:"numeric"})}
-        </Typography>
-        <Typography variant="body1" gutterBottom>
-          {listing.forCharity ? "Funds to Charity" : ""}
-        </Typography>
-        {(hideButton === undefined || hideButton === false) &&
+    <Grid container spacing={2} justifyContent="center" sx={{ mt: 2 }}>
+      <Grid item xs={12} md={4}>
+        <Box
+          border={1}
+          borderRadius={5}
+          borderColor="grey.300"
+          p={4}
+          textAlign="left"
+          boxShadow={3}
+        >
+          <Typography variant="h4" component="h3" gutterBottom>
+            {listing.title}
+          </Typography>
+          <Typography variant="h6" gutterBottom>
+            Price: ${listing.price}
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            Location: {listing.location}
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            Posted: {new Date(listing.listedAt).toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric", hour:"numeric"})}
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            {listing.forCharity ? "Funds to Charity" : ""}
+          </Typography>
           <Box display="flex" flexDirection="column" mt={5} width="100%">
+          {!isReviews ||(hideButton === undefined || hideButton === false) &&(
+            <>
             <Button
               variant="contained"
               color="primary"
@@ -87,15 +111,40 @@ const ListingDetails = ({ listing, hideButton }) => {
             >
               Message Seller
             </Button>
-            <Button variant="contained" color="secondary" 
-              onClick={(event) => {
-                  navigate("/create-review/" + listing.listingId);
-              }}>
+            <Button 
+            variant="contained" 
+            color="secondary"
+            sx={{ mb: 2 }}
+            onClick={(event) => {
+              navigate("/create-review/" + listing.listingId);
+            }}>
               Add Review
             </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => handleClickReview(listing.id)}
+              sx={{ mb : 2 }}
+              >
+              View Reviews
+            </Button>
+            </>
+          )}
+          {isReviews &&(
+            <>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => handleBackClick(listing.id)}
+              >
+                Back
+              </Button>
+              </>
+          )}
+        
           </Box>
-        }
-      </Box>
+        </Box>
+      </Grid>
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
         <DialogTitle>Send Message to Seller</DialogTitle>
         <DialogContent>
@@ -124,6 +173,43 @@ const ListingDetails = ({ listing, hideButton }) => {
           </Button>
         </DialogActions>
       </Dialog>
+      {isReviews &&(
+        <>
+        <Grid item xs={12} md={6}>
+          <Box
+            border={1}
+            borderRadius={5}
+            borderColor="grey.300"
+            p={4}
+            textAlign="left"
+            boxShadow={3}
+          >
+            <Typography variant="h5" component="h3" gutterBottom>
+              Reviews
+            </Typography>
+            <TableContainer component={Paper} sx={{ maxHeight: 300, overflowY: 'auto' }}>
+              <Table stickyHeader>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Rating</TableCell>
+                    <TableCell>Review</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {reviews.map((review, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{review.rating}</TableCell>
+                      <TableCell>{review.review}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
+        </Grid>
+        </>
+      )}
+      </Grid>
     </Box>
   );
 };
