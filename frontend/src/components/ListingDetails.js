@@ -11,22 +11,11 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import DataService from '../services/DataService.js';
-import Grid from '@mui/material/Grid';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import { useNavigate } from 'react-router-dom';
-import { SAMPLE_REVIEWS } from '../utils/SampleRecommenderData.js';
 
-const ListingDetails = ({ listing, hideButton }) => {
+const ListingDetails = ({ listing }) => {
   const dataService = new DataService();
   const navigate = useNavigate();
   const location = useLocation();
-  const reviews = SAMPLE_REVIEWS.filter(review => review.listingId === listing.id);
 
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
@@ -57,26 +46,18 @@ const ListingDetails = ({ listing, hideButton }) => {
     setMessage(event.target.value);
   };
 
-  const handleClickReview = (id) => {
-    navigate(`/view-reviews/${id}`);
+  const handleClickReview = () => {
+    navigate(`/view-reviews/${listing.listingId}`);
   };
 
-  const handleBackClick = (id) => {
-    navigate(`/listings/${id}`);
+  const handleBackClick = () => {
+    navigate(`/listings/${listing.listingId}`);
   };
 
-  const isReviews = location.pathname.includes('/view-reviews/');
+  const isReviews = location.pathname.includes('/view-reviews/') || location.pathname.includes('/create-review/');
 
   return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      alignItems="flex-start"
-      minHeight="100vh"
-      bgcolor="background.paper"
-    >
-    <Grid container spacing={2} justifyContent="center" sx={{ mt: 2 }}>
-      <Grid item xs={12} md={4}>
+    <div>
         <Box
           border={1}
           borderRadius={5}
@@ -84,6 +65,7 @@ const ListingDetails = ({ listing, hideButton }) => {
           p={4}
           textAlign="left"
           boxShadow={3}
+          mt={2}
         >
           <Typography variant="h4" component="h3" gutterBottom>
             {listing.title}
@@ -101,7 +83,7 @@ const ListingDetails = ({ listing, hideButton }) => {
             {listing.forCharity ? "Funds to Charity" : ""}
           </Typography>
           <Box display="flex" flexDirection="column" mt={5} width="100%">
-          {!isReviews ||(hideButton === undefined || hideButton === false) &&(
+          {!isReviews && (
             <>
             <Button
               variant="contained"
@@ -130,7 +112,7 @@ const ListingDetails = ({ listing, hideButton }) => {
             </Button>
             </>
           )}
-          {isReviews &&(
+          {isReviews && (
             <>
             <Button
               variant="contained"
@@ -141,10 +123,8 @@ const ListingDetails = ({ listing, hideButton }) => {
               </Button>
               </>
           )}
-        
-          </Box>
         </Box>
-      </Grid>
+      </Box>
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
         <DialogTitle>Send Message to Seller</DialogTitle>
         <DialogContent>
@@ -173,44 +153,7 @@ const ListingDetails = ({ listing, hideButton }) => {
           </Button>
         </DialogActions>
       </Dialog>
-      {isReviews &&(
-        <>
-        <Grid item xs={12} md={6}>
-          <Box
-            border={1}
-            borderRadius={5}
-            borderColor="grey.300"
-            p={4}
-            textAlign="left"
-            boxShadow={3}
-          >
-            <Typography variant="h5" component="h3" gutterBottom>
-              Reviews
-            </Typography>
-            <TableContainer component={Paper} sx={{ maxHeight: 300, overflowY: 'auto' }}>
-              <Table stickyHeader>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Rating</TableCell>
-                    <TableCell>Review</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {reviews.map((review, index) => (
-                    <TableRow key={index}>
-                      <TableCell>{review.rating}</TableCell>
-                      <TableCell>{review.review}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Box>
-        </Grid>
-        </>
-      )}
-      </Grid>
-    </Box>
+    </div>
   );
 };
 
