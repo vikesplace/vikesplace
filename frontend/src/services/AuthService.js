@@ -4,6 +4,11 @@ import httpErrorHandler from "./httpErrorHandler";
 const API_URL = "http://localhost:8080/";
 
 class AuthService {
+    /*
+    * Account Management: Login Endpoint
+    * Success (200): returns message, sets authorization cookie
+    * Error: returns message
+    */
     async login(username, password) {
         const response = axios
             .post(API_URL + "login", {
@@ -14,11 +19,20 @@ class AuthService {
         return await response;
     }
   
+    /*
+    * Logout
+    * Removes authorization cookie
+    */
     logout() {
         // TODO remove from cookies
         localStorage.removeItem("user");
     }
 
+    /*
+    * Account Management: Request Account Endpoint
+    * Success (200): returns message, sends an email
+    * Error: returns message
+    */
     async register(email) {
         try {
             return await axios.post(API_URL + "request_account", {
@@ -30,6 +44,11 @@ class AuthService {
         }
     }
 
+    /*
+    * Account Management: Verify/Create Account Endpoint
+    * Success (201): returns userId, sets authorization cookie
+    * Error: returns message
+    */
     async verify(jwt, username, password, location) {
         try {
             return await axios.post(API_URL + "verify_account", {
@@ -43,6 +62,11 @@ class AuthService {
         }
     }
 
+    /*
+    * Account Management: Request Password Reset Endpoint
+    * Success (200): returns nothing, sends an email
+    * Error: returns message
+    */
     async requestPasswordChange(email) {
         try {
             return await axios.post(API_URL + "request_reset", {
@@ -53,6 +77,11 @@ class AuthService {
         }
     }
 
+    /*
+    * Account Management: Verify/Reset Password Endpoint
+    * Success (200): returns nothing
+    * Error: returns message
+    */
     async completePasswordChange(jwt, password) {
         try {
             return await axios.post(API_URL + "verify_reset", {

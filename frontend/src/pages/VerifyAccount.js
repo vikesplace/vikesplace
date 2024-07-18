@@ -102,7 +102,7 @@ function VerifyAccount() {
     }
 
     function validatePostalCode() {
-        var format = new RegExp("^[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ][0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]$");
+        var format = new RegExp("^[ABCEGHJKLMNPRSTVXYabceghjklmnprstvxy][0-9][ABCEGHJKLMNPRSTVWXYZabceghjklmnprstvwxyz][0-9][ABCEGHJKLMNPRSTVWXYZabceghjklmnprstvwxyz][0-9]$");
         if (!format.test(postalCode)) {
             setPostalCodeError(true);
             return false;
@@ -117,7 +117,8 @@ function VerifyAccount() {
         var validForm = validateUsername() && validatePassword() && validateConfirmPassword() && validatePostalCode();
 
         if (validForm) {
-            let response = await authService.verify(jwt, username, password, postalCode);
+            const upperPostal = postalCode.toUpperCase();
+            let response = authService.verify(jwt, username, password, upperPostal);
             if (response === undefined) {
                 alert("Connection error, please try again.");
             } else if (response.status === 201) {
