@@ -12,7 +12,6 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import ListingDetails from '../components/ListingDetails';
 import DataService from '../services/DataService.js';
-import { SAMPLE_REVIEWS } from '../utils/SampleRecommenderData.js';
 
 const ViewReviewsPage = () => {
   const dataService = useMemo(() => new DataService(), []);
@@ -48,29 +47,25 @@ const ViewReviewsPage = () => {
         alert("Unable to get ratingsg, please try again.");
       }
 
-      // TODO map reviews and ratings by username/createdOn date (wait for backend to pass those)
-      // if (responseRatings.status === 200 && responseReviews.status === 200) {
-      //   let displayValues = [];
-      //   for (let i = 0; i < responseRatings.data.ratings.length; i++) {
-      //     const nextRating = responseRatings.data.ratings[i];
-      //     for (let j = 0; i < responseReviews.data.reviews.length; j++) {
-      //       const nextReview = responseReviews.data.reviews[j];
-      //       if ((nextRating.username === nextReview.username) && 
-      //             (new Date(nextRating.createdOn)
-      //               .toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric", hour:"numeric"}) 
-      //             === new Date(nextReview.createdOn))
-      //               .toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric", hour:"numeric"}) ) {
-      //         displayValues.push({
-      //           rating: nextRating.rating,
-      //           review: nextReview.review
-      //         })
-      //       }            
-      //     }            
-      //   }
-      //   setReviews(displayValues);
-      // }  
+      // TODO update after backend changes (eg. include username, createdOn)
+      // try to map username/createdOn so can display ratings and reviews next to each other
+      if (responseRatings.status === 200 && responseReviews.status === 200) {
+        let displayValues = [];
+        for (let i = 0; i < responseRatings.data.ratings.length; i++) {
+          displayValues.push({
+            rating: responseRatings.data.ratings[i],
+            review: ""
+          })
+        }
 
-      setReviews(SAMPLE_REVIEWS);
+        for (let j = 0; j < responseReviews.data.reviews.length; j++) {
+          displayValues.push({
+            rating: "",
+            review: responseReviews.data.reviews[j]
+          })          
+        }  
+        setReviews(displayValues);
+      } 
     }
 
     getListing();
@@ -118,12 +113,22 @@ const ViewReviewsPage = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {reviews.map((review, index) => (
+                  {(reviews !== undefined && reviews !== null && reviews.length !== 0) && 
+                  reviews.map((review, index) => (
                     <TableRow key={index}>
                       <TableCell>{review.rating}</TableCell>
                       <TableCell>{review.review}</TableCell>
                     </TableRow>
                   ))}
+                  {(reviews === undefined || reviews === null || reviews.length === 0) &&
+                  <Typography>
+                    <TableRow key={0}>
+                      <TableCell> 
+                        No Reviews or Ratings Available
+                      </TableCell>
+                    </TableRow>
+                  </Typography>
+                  }
                 </TableBody>
               </Table>
             </TableContainer>
