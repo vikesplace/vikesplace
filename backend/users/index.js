@@ -5,7 +5,6 @@ import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import "dotenv/config";
 import cors from "cors";
-import axiosConfig from "./config/axiosConfig.js";
 
 const PORT = process.env.PORT || 5000;
 const jwtSecret = process.env.ACCESS_TOKEN_SECRET;

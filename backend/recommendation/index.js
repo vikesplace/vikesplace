@@ -16,7 +16,7 @@ app.use(cors({
 app.use(cookieParser());
 app.use(express.json());
 app.use(identification);
-app.use("/recommendation", recommendation);
+app.use("/recommendations", recommendation);
 
 function identification(req, res, next) {
   try {
