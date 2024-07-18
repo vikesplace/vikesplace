@@ -96,6 +96,12 @@ const ListingDetails = ({ listing }) => {
           <Typography variant="body1" gutterBottom>
             Location: {listing.location}
           </Typography>
+          <Typography variant="body1" gutterBottom>
+          Posted: {new Date(listing.listedAt).toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric", hour:"numeric"})}
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+          {listing.forCharity ? "Funds to Charity" : ""}
+          </Typography>
           <Box display="flex" flexDirection="column" mt={5} width="100%">
           {!isReviews &&(
             <>
