@@ -7,13 +7,17 @@ volumes:
     driver: local
   kibanadata:
     driver: local
-  logstashdata-elasticsearch:
+  logstashdata:
     driver: local
   metricbeatdata:
     driver: local
   mongodbdata:
     driver: local
   mongo_key:
+    driver: local
+  kafkadata:
+    driver: local
+  zookeeperdata:
     driver: local
 
 networks:
@@ -128,16 +132,28 @@ services:
       kibana:
         condition: service_healthy
 
+  zookeeper:
+    extends:
+      file: algorithms/docker-compose.yml
+      service: zookeeper
+
+  kafka:
+    extends:
+      file: algorithms/docker-compose.yml
+      service: kafka
+
   logstash:
     extends:
       file: algorithms/docker-compose.yml
-      service: logstash-elasticsearch
+      service: logstash
     depends_on:
       postgresql:
         condition: service_healthy
       elasticsearch:
         condition: service_healthy
       kibana:
+        condition: service_healthy
+      kafka:
         condition: service_healthy
 
   mongodb:

@@ -1,15 +1,13 @@
 volumes:
   certs:
     driver: local
-  psqldata-vikesplace:
+  psqldata:
     driver: local
   esdata:
     driver: local
   kibanadata:
     driver: local
-  logstashdata-elasticsearch:
-    driver: local
-  logstashdata-kafka:
+  logstashdata:
     driver: local
   metricbeatdata:
     driver: local
@@ -34,7 +32,7 @@ services:
     image: postgis/postgis:latest
     volumes:
       - ./postgresql:/docker-entrypoint-initdb.d
-      - psqldata-vikesplace:/var/lib/postgresql/data
+      - psqldata:/var/lib/postgresql/data
     restart: always
     environment:
       - POSTGRES_DB=${POSTGRES_DB}
@@ -97,6 +95,7 @@ services:
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: "users_topic:1:1,listings_topic:1:1,user.vikesplace.user_activity.activities:1:1"
     volumes:
       - kafkadata:/var/lib/kafka
       - /var/run/docker.sock:/var/run/docker.sock
@@ -105,17 +104,6 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
-
-  create-topics:
-    image: confluentinc/cp-kafka:7.2.1
-    depends_on:
-      kafka:
-        condition: service_healthy
-    entrypoint: ["/bin/sh", "-c"]
-    command: >
-      "kafka-topics --create --topic users_topic --bootstrap-server kafka:9092 --partitions 1 --replication-factor 1 &&
-       kafka-topics --create --topic listings_topic --bootstrap-server kafka:9092 --partitions 1 --replication-factor 1 &&
-       kafka-topics --create --topic user.vikesplace.user_activity.activities --bootstrap-server kafka:9092 --partitions 1 --replication-factor 1"
 
   kafka-connect:
     build: 
@@ -181,6 +169,7 @@ services:
         # Wait for Kafka Connect to terminate (forwarding signals)
         wait
       "
+  
   neo4j-relations-kafka-connect:
     build: 
       context: /neo4j-relations-kafka-connect
@@ -349,7 +338,7 @@ services:
     command:
       - --strict.perms=false
 
-  logstash-elasticsearch:
+  logstash:
     depends_on:
       postgresql:
         condition: service_healthy
@@ -357,8 +346,10 @@ services:
         condition: service_healthy
       kibana:
         condition: service_healthy
+      # kafka:
+      #   condition: service_healthy
     build:
-      context: ./logstash/logstash-elasticsearch
+      context: ./logstash
       dockerfile: Dockerfile
       args:
         - STACK_VERSION=${STACK_VERSION}
@@ -367,34 +358,12 @@ services:
     user: root
     volumes:
       - certs:/usr/share/logstash/certs
-      - logstashdata-elasticsearch:/usr/share/logstash/data
+      - logstashdata:/usr/share/logstash/data
     environment:
       - xpack.monitoring.enabled=false
       - ELASTIC_USER=elastic
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
       - ELASTIC_HOSTS=https://elasticsearch:9200
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-
-  logstash-kafka:
-    depends_on:
-      postgresql:
-        condition: service_healthy
-      kafka:
-        condition: service_healthy
-    build:
-      context: ./logstash/logstash-kafka
-      dockerfile: Dockerfile
-      args:
-        - STACK_VERSION=${STACK_VERSION}
-    labels:
-      co.elastic.logs/module: logstash
-    user: root
-    volumes:
-      - logstashdata-kafka:/usr/share/logstash/data
-    environment:
-      - xpack.monitoring.enabled=false
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
