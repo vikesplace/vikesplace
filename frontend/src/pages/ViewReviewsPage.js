@@ -33,11 +33,19 @@ const ViewReviewsPage = () => {
     }
 
     async function getReviews() {
+      let displayValues = [];
       const responseRatings = await dataService.getRatings(id);
       if (responseRatings === undefined) {
         alert("Connection error, please try again.");
       } else if (responseRatings.status !== 200) {
         alert("Unable to get reviews, please try again.");
+      } else {
+        for (let i = 0; i < responseRatings.data.ratings.length; i++) {
+          displayValues.push({
+            rating: responseRatings.data.ratings[i],
+            review: ""
+          })
+        }
       }
 
       const responseReviews = await dataService.getReviews(id);
@@ -45,27 +53,18 @@ const ViewReviewsPage = () => {
         alert("Connection error, please try again.");
       } else if (responseReviews.status !== 200) {
         alert("Unable to get ratingsg, please try again.");
-      }
-
-      // TODO update after backend changes (eg. include username, createdOn)
-      // try to map username/createdOn so can display ratings and reviews next to each other
-      if (responseRatings.status === 200 && responseReviews.status === 200) {
-        let displayValues = [];
-        for (let i = 0; i < responseRatings.data.ratings.length; i++) {
-          displayValues.push({
-            rating: responseRatings.data.ratings[i],
-            review: ""
-          })
-        }
-
+      } else {
         for (let j = 0; j < responseReviews.data.reviews.length; j++) {
           displayValues.push({
             rating: "",
             review: responseReviews.data.reviews[j]
           })          
-        }  
-        setReviews(displayValues);
-      } 
+        } 
+      }
+
+      // TODO update after backend changes (eg. include username, createdOn)
+      // try to map username/createdOn so can display ratings and reviews next to each other
+      setReviews(displayValues);
     }
 
     getListing();
