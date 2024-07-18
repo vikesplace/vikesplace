@@ -1,25 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useParams } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
-import ListingDetailsReview from '../components/ListingDetailsReview';
+import ListingDetails from '../components/ListingDetails';
 import DataService from '../services/DataService.js';
 import { SAMPLE_DATA } from '../utils/SampleRecommenderData.js';
 
 const ViewReviewsPage = () => {
   const dataService = new DataService();
   const { id } = useParams();
-
-  const [listing, setListing] = useState(undefined);
   
-  useEffect(() => {
-    let response = dataService.getListing(id);
-    if (response !== undefined) {
-      setListing(response.data);
-    } else {
-      // TODO remove once we expect API to succeed
-      setListing(SAMPLE_DATA.find((listing) => listing.id === id));
-    }
-  }, [id, dataService]);
+  let listing = undefined;
+  let response = dataService.getListing(id);
+  if (response !== undefined) {
+    listing = response.data;
+  } else {
+    // TODO remove once we expect api to succeed
+    listing = SAMPLE_DATA.find((listing) => listing.id === id);
+  }
 
   if (!listing) {
     return <div>
@@ -31,7 +28,7 @@ const ViewReviewsPage = () => {
 
   return (
     <div>
-      <ListingDetailsReview listing={listing} />
+      <ListingDetails listing={listing} />
     </div>
   );
 };
