@@ -20,7 +20,7 @@ import RequestPasswordChange from './pages/RequestPasswordChange.js';
 import CompletePasswordChange from './pages/CompletePasswordChange.js';
 import PasswordUpdated from './pages/PasswordUpdated.js';
 import ViewReviewsPage from './pages/ViewReviewsPage.js';
-
+import PageNotFound from './pages/PageNotFound.js';
 
 function App() {  
   return (
@@ -47,6 +47,7 @@ function App() {
         <Route path="/password-updated" element={<PasswordUpdated />} />
         <Route path="/view-reviews/:id" element={<ViewReviewsPage />} />
         {/* Add other routes here */}
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
     </Router>
   );
