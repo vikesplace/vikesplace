@@ -10,7 +10,7 @@ class AuthService {
     * Error: returns message
     */
     async login(username, password) {
-        const response = axios
+        const response = await axios
             .post(API_URL + "login", {
                 username,
                 password
