@@ -1,4 +1,5 @@
 import Review from "../models/review_models.js";
+import Users from "../models/user_models.js";
 
 export const createReview = async (req, res) => {
     try {
@@ -27,15 +28,32 @@ export const getAllReviews = async (req, res) => {
             where: {
                 listing_id: req.params.listingId
             },
-            attributes: [["review_content", "reviewContent"]]
+            attributes: [
+                ["review_content", "review"],
+                "user_id",
+                ["timestamp", "createdOn"]
+            ]
         });
         if (!reviews) {
             console.error("Listing not found");
             return res.status(500).send();
         }
-        return res.status(200).json({
-            reviewContent: reviews
-        });
+
+        const reviewsData = [];
+        for (let i = 0; i < reviews.length; i++) {
+            const user = await Users.findOne({
+                where: {
+                    user_id: reviews[i].dataValues.user_id
+                },
+                attributes: ["username"]
+            });
+            reviewsData.push({
+                username: user.dataValues.username,
+                review: reviews[i].dataValues.review,
+                createdOn: reviews[i].dataValues.createdOn
+            });
+        }
+        return res.status(200).json(reviewsData);
     } catch (error) {
         console.error(error);
         return res.status(500).send();
