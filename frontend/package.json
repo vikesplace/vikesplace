@@ -16,6 +16,7 @@
     "react-chat-elements": "^12.0.14",
     "react-dom": "^18.2.0",
     "react-multi-carousel": "^2.8.5",
+    "react-notifications-component": "^4.0.1",
     "react-router": "^6.23.1",
     "react-router-dom": "^6.23.1",
     "react-scripts": "5.0.1",
