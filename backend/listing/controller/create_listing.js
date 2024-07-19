@@ -1,11 +1,12 @@
 import axios from 'axios';
+import { apiConfig } from '../config/apiConfig.js';
 
 export const createListing = async (req, res) => {
     let geoPointLocation = null;
     const seller_id = res.locals.decodedToken.userId;
     try{
         // get the lat,long geopoint of the provided postal code location
-        const geoPoint = await axios.get(`/listing/location/${req.body.location}`);
+        const geoPoint = await axios.get(`${apiConfig.DATA_LAYER}listing/location/${req.body.location}`);
         geoPointLocation = geoPoint.data;
         
     } catch (geoError) {
@@ -23,7 +24,7 @@ export const createListing = async (req, res) => {
         }
 
         // create a new listing in the database
-        const response = await axios.post("/listing",{
+        const response = await axios.post(`${apiConfig.DATA_LAYER}listing`,{
             title: req.body.title,
             seller_id: seller_id,
             price: req.body.price,

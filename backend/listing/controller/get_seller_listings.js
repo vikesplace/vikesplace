@@ -1,9 +1,10 @@
 import axios from "axios";
+import { apiConfig } from "../config/apiConfig.js";
 
 export const getSellerListings = async (req, res) => {
   try {
     const seller_id = res.locals.decodedToken.userId;
-    const response = await axios.get(`/listing/me`, {
+    const response = await axios.get(`${apiConfig.DATA_LAYER}listing/me`, {
       params: { seller_id: seller_id },
     });
     res.json(response.data);

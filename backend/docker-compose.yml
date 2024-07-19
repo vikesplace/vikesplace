@@ -96,6 +96,7 @@ services:
       - DB_PORT=${DB_PORT}
       - DATA_LAYER=${DATA_LAYER}
       - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
+      - ALG_SEARCH=${ALG_SEARCH}
 
   recommendation:
     container_name: recommendation

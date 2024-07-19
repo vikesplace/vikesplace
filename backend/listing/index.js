@@ -1,6 +1,5 @@
 import express from "express";
 import "dotenv/config";
-import axiosConfig from "./config/axiosConfig.js";
 import listing from "./routes/listing.js";
 import jwt from "jsonwebtoken";
 import cookieParser from 'cookie-parser';
