@@ -111,12 +111,12 @@ services:
       - ALG_RECOMMENDATION=${ALG_RECOMMENDATION}
       - DATA_LAYER=${DATA_LAYER}
   
-  search:
-    container_name: search
+  be-search:
+    container_name: be-search
     build:
       context: ./search
     volumes:
-      - ./search:/home/node/app
+      - ./be-search:/home/node/app
       - /home/node/app/node_module
     ports:
       - "5007:5000"
