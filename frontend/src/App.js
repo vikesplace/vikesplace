@@ -1,5 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { ReactNotifications } from 'react-notifications-component';
+import 'react-notifications-component/dist/theme.css';
 import NavBar from './components/NavBar.js';
 import Home from './pages/Home.js';
 import ViewListings from './pages/ViewListings.js';
@@ -26,6 +28,7 @@ function App() {
   return (
     <Router>
       <NavBar />
+      <ReactNotifications />
       <Routes>
         {/* Access if logged out */}
         <Route path="/login" element={<Login />} />
