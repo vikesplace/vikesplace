@@ -36,29 +36,30 @@ describe("Get all Reviews", () => {
             },
             mockRes
         );
-        expect(responseObject).toEqual(mockOutput);
+        expect(responseObject).toEqual({"reviews": mockOutput});    
     });
 
-    it("it should fail to return all reviews", async () => {
+    it("should return 500 if failed to get reviews", async () => {
         axios.get.mockImplementation(() =>
-            Promise.resolve({ data: { message: "Listing id not found" } })
+            Promise.reject(new Error())
         );
         let responseObject = {};
-        const mockRes = {
+        const mockGetRes = {
             body: {},
             json: jest.fn().mockImplementation((result) => {
                 responseObject = result;
             }),
-            status: jest.fn(),
+            status: jest.fn().mockReturnThis(),
         };
+
         await getAllReviews(
             {
                 params: {
                     listingId: "1",
                 },
-            },
-            mockRes
-        );
-        expect(responseObject).toEqual({ message: "Listing id not found" });
+            }, 
+        mockGetRes);
+        expect(responseObject).toEqual({ message: "Failed to get reviews" });
+        expect(mockGetRes.status).toHaveBeenCalledWith(500);
     });
 });

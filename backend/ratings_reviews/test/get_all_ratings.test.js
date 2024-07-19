@@ -26,7 +26,7 @@ describe("Get All Ratings Tests", () => {
                 },
             }, 
         mockGetRes);
-        expect(responseObject).toEqual({"ratings": [4]});
+        expect(responseObject).toEqual({"ratings": [{"rating_value": 4}]});
     });
 
     it("should return 500 if failed to get ratings", async () => {

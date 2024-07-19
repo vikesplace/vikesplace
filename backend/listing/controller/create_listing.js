@@ -19,6 +19,10 @@ export const createListing = async (req, res) => {
     }
 
     try {
+        if (req.body.price < 0) {
+            return res.status(400).json({ message: "Listing price cannot be negative" });
+        }
+
         // create a new listing in the database
         const response = await axios.post(`${apiConfig.DATA_LAYER}listing`,{
             title: req.body.title,

@@ -9,8 +9,20 @@ describe("Create Listing Tests", () => {
   });
 
   it("should create a listing", async () => {
+    const mockOutput = {
+      data:{
+        listingId: 1,
+        title: "test",
+        price: 1,
+        location: "V9A1Y2",
+        status: "AVAILABLE",
+      }
+    };
+
     axios.post.mockImplementation(() =>
-      Promise.resolve({ data: 1, status: 200 })
+      Promise.resolve({ 
+        data: mockOutput, 
+        status: 200 })
     );
     let postResponse = {};
     const mockPostRes = {
@@ -29,14 +41,14 @@ describe("Create Listing Tests", () => {
     const mockReq = {
       body: {
         title: "test",
-        price: 0,
+        price: 1,
         location: "V9A1Y2",
         category: "ELECTRONICS",
       },
     };
 
     await createListing(mockReq, mockPostRes);
-    expect(postResponse).toEqual(1);
+    expect(postResponse).toEqual(mockOutput);
   });
 
   it("should fail to create listing", async () => {
@@ -99,5 +111,34 @@ describe("Create Listing Tests", () => {
     await createListing(mockReq, mockPostRes);
     expect(mockPostRes.status).toHaveBeenCalledWith(400);
     expect(mockPostRes.json).toHaveBeenCalledWith({ message: "Location not found" });
+  });
+
+  it("should fail due to negative listing price", async () => {
+    let postResponse = {};
+    const mockPostRes = {
+      body: {},
+      json: jest.fn().mockImplementation((result) => {
+        postResponse = result;
+      }),
+      status: jest.fn().mockReturnThis(),
+      locals: { decodedToken: { userId: 1 } },
+    };
+
+    axios.get.mockImplementation(() =>
+      Promise.resolve({ data: { type: "Point", coordinates: [1, -1] } })
+    );
+
+    const mockReq = {
+      body: {
+        title: "test",
+        price: -1,
+        location: "V9A1Y2",
+        category: "ELECTRONICS",
+      },
+    };
+
+    await createListing(mockReq, mockPostRes);
+    expect(mockPostRes.status).toHaveBeenCalledWith(400);
+    expect(mockPostRes.json).toHaveBeenCalledWith({ message: "Listing price cannot be negative" });
   });
 });
