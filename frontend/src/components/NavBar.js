@@ -43,17 +43,18 @@ function NavBar() {
     setAnchorElUser(null);
   };
 
-  const hideButtons = location.pathname === '/login' || location.pathname === '/request-account' ||
-    location.pathname === '/check-email' || location.pathname === '/verify-account' || location.pathname === '/verified' ||
-    location.pathname === '/password-change' || location.pathname === '/password-update'   || 
-    location.pathname === '/password-updated' || location.pathname === '/check-email';
+  const pathWithoutId = location.pathname.split("/")[1];
+  const showButtons = pathWithoutId === '' || pathWithoutId === 'home' || pathWithoutId === 'view-listings' || pathWithoutId === 'create-listing' ||
+    pathWithoutId === 'manage-listings' || pathWithoutId === 'messages' || pathWithoutId === 'history' || pathWithoutId === 'listings' ||
+    pathWithoutId === 'edit-listing'   || pathWithoutId === 'message-history' || pathWithoutId === 'user-profile' || 
+    pathWithoutId === 'view-reviews' || pathWithoutId === 'create-review' || pathWithoutId === 'charity-events';
 
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
         
-          {!hideButtons &&(
+          {showButtons &&(
             <>  
               <div className="logo">
                 <Link to="/">
@@ -78,7 +79,7 @@ function NavBar() {
             </>
           )}
 
-          {hideButtons &&(
+          {!showButtons &&(
             <>  
               <div className="logo">
                 <Link to="/login">
@@ -103,7 +104,7 @@ function NavBar() {
             </>
           )}
 
-          {!hideButtons && (
+          {showButtons && (
             <>
               <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                 <IconButton
@@ -158,7 +159,7 @@ function NavBar() {
             </>
           )}
 
-          {!hideButtons && (
+          {showButtons && (
               <>
           <div>
             <IconButton
