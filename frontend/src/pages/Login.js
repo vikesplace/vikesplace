@@ -67,7 +67,7 @@ function Login() {
             if (response === undefined) {
                 alert("Connection error, please try again.");
             } else if (response.status === 200) {
-                navigate('/');
+                navigate('/home');
             } else {
                 alert("Unable to login, please try again.");
             }
