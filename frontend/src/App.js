@@ -42,13 +42,13 @@ function App() {
         <Route path="/view-listings" element={<ViewListings />} />
         <Route path="/create-listing" element={<CreateListing />} />
         <Route path="/manage-listings" element={<ManageListings />} />
-        <Route path="/messages" element={<Messages />} />
-        <Route path="/history" element={<SearchHistory />} />
         <Route path="/listings/:id" element={<ListingDetailsPage />} />
         <Route path="/edit-listing/:id" element={<EditListing />} />
-        <Route path="/message-history/:id" element={<MessageHistory />} />
-        <Route path="/user-profile" element={<UserProfile />} />
         <Route path="/view-reviews/:id" element={<ViewReviewsPage />} />
+        <Route path="/messages" element={<Messages />} />
+        <Route path="/message-history/:id" element={<MessageHistory />} />
+        <Route path="/history" element={<SearchHistory />} />
+        <Route path="/user-profile" element={<UserProfile />} />
 
         {/* Add other routes here */}
 
