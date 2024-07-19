@@ -27,26 +27,31 @@ function App() {
     <Router>
       <NavBar />
       <Routes>
+        {/* Access if logged out */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/request-account" element={<RequestAccount />} />
+        <Route path="/verify-account" element={<VerifyAccount />} />
+        <Route path="/verified" element={<VerifiedAccount />} />
+        <Route path="/check-email" element={<CheckYourEmail />} />
+        <Route path="/password-change" element={<RequestPasswordChange />} />
+        <Route path="/password-update" element={<CompletePasswordChange />} />
+        <Route path="/password-updated" element={<PasswordUpdated />} />
+        
+        {/* Access if logged in */}
         <Route path="/" element={<Home />} /> 
         <Route path="/view-listings" element={<ViewListings />} />
         <Route path="/create-listing" element={<CreateListing />} />
         <Route path="/manage-listings" element={<ManageListings />} />
         <Route path="/messages" element={<Messages />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/verify-account" element={<VerifyAccount />} />
-        <Route path="/verified" element={<VerifiedAccount />} />
         <Route path="/history" element={<SearchHistory />} />
-        <Route path="/request-account" element={<RequestAccount />} />
-        <Route path="/check-email" element={<CheckYourEmail />} />
         <Route path="/listings/:id" element={<ListingDetailsPage />} />
         <Route path="/edit-listing/:id" element={<EditListing />} />
         <Route path="/message-history/:id" element={<MessageHistory />} />
         <Route path="/user-profile" element={<UserProfile />} />
-        <Route path="/password-change" element={<RequestPasswordChange />} />
-        <Route path="/password-update" element={<CompletePasswordChange />} />
-        <Route path="/password-updated" element={<PasswordUpdated />} />
         <Route path="/view-reviews/:id" element={<ViewReviewsPage />} />
+
         {/* Add other routes here */}
+
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </Router>
