@@ -4,15 +4,9 @@ jest.mock("axios");
 
 describe("Create Chat Tests", () => {
   it("should create a chat", async () => {
-    const mockOutput = {
-      chat_id: 1,
-      listing_id: 1,
-      user_id_one: 1,
-      user_id_two: 2,
-    };
     axios.post.mockImplementation(() =>
       Promise.resolve({
-        data: mockOutput,
+        data: "1", status: 200
       })
     );
 
@@ -35,14 +29,12 @@ describe("Create Chat Tests", () => {
       },
       mockRes
     );
-    expect(responseObject).toEqual(mockOutput);
+    expect(responseObject).toEqual({ chatId: "1" });
   });
 
   it("should fail to create a chat", async () => {
-    axios.post.mockImplementation(() =>
-      Promise.resolve({ data: { message: "Could not create chat" } })
-    );
-
+    axios.post.mockRejectedValue({ response: { status: 500 } });
+    
     let responseObject = {};
     const mockRes = {
       body: {
@@ -51,7 +43,7 @@ describe("Create Chat Tests", () => {
       json: jest.fn().mockImplementation((result) => {
         responseObject = result;
       }),
-      status: jest.fn(),
+      status: jest.fn().mockReturnThis(),
       locals: { decodedToken: { userId: 1 } },
     };
 
@@ -63,6 +55,32 @@ describe("Create Chat Tests", () => {
       },
       mockRes
     );
-    expect(responseObject).toEqual({ message: "Could not create chat" });
+    expect(responseObject).toEqual({message: "Failed to create chat" });
+  });
+
+  it("should fail if chat already exists", async () => {
+    axios.post.mockRejectedValue({ response: { data: { message: "Chat already exists" }, status: 400 } });
+
+    let responseObject = {};
+    const mockRes = {
+      body: {
+        userId: 1,
+      },
+      json: jest.fn().mockImplementation((result) => {
+        responseObject = result;
+      }),
+      status: jest.fn().mockReturnThis(),
+      locals: { decodedToken: { userId: 1 } },
+    };
+
+    await createChat(
+      {
+        params: {
+          listingId: "1",
+        },
+      },
+      mockRes
+    );
+    expect(responseObject).toEqual({ message: "Chat already exists" });
   });
 });
