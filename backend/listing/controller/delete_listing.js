@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { apiConfig } from '../config/apiConfig.js';
 
 export const deleteListing = async (req, res) => {
     try{
-        const response = await axios.delete(`/listing/${req.params.listingId}`);
+        const response = await axios.delete(`${apiConfig.DATA_LAYER}listing/${req.params.listingId}`);
         res.json(response.data);
     }
     catch(err){

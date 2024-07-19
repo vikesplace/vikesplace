@@ -1,13 +1,14 @@
 import axios from "axios";
 import { calculateDistance } from "../helper/calculate_distance.js";
+import { apiConfig } from "../config/apiConfig.js";
 
 export const getSortedListings = async (req, res) => {
   try {
     const userId = res.locals.decodedToken.userId;
-    const user = await axios.get(`/user/getUserLatLong/${userId}`);
+    const user = await axios.get(`${apiConfig.DATA_LAYER}user/getUserLatLong/${userId}`);
     const userCoordinates = user.data.lat_long.coordinates;
 
-    const response = await axios.get(`/listing`, {
+    const response = await axios.get(`${apiConfig.DATA_LAYER}listing`, {
       params: {
         pullLimit: req.query.pullLimit,
         pageOffset: req.query.pageOffset,

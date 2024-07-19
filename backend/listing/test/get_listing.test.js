@@ -5,6 +5,7 @@ jest.mock("axios");
 
 describe("Get Listing Tests", () => {
   it("should get a listing", async () => {
+    axios.post = jest.fn(() => Promise.resolve());
     axios.get.mockImplementation(() =>
       Promise.resolve({
         data: {
@@ -25,7 +26,8 @@ describe("Get Listing Tests", () => {
       json: jest.fn().mockImplementation((result) => {
         responseObject = result;
       }),
-      status: jest.fn(),
+      status: jest.fn().mockReturnThis(),
+      locals: { decodedToken: { userId: 1 } }
     };
     await getListingInfo(
       {
@@ -49,7 +51,7 @@ describe("Get Listing Tests", () => {
 
   it("should fail to get a listing", async () => {
     axios.get.mockImplementation(() =>
-      Promise.resolve({ data: { message: "Unable to get listing with id: 1" } })
+      Promise.resolve({ data: { message: "Failed to get listing" } })
     );
     let responseObject = {};
     const mockRes = {
@@ -57,7 +59,8 @@ describe("Get Listing Tests", () => {
       json: jest.fn().mockImplementation((result) => {
         responseObject = result;
       }),
-      status: jest.fn(),
+      status: jest.fn().mockReturnThis(),
+      locals: { decodedToken: { userId: 1 } }
     };
     await getListingInfo(
       {
@@ -68,7 +71,7 @@ describe("Get Listing Tests", () => {
       mockRes
     );
     expect(responseObject).toEqual({
-      message: "Unable to get listing with id: 1",
+      message: "Failed to get listing",
     });
   });
 });
