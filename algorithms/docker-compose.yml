@@ -49,32 +49,36 @@ services:
       retries: 5
 
   neo4j:
-    image: neo4j:4.4.31-enterprise
+    build: 
+      context: ./neo4j/conf
+      dockerfile: Dockerfile
     container_name: neo4j
     environment:
       NEO4J_AUTH: ${NEO4J_AUTH}
       NEO4J_ACCEPT_LICENSE_AGREEMENT: "yes"
-      NEO4J_server_config_strict_validation_enabled: "false"
-      NEO4J_apoc_initializer_cypher: 'CALL apoc.cypher.runSchemaFile("file:////var/lib/neo4j/init.cypher");'
+      #NEO4J_server_config_strict_validation_enabled: "false"
+      NEO4J_apoc_initializer_cypher: 'CALL apoc.cypher.runSchemaFile("file:///var/lib/neo4j/init.cypher");'
       NEO4JLABS_PLUGINS: '["apoc"]' 
       NEO4J_apoc_export_file_enabled: "true" 
       NEO4J_apoc_import_file_enabled: "true" 
       NEO4J_apoc_import_file_use__neo4j__config: "true" 
-      NEO4J_dbms_directories_import: "/" 
+      NEO4J_dbms_directories_import: "/"
+      NEO4J_dbms.security.procedures.unrestricted: "apoc.*"
+      NEO4J_dbms.security.procedures.allowlist: "apoc.*"
+      NEO4JLABS_PLUGINS__ENABLED__PLUGIN__INSTALL: "false"
     ports:
       - 7474:7474
       - 7687:7687
     volumes:
       - neo4jdata:/data
       - ./neo4j/conf/init.sh:/docker-entrypoint-initdb.d/init.cypher
-      #- ./neo4j/neo4j-streams-4.1.5.jar:/plugins
-      #- ./neo4j/streams.conf:/var/lib/neo4j/streams.conf
       - ./neo4j/conf/apoc.conf:/var/lib/apoc.conf
       - ./neo4j/conf/init.cypher:/var/lib/neo4j/init.cypher
     depends_on:
       - kafka
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--spider", "http://neo4j:7474"]
+      #test: ["CMD-SHELL", "cypher-shell -u neo4j -p neo4j_$3ng499"]
       interval: 10s
       timeout: 10s
       retries: 10
@@ -181,6 +185,7 @@ services:
         # Wait for Kafka Connect to terminate (forwarding signals)
         wait
       "
+  
   neo4j-relations-kafka-connect:
     build: 
       context: /neo4j-relations-kafka-connect
@@ -487,4 +492,23 @@ services:
         "/recommender/wait-for-cert.sh \
         && /recommender/wait-for-elastic.sh \
         && fastapi run routes.py --port 8001"
+      ]
+
+  recommender_advanced:
+    depends_on:
+      neo4j:
+        condition: service_healthy
+    build: 
+      context: ./recommender_advanced
+      dockerfile: Dockerfile
+    ports:
+      - "8002:8002"
+    environment:
+      - NEO4J_USER=${NEO4J_USER}
+      - NEO4J_PASSWORD=${NEO4J_PASSWORD}
+      - NEO4J_URI=${NEO4J_URI_DOCKER}
+    entrypoint: 
+      [
+        "/bin/sh", "-c", 
+        "fastapi run routes.py --port 8002"
       ]
