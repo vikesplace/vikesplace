@@ -350,8 +350,8 @@ services:
         condition: service_healthy
       kibana:
         condition: service_healthy
-      # kafka:
-      #   condition: service_healthy
+      kafka:
+        condition: service_healthy
     build:
       context: ./logstash
       dockerfile: Dockerfile
