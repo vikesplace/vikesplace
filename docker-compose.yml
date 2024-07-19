@@ -69,7 +69,7 @@ services:
   be-search:
     extends:
       file: backend/docker-compose.yml
-      service: search
+      service: be-search
 
   data_layer:
     extends:
