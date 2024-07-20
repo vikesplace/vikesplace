@@ -164,7 +164,7 @@ function NavBar() {
           <div>
             <IconButton
               size="large"
-              aria-label="account of current user"
+              aria-label="account menu of current user"
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenUserMenu}
