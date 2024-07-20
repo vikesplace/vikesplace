@@ -14,7 +14,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import Pagination from '@mui/lab/Pagination';
+import Pagination from '@mui/material/Pagination'
 import '../App.css';
 import ListingCard from '../components/ListingCard';
 import SearchBar from '../components/SearchBar';
