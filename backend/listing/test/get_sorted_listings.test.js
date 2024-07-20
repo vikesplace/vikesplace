@@ -161,4 +161,19 @@ describe("Get Sorted Listings Tests", () => {
     expect(mockGetRes.status).toHaveBeenCalledWith(500);
     expect(responseObject).toEqual({ message: "Failed to get listings" });
   });
+
+  it("should return error if min price is greater than max price", async () => {
+    const res = {
+      locals: {
+        decodedToken: {
+          userId: 'mockUserId'
+        }
+      },
+      status: jest.fn(() => res),
+      json: jest.fn()
+    };
+    await getSortedListings({ query: { minPrice: 100, maxPrice: 50 } }, res);
+    expect(res.status).toHaveBeenCalledWith(400); 
+    expect(res.json).toHaveBeenCalledWith({ message: 'Min price cannot be greater than max price' });
+  });
 });
