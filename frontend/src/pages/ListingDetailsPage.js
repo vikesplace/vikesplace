@@ -1,6 +1,8 @@
 import React, {useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
 import ListingDetails from '../components/ListingDetails';
 import DataService from '../services/DataService.js';
 
@@ -33,9 +35,19 @@ const ListingDetailsPage = () => {
   }
 
   return (
-    <div>
-      <ListingDetails listing={listing} />
-    </div>
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="flex-start"
+      minHeight="100vh"
+      bgcolor="background.paper"
+    >
+      <Grid container spacing={2} justifyContent="center" sx={{ mt: 2 }}>
+        <Grid item xs={12} md={8}>
+          <ListingDetails listing={listing} />
+        </Grid>
+      </Grid>
+    </Box>
   );
 };
 

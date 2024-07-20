@@ -19,6 +19,7 @@ import UserProfile from './pages/UserProfile.js';
 import RequestPasswordChange from './pages/RequestPasswordChange.js';
 import CompletePasswordChange from './pages/CompletePasswordChange.js';
 import PasswordUpdated from './pages/PasswordUpdated.js';
+import CreateReview from './pages/CreateReview.js';
 import ViewReviewsPage from './pages/ViewReviewsPage.js';
 import PageNotFound from './pages/PageNotFound.js';
 import SearchBar from './components/searchbar/SearchBar.js';
