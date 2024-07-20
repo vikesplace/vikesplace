@@ -43,11 +43,11 @@ function NavBar() {
     setAnchorElUser(null);
   };
 
-  const pathWithoutId = location.pathname.split("/")[1];
-  const showButtons = pathWithoutId === '' || pathWithoutId === 'home' || pathWithoutId === 'view-listings' || pathWithoutId === 'create-listing' ||
-    pathWithoutId === 'manage-listings' || pathWithoutId === 'messages' || pathWithoutId === 'history' || pathWithoutId === 'listings' ||
-    pathWithoutId === 'edit-listing'   || pathWithoutId === 'message-history' || pathWithoutId === 'user-profile' || 
-    pathWithoutId === 'view-reviews' || pathWithoutId === 'create-review' || pathWithoutId === 'charity-events';
+  const pathWithoutParams = location.pathname.split("/")[1];
+  const showButtons = pathWithoutParams === '' || pathWithoutParams === 'home' || pathWithoutParams === 'view-listings' || pathWithoutParams === 'create-listing' ||
+    pathWithoutParams === 'manage-listings' || pathWithoutParams === 'messages' || pathWithoutParams === 'history' || pathWithoutParams === 'listings' ||
+    pathWithoutParams === 'edit-listing'   || pathWithoutParams === 'message-history' || pathWithoutParams === 'user-profile' || 
+    pathWithoutParams === 'view-reviews' || pathWithoutParams === 'create-review' || pathWithoutParams === 'charity-events';
 
   return (
     <AppBar position="static">
