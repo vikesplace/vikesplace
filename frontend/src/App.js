@@ -52,6 +52,7 @@ function App() {
           <Route path="/password-update" element={<CompletePasswordChange />} />
           <Route path="/password-updated" element={<PasswordUpdated />} />
           <Route path="/view-reviews/:id" element={<ViewReviewsPage />} />
+          <Route path="/create-review/:id" element={<CreateReview />} />
           {/* Add other routes here */}
           <Route path="*" element={<PageNotFound />} />
         </Routes>

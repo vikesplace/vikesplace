@@ -83,104 +83,104 @@ services:
       timeout: 10s
       retries: 10
   
-  # zookeeper:
-  #   image: wurstmeister/zookeeper
-  #   ports:
-  #     - "2181:2181"
-  #   environment:
-  #     ZOOKEEPER_CLIENT_PORT: 2181
-  #     ZOOKEEPER_TICK_TIME: 2000
-  #   volumes:
-  #     - zookeeperdata:/data
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    volumes:
+      - zookeeperdata:/data
 
-  # kafka:
-  #   image: wurstmeister/kafka:2.12-2.2.1
-  #   ports:
-  #     - "9092:9092"
-  #   environment:
-  #     KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
-  #     KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-  #     KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-  #   volumes:
-  #     - kafkadata:/var/lib/kafka
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #   healthcheck:
-  #     test: ["CMD", "nc", "-z", "kafka", "9092"]
-  #     interval: 30s
-  #     timeout: 10s
-  #     retries: 5
+  kafka:
+    image: wurstmeister/kafka:2.12-2.2.1
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    volumes:
+      - kafkadata:/var/lib/kafka
+      - /var/run/docker.sock:/var/run/docker.sock
+    healthcheck:
+      test: ["CMD", "nc", "-z", "kafka", "9092"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
-  # create-topics:
-  #   image: confluentinc/cp-kafka:7.2.1
-  #   depends_on:
-  #     kafka:
-  #       condition: service_healthy
-  #   entrypoint: ["/bin/sh", "-c"]
-  #   command: >
-  #     "kafka-topics --create --topic users_topic --bootstrap-server kafka:9092 --partitions 1 --replication-factor 1 &&
-  #      kafka-topics --create --topic listings_topic --bootstrap-server kafka:9092 --partitions 1 --replication-factor 1 &&
-  #      kafka-topics --create --topic user.vikesplace.user_activity.activities --bootstrap-server kafka:9092 --partitions 1 --replication-factor 1"
+  create-topics:
+    image: confluentinc/cp-kafka:7.2.1
+    depends_on:
+      kafka:
+        condition: service_healthy
+    entrypoint: ["/bin/sh", "-c"]
+    command: >
+      "kafka-topics --create --topic users_topic --bootstrap-server kafka:9092 --partitions 1 --replication-factor 1 &&
+       kafka-topics --create --topic listings_topic --bootstrap-server kafka:9092 --partitions 1 --replication-factor 1 &&
+       kafka-topics --create --topic user.vikesplace.user_activity.activities --bootstrap-server kafka:9092 --partitions 1 --replication-factor 1"
 
-  # kafka-connect:
-  #   build: 
-  #     context: /kafka-connect
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "8083:8083"
-  #   volumes:
-  #     - kafkadata:/var/lib/kafka/data
-  #   depends_on:
-  #     - kafka
-  #     - neo4j
-  #   environment:
-  #     - NEO4J_PASSWORD=${NEO4J_PASSWORD}
-  #     - NEO4J_USER=${NEO4J_USER}
-  #     - CONNECT_BOOTSTRAP_SERVERS=kafka:9092 
-  #     - CONNECT_REST_ADVERTISED_HOST_NAME=kafka-connect 
-  #     - CONNECT_GROUP_ID=kafka-connect-group 
-  #     - CONNECT_CONFIG_STORAGE_TOPIC=connect-configs 
-  #     - CONNECT_OFFSET_STORAGE_TOPIC=connect-offsets 
-  #     - CONNECT_STATUS_STORAGE_TOPIC=connect-status 
-  #     - CONNECT_KEY_CONVERTER=org.apache.kafka.connect.json.JsonConverter 
-  #     - CONNECT_VALUE_CONVERTER=org.apache.kafka.connect.json.JsonConverter 
-  #     - CONNECT_KEY_CONVERTER_SCHEMAS_ENABLE=false 
-  #     - CONNECT_VALUE_CONVERTER_SCHEMAS_ENABLE=false 
-  #     - CONNECT_PLUGIN_PATH=/usr/share/java/
-  #     - CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR=1
-  #     - CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR=1
-  #     - CONNECT_STATUS_STORAGE_REPLICATION_FACTOR=1
-  #   command: >
-  #     bash -c "
-  #       # Start Kafka Connect in the background
-  #       /etc/confluent/docker/run &
+  kafka-connect:
+    build: 
+      context: /kafka-connect
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
+    volumes:
+      - kafkadata:/var/lib/kafka/data
+    depends_on:
+      - kafka
+      - neo4j
+    environment:
+      - NEO4J_PASSWORD=${NEO4J_PASSWORD}
+      - NEO4J_USER=${NEO4J_USER}
+      - CONNECT_BOOTSTRAP_SERVERS=kafka:9092 
+      - CONNECT_REST_ADVERTISED_HOST_NAME=kafka-connect 
+      - CONNECT_GROUP_ID=kafka-connect-group 
+      - CONNECT_CONFIG_STORAGE_TOPIC=connect-configs 
+      - CONNECT_OFFSET_STORAGE_TOPIC=connect-offsets 
+      - CONNECT_STATUS_STORAGE_TOPIC=connect-status 
+      - CONNECT_KEY_CONVERTER=org.apache.kafka.connect.json.JsonConverter 
+      - CONNECT_VALUE_CONVERTER=org.apache.kafka.connect.json.JsonConverter 
+      - CONNECT_KEY_CONVERTER_SCHEMAS_ENABLE=false 
+      - CONNECT_VALUE_CONVERTER_SCHEMAS_ENABLE=false 
+      - CONNECT_PLUGIN_PATH=/usr/share/java/
+      - CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR=1
+      - CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR=1
+      - CONNECT_STATUS_STORAGE_REPLICATION_FACTOR=1
+    command: >
+      bash -c "
+        # Start Kafka Connect in the background
+        /etc/confluent/docker/run &
 
-  #       # Wait for Kafka Connect to be ready
-  #       while ! nc -z localhost 8083; do
-  #         echo 'Waiting for Kafka Connect to start...'
-  #         sleep 5
-  #       done
+        # Wait for Kafka Connect to be ready
+        while ! nc -z localhost 8083; do
+          echo 'Waiting for Kafka Connect to start...'
+          sleep 5
+        done
 
-  #       #confluent-hub install --no-prompt mongodb/kafka-connect-mongodb:latest
+        #confluent-hub install --no-prompt mongodb/kafka-connect-mongodb:latest
 
-  #       #Register the Neo4j sink connector if not already registered
-  #       if ! curl -s http://localhost:8083/connectors | grep neo4j-sink; then
-  #         echo 'Registering Neo4j sink connector...'
-  #         curl -X POST -H 'Content-Type: application/json' --data @/etc/kafka-connect/neo4j-sink.json http://localhost:8083/connectors
-  #       fi
+        #Register the Neo4j sink connector if not already registered
+        if ! curl -s http://localhost:8083/connectors | grep neo4j-sink; then
+          echo 'Registering Neo4j sink connector...'
+          curl -X POST -H 'Content-Type: application/json' --data @/etc/kafka-connect/neo4j-sink.json http://localhost:8083/connectors
+        fi
 
-  #       # Register the MongoDB source connector if not already registered
-  #       if ! curl -s http://localhost:8083/connectors | grep mongo-source; then
-  #         echo 'Registering MongoDB source connector...'
-  #         curl -X POST -H 'Content-Type: application/json' --data @/etc/kafka-connect/mongo-source.json http://localhost:8083/connectors
-  #       fi
+        # Register the MongoDB source connector if not already registered
+        if ! curl -s http://localhost:8083/connectors | grep mongo-source; then
+          echo 'Registering MongoDB source connector...'
+          curl -X POST -H 'Content-Type: application/json' --data @/etc/kafka-connect/mongo-source.json http://localhost:8083/connectors
+        fi
 
-  #       # Periodic synchronization every 5 minutes (300 seconds)
-  #       while true; do
-  #         echo 'Synchronizing connectors...'
-  #         curl -X POST -H 'Content-Type: application/json' --data @/etc/kafka-connect/neo4j-sink.json http://localhost:8083/connectors
-  #         curl -X POST -H 'Content-Type: application/json' --data @/etc/kafka-connect/mongo-source.json http://localhost:8083/connectors
-  #         sleep 300
-  #       done
+        # Periodic synchronization every 5 minutes (300 seconds)
+        while true; do
+          echo 'Synchronizing connectors...'
+          curl -X POST -H 'Content-Type: application/json' --data @/etc/kafka-connect/neo4j-sink.json http://localhost:8083/connectors
+          curl -X POST -H 'Content-Type: application/json' --data @/etc/kafka-connect/mongo-source.json http://localhost:8083/connectors
+          sleep 300
+        done
 
         # Wait for Kafka Connect to terminate (forwarding signals)
         wait
@@ -382,27 +382,27 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 
-  # logstash-kafka:
-  #   depends_on:
-  #     postgresql:
-  #       condition: service_healthy
-  #     kafka:
-  #       condition: service_healthy
-  #   build:
-  #     context: ./logstash/logstash-kafka
-  #     dockerfile: Dockerfile
-  #     args:
-  #       - STACK_VERSION=${STACK_VERSION}
-  #   labels:
-  #     co.elastic.logs/module: logstash
-  #   user: root
-  #   volumes:
-  #     - logstashdata-kafka:/usr/share/logstash/data
-  #   environment:
-  #     - xpack.monitoring.enabled=false
-  #     - POSTGRES_DB=${POSTGRES_DB}
-  #     - POSTGRES_USER=${POSTGRES_USER}
-  #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+  logstash-kafka:
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    build:
+      context: ./logstash/logstash-kafka
+      dockerfile: Dockerfile
+      args:
+        - STACK_VERSION=${STACK_VERSION}
+    labels:
+      co.elastic.logs/module: logstash
+    user: root
+    volumes:
+      - logstashdata-kafka:/usr/share/logstash/data
+    environment:
+      - xpack.monitoring.enabled=false
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 
   mongodb:
     build:
