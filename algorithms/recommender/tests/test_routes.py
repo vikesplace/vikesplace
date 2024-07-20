@@ -7,6 +7,7 @@ from fastapi import status
 # Base URL for the deployed FastAPI instance
 BASE_URL = "http://localhost:8001"
 
+MongoDBRequest_OBJ = mongodb_request.MongoDBRequest()
 
 def test_read_root():
     response = requests.get(f"{BASE_URL}/")
@@ -92,7 +93,7 @@ def test_ignore_recommendation_and_delete_ignored_recommendation():
     assert response.status_code == status.HTTP_200_OK
     assert response_obj['results'] == 1
 
-    delete_result = mongodb_request.delete_ignored(user_id, listing_id)
+    delete_result = MongoDBRequest_OBJ.delete_ignored(user_id, listing_id)
 
     assert delete_result == 1
 
@@ -137,6 +138,6 @@ def test_ignore_recommendation_and_delete_ignored_recommendation():
     assert response.status_code == status.HTTP_200_OK
     assert response_obj['results'] == 1
 
-    delete_result = mongodb_request.delete_ignored(user_id, listing_id)
+    delete_result = MongoDBRequest_OBJ.delete_ignored(user_id, listing_id)
 
     assert delete_result == 1

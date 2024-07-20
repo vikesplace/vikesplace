@@ -2,13 +2,24 @@ import recommender.es_request as es_request
 import recommender.mongodb_request as mongodb_request
 from fastapi import FastAPI, Path, Query, status
 from fastapi.responses import JSONResponse
+from contextlib import asynccontextmanager
 from pydantic import BaseModel
-
-app = FastAPI()
-
 
 class User(BaseModel):
     user_id: int
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Load the Database connection objects
+    global ESRequest
+    global MONGORequest
+    ESRequest = es_request.ESRequest()
+    MONGORequest = mongodb_request.MongoDBRequest()
+
+    yield
+
+app = FastAPI(lifespan=lifespan)
+
 
 
 @app.get("/")
@@ -24,7 +35,7 @@ async def recommendations(
     longitude: float = -123.329773,
 ):
     lat_long = (latitude, longitude)
-    results = es_request.recommendation(
+    results = ESRequest.recommendation(
         user_id=user_id,
         user_loc=lat_long)
 
@@ -39,7 +50,7 @@ async def recommendation_current_item(
     user_id: int = Query(None),
     listing_id: int = Query(None)
 ):
-    results = es_request.recommendation_current_item(user_id, listing_id)
+    results = ESRequest.recommendation_current_item(user_id, listing_id)
 
     return JSONResponse(
         status_code=status.HTTP_200_OK,
@@ -51,8 +62,8 @@ async def recommendation_current_item(
 async def recommendations_ignored(
     user_id: str = Path(..., description="The ID of the user")
 ):
-    listings = mongodb_request.ignored_listings(user_id)
-    results = es_request.get_items(listings)
+    listings = MONGORequest.ignored_listings(user_id)
+    results = ESRequest.get_items(listings)
 
     # add when listing was visited to results
     for i in results:
@@ -72,7 +83,7 @@ async def ignore_recommendation(
     listing_id: int = Path(..., description="The ID of the listing")
 ):
     user_id = user.user_id
-    results = mongodb_request.write_ignored(user_id, listing_id)
+    results = MONGORequest.write_ignored(user_id, listing_id)
 
     return {
         "status": status.HTTP_200_OK,

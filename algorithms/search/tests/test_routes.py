@@ -5,7 +5,7 @@ from fastapi import status
 
 # Base URL for the deployed FastAPI instance
 BASE_URL = "http://localhost:8000"
-
+MONGORequest = mongodb_request.MongoDBRequest()
 
 def test_read_root():
     response = requests.get(f"{BASE_URL}/")
@@ -129,7 +129,7 @@ def test_save_search_query_with_existing_history():
 def test_save_search_query_with_no_existing_history():
     user_id = 999
     # clears off search history from previous test iterations
-    mongodb_request.delete_search_document(user_id)
+    MONGORequest.delete_search_document(user_id)
     response = requests.post(
         f"{BASE_URL}/users/{user_id}/searches", json={"query": "air fryer"})
     response_obj = response.json()
@@ -312,6 +312,7 @@ def test_search_non_existing_user():
 def test_view_listings_visited():
     user_id = 1
     response = requests.get(f"{BASE_URL}/users/{user_id}/listings")
+    print(response.json())
     response_obj = response.json()
 
     assert response.status_code == status.HTTP_200_OK
@@ -331,6 +332,6 @@ def test_save_listing_view_and_delete_listing_view():
     assert response.status_code == status.HTTP_200_OK
     assert response_obj['results'] == 1
 
-    delete_result = mongodb_request.delete_user_activity(user_id, listing_id)
+    delete_result = MONGORequest.delete_user_activity(user_id, listing_id)
 
     assert delete_result == 1
