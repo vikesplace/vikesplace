@@ -6,14 +6,13 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import AuthService from '../services/AuthService';
 
 
 function VerifyAccount() {
-    const location = useLocation();
     const navigate = useNavigate();
-    const jwt = location.search.replace("?jwt=", "");
+    const { jwt } = useParams();
     const authService = new AuthService();
     
     const [username, setUsername] = useState("");
@@ -121,7 +120,7 @@ function VerifyAccount() {
             let response = authService.verify(jwt, username, password, upperPostal);
             if (response === undefined) {
                 alert("Connection error, please try again.");
-            } else if (response.status === 201) {
+            } else if (response.status === 200 || response.status === 201) {
                 navigate('/verified');
             } else if (response.data?.message === "Username or email already exists") {
                 setUsernameError("Username or email already exists, please choose another");

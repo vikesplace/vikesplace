@@ -6,13 +6,12 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import AuthService from '../services/AuthService';
 
 function CompletePasswordChange() {
-    const location = useLocation();
     const navigate = useNavigate();
-    const jwt = location.search.replace("?jwt=", "");
+    const { jwt } = useParams();
 
     const authService = new AuthService();
     const [password, setPassword] = useState("");

@@ -2,6 +2,7 @@ import axios from "axios";
 import httpErrorHandler from "./httpErrorHandler";
 
 const API_URL = "http://localhost:8080/";
+const FRONT_URL = "http://localhost:3000/";
 
 class AuthService {
     /*
@@ -16,7 +17,7 @@ class AuthService {
                 password
             }, {withCredentials: true})
             .catch(httpErrorHandler);
-        return await response;
+        return response;
     }
   
     /*
@@ -37,7 +38,7 @@ class AuthService {
         try {
             return await axios.post(API_URL + "request_account", {
                 email,
-                callback: "http://localhost:3000/verify-account?jwt="
+                callback: FRONT_URL + "verify-account/"
             });
         } catch (error) {
             return httpErrorHandler(error);
@@ -70,7 +71,8 @@ class AuthService {
     async requestPasswordChange(email) {
         try {
             return await axios.post(API_URL + "request_reset", {
-                email
+                email,
+                callback: FRONT_URL + "password-update/"
             });
         } catch (error) {
             return httpErrorHandler(error);
