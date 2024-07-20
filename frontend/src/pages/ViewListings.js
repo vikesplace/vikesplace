@@ -39,7 +39,7 @@ function ViewListings() {
   const [postalCodeError, setPostalCodeError] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-  const { setShowSearch, searchQuery, setSearchQuery } = useSearch();
+  const { setShowSearch, searchQuery } = useSearch();
 
   useEffect(() => {
     setShowSearch(true);
@@ -66,7 +66,6 @@ function ViewListings() {
 
     const search = async () => {
       const response = await dataService.search(searchQuery)
-      console.log(response)
 
       if (response === undefined) {
         alert("Connection error, please try again.");
