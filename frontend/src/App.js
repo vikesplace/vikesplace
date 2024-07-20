@@ -21,6 +21,7 @@ import UserProfile from './pages/UserProfile.js';
 import RequestPasswordChange from './pages/RequestPasswordChange.js';
 import CompletePasswordChange from './pages/CompletePasswordChange.js';
 import PasswordUpdated from './pages/PasswordUpdated.js';
+import CreateReview from './pages/CreateReview.js';
 import ViewReviewsPage from './pages/ViewReviewsPage.js';
 import PageNotFound from './pages/PageNotFound.js';
 
@@ -48,6 +49,7 @@ function App() {
         <Route path="/listings/:id" element={<ListingDetailsPage />} />
         <Route path="/edit-listing/:id" element={<EditListing />} />
         <Route path="/view-reviews/:id" element={<ViewReviewsPage />} />
+        <Route path="/create-review/:id" element={<CreateReview />} />
         <Route path="/messages" element={<Messages />} />
         <Route path="/message-history/:id" element={<MessageHistory />} />
         <Route path="/history" element={<SearchHistory />} />

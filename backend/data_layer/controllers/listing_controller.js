@@ -74,7 +74,14 @@ export const createListing = async (req, res) => {
       category: req.body.category,
       for_charity: req.body.forCharity,
     });
-    res.json(createResult.dataValues.listing_id);
+    const output = {
+      listingId: createResult.listing_id,
+      title: createResult.title,
+      price: createResult.price,
+      location: createResult.location,
+      status: createResult.status
+    };
+    res.json(output);
   } catch (error) {
     if (error.name === 'SequelizeValidationError') {
       console.error(error);

@@ -87,6 +87,7 @@ def search(query, lat_long, category=None, status=None):
                                     allow_partial_search_results=True)['hits']['hits']
 
     results["users"] = es.search(index="users", query=query_users,
+                                 source=["user_id", "username"],
                                  allow_partial_search_results=True)['hits']['hits']
 
     results['listings'] = [x['_source'] for x in results['listings']]
