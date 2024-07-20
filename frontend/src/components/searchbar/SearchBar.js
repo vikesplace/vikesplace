@@ -35,8 +35,8 @@ function SearchBar() {
     }
   }
 
-  const handleKeyDown = (event) =>{
-    if(event.key === 'Enter'){
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
       event.preventDefault();
       handleSearch();
     }
@@ -57,13 +57,11 @@ function SearchBar() {
           onChange={handleUserInput}
           defaultValue={''}
           onKeyDown={handleKeyDown}
-         
         />
-        <IconButton type="button" 
-        sx={{ p: '10px' }} 
-        aria-label="search" 
-        onClick={handleSearch}
-        onKeyDown={handleKeyDown}
+        <IconButton type="button"
+          sx={{ p: '10px' }}
+          aria-label="search"
+          onClick={handleSearch}
         >
           <SearchIcon />
         </IconButton>

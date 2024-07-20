@@ -26,15 +26,15 @@ import SearchBar from './components/searchbar/SearchBar.js';
 import { SearchProvider } from './components/searchbar/searchContext.js';
 
 function App() {
- 
+
   return (
     <SearchProvider>
       <Router>
         <NavBar />
-        <SearchBar/>
+        <SearchBar />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/view-listings" element={<ViewListings  />} />
+          <Route path="/view-listings" element={<ViewListings />} />
           <Route path="/create-listing" element={<CreateListing />} />
           <Route path="/manage-listings" element={<ManageListings />} />
           <Route path="/messages" element={<Messages />} />
