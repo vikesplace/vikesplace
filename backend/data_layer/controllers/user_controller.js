@@ -4,6 +4,7 @@ import User from "../models/user_models.js";
 import PostalCodes from "../models/postal_code_models.js";
 import "dotenv/config";
 import Listings from "../models/listing_models.js";
+import { Sequelize } from "sequelize";
 
 // JWT Secret
 const jwtSecret = process.env.ACCESS_TOKEN_SECRET;
@@ -104,27 +105,14 @@ export const getUserData = async (req, res) => {
 
     const itemsSold = await Listings.findAll({
       attributes: [
-        ["seller_id", "sellerId"],
-        ["listing_id", "listingId"],
-        "location",
-        "price",
-        ["listed_at", "listedAt"],
-        "status",
-        "title",
-        ["last_updated_at", "lastUpdatedAt"],
+        [Sequelize.literal('array_agg(listing_id)'), 'ids']
       ],
-      where: { seller_id: req.params.userId },
+      where: { seller_id: req.params.userId, status: "SOLD"},
     });
+
     const itemsBought = await Listings.findAll({
       attributes: [
-        ["seller_id", "sellerId"],
-        ["listing_id", "listingId"],
-        "location",
-        "price",
-        ["listed_at", "listedAt"],
-        "status",
-        "title",
-        ["last_updated_at", "lastUpdatedAt"],
+        [Sequelize.literal('array_agg(listing_id)'), 'ids']
       ],
       where: { buyer_username: user.dataValues.username },
     });
@@ -133,8 +121,8 @@ export const getUserData = async (req, res) => {
       username: user.dataValues.username,
       location: user.dataValues.location,
       joiningDate: user.dataValues.joiningDate,
-      itemsSold: itemsSold,
-      itemsBought: itemsBought,
+      itemsSold: itemsSold[0].dataValues.ids || [],
+      itemsBought: itemsBought[0].dataValues.ids || [],
     });
   } catch (err) {
     res.json({ message: err });
@@ -160,27 +148,13 @@ export const getUserMe = async (req, res) => {
     }
     const itemsSold = await Listings.findAll({
       attributes: [
-        ["seller_id", "sellerId"],
-        ["listing_id", "listingId"],
-        "location",
-        "price",
-        ["listed_at", "listedAt"],
-        "status",
-        "title",
-        ["last_updated_at", "lastUpdatedAt"],
+        [Sequelize.literal('array_agg(listing_id)'), 'ids']
       ],
-      where: { seller_id: req.params.userId },
+      where: { seller_id: req.params.userId, status: "SOLD"},
     });
     const itemsBought = await Listings.findAll({
       attributes: [
-        ["seller_id", "sellerId"],
-        ["listing_id", "listingId"],
-        "location",
-        "price",
-        ["listed_at", "listedAt"],
-        "status",
-        "title",
-        ["last_updated_at", "lastUpdatedAt"],
+        [Sequelize.literal('array_agg(listing_id)'), 'ids']
       ],
       where: { buyer_username: user.dataValues.username },
     });
@@ -190,8 +164,8 @@ export const getUserMe = async (req, res) => {
       username: user.dataValues.username,
       location: user.dataValues.location,
       joiningDate: user.dataValues.joiningDate,
-      itemsSold: itemsSold,
-      itemsBought: itemsBought,
+      itemsSold: itemsSold[0].dataValues.ids || [],
+      itemsBought: itemsBought[0].dataValues.ids || [],
     });
   } catch (err) {
     res.status(500).json({ message: err });
