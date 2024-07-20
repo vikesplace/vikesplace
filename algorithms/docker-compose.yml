@@ -21,6 +21,10 @@ volumes:
     driver: local
   mongo_key:
     driver: local
+  pgsyncdata:
+    driver: local
+  redisdata:
+    driver: local
 
 networks:
   default:
@@ -40,11 +44,61 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
       - ${POSTGRES_PORT}:5432
+    command: [ "postgres", "-c", "wal_level=logical" ]
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
       interval: 30s
       timeout: 10s
       retries: 5
+  
+  redis:
+    image: redis:alpine
+    volumes:
+      - redisdata:/data
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  pgsync:
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    image: python:3.11-slim
+    volumes:
+      - ./pgsync:/usr/src/conf
+      - pgsyncdata:/usr/src/app
+      - certs:/usr/share/pgsync
+    environment:
+      - PG_USER=${POSTGRES_USER}
+      - PG_HOST=postgresql
+      - PG_PORT=${POSTGRES_PORT}
+      - PG_PASSWORD=${POSTGRES_PASSWORD}
+      - LOG_LEVEL=INFO
+      - ELASTICSEARCH_PORT=${ES_PORT}
+      - ELASTICSEARCH_SCHEME=https
+      - ELASTICSEARCH_HOST=elasticsearch
+      - ELASTICSEARCH_CA_CERTS=/usr/src/conf/ca.crt
+      - ELASTICSEARCH_USER=${ES_USER}
+      - ELASTICSEARCH_PASSWORD=${ELASTIC_PASSWORD}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_AUTH=${REDIS_PASSWORD}
+      - PYTHONPATH=/usr/src/conf
+    entrypoint: >
+      sh -c "
+      pip install -q --no-cache-dir --upgrade pip &&
+      pip install -q --no-cache-dir pgsync &&
+      cp /usr/share/pgsync/ca/ca.crt /usr/src/conf/ca.crt &&
+      bootstrap --config /usr/src/conf/pgsync_schema.json &&
+      pgsync --config /usr/src/conf/pgsync_schema.json --daemon
+      "
 
   neo4j:
     build: 
