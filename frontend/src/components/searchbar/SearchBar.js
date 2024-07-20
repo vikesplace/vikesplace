@@ -32,9 +32,14 @@ function SearchBar() {
       if (location.pathname === "/") {
         navigate("/view-listings");
       }
-
     }
+  }
 
+  const handleKeyDown = (event) =>{
+    if(event.key === 'Enter'){
+      event.preventDefault();
+      handleSearch();
+    }
   }
 
   return (
@@ -51,8 +56,15 @@ function SearchBar() {
           inputProps={{ 'aria-label': 'search vikes place' }}
           onChange={handleUserInput}
           defaultValue={''}
+          onKeyDown={handleKeyDown}
+         
         />
-        <IconButton type="button" sx={{ p: '10px' }} aria-label="search" onClick={handleSearch}>
+        <IconButton type="button" 
+        sx={{ p: '10px' }} 
+        aria-label="search" 
+        onClick={handleSearch}
+        onKeyDown={handleKeyDown}
+        >
           <SearchIcon />
         </IconButton>
         <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
