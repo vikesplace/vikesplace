@@ -80,7 +80,7 @@ async def search(
 ):
     # Assuming es_request.search can handle these parameters
     listings = MONGORequest.user_activity(userId)
-    results = es_request.get_items(listings)
+    results = ESRequest.get_items(listings)
 
     # add when listing was visited to results
     for i in results:

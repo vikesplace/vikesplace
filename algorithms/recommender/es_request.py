@@ -21,15 +21,17 @@ class ESRequest:
             basic_auth=(self.ES_USER, self.ES_PASS)
         )
 
+        self.MONGORequest = mongodb_request.MongoDBRequest()
+
     def recommendation(self, user_id, user_loc):
         
 
         # Grab listings viewed by user
-        listings = mongodb_request.user_activity(user_id)
+        listings = self.MONGORequest.user_activity(user_id)
 
         # If user has no browsing history, return most popular items
         if listings is None:
-            most_pop_items = mongodb_request.get_top_10_popular()
+            most_pop_items = self.MONGORequest.get_top_10_popular()
 
             listing_ids = [item['listing_id'] for item in most_pop_items]
 
@@ -82,7 +84,7 @@ class ESRequest:
                 }
             ]
 
-            results = es.search(index="listings", query=q, sort=sort, from_=0, size=5)
+            results = self.es.search(index="listings", query=q, sort=sort, from_=0, size=5)
 
             results['hits']['hits'] = [x['_source'] for x in results['hits']['hits']]
             print(f"recommendation:>>>>>>>>> {results['hits']['hits']}")
@@ -91,7 +93,7 @@ class ESRequest:
         
 
         
-    def recommendation_current_item(user_id, listing_id):
+    def recommendation_current_item(self, user_id, listing_id):
 
         q = {
             "bool": {
@@ -121,7 +123,7 @@ class ESRequest:
         return results['hits']['hits']
 
 
-    def get_items(listings):
+    def get_items(self, listings):
         listing_ids = [item['listing_id'] for item in listings]
 
         results = self.es.search(
