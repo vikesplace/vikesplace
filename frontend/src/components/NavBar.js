@@ -17,7 +17,8 @@ const pages = [
   { name: 'View Listings', path: '/view-listings' },
   { name: 'Create Listing', path: '/create-listing' },
   { name: 'Manage Listings', path: '/manage-listings' },
-  { name: 'Messages', path: '/messages' }
+  { name: 'Messages', path: '/messages' },
+  { name: 'Charity Events', path: '/view-charities' }
 ];
 const settings = ['User Profile', 'Logout'];
 
