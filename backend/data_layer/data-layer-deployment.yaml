@@ -14,7 +14,7 @@ spec:
         type: microservice
     spec:
       containers:
-      - name: ratings-container
+      - name: data-layer-container
         image: palodaman/vikesplace-data_layer:latest
         resources:
           limits:
