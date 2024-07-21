@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: data_layer-deployment
+  name: data-layer-deployment
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: data_layer
+      app: data-layer
   template:
     metadata:
       labels:

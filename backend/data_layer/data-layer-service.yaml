@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: data_layer-service
+  name: data-layer-service
 spec:
   selector:
-    app: data_layer
+    app: data-layer
     type: microservice
   ports:
   - protocol: TCP

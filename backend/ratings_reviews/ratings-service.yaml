@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: ratings_reviews-service
+  name: ratings-service
 spec:
   selector:
-    app: ratings_reviews
+    app: ratings
     type: microservice
   ports:
   - protocol: TCP
