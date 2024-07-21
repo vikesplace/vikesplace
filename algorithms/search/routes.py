@@ -2,18 +2,29 @@ import search.es_request as es_request
 import search.mongodb_request as mongodb_request
 from fastapi import FastAPI, Path, Query
 from pydantic import BaseModel
+from contextlib import asynccontextmanager
 
-app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Load the Database connection objects
+    global ESRequest
+    global MONGORequest
+    ESRequest = es_request.ESRequest()
+    MONGORequest = mongodb_request.MongoDBRequest()
+
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
 
 
 class SearchQuery(BaseModel):
     query: str
 
-
 @app.get("/")
 async def root():
     return {"message": "VikesPlace Search Service"}
-
 
 @app.get("/search")
 async def search(
@@ -26,7 +37,7 @@ async def search(
 ):
     # Assuming es_request.search can handle these parameters
     lat_long = (latitude, longitude)
-    results = es_request.search(query, lat_long, category, status)
+    results = ESRequest.search(query, lat_long, category, status)
     return {
         "status": 200,
         "message": "Search successful",
@@ -39,7 +50,7 @@ async def search(
     userId: int = Path(..., description="The ID of the user"),
 ):
     # Assuming es_request.search can handle these parameters
-    results = mongodb_request.search_history(userId)
+    results = MONGORequest.search_history(userId)
     print(results)
     return {
         "status": 200,
@@ -52,7 +63,7 @@ async def search(
 async def search(userId: int, item: SearchQuery):
     query = item.query
 
-    results = mongodb_request.write_search_activity(userId, query)
+    results = MONGORequest.write_search_activity(userId, query)
     print(results)
     print(type(results))
 
@@ -68,8 +79,8 @@ async def search(
     userId: int = Path(..., description="The ID of the user"),
 ):
     # Assuming es_request.search can handle these parameters
-    listings = mongodb_request.user_activity(userId)
-    results = es_request.get_items(listings)
+    listings = MONGORequest.user_activity(userId)
+    results = ESRequest.get_items(listings)
 
     # add when listing was visited to results
     for i in results:
@@ -86,7 +97,7 @@ async def search(
 
 @app.post("/users/{userId}/listings/{listingId}")
 async def search(userId: int, listingId: int):
-    results = mongodb_request.write_user_activity(userId, listingId)
+    results = MONGORequest.write_user_activity(userId, listingId)
 
     return {
         "status": 200,
@@ -95,12 +106,12 @@ async def search(userId: int, listingId: int):
     }
 
 
-# @app.delete("/users/{userId}/listings/{listingId}")
-# async def search(userId: int, listingId: int):
-#     results = mongodb_request.delete_user_activity(userId, listingId)
+@app.delete("/users/{userId}/listings/{listingId}")
+async def search(userId: int, listingId: int):
+    results = MONGORequest.delete_user_activity(userId, listingId)
 
-#     return {
-#         "status": 200,
-#         "message": "Listing view deleted",
-#         "results": results
-#     }
+    return {
+        "status": 200,
+        "message": "Listing view deleted",
+        "results": results
+    }
