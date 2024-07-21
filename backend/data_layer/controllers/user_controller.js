@@ -12,8 +12,11 @@ const jwtSecret = process.env.ACCESS_TOKEN_SECRET;
 // Validation rules for login
 
 export const createUser = async (req, res) => {
-  const { username, email, password, location, items_sold, items_purchased } =
-    req.body;
+  const { username, email, password, location, items_sold, items_purchased } = req.body;
+
+  if (!location.match(/^[A-Z0-9]+$/)) {
+    return res.status(400).json({ message: 'Location must be uppercase and contain no spaces' });
+  }
 
   try {
     // Fetch coordinates for the provided postal code
@@ -223,8 +226,12 @@ export const updateUserData = async (req, res) => {
             console.error("User not found");
             return res.status(500).send();
         }
+        const location = req.body.location;
+        if (!location.match(/^[A-Z0-9]+$/)) {
+          return res.status(400).json({ message: 'Location must be uppercase and contain no spaces' });
+        }
         user.lat_long = coordinate;
-        user.location = req.body.location,
+        user.location = location;
         await user.save();
         res.json({});
     } catch (error) {
