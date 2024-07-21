@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data_layer-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: data_layer
+  template:
+    metadata:
+      labels:
+        app: data_layer
+        type: microservice
+    spec:
+      containers:
+      - name: ratings-container
+        image: palodaman/vikesplace-data_layer:latest
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 3000
