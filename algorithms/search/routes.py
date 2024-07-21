@@ -29,13 +29,14 @@ async def root():
 @app.get("/search")
 async def search(
     query: str = Query(None),
-    # location: Annotated[list[float], Query(min_length=2, max_length=2)] = [48.437326, -123.329773],
+    user_id: int = Query(None),
     latitude: float = 48.437326,
     longitude: float = -123.329773,
     category: str = Query(None),
     status: str = Query(None)
 ):
-    # Assuming es_request.search can handle these parameters
+    MONGORequest.write_search_activity(user_id, query) 
+
     lat_long = (latitude, longitude)
     results = ESRequest.search(query, lat_long, category, status)
     return {
