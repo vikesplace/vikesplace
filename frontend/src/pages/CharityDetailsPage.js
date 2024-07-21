@@ -3,8 +3,8 @@ import { useParams } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import CharityDetails from '../components/CharityDetails'; // Adjust the import path as necessary
-import { SAMPLE_CHARITY } from '../utils/SampleRecommenderData'; // Adjust the import path as necessary
+import CharityDetails from '../components/CharityDetails';
+import { SAMPLE_CHARITY } from '../utils/SampleRecommenderData';
 
 const CharityDetailsPage = () => {
   const { id } = useParams();

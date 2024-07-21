@@ -4,8 +4,8 @@ import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import Pagination from '@mui/lab/Pagination';
 import { Typography } from '@mui/material';
-import CharityCard from '../components/CharityCard'; // Adjust the import path as necessary
-import { SAMPLE_CHARITY } from '../utils/SampleRecommenderData'; // Adjust the import path as necessary
+import CharityCard from '../components/CharityCard';
+import { SAMPLE_CHARITY } from '../utils/SampleRecommenderData';
 import '../App.css';
 
 function ViewCharities() {
