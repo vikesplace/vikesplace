@@ -1,16 +1,25 @@
 import Review from "../models/review_models.js";
+import Rating from "../models/rating_models.js";
 import Users from "../models/user_models.js";
 import sequelize from "sequelize";
 
 export const createReview = async (req, res) => {
     try {
+        const rating = await Rating.findOne({
+            where: {
+                listing_id: req.body.listing_id,
+                user_id: req.body.user_id
+            },
+            attributes: [
+                "rating_value"
+            ]
+        });
         const reviewResult = await Review.create({
             listing_id: req.body.listing_id,
             user_id: req.body.user_id,
             review_content: req.body.review_content,
-            rating_id: req.body.rating_id
-        })
-
+            rating_id: rating.dataValues.rating_value
+        });
         res.json(reviewResult.dataValues);
     } catch (error) {
         if (error.name === 'SequelizeValidationError') {
