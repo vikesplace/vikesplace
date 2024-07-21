@@ -7,24 +7,20 @@ describe("Get all Charities", () => {
     it("it should return all charities", async () => {
         const mockOutput = [
             {
-                charity_id: 4,
                 name: "Doctors Without Borders",
                 status: "OPEN",
                 fund: "4000.00",
-                logo_url: "12345",
-                start_date: "2024-02-01T13:00:00.000Z",
-                end_date: "2024-02-01T13:00:00.000Z",
-                num_listings: 0,
+                logoUrl: "12345",
+                endDate: "2024-02-01T13:00:00.000Z",
+                numListings: 0,
             },
             {
-                charity_id: 5,
                 name: "Salvation Army",
                 status: "CLOSED",
                 fund: "5000.00",
-                logo_url: "12345",
-                start_date: "2024-02-01T14:00:00.000Z",
-                end_date: "2024-02-01T14:00:00.000Z",
-                num_listings: 0
+                logoUrl: "12345",
+                endDate: "2024-02-01T14:00:00.000Z",
+                numListings: 0
             }
         ];
 
@@ -67,9 +63,7 @@ describe("Get all Charities", () => {
         };
         await getAllCharities(
             {
-                params: {
-                    
-                },
+                params: {},
             },
             mockRes
         );

@@ -1,4 +1,6 @@
 import Rating from "../models/rating_models.js";
+import Users from "../models/user_models.js";
+import sequelize from "sequelize";
 
 export const createRating = async (req, res) => {
   try {
@@ -22,19 +24,29 @@ export const createRating = async (req, res) => {
 
 export const getAllRatings = async (req, res) => {    
     try {
+        Users.hasMany(Rating, {foreignKey: 'user_id'});
+        Rating.belongsTo(Users, {foreignKey: 'user_id'});
+
         const ratings = await Rating.findAll({
             where: {
                 listing_id: req.params.listingId
             },
-            attributes: [["rating_value", "ratingValue"]]
-        })
+            attributes: [
+                ["rating_value", "rating"],
+                "timestamp",
+                [sequelize.col("User.username"), "username"]
+            ],
+            include: {
+                model: Users,
+                attributes: [],
+                as: "User"
+            },
+        });
         if (!ratings) {
             console.error("Listing not found");
             return res.status(500).send();
         }
-        return res.status(200).json({
-            ratingValue: ratings
-        });
+        return res.status(200).json(ratings);
     } catch(error) {
         console.error(error);
         res.status(500).send();

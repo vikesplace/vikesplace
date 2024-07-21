@@ -1,17 +1,21 @@
 import axios from "axios";
 import { calculateDistance } from "../helper/calculate_distance.js";
+import { apiConfig } from "../config/apiConfig.js";
 
 export const getSortedListings = async (req, res) => {
+  if (Number(req.query.minPrice) > Number(req.query.maxPrice)){
+    return res.status(400).json({ message: "Min price cannot be greater than max price" });
+  }
   try {
     const userId = res.locals.decodedToken.userId;
-    const user = await axios.get(`/user/getUserLatLong/${userId}`);
+    const user = await axios.get(`${apiConfig.DATA_LAYER}user/getUserLatLong/${userId}`);
     const userCoordinates = user.data.lat_long.coordinates;
 
-    const response = await axios.get(`/listing`, {
+    const response = await axios.get(`${apiConfig.DATA_LAYER}listing`, {
       params: {
         pullLimit: req.query.pullLimit,
         pageOffset: req.query.pageOffset,
-        minPrice: req.query.minPrice,
+        minPrice: req.query.minPrice || 0,
         maxPrice: req.query.maxPrice,
         status: req.query.status,
         sortBy: req.query.sortBy,

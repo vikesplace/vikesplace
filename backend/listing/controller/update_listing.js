@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { apiConfig } from '../config/apiConfig.js';
 
 export const updateListing = async (req, res) => {
     try{
-        const response = await axios.patch(`/listing/${req.params.listingId}`,{
+        const response = await axios.patch(`${apiConfig.DATA_LAYER}listing/${req.params.listingId}`,{
                     title: req.body.title,
                     price: req.body.price,
                     status: req.body.status,

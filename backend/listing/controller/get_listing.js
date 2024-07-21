@@ -1,8 +1,13 @@
 import axios from 'axios';
+import { apiConfig } from '../config/apiConfig.js';
 
 export const getListingInfo = async (req, res) => {     
     try{
-        const response = await axios.get(`/listing/${req.params.listingId}`);
+        const user_id = res.locals.decodedToken.userId;
+        axios.post(`${apiConfig.ALG_SEARCH}users/${user_id}/listings/${req.params.listingId}`).catch(err => {
+            console.error(err);
+        });
+        const response = await axios.get(`${apiConfig.DATA_LAYER}listing/${req.params.listingId}`);
         res.json(response.data);
     }
     catch(err){

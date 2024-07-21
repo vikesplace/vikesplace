@@ -6,14 +6,14 @@ export const getSortedListings = async (req, res) => {
 
   //build where object
   const where = {};
-  if ((minPrice && maxPrice) && (minPrice <= maxPrice)) {
+  if (!maxPrice) {
+    where.price = {
+      [Op.gte]: minPrice,
+    };
+  } else {
     where.price = {
       [Op.between]: [minPrice, maxPrice],
     };
-  }
-  else if ((minPrice || maxPrice)) {
-    console.error("Invalid price range specified");
-    return res.status(400).json({ message: "Invalid price range specified" });
   }
   if (status) {
     where.status = status;
@@ -74,7 +74,14 @@ export const createListing = async (req, res) => {
       category: req.body.category,
       for_charity: req.body.forCharity,
     });
-    res.json(createResult.dataValues.listing_id);
+    const output = {
+      listingId: createResult.listing_id,
+      title: createResult.title,
+      price: createResult.price,
+      location: createResult.location,
+      status: createResult.status
+    };
+    res.json(output);
   } catch (error) {
     if (error.name === 'SequelizeValidationError') {
       console.error(error);

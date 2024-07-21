@@ -20,6 +20,8 @@ export const getSearchResults = async (req, res) => {
     requestParamsObject.longitude = longitude;
     requestParamsObject.latitude = latitude;
 
+    requestParamsObject.user_id = userId;
+
     if (req.query.category) {
       requestParamsObject.category = req.query.category;
     }
