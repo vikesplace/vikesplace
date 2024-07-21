@@ -162,20 +162,25 @@ export const getListingInfo = async (req, res) => {
 
 export const updateListing = async (req, res) => {
     try {
-        const listing = await Listing.findByPk(req.params.listingId);
-        if (!listing) {
+        const updateListing = await Listing.update({
+            title: req.body.title,
+            price: req.body.price,
+            status: req.body.status,
+            lat_long: req.body.lat_long,
+            category: req.body.category,
+            location: req.body.location,
+            buyer_username: req.body.buyer_username,
+            for_charity: req.body.for_charity
+        }, {
+            where: {
+                listing_id: req.params.listingId,
+            }
+        });
+      
+        if (updateListing[0] === 0) {
           console.error("Listing not found");
           return res.status(500).send();
         }
-        listing.title = req.body.title;
-        listing.price = req.body.price;
-        listing.status = req.body.status;
-        listing.lat_long = req.body.lat_long;
-        listing.category = req.body.category;
-        listing.location = req.body.location;
-        listing.buyer_username = req.body.buyer_username; 
-        listing.for_charity = req.body.for_charity;
-        await listing.save();
         res.json({});
     } catch (error) {
       if (error.name === 'SequelizeValidationError') {
