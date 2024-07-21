@@ -6,14 +6,14 @@ export const getSortedListings = async (req, res) => {
 
   //build where object
   const where = {};
-  if ((minPrice && maxPrice) && (minPrice <= maxPrice)) {
+  if (!maxPrice) {
+    where.price = {
+      [Op.gte]: minPrice,
+    };
+  } else {
     where.price = {
       [Op.between]: [minPrice, maxPrice],
     };
-  }
-  else if ((minPrice || maxPrice)) {
-    console.error("Invalid price range specified");
-    return res.status(400).json({ message: "Invalid price range specified" });
   }
   if (status) {
     where.status = status;
