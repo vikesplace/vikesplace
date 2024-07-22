@@ -38,7 +38,7 @@ async def search(
     status: str = Query(None),
     minPrice: float = Query(None),
     maxPrice: float = Query(None),
-    sortBy: str = "last_updated_at",
+    sortBy: str = Query(None),
     isDescending: bool = Query(None)
 ):
     MONGORequest.write_search_activity(user_id, query)
