@@ -6,3 +6,7 @@ pytest==8.2.1
 python-dotenv==1.0.1
 Requests==2.32.3
 sentence_transformers==3.0.1
+kafka
+neo4j
+kafka-python
+confluent-kafka

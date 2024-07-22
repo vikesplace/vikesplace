@@ -5,7 +5,7 @@ from fastapi import status
 
 # Base URL for the deployed FastAPI instance
 BASE_URL = "http://localhost:8000"
-
+MONGORequest = mongodb_request.MongoDBRequest()
 
 def test_read_root():
     response = requests.get(f"{BASE_URL}/")
@@ -16,6 +16,7 @@ def test_read_root():
 def test_search():
     params = {
         "query": "Bicycle",
+        "user_id": 1,
         "category": "Sports",
         "status": "AVAILABLE"
     }
@@ -39,6 +40,7 @@ def test_search():
 def test_search_partial_match_prefix():
     params = {
         "query": "Bicyc",
+        "user_id": 1,
         "category": "Sports",
         "status": "AVAILABLE"
     }
@@ -62,6 +64,7 @@ def test_search_partial_match_prefix():
 def test_search_partial_match_suffix():
     params = {
         "query": "cycle",
+        "user_id": 1,
         "category": "Sports",
         "status": "AVAILABLE"
     }
@@ -85,6 +88,7 @@ def test_search_partial_match_suffix():
 def test_search_empty_wrong_title():
     params = {
         "query": "Biccle",
+        "user_id": 1,
         "category": "Sports",
         "status": "AVAILABLE"
     }
@@ -129,7 +133,7 @@ def test_save_search_query_with_existing_history():
 def test_save_search_query_with_no_existing_history():
     user_id = 999
     # clears off search history from previous test iterations
-    mongodb_request.delete_search_document(user_id)
+    MONGORequest.delete_search_document(user_id)
     response = requests.post(
         f"{BASE_URL}/users/{user_id}/searches", json={"query": "air fryer"})
     response_obj = response.json()
@@ -141,6 +145,7 @@ def test_save_search_query_with_no_existing_history():
 def test_search_item_inside_radius():
     params = {
         "query": "Bicycle",
+        "user_id": 1,
         "category": "Sports",
         "status": "AVAILABLE",
         "latitude": 48.437326,
@@ -166,6 +171,7 @@ def test_search_item_inside_radius():
 def test_search_item_outside_radius():
     params = {
         "query": "Biccle",
+        "user_id": 1,
         "category": "Sports",
         "status": "AVAILABLE",
         # "location": [0.0, 0.0]
@@ -183,6 +189,7 @@ def test_search_item_outside_radius():
 def test_search_filter_category():
     params = {
         "query": "Bicycle",
+        "user_id": 1,
         "category": "Sports",
     }
     response = requests.get(f"{BASE_URL}/search", params=params)
@@ -205,6 +212,7 @@ def test_search_filter_category():
 def test_search_filter_bad_category():
     params = {
         "query": "Bicycle",
+        "user_id": 1,
         "category": "bad_category",
     }
     response = requests.get(f"{BASE_URL}/search", params=params)
@@ -218,6 +226,7 @@ def test_search_filter_bad_category():
 def test_search_filter_status():
     params = {
         "query": "Bicycle",
+        "user_id": 1,
         "status": "AVAILABLE"
     }
     response = requests.get(f"{BASE_URL}/search", params=params)
@@ -240,6 +249,7 @@ def test_search_filter_status():
 def test_search_filter_bad_status():
     params = {
         "query": "Bicycle",
+        "user_id": 1,
         "status": "bad_status"
     }
     response = requests.get(f"{BASE_URL}/search", params=params)
@@ -253,6 +263,7 @@ def test_search_filter_bad_status():
 def test_search_filter_category_and_status():
     params = {
         "query": "Bicycle",
+        "user_id": 1,
         "category": "Sports",
         "status": "AVAILABLE"
     }
@@ -276,6 +287,7 @@ def test_search_filter_category_and_status():
 def test_search_filter_bad_category_and_bad_status():
     params = {
         "query": "Bicycle",
+        "user_id": 1,
         "category": "bad_category",
         "status": "bad_status"
     }
@@ -288,7 +300,10 @@ def test_search_filter_bad_category_and_bad_status():
 
 
 def test_search_existing_user():
-    params = {"query": "Alice"}
+    params = {
+        "query": "Alice",
+        "user_id": 1
+    }
 
     response = requests.get(f"{BASE_URL}/search", params=params)
     response_obj = response.json()
@@ -300,7 +315,10 @@ def test_search_existing_user():
 
 
 def test_search_non_existing_user():
-    params = {"query": "ziera"}
+    params = {
+        "query": "ziera",
+        "user_id": 1
+    }
 
     response = requests.get(f"{BASE_URL}/search", params=params)
     response_obj = response.json()
@@ -312,6 +330,7 @@ def test_search_non_existing_user():
 def test_view_listings_visited():
     user_id = 1
     response = requests.get(f"{BASE_URL}/users/{user_id}/listings")
+    print(response.json())
     response_obj = response.json()
 
     assert response.status_code == status.HTTP_200_OK
@@ -331,6 +350,6 @@ def test_save_listing_view_and_delete_listing_view():
     assert response.status_code == status.HTTP_200_OK
     assert response_obj['results'] == 1
 
-    delete_result = mongodb_request.delete_user_activity(user_id, listing_id)
+    delete_result = MONGORequest.delete_user_activity(user_id, listing_id)
 
     assert delete_result == 1

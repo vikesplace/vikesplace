@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
+import { useLocation } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -12,6 +14,8 @@ import DataService from '../services/DataService.js';
 
 const ListingDetails = ({ listing }) => {
   const dataService = new DataService();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
@@ -42,51 +46,83 @@ const ListingDetails = ({ listing }) => {
     setMessage(event.target.value);
   };
 
+  const handleClickReview = () => {
+    navigate(`/view-reviews/${listing.listingId}`);
+  };
+
+  const handleBackClick = () => {
+    navigate(`/listings/${listing.listingId}`);
+  };
+
+  const isReviews = location.pathname.includes('/view-reviews/') || location.pathname.includes('/create-review/');
+
   return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      minHeight="100vh"
-      bgcolor="background.paper"
-    >
-      <Box
-        border={1}
-        borderRadius={5}
-        borderColor="grey.300"
-        p={4}
-        width="30%"
-        textAlign="left"
-        boxShadow={3}
-        mt={-20} 
-      >
-        <Typography variant="h4" component="h3" gutterBottom>
-          {listing.title}
-        </Typography>
-        <Typography variant="h6" gutterBottom>
-          Price: ${listing.price}
-        </Typography>
-        <Typography variant="body1" gutterBottom>
-          Location: {listing.location}
-        </Typography>
-        <Typography variant="body1" gutterBottom>
-          Posted: {new Date(listing.listedAt).toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric", hour:"numeric"})}
-        </Typography>
-        <Typography variant="body1" gutterBottom>
-          {listing.forCharity ? "Funds to Charity" : ""}
-        </Typography>
-        <Box display="flex" flexDirection="column" mt={5} width="100%">
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleClickOpen}
+    <div>
+        <Box
+          border={1}
+          borderRadius={5}
+          borderColor="grey.300"
+          p={4}
+          textAlign="left"
+          boxShadow={3}
+          mt={2}
+        >
+          <Typography variant="h4" component="h3" gutterBottom>
+            {listing.title}
+          </Typography>
+          <Typography variant="h6" gutterBottom>
+            Price: ${listing.price}
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            Location: {listing.location}
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            Posted: {new Date(listing.listedAt).toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric", hour:"numeric"})}
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            {listing.forCharity ? "Funds to Charity" : ""}
+          </Typography>
+          <Box display="flex" flexDirection="column" mt={5} width="100%">
+          {!isReviews && (
+            <>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleClickOpen}
+              sx={{ mb: 2 }}
+            >
+              Message Seller
+            </Button>
+            <Button 
+            variant="contained" 
+            color="secondary"
             sx={{ mb: 2 }}
-          >
-            Message Seller
-          </Button>
-          <Button variant="contained" color="secondary">
-            Add Review
-          </Button>
+            onClick={(event) => {
+              navigate("/create-review/" + listing.listingId);
+            }}>
+              Add Review
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => handleClickReview(listing.id)}
+              sx={{ mb : 2 }}
+              >
+              View Reviews
+            </Button>
+            </>
+          )}
+          {isReviews && (
+            <>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => handleBackClick(listing.id)}
+              >
+                Back
+              </Button>
+              </>
+          )}
         </Box>
       </Box>
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
@@ -117,7 +153,7 @@ const ListingDetails = ({ listing }) => {
           </Button>
         </DialogActions>
       </Dialog>
-    </Box>
+    </div>
   );
 };
 

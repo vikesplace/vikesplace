@@ -2,7 +2,20 @@ import Charity from "../models/charity_models.js";
 
 export const getAllCharities = async (req, res) => {
     try {        
-        const charities = await Charity.findAll();
+        const charities = await Charity.findAll(
+            {attributes: [
+                'name', 
+                ["logo_url", "logoUrl"], 
+                'status', 
+                'fund', 
+                ["end_date", "endDate"], 
+                ["num_listings", "numListings"]
+            ]}
+        );
+        if (!charities) {
+            console.error("Charities not found");
+            return res.status(500).send();
+        }
         res.json(charities);
     } catch (error) {
         console.error(error);
