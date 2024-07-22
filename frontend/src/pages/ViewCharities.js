@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
-import Pagination from '@mui/lab/Pagination';
+import Pagination from '@mui/material/Pagination';
 import { Typography } from '@mui/material';
 import CharityCard from '../components/CharityCard';
 import { SAMPLE_CHARITY } from '../utils/SampleRecommenderData';
@@ -11,15 +11,20 @@ import '../App.css';
 function ViewCharities() {
   const navigate = useNavigate();
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const [currentFuturePage, setCurrentFuturePage] = useState(1);
+  const [currentPastPage, setCurrentPastPage] = useState(1);
+  const itemsPerPage = 5;
 
   const handleCharityClick = (id) => {
     navigate(`/charities/${id}`);
   };
 
-  const handlePageChange = (event, value) => {
-    setCurrentPage(value);
+  const handleFuturePageChange = (event, value) => {
+    setCurrentFuturePage(value);
+  };
+
+  const handlePastPageChange = (event, value) => {
+    setCurrentPastPage(value);
   };
 
   const sortedCharities = useMemo(() => {
@@ -34,8 +39,8 @@ function ViewCharities() {
     };
   }, []);
 
-  const paginatedFutureCharities = sortedCharities.futureEvents.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-  const paginatedPastCharities = sortedCharities.pastEvents.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const paginatedFutureCharities = sortedCharities.futureEvents.slice((currentFuturePage - 1) * itemsPerPage, currentFuturePage * itemsPerPage);
+  const paginatedPastCharities = sortedCharities.pastEvents.slice((currentPastPage - 1) * itemsPerPage, currentPastPage * itemsPerPage);
 
   return (
     <div className="ViewCharities">
@@ -82,8 +87,8 @@ function ViewCharities() {
               ))}
               <Pagination 
                 count={Math.ceil(sortedCharities.futureEvents.length / itemsPerPage)} 
-                page={currentPage} 
-                onChange={handlePageChange} 
+                page={currentFuturePage} 
+                onChange={handleFuturePageChange} 
                 sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}
               />
             </>
@@ -109,8 +114,8 @@ function ViewCharities() {
               ))}
               <Pagination 
                 count={Math.ceil(sortedCharities.pastEvents.length / itemsPerPage)} 
-                page={currentPage} 
-                onChange={handlePageChange} 
+                page={currentPastPage} 
+                onChange={handlePastPageChange} 
                 sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}
               />
             </>

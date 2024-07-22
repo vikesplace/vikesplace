@@ -30,6 +30,7 @@ const CharityDetails = ({ charity }) => {
       <Typography variant="h6">Number of Listings: {charity.numListings}</Typography>
       <Typography variant="h6">End Date: {new Date(charity.endDate).toLocaleDateString()}</Typography>
       <Typography variant="h6">Status: {charity.status}</Typography>
+      <br />
       <Button
               variant="contained"
               color="primary"
