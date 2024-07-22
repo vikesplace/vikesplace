@@ -1,20 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
-import SearchBar from '../components/SearchBar.js';
 import '../App.css';
 import RecommendedList from '../components/recommender/RecommendedList.js';
 import { Typography } from '@mui/material';
 import { SAMPLE_DATA as data } from '../utils/SampleRecommenderData.js';
+import { useSearch } from '../components/searchbar/searchContext.js';
 
 
 
 function Home() {
 
+  const {setShowSearch} = useSearch();
+  
+  useEffect(()=>{
+    setShowSearch(true);
+
+    return()=> setShowSearch(false);
+  }, [setShowSearch]);
+
   return (
     <div className="Home">
       <Container>
-        <SearchBar />
+        
         <Box mt={2}>
           <Typography variant='h5'>
             Top picks for you
