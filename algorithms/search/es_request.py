@@ -114,21 +114,21 @@ class ESRequest:
             results["listings"] = self.es.search(index="listings",
                                                 query=query_listings,
                                                 allow_partial_search_results=True,
-                                                from_=0, size=200_000
+                                                from_=0, size=10_000
                                                 )['hits']['hits']
         else:
             results["listings"] = self.es.search(index="listings",
                                                 query=query_listings,
                                                 sort=self.sort_option(sort_by, is_descending),
                                                 allow_partial_search_results=True,
-                                                from_=0, size=200_000
+                                                from_=0, size=10_000
                                                 )['hits']['hits']
 
         results["users"] = self.es.search(index="users",
                                           query=query_users,
                                           source=["user_id", "username"],
                                           allow_partial_search_results=True,
-                                          from_=0, size=200_000
+                                          from_=0, size=10_000
                                           )['hits']['hits']
 
         results['listings'] = [x['_source'] for x in results['listings']]
@@ -152,7 +152,7 @@ class ESRequest:
                 "terms": {
                     "_id": listing_ids
                 }
-            }, from_=0, size=200_000)
+            }, from_=0, size=10_000)
 
         results['hits']['hits'] = [x['_source']
                                    for x in results['hits']['hits']]
