@@ -172,7 +172,6 @@ export const updateListing = async (req, res) => {
         return res.status(500).send();
       }
       if (listing.location !== req.body.location) {
-        listing.location = req.body.location;
         const lat_long = await PostalCodes.findOne({
           where: {
             postal_code: req.body.location,
@@ -191,6 +190,7 @@ export const updateListing = async (req, res) => {
       title: req.body.title,
       price: req.body.price,
       status: req.body.status,
+      location: req.body.location,
       category: req.body.category,
       buyer_username: req.body.buyer_username,
       for_charity: req.body.for_charity
