@@ -22,9 +22,11 @@ app = FastAPI(lifespan=lifespan)
 class SearchQuery(BaseModel):
     query: str
 
+
 @app.get("/")
 async def root():
     return {"message": "VikesPlace Search Service"}
+
 
 @app.get("/search")
 async def search(
@@ -33,12 +35,17 @@ async def search(
     latitude: float = 48.437326,
     longitude: float = -123.329773,
     category: str = Query(None),
-    status: str = Query(None)
+    status: str = Query(None),
+    minPrice: float = Query(None),
+    maxPrice: float = Query(None),
+    sortBy: str = Query(None),
+    isDescending: bool = Query(None)
 ):
-    MONGORequest.write_search_activity(user_id, query) 
+    MONGORequest.write_search_activity(user_id, query)
 
     lat_long = (latitude, longitude)
-    results = ESRequest.search(query, lat_long, category, status)
+    results = ESRequest.search(query, lat_long, category, status,
+                               minPrice, maxPrice, sortBy, isDescending)
     return {
         "status": 200,
         "message": "Search successful",
