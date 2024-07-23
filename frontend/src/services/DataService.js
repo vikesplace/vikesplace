@@ -182,10 +182,14 @@ class DataService {
     * Success (200): returns list of listing objects
     * Error: returns message
     */
-    search(query) {
-        return axios.get(API_URL + 'search?query=' + { query }, 
+    async search(query) {
+        
+        try{
+         return  await axios.get(API_URL + 'search?query=' + query , 
             {withCredentials: true})
-        .catch(httpErrorHandler);
+        } catch (error){
+            return httpErrorHandler(error);
+        }
     }
 
     /*
@@ -195,6 +199,7 @@ class DataService {
     * Error: returns message
     */
     async getReviews(listingId) {
+
         try {
             return await axios.get(API_URL + 'review/' + listingId,
                 { withCredentials: true });
