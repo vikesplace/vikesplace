@@ -76,7 +76,7 @@ function ViewListings() {
       }
     }
 
-    //if there is a search querey run that otherwise just fetchlistings
+    //if there is a search query run that otherwise just fetchlistings
     if (searchQuery) {
       search();
     } else {
@@ -186,7 +186,7 @@ function ViewListings() {
     setCurrentPage(value);
   };
 
-  const paginatedListings = listings.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const paginatedListings = listings.slice((currentPage - 1) * itemsPerPage, (currentPage) * itemsPerPage);
 
   return (
     <div className="ViewListings">
@@ -251,6 +251,7 @@ function ViewListings() {
                 price={listing.price}
                 location={listing.location}
                 status={listing.status}
+                forCharity={listing.forCharity} 
               />
               <br />
             </div>
