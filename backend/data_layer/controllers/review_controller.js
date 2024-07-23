@@ -11,14 +11,18 @@ export const createReview = async (req, res) => {
                 user_id: req.body.user_id
             },
             attributes: [
-                "rating_value"
+                "rating_id"
             ]
         });
+        let rating_id = null;
+        if (rating) {
+            rating_id = rating.dataValues.rating_id;
+        }
         const reviewResult = await Review.create({
             listing_id: req.body.listing_id,
             user_id: req.body.user_id,
             review_content: req.body.review_content,
-            rating_id: rating.dataValues.rating_value
+            rating_id: rating_id
         });
         res.json(reviewResult.dataValues);
     } catch (error) {
