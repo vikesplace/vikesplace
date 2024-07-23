@@ -22,6 +22,8 @@ import PasswordUpdated from './pages/PasswordUpdated.js';
 import CreateReview from './pages/CreateReview.js';
 import ViewReviewsPage from './pages/ViewReviewsPage.js';
 import PageNotFound from './pages/PageNotFound.js';
+import ViewCharities from './pages/ViewCharities.js';
+import CharityDetailsPage from './pages/CharityDetailsPage.js';
 import SearchBar from './components/searchbar/SearchBar.js';
 import { SearchProvider } from './components/searchbar/searchContext.js';
 
@@ -53,6 +55,8 @@ function App() {
           <Route path="/password-updated" element={<PasswordUpdated />} />
           <Route path="/view-reviews/:id" element={<ViewReviewsPage />} />
           <Route path="/create-review/:id" element={<CreateReview />} />
+          <Route path="/view-charities" element={<ViewCharities />} />
+          <Route path="/charities/:id" element={<CharityDetailsPage />} />
           {/* Add other routes here */}
           <Route path="*" element={<PageNotFound />} />
         </Routes>
