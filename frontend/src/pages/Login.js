@@ -58,16 +58,18 @@ function Login() {
         }
     }
 
-    const handleSubmit = (event) => {
+    async function handleSubmit (event) {
         event.preventDefault();
-        // const data = new FormData(event.currentTarget);
-
         var validForm = validateUsername() && validatePassword();
 
         if (validForm) {
-            let response = authService.login(username, password);
-            if (response !== undefined) {
-                navigate('/');
+            let response = await authService.login(username, password);
+            if (response === undefined) {
+                alert("Connection error, please try again.");
+            } else if (response.status === 200) {
+                navigate('/home');
+            } else {
+                alert("Unable to login, please try again.");
             }
         }
     }

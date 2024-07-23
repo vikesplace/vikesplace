@@ -57,7 +57,7 @@ function NavBar() {
           {!hideButtons &&(
             <>  
               <div className="logo">
-                <Link to="/">
+                <Link to="/home">
                   <img src={logo} alt="Logo" />
                 </Link>
               </div>
@@ -65,7 +65,7 @@ function NavBar() {
                 variant="h6"
                 noWrap
                 component="a"
-                href="/"
+                href="/home"
                 sx={{
                   mr: 2,
                   display: { xs: 'none', md: 'flex' },

@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import NavBar from './components/NavBar.js';
 import Home from './pages/Home.js';
 import ViewListings from './pages/ViewListings.js';
@@ -35,13 +35,14 @@ function App() {
         <NavBar />
         <SearchBar />
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Navigate to="login" />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/home" element={<Home />} /> 
           <Route path="/view-listings" element={<ViewListings />} />
           <Route path="/create-listing" element={<CreateListing />} />
           <Route path="/manage-listings" element={<ManageListings />} />
           <Route path="/messages" element={<Messages />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/verify-account" element={<VerifyAccount />} />
+          <Route path="/verify-account/:jwt" element={<VerifyAccount />} />
           <Route path="/verified" element={<VerifiedAccount />} />
           <Route path="/history" element={<SearchHistory />} />
           <Route path="/request-account" element={<RequestAccount />} />
@@ -51,7 +52,7 @@ function App() {
           <Route path="/message-history/:id" element={<MessageHistory />} />
           <Route path="/user-profile" element={<UserProfile />} />
           <Route path="/password-change" element={<RequestPasswordChange />} />
-          <Route path="/password-update" element={<CompletePasswordChange />} />
+          <Route path="/password-update/:jwt" element={<CompletePasswordChange />} />
           <Route path="/password-updated" element={<PasswordUpdated />} />
           <Route path="/view-reviews/:id" element={<ViewReviewsPage />} />
           <Route path="/create-review/:id" element={<CreateReview />} />
