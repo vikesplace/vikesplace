@@ -1,7 +1,7 @@
 import React from 'react';
-import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { CardActionArea, CardHeader } from '@mui/material';
 import { Link } from 'react-router-dom';
@@ -12,23 +12,23 @@ export default function CharityCard({ id, name, funds, numListings, endDate }) {
       <CardActionArea component={Link} to={`/charities/${id}`}>
         <CardHeader title={name} />
         <CardContent>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Box sx={{ display: 'flex', width: 1 / 3, flexDirection: 'column', mx: 2, alignItems: 'start' }}>
-              <Typography variant='h6'>
+          <Grid container spacing={2} justifyContent="center" sx={{ mt: 2 }}>
+            <Grid item xs={12} sm={4}>
+              <Typography variant='body1' sx={{ fontSize: 18, fontWeight: 'bold',  textAlign: 'left' }}>
                 Funds: ${funds}
               </Typography>
-            </Box>
-            <Box sx={{ display: 'flex', width: 1 / 3, flexDirection: 'column', mx: 2, alignItems: 'center' }}>
-              <Typography variant='body1'>
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <Typography variant='body1' sx={{ fontSize: 16, textAlign: { sm: 'center', xs: 'left' } }}>
                 Listings: {numListings}
               </Typography>
-            </Box>
-            <Box sx={{ display: 'flex', width: 1 / 3, flexDirection: 'column', mx: 2, alignItems: 'end' }}>
-              <Typography variant='body1'>
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <Typography variant='body1' sx={{ fontSize: 16, textAlign: { sm: 'right', xs: 'left' } }}>
                 End Date: {endDate}
               </Typography>
-            </Box>
-          </Box>
+            </Grid>
+          </Grid>
         </CardContent>
       </CardActionArea>
     </Card>
