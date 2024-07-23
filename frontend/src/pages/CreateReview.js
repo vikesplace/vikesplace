@@ -30,11 +30,35 @@ const CreateReview = () => {
     async function getMyListings() {
       const response = await dataService.getListing(id);
       if (response === undefined) {
-        alert("Connection error, please try again.");
+        Store.addNotification({
+          title: 'Connection Error!',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
       } else if (response.status === 200) {
         setListing(response.data);
       } else {
-        alert("Unable to get listing, please try again.");
+        Store.addNotification({
+          title: 'Unable to Get Listing',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
       }
     }
 
@@ -97,7 +121,7 @@ const CreateReview = () => {
       }
     }
 
-    if (validateRating()) {
+    if (validateReview()) {
       const response = await dataService.createReview(id, review);
       if (response === undefined) {
         Store.addNotification({
