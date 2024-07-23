@@ -12,6 +12,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import ListingDetails from '../components/ListingDetails';
 import DataService from '../services/DataService.js';
+import { Store } from 'react-notifications-component';
 
 const ViewReviewsPage = () => {
   const dataService = useMemo(() => new DataService(), []);
