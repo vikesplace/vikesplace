@@ -8,7 +8,7 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useNavigate, useParams } from 'react-router-dom';
 import AuthService from '../services/AuthService';
-
+import { Store } from 'react-notifications-component';
 
 function VerifyAccount() {
     const navigate = useNavigate();
@@ -119,13 +119,50 @@ function VerifyAccount() {
             const upperPostal = postalCode.toUpperCase();
             let response = authService.verify(jwt, username, password, upperPostal);
             if (response === undefined) {
-                alert("Connection error, please try again.");
+                Store.addNotification({
+                    title: 'Connection Error!',
+                    message: 'Please try again',
+                    type: 'danger',
+                    insert: 'top',
+                    container: 'top-right',
+                    animationIn: ["animated", "fadeIn"],
+                    animationOut: ["animated", "fadeOut"],
+                    dismiss: {
+                      duration: 5000,
+                      onScreen: true
+                    }
+                  });
             } else if (response.status === 200 || response.status === 201) {
                 navigate('/verified');
             } else if (response.data?.message === "Username or email already exists") {
+                Store.addNotification({
+                    title: 'Issue Creating Account',
+                    message: 'Username or email already exists',
+                    type: 'warning',
+                    insert: 'top',
+                    container: 'top-right',
+                    animationIn: ["animated", "fadeIn"],
+                    animationOut: ["animated", "fadeOut"],
+                    dismiss: {
+                      duration: 5000,
+                      onScreen: true
+                    }
+                  });
                 setUsernameError("Username or email already exists, please choose another");
             } else {
-                alert("Unable to create account, please try again.");
+                Store.addNotification({
+                    title: 'Unable to Create Account',
+                    message: 'Please try again',
+                    type: 'danger',
+                    insert: 'top',
+                    container: 'top-right',
+                    animationIn: ["animated", "fadeIn"],
+                    animationOut: ["animated", "fadeOut"],
+                    dismiss: {
+                      duration: 5000,
+                      onScreen: true
+                    }
+                  });
             }           
         }
     }

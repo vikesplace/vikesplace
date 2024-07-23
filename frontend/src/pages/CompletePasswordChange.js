@@ -8,6 +8,7 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useNavigate, useParams } from 'react-router-dom';
 import AuthService from '../services/AuthService';
+import { Store } from 'react-notifications-component';
 
 function CompletePasswordChange() {
     const navigate = useNavigate();
@@ -47,11 +48,35 @@ function CompletePasswordChange() {
         if (validForm) {
             let response = await authService.completePasswordChange(jwt, password);
             if (response === undefined) {
-                alert("Connection error, please try again.");
+                Store.addNotification({
+                    title: 'Connection Error!',
+                    message: 'Please try again',
+                    type: 'danger',
+                    insert: 'top',
+                    container: 'top-right',
+                    animationIn: ["animated", "fadeIn"],
+                    animationOut: ["animated", "fadeOut"],
+                    dismiss: {
+                      duration: 5000,
+                      onScreen: true
+                    }
+                  });
             } else if (response.status === 200) {
                 navigate('/password-updated');
             } else {
-                alert("Unable to request change, please try again.");
+                Store.addNotification({
+                    title: 'Unable to Request Change',
+                    message: 'Please try again',
+                    type: 'danger',
+                    insert: 'top',
+                    container: 'top-right',
+                    animationIn: ["animated", "fadeIn"],
+                    animationOut: ["animated", "fadeOut"],
+                    dismiss: {
+                      duration: 5000,
+                      onScreen: true
+                    }
+                  });
             }  
         }
     }
