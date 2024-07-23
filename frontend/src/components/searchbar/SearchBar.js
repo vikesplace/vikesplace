@@ -29,7 +29,7 @@ function SearchBar() {
     if (userInput) {
       setSearchQuery(userInput);
       setUserInput('');
-      if (location.pathname === "/") {
+      if (location.pathname === "/home") {
         navigate("/view-listings");
       }
     }

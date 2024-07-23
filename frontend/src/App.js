@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { ReactNotifications } from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import NavBar from './components/NavBar.js';
@@ -39,17 +39,18 @@ function App() {
         <SearchBar />
         <Routes>
           {/* Access if logged out */}
+          <Route path="/" element={<Navigate to="login" />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/verify-account" element={<VerifyAccount />} />
+          <Route path="/verify-account/:jwt" element={<VerifyAccount />} />
           <Route path="/verified" element={<VerifiedAccount />} />
           <Route path="/request-account" element={<RequestAccount />} />
           <Route path="/check-email" element={<CheckYourEmail />} />
           <Route path="/password-change" element={<RequestPasswordChange />} />
-          <Route path="/password-update" element={<CompletePasswordChange />} />
+          <Route path="/password-update/:jwt" element={<CompletePasswordChange />} />
           <Route path="/password-updated" element={<PasswordUpdated />} />
 
           {/* Access if logged in */}
-          <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/view-listings" element={<ViewListings />} />
           <Route path="/create-listing" element={<CreateListing />} />
           <Route path="/manage-listings" element={<ManageListings />} />
