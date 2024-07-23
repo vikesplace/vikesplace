@@ -45,7 +45,7 @@ function NavBar() {
   };
 
   const pathWithoutParams = location.pathname.split("/")[1];
-  const showButtons = pathWithoutParams === '' || pathWithoutParams === 'home' || pathWithoutParams === 'view-listings' || pathWithoutParams === 'create-listing' ||
+  const showButtons = pathWithoutParams === 'home' || pathWithoutParams === 'view-listings' || pathWithoutParams === 'create-listing' ||
     pathWithoutParams === 'manage-listings' || pathWithoutParams === 'listings' || pathWithoutParams === 'edit-listing' || pathWithoutParams === 'view-reviews' ||
     pathWithoutParams === 'create-review'   || pathWithoutParams === 'messages' || pathWithoutParams === 'message-history' || pathWithoutParams === 'history' || 
     pathWithoutParams === 'user-profile' || pathWithoutParams === 'view-charities' || pathWithoutParams === 'charities' ;
