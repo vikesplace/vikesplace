@@ -3,9 +3,17 @@ from typing import Annotated
 import neo4j_api as neo4j_request
 from fastapi import FastAPI, Path, Query, status
 from fastapi.responses import JSONResponse
+from contextlib import asynccontextmanager
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Load the Database connection objects
+    global Neo4jDBRequest
+    Neo4jDBRequest = neo4j_request.Neo4jDBRequest()
 
+    yield
+
+app = FastAPI(lifespan=lifespan)
 
 @app.get("/")
 async def root():
@@ -20,7 +28,7 @@ async def recommendations(
 ):
     location = (latitude, longitude)
     try:
-        results = neo4j_request.get_items_visited_by_other_users(user_id)
+        results = Neo4jDBRequest.get_items_visited_by_other_users(user_id)
         print(results)
 
         return JSONResponse(
@@ -39,7 +47,7 @@ async def recommendations(
 ):
     # location = (latitude, longitude)
     try:
-        results = neo4j_request.get_top_items_within_same_postal_code(user_id)
+        results = Neo4jDBRequest.get_top_items_within_same_postal_code(user_id)
         print(results)
 
         return JSONResponse(

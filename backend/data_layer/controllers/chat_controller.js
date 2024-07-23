@@ -41,15 +41,31 @@ export const createChat = async (req, res) => {
             console.error("Listing not found");
             return res.status(500).send();
         }
-        await Chats.create(
+        const user_id_two = listing_entry.seller_id;
+        
+        //check if chat_id with these two users already exists
+        const existingChat = await Chats.findOne({
+            where: {
+                user_id_one: req.body.user_id_one,
+                user_id_two: user_id_two,
+                listing_id: req.params.listingId
+            }
+        });
+        if(existingChat) {
+            return res.status(400).json({ 
+                message: "Chat already exists", 
+                chatId: existingChat.dataValues.chat_id 
+            });
+        }
+        const createResult = await Chats.create(
             {
                 listing_id: req.params.listingId,
                 user_id_one: req.body.user_id_one,
-                user_id_two: listing_entry.seller_id,
+                user_id_two
             }
         );
 
-        res.json();
+        res.json(createResult.dataValues.chat_id);
     } catch (error) {
         console.error(error);
         return res.status(500).send();

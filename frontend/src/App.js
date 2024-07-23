@@ -24,42 +24,52 @@ import PasswordUpdated from './pages/PasswordUpdated.js';
 import CreateReview from './pages/CreateReview.js';
 import ViewReviewsPage from './pages/ViewReviewsPage.js';
 import PageNotFound from './pages/PageNotFound.js';
+import ViewCharities from './pages/ViewCharities.js';
+import CharityDetailsPage from './pages/CharityDetailsPage.js';
+import SearchBar from './components/searchbar/SearchBar.js';
+import { SearchProvider } from './components/searchbar/searchContext.js';
 
-function App() {  
+function App() {
+
   return (
-    <Router>
-      <NavBar />
-      <ReactNotifications />
-      <Routes>
-        {/* Access if logged out */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/request-account" element={<RequestAccount />} />
-        <Route path="/verify-account" element={<VerifyAccount />} />
-        <Route path="/verified" element={<VerifiedAccount />} />
-        <Route path="/check-email" element={<CheckYourEmail />} />
-        <Route path="/password-change" element={<RequestPasswordChange />} />
-        <Route path="/password-update" element={<CompletePasswordChange />} />
-        <Route path="/password-updated" element={<PasswordUpdated />} />
-        
-        {/* Access if logged in */}
-        <Route path="/" element={<Home />} /> 
-        <Route path="/view-listings" element={<ViewListings />} />
-        <Route path="/create-listing" element={<CreateListing />} />
-        <Route path="/manage-listings" element={<ManageListings />} />
-        <Route path="/listings/:id" element={<ListingDetailsPage />} />
-        <Route path="/edit-listing/:id" element={<EditListing />} />
-        <Route path="/view-reviews/:id" element={<ViewReviewsPage />} />
-        <Route path="/create-review/:id" element={<CreateReview />} />
-        <Route path="/messages" element={<Messages />} />
-        <Route path="/message-history/:id" element={<MessageHistory />} />
-        <Route path="/history" element={<SearchHistory />} />
-        <Route path="/user-profile" element={<UserProfile />} />
+    <SearchProvider>
+      <Router>
+        <NavBar />
+        <ReactNotifications />
+        <SearchBar />
+        <Routes>
+          {/* Access if logged out */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/verify-account" element={<VerifyAccount />} />
+          <Route path="/verified" element={<VerifiedAccount />} />
+          <Route path="/request-account" element={<RequestAccount />} />
+          <Route path="/check-email" element={<CheckYourEmail />} />
+          <Route path="/password-change" element={<RequestPasswordChange />} />
+          <Route path="/password-update" element={<CompletePasswordChange />} />
+          <Route path="/password-updated" element={<PasswordUpdated />} />
 
-        {/* Add other routes here */}
+          {/* Access if logged in */}
+          <Route path="/" element={<Home />} />
+          <Route path="/view-listings" element={<ViewListings />} />
+          <Route path="/create-listing" element={<CreateListing />} />
+          <Route path="/manage-listings" element={<ManageListings />} />
+          <Route path="/listings/:id" element={<ListingDetailsPage />} />
+          <Route path="/edit-listing/:id" element={<EditListing />} />
+          <Route path="/view-reviews/:id" element={<ViewReviewsPage />} />
+          <Route path="/create-review/:id" element={<CreateReview />} />
+          <Route path="/messages" element={<Messages />} />
+          <Route path="/message-history/:id" element={<MessageHistory />} />
+          <Route path="/history" element={<SearchHistory />} />
+          <Route path="/user-profile" element={<UserProfile />} />
+          <Route path="/view-charities" element={<ViewCharities />} />
+          <Route path="/charities/:id" element={<CharityDetailsPage />} />
 
-        <Route path="*" element={<PageNotFound />} />
-      </Routes>
-    </Router>
+          {/* Add other routes here */}
+
+          <Route path="*" element={<PageNotFound />} />
+        </Routes>
+      </Router>
+    </SearchProvider>
   );
 }
 
