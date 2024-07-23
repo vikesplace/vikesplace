@@ -165,12 +165,12 @@ export const getListingInfo = async (req, res) => {
 
 export const updateListing = async (req, res) => {
   try {
+    const listing = await Listing.findByPk(req.params.listingId);
+    if (!listing) {
+      console.error("Listing not found");
+      return res.status(500).send();
+    }
     if (req.body.location) {
-      const listing = await Listing.findByPk(req.params.listingId);
-      if (!listing) {
-        console.error("Listing not found");
-        return res.status(500).send();
-      }
       if (listing.location !== req.body.location) {
         const lat_long = await PostalCodes.findOne({
           where: {
@@ -183,15 +183,15 @@ export const updateListing = async (req, res) => {
           return res.status(500).send();
         }
         listing.lat_long = { type: 'Point', coordinates: [lat_long.latitude, lat_long.longitude] };
-        await listing.save();
       }
     }
-    const updateListing = await Listing.update({
+    await Listing.update({
       title: req.body.title,
       price: req.body.price,
       status: req.body.status,
       location: req.body.location,
       category: req.body.category,
+      lat_long: listing.lat_long,
       buyer_username: req.body.buyer_username,
       for_charity: req.body.for_charity
     }, {
@@ -199,10 +199,6 @@ export const updateListing = async (req, res) => {
         listing_id: req.params.listingId,
       }
     });
-    if (updateListing[0] === 0) {
-      console.error("Listing not found");
-      return res.status(500).send();
-    }
     res.json({});
   } catch (error) {
     if (error.name === 'SequelizeValidationError') {
