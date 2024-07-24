@@ -223,6 +223,12 @@ export const updateUserData = async (req, res) => {
             console.error("User not found");
             return res.status(500).send();
         }
+        const postalCodeRecord = await PostalCodes.findOne({
+            where: { postal_code: req.body.location },
+        });
+        if (!postalCodeRecord) {
+            return res.status(400).json({ message: "Invalid postal code" });
+        }
         user.lat_long = coordinate;
         user.location = req.body.location,
         await user.save();
