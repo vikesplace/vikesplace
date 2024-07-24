@@ -91,7 +91,7 @@ const ViewReviewsPage = () => {
       } else {
         for (let i = 0; i < responseRatings.data.ratings.length; i++) {
           displayValues.push({
-            rating: responseRatings.data.ratings[i],
+            rating: responseRatings.data.ratings[i].rating,
             review: ""
           })
         }
@@ -130,7 +130,7 @@ const ViewReviewsPage = () => {
         for (let j = 0; j < responseReviews.data.reviews.length; j++) {
           displayValues.push({
             rating: "",
-            review: responseReviews.data.reviews[j]
+            review: responseReviews.data.reviews[j].review
           })          
         } 
       }
