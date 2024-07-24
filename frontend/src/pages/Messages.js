@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import "react-chat-elements/dist/main.css";
 import '../App.css';
 import DataService from '../services/DataService';
+import { Store } from 'react-notifications-component';
 
 function Messages() {
   const dataService = useMemo(() => new DataService(), []);
@@ -20,20 +21,68 @@ function Messages() {
 
       let response = await dataService.getChats(); 
       if (response === undefined) {
-        alert("Connection error, please try again.");
+        Store.addNotification({
+          title: 'Connection Error!',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
       } else if (response.status === 200) {
         chatIds = response.data;
       } else {
-        alert("Unable to get chats, please try again.");
+        Store.addNotification({
+          title: 'Unable to Get Chats',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
       }
 
       response = await dataService.getMyUserData(); 
       if (response === undefined) {
-        alert("Connection error, please try again.");
+        Store.addNotification({
+          title: 'Connection Error!',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
       } else if (response.status === 200) {
         user = response.data;
       } else {
-        alert("Unable to load, please try again.");
+        Store.addNotification({
+          title: 'Unable to Load',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
       }
 
       const chatObjs = [];
@@ -41,7 +90,19 @@ function Messages() {
       {
         response = await dataService.getChatInformation(id); 
         if (response === undefined) {
-          alert("Connection error, please try again.");
+          Store.addNotification({
+            title: 'Connection Error!',
+            message: 'Please try again',
+            type: 'danger',
+            insert: 'top',
+            container: 'top-right',
+            animationIn: ["animated", "fadeIn"],
+            animationOut: ["animated", "fadeOut"],
+            dismiss: {
+              duration: 5000,
+              onScreen: true
+            }
+          });
         } else if (response.status === 200) {
           // Get User Info
           const chatInfo = response.data;
@@ -62,7 +123,19 @@ function Messages() {
             }           
           }
         } else {
-          alert("Unable to get chats, please try again.");
+          Store.addNotification({
+            title: 'Unable to Get Chats',
+            message: 'Please try again',
+            type: 'danger',
+            insert: 'top',
+            container: 'top-right',
+            animationIn: ["animated", "fadeIn"],
+            animationOut: ["animated", "fadeOut"],
+            dismiss: {
+              duration: 5000,
+              onScreen: true
+            }
+          });
         }
 
         setChats(chatObjs);

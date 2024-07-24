@@ -8,6 +8,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import DataService from '../services/DataService';
 import '../App.css';
+import { Store } from 'react-notifications-component';
 
 function UserProfile() {
   const dataService = useMemo(() => new DataService(), []);
@@ -20,12 +21,36 @@ function UserProfile() {
     const fetchUser = async () => {
       const response = await dataService.getMyUserData();
       if (response === undefined) {
-        alert("Connection error, please try again.");
+        Store.addNotification({
+          title: 'Connection Error!',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
       } else if (response.status === 200) {
         setUser(response.data);
         setNewLocation(response.data.location);
       } else {
-        alert("Unable to get listings, please try again.");
+        Store.addNotification({
+          title: 'Unable to Get User',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
       }
     };
 
@@ -59,10 +84,34 @@ function UserProfile() {
         }));
         setIsEditing(false);
       } else {
-        alert("Unable to update location, please try again.");
+        Store.addNotification({
+          title: 'Unable to Update Location',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
       }
     } else {
-      alert("Invalid postal code. Please enter a valid postal code.");
+      Store.addNotification({
+        title: 'Invalid Postal Code',
+        message: 'Please try again with format, A1A1A1',
+        type: 'warning',
+        insert: 'top',
+        container: 'top-right',
+        animationIn: ["animated", "fadeIn"],
+        animationOut: ["animated", "fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: true
+        }
+      });
     }
   };
 

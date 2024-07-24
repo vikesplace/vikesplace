@@ -15,6 +15,7 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import DataService from '../services/DataService.js';
 import { statuses } from '../utils/ListingData.js';
+import { Store } from 'react-notifications-component';
 
 export default function ManageListing({ listing }) {
     const dataService = new DataService();
@@ -141,11 +142,35 @@ export default function ManageListing({ listing }) {
             const upperPostal = postalCode.toUpperCase();
             let response = await dataService.updateListing(listing.listingId, title, price, upperPostal, status, buyer, forCharity);
             if (response === undefined) {
-                alert("Connection error, please try again.");
+                Store.addNotification({
+                    title: 'Connection Error!',
+                    message: 'Please try again',
+                    type: 'danger',
+                    insert: 'top',
+                    container: 'top-right',
+                    animationIn: ["animated", "fadeIn"],
+                    animationOut: ["animated", "fadeOut"],
+                    dismiss: {
+                      duration: 5000,
+                      onScreen: true
+                    }
+                  });
             } else if (response.status === 200) {
                 navigate(`/manage-listings`);
             } else {
-                alert("Unable to edit listing, please try again.");
+                Store.addNotification({
+                    title: 'Unable to Edit Listing',
+                    message: 'Please try again',
+                    type: 'danger',
+                    insert: 'top',
+                    container: 'top-right',
+                    animationIn: ["animated", "fadeIn"],
+                    animationOut: ["animated", "fadeOut"],
+                    dismiss: {
+                      duration: 5000,
+                      onScreen: true
+                    }
+                  });
             }
         }      
     }
@@ -154,11 +179,35 @@ export default function ManageListing({ listing }) {
         event.preventDefault();
         let response = await dataService.deleteListing(listing.listingId);
         if (response === undefined) {
-            alert("Connection error, please try again.");
+            Store.addNotification({
+                title: 'Connection Error!',
+                message: 'Please try again',
+                type: 'danger',
+                insert: 'top',
+                container: 'top-right',
+                animationIn: ["animated", "fadeIn"],
+                animationOut: ["animated", "fadeOut"],
+                dismiss: {
+                  duration: 5000,
+                  onScreen: true
+                }
+              });
         } else if (response.status === 200) {
             navigate(`/manage-listings`);
         } else {
-            alert("Unable to delete listing, please try again.");
+            Store.addNotification({
+                title: 'Unable to Delete Listing',
+                message: 'Please try again',
+                type: 'danger',
+                insert: 'top',
+                container: 'top-right',
+                animationIn: ["animated", "fadeIn"],
+                animationOut: ["animated", "fadeOut"],
+                dismiss: {
+                  duration: 5000,
+                  onScreen: true
+                }
+              });
         }
     }
 

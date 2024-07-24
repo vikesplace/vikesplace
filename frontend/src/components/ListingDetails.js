@@ -11,6 +11,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import DataService from '../services/DataService.js';
+import { Store } from 'react-notifications-component';
 
 const ListingDetails = ({ listing }) => {
   const dataService = new DataService();
@@ -34,11 +35,35 @@ const ListingDetails = ({ listing }) => {
     // Chat Does Not: dataService.createNewChat, then send messsage
     let response = await dataService.sendMessage(listing.listingId, message);
     if (response === undefined) {
-      alert("Connection error, please try again.");
+      Store.addNotification({
+        title: 'Connection Error!',
+        message: 'Please try again',
+        type: 'danger',
+        insert: 'top',
+        container: 'top-right',
+        animationIn: ["animated", "fadeIn"],
+        animationOut: ["animated", "fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: true
+        }
+      });
     } else if (response.status === 200) {
         handleClose();
     } else {
-        alert("Unable to send message, please try again.");
+      Store.addNotification({
+        title: 'Unable to Send Message',
+        message: 'Please try again',
+        type: 'danger',
+        insert: 'top',
+        container: 'top-right',
+        animationIn: ["animated", "fadeIn"],
+        animationOut: ["animated", "fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: true
+        }
+      });
     }
   };
 

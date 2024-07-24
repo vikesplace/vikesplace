@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography';
 import ManageListing from '../components/ManageListing.js';
 import '../App.css';
 import DataService from '../services/DataService.js';
+import { Store } from 'react-notifications-component';
 
 function EditListing() {
   const { id } = useParams();
@@ -16,11 +17,35 @@ function EditListing() {
       const dataService = new DataService();
       const response = await dataService.getListing(id);
       if (response === undefined) {
-        alert("Connection error, please try again.");
+        Store.addNotification({
+          title: 'Connection Error!',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
       } else if (response.status === 200) {
         setListing(response.data);
       } else {
-        alert("Unable to get your listings, please try again.");
+        Store.addNotification({
+          title: 'Unable to Get Listing',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
       }
     }
 

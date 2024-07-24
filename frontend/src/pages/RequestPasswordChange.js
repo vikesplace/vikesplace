@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import { useNavigate } from 'react-router-dom';
 import AuthService from '../services/AuthService';
+import { Store } from 'react-notifications-component';
 
 function RequestPasswordChange() {
     const authService = new AuthService();
@@ -49,11 +50,35 @@ function RequestPasswordChange() {
         if (validForm) {
             let response = await authService.requestPasswordChange(email);
             if (response === undefined) {
-                alert("Connection error, please try again.");
+                Store.addNotification({
+                    title: 'Connection Error!',
+                    message: 'Please try again',
+                    type: 'danger',
+                    insert: 'top',
+                    container: 'top-right',
+                    animationIn: ["animated", "fadeIn"],
+                    animationOut: ["animated", "fadeOut"],
+                    dismiss: {
+                      duration: 5000,
+                      onScreen: true
+                    }
+                  });
             } else if (response.status === 200) {
                 navigate('/check-email');
             } else {
-                alert("Unable to request change, please try again.");
+                Store.addNotification({
+                    title: 'Unable to Requst Change',
+                    message: 'Please try again',
+                    type: 'danger',
+                    insert: 'top',
+                    container: 'top-right',
+                    animationIn: ["animated", "fadeIn"],
+                    animationOut: ["animated", "fadeOut"],
+                    dismiss: {
+                      duration: 5000,
+                      onScreen: true
+                    }
+                  });
             }  
             
         }
