@@ -386,7 +386,7 @@ class DataService {
     *   (status can be "OPEN" or "CLOSED")
     * Error: returns message
     */
-    async getAllCharities() {
+    async getCharities() {
         try {
             return await axios.get(API_URL + 'charity', 
                 { withCredentials: true });
