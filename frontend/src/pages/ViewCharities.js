@@ -1,20 +1,26 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import Pagination from '@mui/material/Pagination';
-import { Typography } from '@mui/material';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
 import CharityCard from '../components/CharityCard';
+import CharityDetails from '../components/CharityDetails';
 import '../App.css';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 import DataService from '../services/DataService';
 import { Store } from 'react-notifications-component';
 
 function ViewCharities() {
-  const navigate = useNavigate();
-
   const [currentFuturePage, setCurrentFuturePage] = useState(1);
   const [currentPastPage, setCurrentPastPage] = useState(1);
-  const [charities, setCharities] = useState([])
+  const [charities, setCharities] = useState([]);
+  const [isViewingCharity, setIsViewingCharity] = useState(false);
+  const [viewCharity, setViewCharity] = useState({});
   const itemsPerPage = 5;
 
   useEffect(() => {
@@ -57,9 +63,15 @@ function ViewCharities() {
     getCharities();
   }, []);
 
-  const handleCharityClick = (id) => {
-    navigate(`/charities/${id}`);
+  const handleCharityClick = (charity) => {
+    setIsViewingCharity(true);
+    setViewCharity(charity);
   };
+
+  const handleCharityClose = () => {
+    setIsViewingCharity(false);
+    setViewCharity({});
+  }
 
   const handleFuturePageChange = (event, value) => {
     setCurrentFuturePage(value);
@@ -94,13 +106,13 @@ function ViewCharities() {
               <Typography variant="h6" gutterBottom>
                 Current Event:
               </Typography>
-              <div onClick={() => handleCharityClick(sortedCharities.activeEvent.charityId)}>
+              <div onClick={() => handleCharityClick(sortedCharities.activeEvent)}>
                 <CharityCard
                   id={sortedCharities.activeEvent.charityId}
                   name={sortedCharities.activeEvent.name}
                   numListings={sortedCharities.activeEvent.numListings}
                   endDate={sortedCharities.activeEvent.endDate.substring(0, 10)}
-                  funds={sortedCharities.activeEvent.funds}
+                  funds={sortedCharities.activeEvent.fund}
                   status={sortedCharities.activeEvent.status}
                 />
                 <br />
@@ -116,13 +128,13 @@ function ViewCharities() {
                 Future Events:
               </Typography>
               {paginatedFutureCharities.map((charity) => (
-                <div key={charity.charityId} onClick={() => handleCharityClick(charity.charityId)}>
+                <div key={charity.charityId} onClick={() => handleCharityClick(charity)}>
                   <CharityCard
                     id={charity.charityId}
                     name={charity.name}
                     numListings={charity.numListings}
                     endDate={charity.endDate.substring(0, 10)}
-                    funds={charity.funds}
+                    funds={charity.fund}
                     status={charity.status}
                   />
                   <br />
@@ -143,13 +155,13 @@ function ViewCharities() {
                 Past Events:
               </Typography>
               {paginatedPastCharities.map((charity) => (
-                <div key={charity.charityId} onClick={() => handleCharityClick(charity.charityId)}>
+                <div key={charity.charityId} onClick={() => handleCharityClick(charity)}>
                   <CharityCard
                     id={charity.charityId}
                     name={charity.name}
                     numListings={charity.numListings}
                     endDate={charity.endDate.substring(0, 10)}
-                    funds={charity.funds}
+                    funds={charity.fund}
                     status={charity.status}
                   />
                   <br />
@@ -172,6 +184,27 @@ function ViewCharities() {
             </Typography>
           }
         </Box>
+        <Dialog open={isViewingCharity} onClose={handleCharityClose} maxWidth={'sm'} fullWidth={true}>
+          <DialogTitle>View Charity</DialogTitle>
+          <DialogContent>
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="flex-start"
+              minHeight="100vh"
+              bgcolor="background.paper"
+            >
+              <Grid container spacing={2} justifyContent="center" sx={{ mt: 2 }}>
+                <Grid item xs={12} md={8}>
+                  <CharityDetails charity={viewCharity} />
+                </Grid>
+              </Grid>
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCharityClose}>Cancel</Button>
+          </DialogActions>
+        </Dialog>
       </Container>
     </div>
   );
