@@ -2,7 +2,7 @@ import Listing from "../models/listing_models.js";
 import { Op } from "sequelize";
 
 export const getSortedListings = async (req, res) => {
-  const {minPrice, maxPrice, status, sortBy, isDescending, pullLimit, pageOffset} = req.query;
+  const { minPrice, maxPrice, status, sortBy, isDescending, pullLimit, pageOffset } = req.query;
 
   //build where object
   const where = {};
@@ -18,26 +18,28 @@ export const getSortedListings = async (req, res) => {
   if (status) {
     where.status = status;
   }
-  
+
   //build order by array
   const order = [];
   if (sortBy) {
-    order.push([sortBy, (isDescending.toLowerCase()=="true" ? "DESC" : "ASC")]); //defaults to ascending
+    order.push([sortBy, (isDescending.toLowerCase() == "true" ? "DESC" : "ASC")]); //defaults to ascending
   }
 
   //build findAndCountAll options object
-  const options = {where, order, attributes: [
-    ["seller_id", "sellerId"],
-    ["listing_id", "listingId"],
-    "location",
-    "price",
-    ["listed_at", "listedAt"],
-    "status",
-    "title",
-    "lat_long",
-    ["last_updated_at", "lastUpdatedAt"],
-    ["for_charity", "forCharity"]
-  ]};
+  const options = {
+    where, order, attributes: [
+      ["seller_id", "sellerId"],
+      ["listing_id", "listingId"],
+      "location",
+      "price",
+      ["listed_at", "listedAt"],
+      "status",
+      "title",
+      "lat_long",
+      ["last_updated_at", "lastUpdatedAt"],
+      ["for_charity", "forCharity"]
+    ]
+  };
 
   //add limit and offset if they exist
   if (pullLimit) {
@@ -49,7 +51,7 @@ export const getSortedListings = async (req, res) => {
 
   try {
     const listings = await Listing.findAndCountAll(options);
-    res.json(listings); 
+    res.json(listings);
   } catch (error) {
     if (error.name === 'SequelizeValidationError') {
       console.error(error);
@@ -64,12 +66,16 @@ export const getSortedListings = async (req, res) => {
 export const createListing = async (req, res) => {
   try {
     const coordinate = { type: 'Point', coordinates: [req.body.lat_long.latitude,req.body.lat_long.longitude]}
+    const location = req.body.location;
+    if (!location.match(/^[A-Z0-9]+$/)) {
+      return res.status(400).json({ message: 'Location must be uppercase and contain no spaces' });
+    }
     const createResult = await Listing.create({
       seller_id: req.body.seller_id,
       title: req.body.title,
       price: req.body.price,
       lat_long: coordinate,
-      location: req.body.location,
+      location: location,
       status: "AVAILABLE",
       category: req.body.category,
       for_charity: req.body.forCharity,
@@ -86,7 +92,7 @@ export const createListing = async (req, res) => {
     if (error.name === 'SequelizeValidationError') {
       console.error(error);
       res.status(400).json({ message: error.message });
-    } else { 
+    } else {
       console.error(error);
       res.status(500).send();
     }
@@ -120,85 +126,101 @@ export const getSellerListings = async (req, res) => {
 };
 
 export const getListingInfo = async (req, res) => {
-    try {
-        const listing = await Listing.findOne({
-            where: {
-                listing_id: req.params.listingId,
-            },
-            attributes: [
-                ["listing_id", "listingId"],
-                ["seller_id", "sellerId"],
-                "buyer_username",
-                "title",
-                "price",
-                "location",
-                "status",
-                ["listed_at", "listedAt"],
-                ["last_updated_at", "lastUpdatedAt"],
-                "category",
-                ["for_charity", "forCharity"]
-            ]
-        });
-        if (!listing) {
-          console.error("Listing not found");
-          return res.status(500).send();
-        }
-        return res.status(200).json({
-            sellerId: listing.dataValues.sellerId,
-            listingId: listing.dataValues.listingId,
-            title: listing.dataValues.title,
-            price: listing.dataValues.price,
-            location: listing.dataValues.location,
-            status: listing.dataValues.status,
-            listedAt: listing.dataValues.listedAt,
-            lastupdatedAt: listing.dataValues.lastUpdatedAt,
-            forCharity: listing.dataValues.forCharity,
-        });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).send();
-    };
+  try {
+    const listing = await Listing.findOne({
+      where: {
+        listing_id: req.params.listingId,
+      },
+      attributes: [
+        ["listing_id", "listingId"],
+        ["seller_id", "sellerId"],
+        "buyer_username",
+        "title",
+        "price",
+        "location",
+        "status",
+        ["listed_at", "listedAt"],
+        ["last_updated_at", "lastUpdatedAt"],
+        "category",
+        ["for_charity", "forCharity"]
+      ]
+    });
+    if (!listing) {
+      console.error("Listing not found");
+      return res.status(500).send();
+    }
+    return res.status(200).json({
+      sellerId: listing.dataValues.sellerId,
+      listingId: listing.dataValues.listingId,
+      title: listing.dataValues.title,
+      price: listing.dataValues.price,
+      location: listing.dataValues.location,
+      status: listing.dataValues.status,
+      listedAt: listing.dataValues.listedAt,
+      lastupdatedAt: listing.dataValues.lastUpdatedAt,
+      forCharity: listing.dataValues.forCharity,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send();
+  };
 };
 
 export const updateListing = async (req, res) => {
-    try {
-        const listing = await Listing.findByPk(req.params.listingId);
-        if (!listing) {
-          console.error("Listing not found");
-          return res.status(500).send();
-        }
-        listing.title = req.body.title;
-        listing.price = req.body.price;
-        listing.status = req.body.status;
-        listing.lat_long = req.body.lat_long;
-        listing.category = req.body.category;
-        listing.location = req.body.location;
-        listing.buyer_username = req.body.buyer_username; 
-        listing.for_charity = req.body.for_charity;
-        await listing.save();
-        res.json({});
-    } catch (error) {
-      if (error.name === 'SequelizeValidationError') {
-        return res.status(400).json({ message: error.message });
-      } else {
-        console.error(error);
-        res.status(500).send();
-      }
+  try {
+    const listing = await Listing.findByPk(req.params.listingId);
+    if (!listing) {
+      console.error("Listing not found");
+      return res.status(500).send();
     }
+    if (listing.buyer_username !== null && req.body.buyer_username === null) {
+      req.body.buyer_username = listing.buyer_username;
+    }
+    const location = req.body.location;
+    if (!location.match(/^[A-Z0-9]+$/)) {
+      return res.status(400).json({ message: 'Location must be uppercase and contain no spaces' });
+    }
+    const updateListing = await Listing.update({
+      title: req.body.title,
+      price: req.body.price,
+      status: req.body.status,
+      lat_long: req.body.lat_long,
+      category: req.body.category,
+      location: location,
+      buyer_username: req.body.buyer_username,
+      for_charity: req.body.for_charity
+    }, {
+      where: {
+        listing_id: req.params.listingId,
+      }
+    });
+    if (updateListing[0] === 0) {
+      console.error("Listing not found");
+      return res.status(500).send();
+    }
+    res.json({});
+  } catch (error) {
+    if (error.name === 'SequelizeValidationError') {
+      return res.status(400).json({ message: error.message });
+    } else {
+      console.error(error);
+      res.status(500).send();
+    }
+  }
 };
 
 export const deleteListing = async (req, res) => {
-    try {
-        const listing = await Listing.findByPk(req.params.listingId);
-        if (!listing) {
-          console.error("Listing not found");
-          return res.status(500).send();
-        }
-        listing.status = "REMOVED";
-        await listing.save();
-        res.json({});
-    } catch (error) {
-      console.error(error);
+  try {
+    const listing = await Listing.findByPk(req.params.listingId);
+    if (!listing) {
+      console.error("Listing not found");
       return res.status(500).send();
     }
+    listing.status = "REMOVED";
+    await listing.save();
+    res.json({});
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send();
+  }
 }
