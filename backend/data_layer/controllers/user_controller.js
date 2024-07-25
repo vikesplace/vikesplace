@@ -230,6 +230,12 @@ export const updateUserData = async (req, res) => {
         if (!location.match(/^[A-Z0-9]+$/)) {
           return res.status(400).json({ message: 'Location must be uppercase and contain no spaces' });
         }
+        const postalCodeRecord = await PostalCodes.findOne({
+            where: { postal_code: req.body.location },
+        });
+        if (!postalCodeRecord) {
+            return res.status(400).json({ message: "Invalid postal code" });
+        }
         user.lat_long = coordinate;
         user.location = location;
         await user.save();
