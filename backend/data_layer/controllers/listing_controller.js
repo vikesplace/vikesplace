@@ -64,12 +64,16 @@ export const getSortedListings = async (req, res) => {
 export const createListing = async (req, res) => {
   try {
     const coordinate = { type: 'Point', coordinates: [req.body.lat_long.latitude,req.body.lat_long.longitude]}
+    const location = req.body.location;
+    if (!location.match(/^[A-Z0-9]+$/)) {
+      return res.status(400).json({ message: 'Location must be uppercase and contain no spaces' });
+    }
     const createResult = await Listing.create({
       seller_id: req.body.seller_id,
       title: req.body.title,
       price: req.body.price,
       lat_long: coordinate,
-      location: req.body.location,
+      location: location,
       status: "AVAILABLE",
       category: req.body.category,
       for_charity: req.body.forCharity,
@@ -167,12 +171,16 @@ export const updateListing = async (req, res) => {
           console.error("Listing not found");
           return res.status(500).send();
         }
+        const location = req.body.location;
+        if (!location.match(/^[A-Z0-9]+$/)) {
+          return res.status(400).json({ message: 'Location must be uppercase and contain no spaces' });
+        }
         listing.title = req.body.title;
         listing.price = req.body.price;
         listing.status = req.body.status;
         listing.lat_long = req.body.lat_long;
         listing.category = req.body.category;
-        listing.location = req.body.location;
+        listing.location = location;
         listing.buyer_username = req.body.buyer_username; 
         listing.for_charity = req.body.for_charity;
         await listing.save();
