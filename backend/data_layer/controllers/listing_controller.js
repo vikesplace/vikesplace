@@ -86,7 +86,8 @@ export const createListing = async (req, res) => {
       title: createResult.title,
       price: createResult.price,
       location: createResult.location,
-      status: createResult.status
+      status: createResult.status,
+      forCharity: createResult.for_charity
     };
     res.json(output);
   } catch (error) {
