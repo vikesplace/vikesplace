@@ -30,7 +30,7 @@ export const getSearchResults = async (req, res) => {
       params: requestParamsObject,
     });
 
-    if (response.data.status == 200 && response.data.results.listings) {
+    if (response.data.status == 200) {
       const listings = response.data.results.listings.map((listing) => {
         return {
           sellerId: listing.seller_id,
@@ -44,7 +44,14 @@ export const getSearchResults = async (req, res) => {
         };
       });
 
-      res.json(listings);
+      const users = response.data.results.users.map((user) => {
+        return {
+          username: user.username,
+          userId: user.user_id,
+        };
+      });
+
+      res.json({ listings: listings, users: users });
     } else {
       res.json({ message: "Failed to get listings" });
     }

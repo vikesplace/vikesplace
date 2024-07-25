@@ -15,6 +15,7 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import DataService from '../services/DataService';
 import { categories } from '../utils/ListingData';
+import { Store } from 'react-notifications-component';
 
 function CreateListing() {
     const dataService = new DataService();
@@ -116,11 +117,35 @@ function CreateListing() {
             const upperPostal = postalCode.toUpperCase();
             let response = await dataService.createListing(title, price, upperPostal, category, forCharity); 
             if (response === undefined) {
-                alert("Connection error, please try again.");
+                Store.addNotification({
+                    title: 'Connection Error!',
+                    message: 'Please try again',
+                    type: 'danger',
+                    insert: 'top',
+                    container: 'top-right',
+                    animationIn: ["animated", "fadeIn"],
+                    animationOut: ["animated", "fadeOut"],
+                    dismiss: {
+                      duration: 5000,
+                      onScreen: true
+                    }
+                  });
             } else if (response.status === 200) {
                 navigate(`/manage-listings`);
             } else {
-                alert("Unable to create listing, please try again.");
+                Store.addNotification({
+                    title: 'Unable to Create Listing',
+                    message: 'Please try again',
+                    type: 'danger',
+                    insert: 'top',
+                    container: 'top-right',
+                    animationIn: ["animated", "fadeIn"],
+                    animationOut: ["animated", "fadeOut"],
+                    dismiss: {
+                      duration: 5000,
+                      onScreen: true
+                    }
+                  });
             }
         }
     }

@@ -2,6 +2,7 @@ import axios from "axios";
 import httpErrorHandler from "./httpErrorHandler";
 
 const API_URL = "http://localhost:8080/";
+const FRONT_URL = "http://localhost:3000/";
 
 class AuthService {
     /*
@@ -9,8 +10,8 @@ class AuthService {
     * Success (200): returns message, sets authorization cookie
     * Error: returns message
     */
-    login(username, password) {
-        const response = axios
+    async login(username, password) {
+        const response = await axios
             .post(API_URL + "login", {
                 username,
                 password
@@ -33,12 +34,15 @@ class AuthService {
     * Success (200): returns message, sends an email
     * Error: returns message
     */
-    register(email) {
-        return axios.post(API_URL + "request_account", {
-            email,
-            callback: "http://localhost:3000/verify-account?jwt="
-        })
-        .catch(httpErrorHandler);
+    async register(email) {
+        try {
+            return await axios.post(API_URL + "request_account", {
+                email,
+                callback: FRONT_URL + "verify-account/"
+            });
+        } catch (error) {
+            return httpErrorHandler(error);
+        }
     }
 
     /*
@@ -46,14 +50,17 @@ class AuthService {
     * Success (201): returns userId, sets authorization cookie
     * Error: returns message
     */
-    verify(jwt, username, password, location) {
-        return axios.post(API_URL + "verify_account", {
-            jwt,
-            username,
-            password,
-            location
-        })
-        .catch(httpErrorHandler);
+    async verify(jwt, username, password, location) {
+        try {
+            return await axios.post(API_URL + "verify_account", {
+                jwt,
+                username,
+                password,
+                location
+            });
+        } catch (error) {
+            return httpErrorHandler(error);
+        }
     }
 
     /*
@@ -61,11 +68,15 @@ class AuthService {
     * Success (200): returns nothing, sends an email
     * Error: returns message
     */
-    requestPasswordChange(email) {
-        return axios.post(API_URL + "verify_password", {
-            email
-        })
-        .catch(httpErrorHandler);
+    async requestPasswordChange(email) {
+        try {
+            return await axios.post(API_URL + "request_reset", {
+                email,
+                callback: FRONT_URL + "password-update/"
+            });
+        } catch (error) {
+            return httpErrorHandler(error);
+        }
     }
 
     /*
@@ -73,11 +84,15 @@ class AuthService {
     * Success (200): returns nothing
     * Error: returns message
     */
-    completePasswordChange(password) {
-        return axios.post(API_URL + "reset_password", {
-            password
-        })
-        .catch(httpErrorHandler);
+    async completePasswordChange(jwt, password) {
+        try {
+            return await axios.post(API_URL + "verify_reset", {
+                jwt, 
+                password
+            });
+        } catch (error) {
+            return httpErrorHandler(error);
+        }
     }
 }
 

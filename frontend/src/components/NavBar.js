@@ -17,7 +17,8 @@ const pages = [
   { name: 'View Listings', path: '/view-listings' },
   { name: 'Create Listing', path: '/create-listing' },
   { name: 'Manage Listings', path: '/manage-listings' },
-  { name: 'Messages', path: '/messages' }
+  { name: 'Messages', path: '/messages' },
+  { name: 'Charity Events', path: '/view-charities' }
 ];
 const settings = ['User Profile', 'Logout'];
 
@@ -43,20 +44,21 @@ function NavBar() {
     setAnchorElUser(null);
   };
 
-  const hideButtons = location.pathname === '/login' || location.pathname === '/request-account' ||
-    location.pathname === '/check-email' || location.pathname === '/verify-account' || location.pathname === '/verified' ||
-    location.pathname === '/password-change' || location.pathname === '/password-update'   || 
-    location.pathname === '/password-updated' || location.pathname === '/check-email';
+  const pathWithoutParams = location.pathname.split("/")[1];
+  const showButtons = pathWithoutParams === 'home' || pathWithoutParams === 'view-listings' || pathWithoutParams === 'create-listing' ||
+    pathWithoutParams === 'manage-listings' || pathWithoutParams === 'listings' || pathWithoutParams === 'edit-listing' || pathWithoutParams === 'view-reviews' ||
+    pathWithoutParams === 'create-review'   || pathWithoutParams === 'messages' || pathWithoutParams === 'message-history' || pathWithoutParams === 'history' || 
+    pathWithoutParams === 'user-profile' || pathWithoutParams === 'view-charities' || pathWithoutParams === 'charities' ;
 
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
         
-          {!hideButtons &&(
+          {showButtons &&(
             <>  
               <div className="logo">
-                <Link to="/">
+                <Link to="/home">
                   <img src={logo} alt="Logo" />
                 </Link>
               </div>
@@ -64,7 +66,7 @@ function NavBar() {
                 variant="h6"
                 noWrap
                 component="a"
-                href="/"
+                href="/home"
                 sx={{
                   mr: 2,
                   display: { xs: 'none', md: 'flex' },
@@ -78,7 +80,7 @@ function NavBar() {
             </>
           )}
 
-          {hideButtons &&(
+          {!showButtons &&(
             <>  
               <div className="logo">
                 <Link to="/login">
@@ -103,7 +105,7 @@ function NavBar() {
             </>
           )}
 
-          {!hideButtons && (
+          {showButtons && (
             <>
               <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                 <IconButton
@@ -158,12 +160,12 @@ function NavBar() {
             </>
           )}
 
-          {!hideButtons && (
+          {showButtons && (
               <>
           <div>
             <IconButton
               size="large"
-              aria-label="account of current user"
+              aria-label="account menu of current user"
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenUserMenu}

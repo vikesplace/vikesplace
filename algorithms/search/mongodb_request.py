@@ -21,7 +21,8 @@ class MongoDBRequest:
 
     def search_history(self, user_id):
         # Access a collection
-        collection = self.db["user_activity"]  # Replace with your collection name
+        # Replace with your collection name
+        collection = self.db["user_activity"]
 
         # Query the database based on user ID
         user_document = collection.find_one({"_id": int(user_id)})
@@ -30,7 +31,7 @@ class MongoDBRequest:
             return user_document["search"]
         else:
             return None
-    
+
     def write_search_activity(self, user_id, query):
         # Access a collection
         collection = self.db["user_activity"]
@@ -51,7 +52,7 @@ class MongoDBRequest:
             return result.upserted_id
         else:
             return result.matched_count
-    
+
     def delete_search_document(self, user_id):
         # Access a collection
         collection = self.db["user_activity"]
@@ -63,10 +64,10 @@ class MongoDBRequest:
         result = collection.delete_one(query)
 
         return result.deleted_count
-    
+
     def user_activity(self, user_id):
         # Access a collection
-        collection = self.db["user_activity"]  # Replace with your collection name
+        collection = self.db["user_activity"]
 
         # Query the database based on user ID
         user_document = list(collection.find(
@@ -76,7 +77,7 @@ class MongoDBRequest:
             return user_document[0]["listings"]
         else:
             return None
-        
+
     def write_user_activity(self, user_id, listing_id):
         # Access a collection
         collection = self.db["user_activity"]

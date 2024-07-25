@@ -14,14 +14,15 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import Pagination from '@mui/lab/Pagination';
+import Pagination from '@mui/material/Pagination'
 import '../App.css';
 import ListingCard from '../components/ListingCard';
-import SearchBar from '../components/SearchBar';
 import { Typography } from '@mui/material';
 import DataService from '../services/DataService';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import IconButton from '@mui/material/IconButton';
+import { Store } from 'react-notifications-component';
+import { useSearch } from '../components/searchbar/searchContext';
 
 function ViewListings() {
   const dataService = useMemo(() => new DataService(), []);
@@ -39,16 +40,47 @@ function ViewListings() {
   const [postalCodeError, setPostalCodeError] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const { setShowSearch, searchQuery } = useSearch();
 
   useEffect(() => {
+    setShowSearch(true);
+    return () => setShowSearch(false);
+  }, [setShowSearch]);
+
+  useEffect(() => {
+
     const fetchListings = async () => {
-      const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder); 
+      const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder);
       if (response === undefined) {
-        alert("Connection error, please try again.");
+        Store.addNotification({
+          title: 'Connection Error!',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
       } else if (response.status === 200) {
         setListings(response.data);
       } else {
-        alert("Unable to get listings, please try again.");
+        Store.addNotification({
+          title: 'Unable to Get Listings',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
       }
     };
 
@@ -57,9 +89,52 @@ function ViewListings() {
       setLocation(response !== undefined ? response.data.location : "Please Reload");
     };
 
-    fetchListings();
+    const search = async () => {
+      const response = await dataService.search(searchQuery)
+
+      if (response === undefined) {
+        Store.addNotification({
+          title: 'Connection Error!',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
+      } else if (response.status === 200) {
+        setListings(response.data)
+      } else {
+        Store.addNotification({
+          title: 'Unable to Search Listings',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
+      }
+    }
+
+    //if there is a search querey run that otherwise just fetchlistings
+    if (searchQuery) {
+      search();
+    } else {
+      fetchListings();
+    }
+
     fetchLocation();
-  }, [dataService, priceRange, statusFilter, sortCategory, sortOrder]);
+
+  }, [dataService, priceRange, statusFilter, sortCategory, sortOrder, searchQuery]);
 
   const handleListingClick = (id) => {
     navigate(`/listings/${id}`);
@@ -69,13 +144,37 @@ function ViewListings() {
     const category = event.target.value;
     setSortCategory(category);
 
-    const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder); 
+    const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder);
     if (response === undefined) {
-      alert("Connection error, please try again.");
+      Store.addNotification({
+        title: 'Connection Error!',
+        message: 'Please try again',
+        type: 'danger',
+        insert: 'top',
+        container: 'top-right',
+        animationIn: ["animated", "fadeIn"],
+        animationOut: ["animated", "fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: true
+        }
+      });
     } else if (response.status === 200) {
       setListings(response.data);
     } else {
-      alert("Unable to get listings, please try again.");
+      Store.addNotification({
+        title: 'Unable to Get Listings',
+        message: 'Please try again',
+        type: 'danger',
+        insert: 'top',
+        container: 'top-right',
+        animationIn: ["animated", "fadeIn"],
+        animationOut: ["animated", "fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: true
+        }
+      });
     }
   };
 
@@ -83,13 +182,37 @@ function ViewListings() {
     const currOrder = sortOrder;
     setSortOrder(!currOrder);
 
-    const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder); 
+    const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder);
     if (response === undefined) {
-      alert("Connection error, please try again.");
+      Store.addNotification({
+        title: 'Connection Error!',
+        message: 'Please try again',
+        type: 'danger',
+        insert: 'top',
+        container: 'top-right',
+        animationIn: ["animated", "fadeIn"],
+        animationOut: ["animated", "fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: true
+        }
+      });
     } else if (response.status === 200) {
       setListings(response.data);
     } else {
-      alert("Unable to get listings, please try again.");
+      Store.addNotification({
+        title: 'Unable to Get Listings',
+        message: 'Please try again',
+        type: 'danger',
+        insert: 'top',
+        container: 'top-right',
+        animationIn: ["animated", "fadeIn"],
+        animationOut: ["animated", "fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: true
+        }
+      });
     }
   };
 
@@ -103,13 +226,37 @@ function ViewListings() {
   };
 
   const applyFilters = async () => {
-    const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder); 
+    const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder);
     if (response === undefined) {
-      alert("Connection error, please try again.");
+      Store.addNotification({
+        title: 'Connection Error!',
+        message: 'Please try again',
+        type: 'danger',
+        insert: 'top',
+        container: 'top-right',
+        animationIn: ["animated", "fadeIn"],
+        animationOut: ["animated", "fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: true
+        }
+      });
     } else if (response.status === 200) {
       setListings(response.data);
     } else {
-      alert("Unable to get listings, please try again.");
+      Store.addNotification({
+        title: 'Unable to Get Listings',
+        message: 'Please try again',
+        type: 'danger',
+        insert: 'top',
+        container: 'top-right',
+        animationIn: ["animated", "fadeIn"],
+        animationOut: ["animated", "fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: true
+        }
+      });
     }
     setOpenFilterDialog(false);
   };
@@ -133,11 +280,11 @@ function ViewListings() {
   const validatePostalCode = (code) => {
     var format = new RegExp("^[ABCEGHJKLMNPRSTVXYabceghjklmnprstvxy][0-9][ABCEGHJKLMNPRSTVWXYZabceghjklmnprstvwxyz][0-9][ABCEGHJKLMNPRSTVWXYZabceghjklmnprstvwxyz][0-9]$");
     if (!format.test(code)) {
-        setPostalCodeError(true);
-        return false;
+      setPostalCodeError(true);
+      return false;
     } else {
-        setPostalCodeError(false);
-        return true;
+      setPostalCodeError(false);
+      return true;
     }
   };
 
@@ -146,11 +293,35 @@ function ViewListings() {
       const upperPostal = newLocation.toUpperCase();
       const response = await dataService.updateUserData(upperPostal);
       if (response === undefined) {
-        alert("Connection error, please try again.");
+        Store.addNotification({
+          title: 'Connection Error!',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
       } else if (response.status === 200) {
         setLocation(upperPostal);
       } else {
-        alert("Unable to get listings, please try again.");
+        Store.addNotification({
+          title: 'Unable to Update Location',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
       }
       setOpenLocationDialog(false);
     }
@@ -165,9 +336,8 @@ function ViewListings() {
   return (
     <div className="ViewListings">
       <Container>
-        <SearchBar />
         <Box mt={2} display="flex" justifyContent="space-between" alignItems="center">
-          <Box id="sort-options" display="flex"> 
+          <Box id="sort-options" display="flex">
             <FormControl sx={{ minWidth: 120, mr: 2 }}>
               <InputLabel id="sort-select-label">Sort By</InputLabel>
               <Select
@@ -206,14 +376,14 @@ function ViewListings() {
             Change Location
           </Button>
         </Box>
-        <Pagination 
-          count={Math.ceil(listings.length / itemsPerPage)} 
-          page={currentPage} 
-          onChange={handlePageChange} 
+        <Pagination
+          count={Math.ceil(listings.length / itemsPerPage)}
+          page={currentPage}
+          onChange={handlePageChange}
           sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}
         />
         <Box mt={2}>
-          {(listings === undefined || listings.length === 0) && 
+          {(listings === undefined || listings.length === 0) &&
             <Typography align="center" variant='h6'>
               No Listings Meet Criteria
             </Typography>
@@ -231,10 +401,10 @@ function ViewListings() {
             </div>
           ))}
         </Box>
-        <Pagination 
-          count={Math.ceil(listings.length / itemsPerPage)} 
-          page={currentPage} 
-          onChange={handlePageChange} 
+        <Pagination
+          count={Math.ceil(listings.length / itemsPerPage)}
+          page={currentPage}
+          onChange={handlePageChange}
           sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}
         />
         <Dialog open={openFilterDialog} onClose={handleCloseFilterDialog}>

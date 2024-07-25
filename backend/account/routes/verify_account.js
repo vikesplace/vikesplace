@@ -42,6 +42,10 @@ router.post("/", usernameValidation, passwordValidation, async (req, res) => {
     return res.status(400).json({ message: 'jwt is required' });
   }
 
+  if (!location.match(/^[A-Z0-9]+$/)) {
+    return res.status(400).json({ message: 'Location must be uppercase and contain no spaces' });
+  }
+
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({
