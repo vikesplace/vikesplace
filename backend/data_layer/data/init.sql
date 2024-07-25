@@ -264,3 +264,105 @@ INSERT INTO "Charity" (name, status, fund, logo_url, start_date, end_date, num_l
 ('World Wildlife Fund', 'OPEN', 3000.00, '12345', '2024-02-01 12:00:00', '2024-02-01 13:00:00', 0),
 ('Doctors Without Borders', 'OPEN', 4000.00, '12345', '2024-02-01 13:00:00', '2024-02-01 13:00:00', 0),
 ('Salvation Army', 'CLOSED', 5000.00, '12345', '2024-02-01 14:00:00', '2024-02-01 14:00:00', 0);
+
+
+-- Insert 4k users
+CREATE TEMP TABLE temp_users (
+    firstName VARCHAR(255),
+    lastName VARCHAR(255),
+    randomNum INT,
+    username VARCHAR(255),
+    email VARCHAR(255),
+    password VARCHAR(255),
+    location VARCHAR(255),
+    latitude FLOAT,
+    longitude FLOAT,
+    joining_date TIMESTAMP
+);
+
+COPY temp_users(firstName, lastName, randomNum, username, email, password, location, latitude, longitude, joining_date)
+FROM '/docker-entrypoint-initdb.d/users.csv' DELIMITER ',' CSV HEADER;
+
+INSERT INTO "Users" (username, email, password, lat_long, location, joining_date)
+SELECT username, email, password,
+       CONCAT('POINT(',latitude,' ',longitude ,')')::GEOMETRY,
+       location, joining_date
+FROM temp_users;
+
+DROP TABLE temp_users;
+
+
+-- Insert ~250k listings
+CREATE TEMP TABLE temp_listings (
+    seller_id INT,
+    title TEXT,
+    price DECIMAL(10, 2),
+    latitude FLOAT,
+    longitude FLOAT,
+    postal_code VARCHAR(255),
+    status VARCHAR(255),
+    listed_at TIMESTAMP,
+    last_updated_at TIMESTAMP,
+    category VARCHAR(255)
+);
+
+COPY temp_listings(seller_id, title, price, latitude, longitude, postal_code, status, listed_at, last_updated_at, category) 
+FROM '/docker-entrypoint-initdb.d/listings.csv' DELIMITER ',' CSV HEADER;
+
+UPDATE temp_listings SET category = CASE
+    WHEN category = 'All Beauty' THEN 'BEAUTY' 
+    WHEN category = 'All Electronics' THEN 'ELECTRONICS' 
+    WHEN category = 'Amazon Devices' THEN 'ELECTRONICS' 
+    WHEN category = 'AMAZON FASHION' THEN 'APPAREL' 
+    WHEN category = 'Amazon Fire TV' THEN 'ELECTRONICS' 
+    WHEN category = 'Amazon Home' THEN 'KITCHENSUPPLIES' 
+    WHEN category = 'Apple Products' THEN 'ELECTRONICS' 
+    WHEN category = 'Appliances' THEN 'KITCHENSUPPLIES' 
+    WHEN category = 'Arts, Crafts & Sewing' THEN 'OFFICESUPPLIES' 
+    WHEN category = 'Audible Audiobooks' THEN 'ENTERTAINMENT' 
+    WHEN category = 'Automotive' THEN 'VEHICLES' 
+    WHEN category = 'Baby' THEN 'OTHER' 
+    WHEN category = 'Books' THEN 'ENTERTAINMENT' 
+    WHEN category = 'Buy a Kindle' THEN 'ENTERTAINMENT' 
+    WHEN category = 'Camera & Photo' THEN 'ELECTRONICS' 
+    WHEN category = 'Car Electronics' THEN 'VEHICLES' 
+    WHEN category = 'Cell Phones & Accessories' THEN 'PHONES' 
+    WHEN category = 'Collectible Coins' THEN 'OTHER' 
+    WHEN category = 'Collectibles & Fine Art' THEN 'OTHER' 
+    WHEN category = 'Computers' THEN 'ELECTRONICS' 
+    WHEN category = 'Digital Music' THEN 'ENTERTAINMENT' 
+    WHEN category = 'Electronics' THEN 'ELECTRONICS' 
+    WHEN category = 'Entertainment' THEN 'ENTERTAINMENT' 
+    WHEN category = 'Fire Phone' THEN 'ELECTRONICS' 
+    WHEN category = 'Furniture' THEN 'FURNITURE' 
+    WHEN category = 'Gift Cards' THEN 'OTHER' 
+    WHEN category = 'GPS & Navigation' THEN 'VEHICLES' 
+    WHEN category = 'Grocery' THEN 'OTHER' 
+    WHEN category = 'Handmade' THEN 'OTHER' 
+    WHEN category = 'Health & Personal Care' THEN 'HEALTH' 
+    WHEN category = 'Home Audio & Theater' THEN 'ELECTRONICS' 
+    WHEN category = 'Industrial & Scientific' THEN 'OTHER' 
+    WHEN category = 'Movies & TV' THEN 'ENTERTAINMENT' 
+    WHEN category = 'Music' THEN 'ENTERTAINMENT' 
+    WHEN category = 'Musical Instruments' THEN 'MUSICALINSTRUMENTS' 
+    WHEN category = 'Office Products' THEN 'OFFICESUPPLIES' 
+    WHEN category = 'Pet Supplies' THEN 'OTHER' 
+    WHEN category = 'Portable Audio & Accessories' THEN 'ELECTRONICS' 
+    WHEN category = 'Premium Beauty' THEN 'BEAUTY' 
+    WHEN category = 'Software' THEN 'ELECTRONICS' 
+    WHEN category = 'Sports' THEN 'SPORTS' 
+    WHEN category = 'Sports Collectibles' THEN 'OTHER' 
+    WHEN category = 'Sports & Outdoors' THEN 'SPORTS' 
+    WHEN category = 'Tools & Home Improvement' THEN 'GARDEN' 
+    WHEN category = 'Toys & Games' THEN 'OTHER' 
+    WHEN category = 'Video Games' THEN 'OTHER'
+    ELSE 'OTHER'
+END;
+
+INSERT INTO "Listings" (seller_id, title, price, lat_long, location, status, listed_at, last_updated_at, category)
+SELECT seller_id, title, price, 
+       CONCAT('POINT(',latitude,' ',longitude ,')')::GEOMETRY,
+       postal_code, status, listed_at, last_updated_at, category
+FROM temp_listings;
+
+DROP TABLE temp_listings;

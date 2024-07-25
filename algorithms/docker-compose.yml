@@ -31,7 +31,7 @@ services:
   postgresql:
     image: postgis/postgis:latest
     volumes:
-      - ./postgresql:/docker-entrypoint-initdb.d
+      - ../backend/data_layer/data:/docker-entrypoint-initdb.d
       - psqldata:/var/lib/postgresql/data
     restart: always
     environment:
@@ -111,7 +111,7 @@ services:
 
   kafka-connect:
     build: 
-      context: /kafka-connect
+      context: ./kafka-connect
       dockerfile: Dockerfile
     ports:
       - "8083:8083"
@@ -176,7 +176,7 @@ services:
   
   neo4j-relations-kafka-connect:
     build: 
-      context: /neo4j-relations-kafka-connect
+      context: ./neo4j/neo4j-relations-kafka-connect
       dockerfile: Dockerfile
     restart: always
     depends_on:
