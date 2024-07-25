@@ -2,34 +2,33 @@ import axios from "axios"
 import { redirect } from "react-router-dom";
 
 export default function httpErrorHandler(error) {
-    if (error === null) throw new Error('Unrecoverable error!! Error is null!')
+    if (error === null) throw new Error('Error is null!')
     if (axios.isAxiosError(error)) {
-        //here we have a type guard check, error inside this if will be treated as AxiosError
         const response = error?.response
         const request = error?.request
-        //const config = error?.config //here we have access the config used to make the api call (we can make a retry using this conf)
-
-        if (error.code === 'ERR_NETWORK') {
-            console.log('connection problems...')
-        } else if (error.code === 'ERR_CANCELED') {
-            console.log('connection canceled...')
-        }
+        // optional: const config = error?.config for access to config for api call (can retry)
 
         if (response) {
-            //The request was made and the server responded with a status code that falls out of the range of 2xx the http status code mentioned above
+            // server responded with a status code outside of success (2xx)
             const statusCode = response?.status
-            if (statusCode === 404) {
-                console.log('The requested resource does not exist or has been deleted')
+            if (statusCode === 400) {
+                console.log('Bad request, please try again');
             } else if (statusCode === 401) {
                 console.log('Please login to access this resource');
                 redirect("/login");
+            } else if (statusCode === 403) {
+                console.log('You do not have access to this resource');
+                redirect("/login");
+            } else if (statusCode === 404) {
+                console.log('Requested resource does not exist or has been deleted');                
+            } else if (statusCode === 500) {
+                console.log('Unexpected internal server error');
+            } else {
+                console.log('Error ' + statusCode + ', please try again')
             }
         } else if (request) {
-            //The request was made but no response was received, `error.request` is an instance of XMLHttpRequest in the browser and an instance of http.ClientRequest in Node.js
-            console.log('No response was received, please try again')
+            // no response was received
+            console.log('No response was received, please try again');
         }
     }
-
-    //Something happened in setting up the request and triggered an Error
-    console.log(error.message)
 }

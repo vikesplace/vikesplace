@@ -6,14 +6,13 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import AuthService from '../services/AuthService';
-
+import { Store } from 'react-notifications-component';
 
 function VerifyAccount() {
-    const location = useLocation();
     const navigate = useNavigate();
-    const jwt = location.search.replace("?jwt=", "");
+    const { jwt } = useParams();
     const authService = new AuthService();
     
     const [username, setUsername] = useState("");
@@ -112,29 +111,59 @@ function VerifyAccount() {
         }
     }
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        // const data = new FormData(event.currentTarget);
-        
+    async function handleSubmit (event) {
+        event.preventDefault();        
         var validForm = validateUsername() && validatePassword() && validateConfirmPassword() && validatePostalCode();
+
         if (validForm) {
             const upperPostal = postalCode.toUpperCase();
             let response = authService.verify(jwt, username, password, upperPostal);
-            if (response !== undefined && response.data !== undefined) {
-                let message = response.data.message;
-                if (message !== undefined) {
-                    // TODO, use exact error messages
-                    if (message.includes("username")) {
-                        setUsernameError("Username is already taken, please choose another");
+            if (response === undefined) {
+                Store.addNotification({
+                    title: 'Connection Error!',
+                    message: 'Please try again',
+                    type: 'danger',
+                    insert: 'top',
+                    container: 'top-right',
+                    animationIn: ["animated", "fadeIn"],
+                    animationOut: ["animated", "fadeOut"],
+                    dismiss: {
+                      duration: 5000,
+                      onScreen: true
                     }
-
-                    navigate("/verified");
-                }
+                  });
+            } else if (response.status === 200 || response.status === 201) {
+                navigate('/verified');
+            } else if (response.data?.message === "Username or email already exists") {
+                Store.addNotification({
+                    title: 'Issue Creating Account',
+                    message: 'Username or email already exists',
+                    type: 'warning',
+                    insert: 'top',
+                    container: 'top-right',
+                    animationIn: ["animated", "fadeIn"],
+                    animationOut: ["animated", "fadeOut"],
+                    dismiss: {
+                      duration: 5000,
+                      onScreen: true
+                    }
+                  });
+                setUsernameError("Username or email already exists, please choose another");
             } else {
-                console.log(response)
-                navigate("/verified");
-            }
-            
+                Store.addNotification({
+                    title: 'Unable to Create Account',
+                    message: 'Please try again',
+                    type: 'danger',
+                    insert: 'top',
+                    container: 'top-right',
+                    animationIn: ["animated", "fadeIn"],
+                    animationOut: ["animated", "fadeOut"],
+                    dismiss: {
+                      duration: 5000,
+                      onScreen: true
+                    }
+                  });
+            }           
         }
     }
     

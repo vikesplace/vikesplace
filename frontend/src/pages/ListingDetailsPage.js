@@ -5,6 +5,7 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import ListingDetails from '../components/ListingDetails';
 import DataService from '../services/DataService.js';
+import { Store } from 'react-notifications-component';
 
 const ListingDetailsPage = () => {
   const { id } = useParams();
@@ -15,11 +16,35 @@ const ListingDetailsPage = () => {
       const dataService = new DataService();
       const response = await dataService.getListing(id);
       if (response === undefined) {
-        alert("Connection error, please try again.");
+        Store.addNotification({
+          title: 'Connection Error!',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
       } else if (response.status === 200) {
         setListing(response.data);
       } else {
-        alert("Unable to get your listings, please try again.");
+        Store.addNotification({
+          title: 'Unable to Get Listings',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
       }
     }
 
