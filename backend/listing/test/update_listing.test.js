@@ -20,7 +20,7 @@ describe("Update Listing Tests", () => {
           title: "test",
           price: 1.01,
           status: "AVAILABLE",
-          location: { type: "Point", coordinates: [1, -1] },
+          location: "V9A6P4",
           category: "ELECTRONICS",
         },
         params: {
@@ -52,7 +52,7 @@ describe("Update Listing Tests", () => {
           title: "test",
           price: 0,
           status: "AVAILABLE",
-          location: { type: "Point", coordinates: [1, -1] },
+          location: "V9A6P4",
           category: null,
         },
         params: {

@@ -12,6 +12,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import ListingDetails from '../components/ListingDetails';
 import DataService from '../services/DataService.js';
+import { Store } from 'react-notifications-component';
 
 const ViewReviewsPage = () => {
   const dataService = useMemo(() => new DataService(), []);
@@ -24,11 +25,35 @@ const ViewReviewsPage = () => {
     async function getListing() {
       const response = await dataService.getListing(id);
       if (response === undefined) {
-        alert("Connection error, please try again.");
+        Store.addNotification({
+          title: 'Connection Error!',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
       } else if (response.status === 200) {
         setListing(response.data);
       } else {
-        alert("Unable to get listing, please try again.");
+        Store.addNotification({
+          title: 'Unable to Get Listing',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
       }
     }
 
@@ -36,13 +61,37 @@ const ViewReviewsPage = () => {
       let displayValues = [];
       const responseRatings = await dataService.getRatings(id);
       if (responseRatings === undefined) {
-        alert("Connection error, please try again.");
+        Store.addNotification({
+          title: 'Connection Error!',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
       } else if (responseRatings.status !== 200) {
-        alert("Unable to get reviews, please try again.");
+        Store.addNotification({
+          title: 'Unable to Get Ratings',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
       } else {
         for (let i = 0; i < responseRatings.data.ratings.length; i++) {
           displayValues.push({
-            rating: responseRatings.data.ratings[i],
+            rating: responseRatings.data.ratings[i].rating,
             review: ""
           })
         }
@@ -50,14 +99,38 @@ const ViewReviewsPage = () => {
 
       const responseReviews = await dataService.getReviews(id);
       if (responseReviews === undefined) {
-        alert("Connection error, please try again.");
+        Store.addNotification({
+          title: 'Connection Error!',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
       } else if (responseReviews.status !== 200) {
-        alert("Unable to get ratingsg, please try again.");
+        Store.addNotification({
+          title: 'Unable to Get Reviews',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
       } else {
         for (let j = 0; j < responseReviews.data.reviews.length; j++) {
           displayValues.push({
             rating: "",
-            review: responseReviews.data.reviews[j]
+            review: responseReviews.data.reviews[j].review
           })          
         } 
       }
