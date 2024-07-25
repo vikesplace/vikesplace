@@ -1,4 +1,5 @@
 import Listing from "../models/listing_models.js";
+import PostalCodes from "../models/postal_code_models.js";
 import { Op } from "sequelize";
 
 export const getSortedListings = async (req, res) => {
@@ -180,13 +181,29 @@ export const updateListing = async (req, res) => {
     if (!location.match(/^[A-Z0-9]+$/)) {
       return res.status(400).json({ message: 'Location must be uppercase and contain no spaces' });
     }
-    const updateListing = await Listing.update({
+
+    if (req.body.location) {
+      if (listing.location !== req.body.location) {
+        const lat_long = await PostalCodes.findOne({
+          where: {
+            postal_code: req.body.location,
+          },
+          attributes: ["latitude", "longitude"],
+        });
+        if (!lat_long) {
+          console.error("Postal code not found");
+          return res.status(500).send();
+        }
+        listing.lat_long = { type: 'Point', coordinates: [lat_long.latitude, lat_long.longitude] };
+      }
+    }
+    await Listing.update({
       title: req.body.title,
       price: req.body.price,
       status: req.body.status,
-      lat_long: req.body.lat_long,
+      location: req.body.location,
       category: req.body.category,
-      location: location,
+      lat_long: listing.lat_long,
       buyer_username: req.body.buyer_username,
       for_charity: req.body.for_charity
     }, {
@@ -194,10 +211,6 @@ export const updateListing = async (req, res) => {
         listing_id: req.params.listingId,
       }
     });
-    if (updateListing[0] === 0) {
-      console.error("Listing not found");
-      return res.status(500).send();
-    }
     res.json({});
   } catch (error) {
     if (error.name === 'SequelizeValidationError') {
