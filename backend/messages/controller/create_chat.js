@@ -3,8 +3,9 @@ import axios from 'axios';
 export const createChat = async (req, res) => {
     try {
         //get user_id from JWT
+        const listingId = req.body.listingId;
         const user_id_one = res.locals.decodedToken.userId;
-        const response = await axios.post(`/chat/${req.params.listingId}`, {
+        const response = await axios.post(`/chat/${listingId}`, {
             user_id_one: user_id_one,
         });
         res.json({chatId: response.data});

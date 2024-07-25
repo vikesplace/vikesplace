@@ -7,8 +7,7 @@ export const updateListing = async (req, res) => {
                     title: req.body.title,
                     price: req.body.price,
                     status: req.body.status,
-                    lat_long: req.body.lat_long,
-                    category: req.body.category || null,
+                    category: req.body.category,
                     location: req.body.location,
                     buyer_username: req.body.buyer_username || null,
                     for_charity: req.body.for_charity || false
