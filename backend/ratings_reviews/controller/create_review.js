@@ -8,7 +8,6 @@ export const createReview = async (req, res) => {
             listing_id: listingId,
             review_content: req.body.review_content,
             user_id: userId,
-            rating_id: req.body.rating_id
           });
           return res.json({
             listingReviewId: response.data.review_id,

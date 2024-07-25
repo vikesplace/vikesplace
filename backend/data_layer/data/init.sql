@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS "Reviews" (
     listing_id INT NOT NULL REFERENCES "Listings"(listing_id) ON DELETE CASCADE,
     user_id INT NOT NULL REFERENCES "Users"(user_id) ON DELETE CASCADE,
     review_content TEXT NOT NULL,
-    rating_id INT NOT NULL REFERENCES "Ratings"(rating_id) ON DELETE CASCADE,
+    rating_id INT REFERENCES "Ratings"(rating_id) ON DELETE CASCADE,
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 

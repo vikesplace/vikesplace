@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import { useNavigate } from 'react-router-dom';
 import AuthService from '../services/AuthService';
+import { Store } from 'react-notifications-component';
 
 function RequestAccount() {
     let authService = new AuthService();
@@ -41,17 +42,42 @@ function RequestAccount() {
         }
     }
 
-    const handleSubmit = (event) => {
+    async function handleSubmit (event) {
         event.preventDefault();
-        // const data = new FormData(event.currentTarget);
-
         var validForm = validateEmail();
 
         if (validForm) {
-            let response = authService.register(email);
-            if (response !== undefined) {
-                // TODO confirm success
-                navigate('/check-email ');
+            let response = await authService.register(email);
+            if (response === undefined) {
+                Store.addNotification({
+                    title: 'Connection Error!',
+                    message: 'Please try again',
+                    type: 'danger',
+                    insert: 'top',
+                    container: 'top-right',
+                    animationIn: ["animated", "fadeIn"],
+                    animationOut: ["animated", "fadeOut"],
+                    dismiss: {
+                      duration: 5000,
+                      onScreen: true
+                    }
+                  });
+            } else if (response.status === 200) {
+                navigate('/check-email');
+            } else {
+                Store.addNotification({
+                    title: 'Unable to Request Account',
+                    message: 'Please try again',
+                    type: 'danger',
+                    insert: 'top',
+                    container: 'top-right',
+                    animationIn: ["animated", "fadeIn"],
+                    animationOut: ["animated", "fadeOut"],
+                    dismiss: {
+                      duration: 5000,
+                      onScreen: true
+                    }
+                  });
             }
         }
     }

@@ -27,7 +27,7 @@ function PageNotFound() {
                 
             </Typography> 
             <br />
-            <Link to={'/'}>
+            <Link to={'/home'}>
                 <Button variant="contained">Home</Button>
             </Link>
         </Box>
