@@ -14,3 +14,10 @@ export const SAMPLE_SEARCHES = [
   { query: 'desk' },
   { query: 'blue banana' },
 ];
+
+export const SAMPLE_USER_DATA = {
+  username: "user123",
+  email: "test@uvic.ca",
+  location: "V9V9V9",
+  joiningDate: "2024-06-20"
+};
