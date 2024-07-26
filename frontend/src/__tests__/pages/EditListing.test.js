@@ -3,6 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { BrowserRouter as Router } from 'react-router-dom';
 import EditListing from '../../pages/EditListing';
+import { SAMPLE_LISTING } from '../../testSetup/TestData';
 import mockAxios from 'jest-mock-axios';
 
 const API_URL = "http://localhost:8080/";
@@ -56,14 +57,7 @@ describe('EditListing page', () => {
     // simulating a server response
     let responseObj = { 
       status: 200, 
-      data: {
-        listingId: 21,
-        title: "Listing Title",
-        price: 3.21,
-        location: "V9V9V9",
-        status: "AVAILABLE",
-        forCharity: true,
-      }
+      data: SAMPLE_LISTING
     };
     mockAxios.mockResponse(responseObj);
     await waitFor(() => {
