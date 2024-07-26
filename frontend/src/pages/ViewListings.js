@@ -17,7 +17,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import Pagination from '@mui/material/Pagination'
 import '../App.css';
 import ListingCard from '../components/ListingCard';
-import { Typography } from '@mui/material';
+import { Card, Stack, Typography } from '@mui/material';
 import DataService from '../services/DataService';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import IconButton from '@mui/material/IconButton';
@@ -41,6 +41,11 @@ function ViewListings() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const { setShowSearch, searchQuery } = useSearch();
+  
+  const [users, setUsers] = useState([]);
+  const [selectedButton, setSelectedButton] = useState('listings');
+  
+  // TODO: BUTTON COLOURS AREN'T changing 
 
   useEffect(() => {
     setShowSearch(true);
@@ -107,7 +112,9 @@ function ViewListings() {
           }
         });
       } else if (response.status === 200) {
-        setListings(response.data)
+        setListings(response.data["listings"]);
+        setUsers(response.data["users"]);
+        console.log(response.data['users']);
       } else {
         Store.addNotification({
           title: 'Unable to Search Listings',
@@ -139,7 +146,19 @@ function ViewListings() {
   const handleListingClick = (id) => {
     navigate(`/listings/${id}`);
   };
+  const handleUserClick = (id) =>{
+    //TODO: Need to navigate to the users profile 
+    console.log(id);
+  }
 
+  const handleListingsButton = ()=>{
+    setSelectedButton('listings');
+  }
+
+  const handleUsersButton = () =>{
+    setSelectedButton('users');
+    
+  }
   const handleSortChange = async (event) => {
     const category = event.target.value;
     setSortCategory(category);
@@ -332,6 +351,7 @@ function ViewListings() {
   };
 
   const paginatedListings = listings.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const paginatedUsers = users.slice((currentPage - 1) * itemsPerPage, currentPage *itemsPerPage);
 
   return (
     <div className="ViewListings">
@@ -365,19 +385,44 @@ function ViewListings() {
             Add Filter
           </Button>
         </Box>
-        <Box mt={2} display="flex" alignItems="center">
-          <LocationOnIcon />
-          <Box ml={1} mr={2}>{location}</Box>
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={handleClickOpenLocationDialog}
-          >
-            Change Location
-          </Button>
+        <Box justifyContent="space-between" display="flex" alignItems="center">
+          <Box mt={2} display="flex" alignItems="center">
+            <LocationOnIcon />
+            <Box ml={1} mr={2}>{location}</Box>
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={handleClickOpenLocationDialog}
+            >
+              Change Location
+            </Button>
+          </Box>
+          <Box  display="flex" alignItems="center" justifyContent={'space-between'}>
+            <Box mr = {1}>
+            <Button 
+            variant='contained'
+            onClick={handleListingsButton}
+            style={{ backgroundColor: selectedButton === 'listings' ? 'primary' : 'gray' }}
+            
+            >
+              Listings
+            </Button>
+            </Box>
+
+            <Button 
+            variant='contained'
+            onClick={handleUsersButton}
+            style={{ backgroundColor: selectedButton=== 'users' ? 'primary' : 'gray' }}
+            
+            >
+              Users
+            </Button>
+
+          </Box>
+    
         </Box>
         <Pagination
-          count={Math.ceil(listings.length / itemsPerPage)}
+          count={ selectedButton === 'listings' ? Math.ceil(listings.length / itemsPerPage): Math.ceil(users.length / itemsPerPage)}
           page={currentPage}
           onChange={handlePageChange}
           sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}
@@ -388,7 +433,7 @@ function ViewListings() {
               No Listings Meet Criteria
             </Typography>
           }
-          {listings !== undefined && paginatedListings.map((listing) => (
+          {listings !== undefined && selectedButton === "listings" && paginatedListings.map((listing) => (
             <div key={listing.listingId} onClick={() => handleListingClick(listing.listingId)}>
               <ListingCard
                 id={listing.listingId}
@@ -400,9 +445,17 @@ function ViewListings() {
               <br />
             </div>
           ))}
+          
+          //TODO: Style the Cards that shows the username
+
+          {users!== undefined && selectedButton === "users" && paginatedUsers.map((user)=>(
+            <div key={user.userId} onClick={()=> handleUserClick(user.userId)}>
+              <Card>{user.username}</Card>
+            </div>
+          )) }
         </Box>
         <Pagination
-          count={Math.ceil(listings.length / itemsPerPage)}
+          count={selectedButton === "listings" ? Math.ceil(listings.length / itemsPerPage): Math.ceil(users.length / itemsPerPage)}
           page={currentPage}
           onChange={handlePageChange}
           sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}
