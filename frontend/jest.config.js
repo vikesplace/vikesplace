@@ -1,5 +1,4 @@
 module.exports = {
-    collectCoverage: true,
     collectCoverageFrom: ['src/**/*.{js,jsx}'],
     coverageDirectory: 'coverage',
     testEnvironment: 'jsdom',
@@ -7,5 +6,8 @@ module.exports = {
     transformIgnorePatterns: ["node_modules/(?!axios)"],
     moduleNameMapper: {
         '\\.(css|less)$': '<rootDir>/src/testSetup/styleMock.js',
-    }
+    },
+    collectCoverageFrom: ["./src/**"],
+    coverageReporters: ['html'],
+    coverageDirectory: './coverage'
 }
