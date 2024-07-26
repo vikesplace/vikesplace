@@ -142,7 +142,7 @@ def test_ignore_recommendation_and_delete_ignored_recommendation():
     assert delete_result == 1
 
 
-def test_recommender_with_activity_history():
+def test_adv_recommender_with_activity_history():
     user_id = 7
     headers = {}
     params = {
@@ -157,7 +157,7 @@ def test_recommender_with_activity_history():
     assert len(response_obj["results"]) == 2
 
 
-def test_recommender_with_no_activity_history():
+def test_adv_recommender_with_no_activity_history():
     user_id = 18
     headers = {}
     params = {
