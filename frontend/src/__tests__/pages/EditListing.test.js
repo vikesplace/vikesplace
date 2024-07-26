@@ -7,7 +7,6 @@ import mockAxios from 'jest-mock-axios';
 
 const API_URL = "http://localhost:8080/";
 
-// TODO get this to mock useParams correctly
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useParams: jest.fn(),
@@ -60,7 +59,7 @@ describe('EditListing page', () => {
       data: {
         listingId: 21,
         title: "Listing Title",
-        pric: 3.21,
+        price: 3.21,
         location: "V9V9V9",
         status: "AVAILABLE",
         forCharity: true,
