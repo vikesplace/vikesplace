@@ -170,14 +170,19 @@ export const getListingInfo = async (req, res) => {
 
 export const updateListing = async (req, res) => {
   try {
+    const updateFields = {};
+    for (const key in req.body) {
+      if (req.body[key] !== undefined) {
+        updateFields[key] = req.body[key];
+      }
+    }
+
     const listing = await Listing.findByPk(req.params.listingId);
     if (!listing) {
       console.error("Listing not found");
       return res.status(500).send();
     }
-    if (listing.buyer_username !== null && req.body.buyer_username === null) {
-      req.body.buyer_username = listing.buyer_username;
-    }
+
     const location = req.body.location;
     if (!location.match(/^[A-Z0-9]+$/)) {
       return res.status(400).json({ message: 'Location must be uppercase and contain no spaces' });
@@ -196,18 +201,10 @@ export const updateListing = async (req, res) => {
           return res.status(500).send();
         }
         listing.lat_long = { type: 'Point', coordinates: [lat_long.latitude, lat_long.longitude] };
+        updateFields.lat_long = listing.lat_long;
       }
     }
-    await Listing.update({
-      title: req.body.title,
-      price: req.body.price,
-      status: req.body.status,
-      location: req.body.location,
-      category: req.body.category,
-      lat_long: listing.lat_long,
-      buyer_username: req.body.buyer_username,
-      for_charity: req.body.for_charity
-    }, {
+    await Listing.update(updateFields, {
       where: {
         listing_id: req.params.listingId,
       }
