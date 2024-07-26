@@ -5,5 +5,12 @@ export const SAMPLE_LISTING_LIST = [
     { listingId: '4', title: 'Slightly longer test 4 title', price: '98765.10', location: 'V9V W9W', category: 'Furniture', status: 'AVAILABLE', forCharity: true }
   ];
 
-  export const SAMPLE_LISTING = 
-    { listingId: '1', title: 'Test 1', price: '2.00', location: 'V9V W9W', category: 'Furniture', status: 'AVAILABLE', forCharity: false };
+export const SAMPLE_LISTING = 
+  { listingId: '1', title: 'Test 1', price: '2.00', location: 'V9V W9W', category: 'Furniture', status: 'AVAILABLE', forCharity: false };
+
+export const SAMPLE_SEARCHES = [
+  { query: 'laptop' },
+  { query: 'chair' },
+  { query: 'desk' },
+  { query: 'blue banana' },
+];
