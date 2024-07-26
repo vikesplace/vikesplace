@@ -75,7 +75,7 @@ function ManageListings() {
                 status={listing.status}
                 listedAt={listing.listedAt} 
                 lastUpdatedAt={listing.lastUpdatedAt} 
-                foroCharity={listing.forCharity}   
+                forCharity={listing.forCharity}   
                 sellerId={listing.sellerId}         
               />
               <br />
