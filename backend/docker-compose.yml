@@ -21,7 +21,13 @@ services:
       interval: 45s
       timeout: 15s
       retries: 3
-  
+  redis:
+    image: "redis:latest"
+    container_name: redis
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_URL=${REDIS_SERVER}
   account:
     container_name: account
     build:
@@ -97,6 +103,7 @@ services:
       - DATA_LAYER=${DATA_LAYER}
       - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
       - ALG_SEARCH=${ALG_SEARCH}
+      - REDIS_URL=${REDIS_SERVER}
 
   recommendation:
     container_name: recommendation

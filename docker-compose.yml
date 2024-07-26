@@ -99,6 +99,12 @@ services:
       - ratings
       - account
       - charity
+  
+  redis:
+    extends:
+      file: backend/docker-compose.yml
+      service: redis
+
 
   # Referencing algorithm services
   setup:
