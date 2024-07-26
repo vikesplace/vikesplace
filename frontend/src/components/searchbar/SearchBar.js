@@ -11,7 +11,6 @@ import { useLocation, useNavigate } from 'react-router';
 import { useSearch } from './searchContext';
 
 function SearchBar() {
-
   const [userInput, setUserInput] = useState('');
   const navigate = useNavigate();
   const { showSearch, setSearchQuery } = useSearch();
@@ -33,14 +32,18 @@ function SearchBar() {
         navigate("/view-listings");
       }
     }
-  }
+  };
 
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
       event.preventDefault();
       handleSearch();
     }
-  }
+  };
+
+  const handleHistoryClick = () => {
+    navigate('/history');
+  };
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', m: 2 }}>
@@ -55,10 +58,11 @@ function SearchBar() {
           placeholder="Search"
           inputProps={{ 'aria-label': 'search vikes place' }}
           onChange={handleUserInput}
-          defaultValue={''}
+          value={userInput}
           onKeyDown={handleKeyDown}
         />
-        <IconButton type="button"
+        <IconButton
+          type="button"
           sx={{ p: '10px' }}
           aria-label="search"
           onClick={handleSearch}
@@ -66,7 +70,12 @@ function SearchBar() {
           <SearchIcon />
         </IconButton>
         <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-        <IconButton color="primary" sx={{ p: '10px' }} aria-label="search-history">
+        <IconButton
+          color="primary"
+          sx={{ p: '10px' }}
+          aria-label="search-history"
+          onClick={handleHistoryClick}
+        >
           <HistoryIcon />
         </IconButton>
       </Paper>
@@ -74,6 +83,4 @@ function SearchBar() {
   );
 }
 
-
 export default SearchBar;
-
