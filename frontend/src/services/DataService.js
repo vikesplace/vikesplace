@@ -382,11 +382,11 @@ class DataService {
     /*
     * Charity: Get All Charities Endpoint
     * Success (200): returns list of charity objects
-    *   (charity_id, name, status, logo_url, fund, start_date, end_date, num_listing)
+    *   (name, status, logoUrl, fund, endDate, numListing)
     *   (status can be "OPEN" or "CLOSED")
     * Error: returns message
     */
-    async getAllCharities() {
+    async getCharities() {
         try {
             return await axios.get(API_URL + 'charity', 
                 { withCredentials: true });

@@ -227,6 +227,7 @@ def test_search_filter_status():
     params = {
         "query": "Bicycle",
         "user_id": 1,
+        "category": "Sports",
         "status": "AVAILABLE"
     }
     response = requests.get(f"{BASE_URL}/search", params=params)

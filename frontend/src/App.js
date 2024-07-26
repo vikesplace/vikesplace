@@ -1,5 +1,7 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { ReactNotifications } from 'react-notifications-component';
+import 'react-notifications-component/dist/theme.css';
 import NavBar from './components/NavBar.js';
 import Home from './pages/Home.js';
 import ViewListings from './pages/ViewListings.js';
@@ -22,6 +24,7 @@ import PasswordUpdated from './pages/PasswordUpdated.js';
 import CreateReview from './pages/CreateReview.js';
 import ViewReviewsPage from './pages/ViewReviewsPage.js';
 import PageNotFound from './pages/PageNotFound.js';
+import ViewCharities from './pages/ViewCharities.js';
 import SearchBar from './components/searchbar/SearchBar.js';
 import { SearchProvider } from './components/searchbar/searchContext.js';
 
@@ -31,29 +34,37 @@ function App() {
     <SearchProvider>
       <Router>
         <NavBar />
+        <ReactNotifications />
         <SearchBar />
         <Routes>
-          <Route path="/" element={<Home />} />
+          {/* Access if logged out */}
+          <Route path="/" element={<Navigate to="login" />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/verify-account/:jwt" element={<VerifyAccount />} />
+          <Route path="/verified" element={<VerifiedAccount />} />
+          <Route path="/request-account" element={<RequestAccount />} />
+          <Route path="/check-email" element={<CheckYourEmail />} />
+          <Route path="/password-change" element={<RequestPasswordChange />} />
+          <Route path="/password-update/:jwt" element={<CompletePasswordChange />} />
+          <Route path="/password-updated" element={<PasswordUpdated />} />
+
+          {/* Access if logged in */}
+          <Route path="/home" element={<Home />} />
           <Route path="/view-listings" element={<ViewListings />} />
           <Route path="/create-listing" element={<CreateListing />} />
           <Route path="/manage-listings" element={<ManageListings />} />
-          <Route path="/messages" element={<Messages />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/verify-account" element={<VerifyAccount />} />
-          <Route path="/verified" element={<VerifiedAccount />} />
-          <Route path="/history" element={<SearchHistory />} />
-          <Route path="/request-account" element={<RequestAccount />} />
-          <Route path="/check-email" element={<CheckYourEmail />} />
           <Route path="/listings/:id" element={<ListingDetailsPage />} />
           <Route path="/edit-listing/:id" element={<EditListing />} />
-          <Route path="/message-history/:id" element={<MessageHistory />} />
-          <Route path="/user-profile" element={<UserProfile />} />
-          <Route path="/password-change" element={<RequestPasswordChange />} />
-          <Route path="/password-update" element={<CompletePasswordChange />} />
-          <Route path="/password-updated" element={<PasswordUpdated />} />
           <Route path="/view-reviews/:id" element={<ViewReviewsPage />} />
           <Route path="/create-review/:id" element={<CreateReview />} />
+          <Route path="/messages" element={<Messages />} />
+          <Route path="/message-history/:id" element={<MessageHistory />} />
+          <Route path="/history" element={<SearchHistory />} />
+          <Route path="/user-profile" element={<UserProfile />} />
+          <Route path="/view-charities" element={<ViewCharities />} />
+
           {/* Add other routes here */}
+
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Router>
