@@ -3,6 +3,9 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { BrowserRouter as Router } from 'react-router-dom';
 import Login from '../../pages/Login';
+import mockAxios from 'jest-mock-axios';
+
+const API_URL = "http://localhost:8080/";
 
 // Mock useNavigate from react-router-dom
 jest.mock('react-router-dom', () => ({
@@ -19,6 +22,7 @@ describe('Login Component', () => {
   });
 
   afterEach(() => {
+    mockAxios.reset();
     jest.clearAllMocks();
   });
 
@@ -96,11 +100,25 @@ describe('Login Component', () => {
       </Router>
     );
 
+    const username = 'validUsername';
+    const password = 'validPassword';
+    
     const usernameInput = screen.getByRole('textbox', { name: /username/i });
     const passwordInput = screen.getByPlaceholderText('Enter your password');
-    fireEvent.change(usernameInput, { target: { value: 'validUsername' } });
-    fireEvent.change(passwordInput, { target: { value: 'validPassword' } });
+
+    fireEvent.change(usernameInput, { target: { value: username } });
+    fireEvent.change(passwordInput, { target: { value: password } });
     fireEvent.submit(screen.getByRole('button', { name: /login/i }));
+
+    const withCredentials = true;
+    expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'login', 
+      {username, password}, 
+      {withCredentials}
+    );
+
+    // simulating a server response
+    let responseObj = { status: 200 };
+    mockAxios.mockResponse(responseObj);
 
     expect(useNavigateMock).toHaveBeenCalledWith('/');
   });
