@@ -132,7 +132,7 @@ describe("Create Listing Tests", () => {
       body: {
         title: "test",
         price: -1,
-        location: "",
+        location: "V8T1B4",
         category: "ELECTRONICS",
       },
     };
