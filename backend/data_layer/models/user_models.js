@@ -47,6 +47,11 @@ Users.init(
       allowNull: false,
       defaultValue: 0,
     },
+    see_charity: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
+    },
   },
   {
     sequelize,

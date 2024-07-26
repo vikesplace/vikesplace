@@ -142,6 +142,7 @@ export const getUserMe = async (req, res) => {
         ["joining_date", "joiningDate"],
         ["items_sold", "itemsSold"],
         ["items_purchased", "itemsPurchased"],
+        ["see_charity", "seeCharity"],
       ],
       where: { user_id: req.params.userId },
     });
@@ -169,6 +170,7 @@ export const getUserMe = async (req, res) => {
       joiningDate: user.dataValues.joiningDate,
       itemsSold: itemsSold[0].dataValues.ids || [],
       itemsBought: itemsBought[0].dataValues.ids || [],
+      seeCharity: user.dataValues.seeCharity,
     });
   } catch (err) {
     res.status(500).json({ message: err });
@@ -220,25 +222,32 @@ export const getUserLatLong = async (req, res) => {
 
 export const updateUserData = async (req, res) => {
     try {
-        const coordinate = { type: 'Point', coordinates: [req.body.lat_long.latitude,req.body.lat_long.longitude]}
-        const user = await User.findByPk(req.params.userId);
-        if (!user) {
-            console.error("User not found");
-            return res.status(500).send();
+        const updateFields = {};
+        for (const key in req.body) {
+          if (req.body[key] !== undefined) {
+            updateFields[key] = req.body[key];
+          }
         }
+
+        const coordinate = { type: 'Point', coordinates: [req.body.lat_long.latitude,req.body.lat_long.longitude]}
         const location = req.body.location;
         if (!location.match(/^[A-Z0-9]+$/)) {
           return res.status(400).json({ message: 'Location must be uppercase and contain no spaces' });
         }
+        updateFields.lat_long = coordinate;
+
         const postalCodeRecord = await PostalCodes.findOne({
             where: { postal_code: req.body.location },
         });
         if (!postalCodeRecord) {
             return res.status(400).json({ message: "Invalid postal code" });
         }
-        user.lat_long = coordinate;
-        user.location = location;
-        await user.save();
+        
+        await User.update(updateFields, {
+          where: {
+            user_id: req.params.userId,
+          }
+        });
         res.json({});
     } catch (error) {
         if (error.name === 'SequelizeValidationError') {
