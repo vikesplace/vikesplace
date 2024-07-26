@@ -1,11 +1,16 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import VerifyAccount from '../../pages/VerifyAccount';
+import mockAxios from 'jest-mock-axios';
+import { useNavigate } from 'react-router';
+
+const API_URL = "http://localhost:8080/";
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useLocation: jest.fn(),
+  useNavigate: jest.fn()
 }));
 
 describe('VerifyAccount Component', () => {
@@ -16,10 +21,15 @@ describe('VerifyAccount Component', () => {
 
     useLocationMock = require('react-router-dom').useLocation;
     useLocationMock.mockReturnValue(jest.fn());
+
+    useNavigateMock = require('react-router-dom').useNavigate;
+    useNavigateMock.mockReturnValue(jest.fn());
   });
 
   afterEach(() => {
+    mockAxios.reset();
     console.log.mockRestore();
+    jest.clearAllMocks();
   });
 
   test('renders the component', () => {
@@ -104,18 +114,25 @@ describe('VerifyAccount Component', () => {
     const postalCodeInput = screen.getByLabelText(/postal code/i);
     const submitButton = screen.getByText(/sign up/i);
 
-    fireEvent.change(usernameInput, { target: { value: 'valid_user' } });
-    fireEvent.change(passwordInput, { target: { value: 'ValidPass1!' } });
-    fireEvent.change(confirmPasswordInput, { target: { value: 'ValidPass1!' } });
-    fireEvent.change(postalCodeInput, { target: { value: 'K1A 0B1' } });
+    const username = "test@uvic.ca";
+    const password = "PassVal123#";
+    const postalCode = "V9V9V9";
+
+    fireEvent.change(usernameInput, { target: { value: username } });
+    fireEvent.change(passwordInput, { target: { value: password } });
+    fireEvent.change(confirmPasswordInput, { target: { value: password } });
+    fireEvent.change(postalCodeInput, { target: { value: postalCode } });
 
     fireEvent.click(submitButton);
+    const jwt = "ThisRepresentsAJWT1234";
+    expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'verify_account', 
+      {jwt, username, password, location}
+    );
 
-    // Assuming console.log is used to simulate form submission
-    expect(console.log).toHaveBeenCalledWith({
-      username: 'valid_user',
-      password: 'ValidPass1!',
-      postalCode: 'K1A 0B1',
-    });
+    // simulating a server response
+    let responseObj = { status: 200 };
+    mockAxios.mockResponse(responseObj);
+
+    expect(useNavigateMock).toHaveBeenCalledWith('/verified');
   });
 });
