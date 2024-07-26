@@ -4,6 +4,9 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { BrowserRouter as Router } from 'react-router-dom';
 import CompletePasswordChange from '../../pages/CompletePasswordChange';
+import mockAxios from 'jest-mock-axios';
+
+const API_URL = "http://localhost:8080/";
 
 // Mock useNavigate from react-router-dom
 jest.mock('react-router-dom', () => {
@@ -15,6 +18,10 @@ jest.mock('react-router-dom', () => {
 });
 
 describe('CompletePasswordChange Component', () => {
+  afterEach(() => {
+    mockAxios.reset();
+  });
+
   test('renders the component correctly', () => {
     render(
       <Router>
@@ -71,8 +78,18 @@ describe('CompletePasswordChange Component', () => {
     const passwordInput = screen.getByLabelText(/Password/i);
     const submitButton = screen.getByRole('button', { name: /Submit/i });
 
-    fireEvent.change(passwordInput, { target: { value: 'StrongPassword!1' } });
+    const password = 'StrongPassword!1';
+    fireEvent.change(passwordInput, { target: { value: password } });
     fireEvent.submit(submitButton);
+
+    // Note: usually called with jwt as well, but mocked can't get jwt from cookie automatically
+    expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'verify_reset', 
+      {password}
+    );
+
+    // simulating a server response
+    let responseObj = { status: 200 };
+    mockAxios.mockResponse(responseObj);
 
     expect(navigate).toHaveBeenCalledWith('/password-updated');
   });

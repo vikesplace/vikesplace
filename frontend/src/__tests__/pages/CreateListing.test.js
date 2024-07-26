@@ -3,6 +3,9 @@ import { render, fireEvent, screen, within } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { BrowserRouter as Router } from 'react-router-dom';
 import CreateListing from '../../pages/CreateListing';
+import mockAxios from 'jest-mock-axios';
+
+const API_URL = "http://localhost:8080/";
 
 // Mock useNavigate from react-router-dom
 jest.mock('react-router-dom', () => ({
@@ -116,7 +119,7 @@ describe('CreateListing page', () => {
 
     fireEvent.change(titleInput, { target: { value: 'this is a valid title' } });
     fireEvent.change(priceInput, { target: { value: '6.95' } });
-    fireEvent.change(postalCodeInput, { target: { value: 'V9V 9V9' } });
+    fireEvent.change(postalCodeInput, { target: { value: 'V9V9V9' } });
 
     fireEvent.submit(button);
     // TODO confirm correct data is saved?
@@ -136,13 +139,27 @@ describe('CreateListing page', () => {
     const categoryInput = screen.getByRole('combobox', { name: /category/i });
     const button = screen.getByRole('button', { name: /create/i });
 
-    fireEvent.change(titleInput, { target: { value: 'this is a valid title' } });
-    fireEvent.change(priceInput, { target: { value: '6.95' } });
-    fireEvent.change(postalCodeInput, { target: { value: 'V9V 9V9' } });
+    const title = 'this is a valid title';
+    const price = 6.95;
+    const location = 'V9V9V9';
+    const category = "ELECTRONICS";
+    fireEvent.change(titleInput, { target: { value: title } });
+    fireEvent.change(priceInput, { target: { value: price.toString() } });
+    fireEvent.change(postalCodeInput, { target: { value: location } });
     // TODO select a category
 
     fireEvent.submit(button);
-    // TODO confirm correct data is saved?
+    
+    const status = "AVAILABLE";
+    const withCredentials = true;
+    expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'listings', 
+      {title, price, status, location, category},
+      {withCredentials}
+    );
+
+    // simulating a server response
+    let responseObj = { status: 200 };
+    mockAxios.mockResponse(responseObj);
 
     expect(useNavigateMock).toHaveBeenCalledWith('/manage-listings');
 
