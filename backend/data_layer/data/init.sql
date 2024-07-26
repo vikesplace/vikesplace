@@ -260,11 +260,11 @@ INSERT INTO "Reviews" (listing_id, user_id, review_content, rating_id, timestamp
 (10, 11, 'Terrible bluetooth speaker, would not rent again.', 10, '2024-02-02 14:00:00');
 
 INSERT INTO "Charity" (name, status, fund, logo_url, start_date, end_date, num_listings) VALUES
-('BC Children''s Hospital', 'OPEN', 1000.00, '12345', '2024-02-01 10:00:00', '2024-02-01 10:00:00', 0),
-('Canadian Red Cross', 'CLOSED', 2000.00, '12345', '2024-02-01 11:00:00', '2024-02-01 11:00:00', 0),
-('World Wildlife Fund', 'OPEN', 3000.00, '12345', '2024-02-01 12:00:00', '2024-02-01 13:00:00', 0),
-('Doctors Without Borders', 'OPEN', 4000.00, '12345', '2024-02-01 13:00:00', '2024-02-01 13:00:00', 0),
-('Salvation Army', 'CLOSED', 5000.00, '12345', '2024-02-01 14:00:00', '2024-02-01 14:00:00', 0);
+('BC Children''s Hospital', 'OPEN', 1000.00, '12345', '2024-01-01 10:00:00', '2024-01-31 10:00:00', 5),
+('Canadian Red Cross', 'CLOSED', 2000.00, '12345', '2024-03-01 11:00:00', '2024-03-31 11:00:00', 12),
+('World Wildlife Fund', 'OPEN', 3000.00, '12345', '2024-02-01 12:00:00', '2024-02-28 13:00:00', 15),
+('Doctors Without Borders', 'OPEN', 0.00, '12345', '2024-07-01 13:00:00', '2024-07-31 13:00:00', 0),
+('Salvation Army', 'OPEN', 0.00, '12345', '2024-08-01 14:00:00', '2024-08-31 14:00:00', 0);
 
 
 -- Insert 4k users

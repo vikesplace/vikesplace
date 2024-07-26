@@ -1,5 +1,6 @@
 import Listing from "../models/listing_models.js";
 import PostalCodes from "../models/postal_code_models.js";
+import Charity from "../models/charity_models.js";
 import { Op } from "sequelize";
 
 export const getSortedListings = async (req, res) => {
@@ -204,7 +205,38 @@ export const updateListing = async (req, res) => {
         updateFields.lat_long = listing.lat_long;
       }
     }
-    await Listing.update(updateFields, {
+
+    //transfer funds to charity if listing is sold and for charity
+    if (listing.status != "SOLD" && req.body.status === "SOLD" && listing.for_charity == true) {
+
+      //find the charity whos end_date - month encapsulates the current date
+      const charity = await Charity.findOne({
+        where: {
+          end_date: {
+            [Op.gte]: new Date(),
+            [Op.lte]: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+          },
+        },
+      });
+      if (!charity) {
+        console.error("Charity not found");
+        return res.status(500).send();
+      }
+      charity.fund = Number(charity.fund) + Number(req.body.price);
+      charity.num_listings = charity.num_listings + 1;
+      await charity.save();
+    }
+    
+    await Listing.update({
+      title: req.body.title,
+      price: req.body.price,
+      status: req.body.status,
+      location: req.body.location,
+      category: req.body.category,
+      lat_long: listing.lat_long,
+      buyer_username: req.body.buyer_username,
+      for_charity: req.body.for_charity
+    }, {
       where: {
         listing_id: req.params.listingId,
       }
