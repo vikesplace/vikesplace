@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from elasticsearch import Elasticsearch
 
 
+
 class ESRequest:
     def __init__(self):
         load_dotenv()
