@@ -17,7 +17,7 @@ export const getSortedListings = async (req, res) => {
     } else {
       const user = await axios.get(`${apiConfig.DATA_LAYER}user/getUserLatLong/${userId}`);
       userCoordinates = user.data.lat_long.coordinates;
-      await redisClient.set(userKey, JSON.stringify(userCoordinates), { EX: 3600 });
+      await redisClient.set(userKey, JSON.stringify(userCoordinates), { EX: 900 });
     }
 
     // Check if listings data is in the cache
@@ -46,7 +46,7 @@ export const getSortedListings = async (req, res) => {
       });
 
       // Cache the filtered listings
-      await redisClient.set(listingsKey, JSON.stringify(filteredKm), { EX: 3600 });
+      await redisClient.set(listingsKey, JSON.stringify(filteredKm), { EX: 900 });
 
       res.json(filteredKm);
     } else {

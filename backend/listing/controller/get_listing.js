@@ -20,7 +20,7 @@ export const getListingInfo = async (req, res) => {
         const response = await axios.get(`${apiConfig.DATA_LAYER}listing/${req.params.listingId}`);
         
         // Cache the listing data
-        await redisClient.set(listingKey, JSON.stringify(response.data), { EX: 3600 });
+        await redisClient.set(listingKey, JSON.stringify(response.data), { EX: 900 });
 
         res.json(response.data);
     } catch (err) {
