@@ -17,9 +17,5 @@ spec:
       containers:
       - name: ratings-container
         image: palodaman/vikesplace-ratings:latest
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "500m"
         ports:
         - containerPort: 3000

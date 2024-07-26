@@ -3,8 +3,12 @@ kind: Ingress
 metadata:
   name: microservices-ingress
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    kubernetes.io/ingress.class: haproxy
+    haproxy.org/rewrite-target: /  
+    haproxy.org/ssl-redirect: "false"  
+    haproxy.org/backend-server-slots: "10"
 spec:
+  ingressClassName: haproxy
   rules:
   - host: vikesplace.com 
     http:
@@ -16,7 +20,7 @@ spec:
             name: account-service
             port:
               number: 3200
-      - path: /charity
+       - path: /charity
         pathType: Prefix
         backend:
           service:
@@ -72,10 +76,11 @@ spec:
             name: search-service
             port:
               number: 3200
-      - path: /users
+       - path: /users
         pathType: Prefix
         backend:
           service:
             name: users-service
             port:
               number: 3200
+

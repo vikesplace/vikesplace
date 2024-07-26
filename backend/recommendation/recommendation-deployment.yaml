@@ -15,10 +15,6 @@ spec:
     spec:
       containers:
       - name: recommendation-container
-        image: palodaman/vikesplace-recommendation:latest
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "500m"
+        image: palodaman/vikesplace-be-recommendation:latest
         ports:
-        - containerPort: 3000
+        - containerPort: 5000
