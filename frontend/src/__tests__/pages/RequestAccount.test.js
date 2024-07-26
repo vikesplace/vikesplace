@@ -20,7 +20,6 @@ describe('RequestAccount page', () => {
     useNavigateMock.mockReturnValue(jest.fn());
   });
 
-
   afterEach(() => {
     mockAxios.reset();
     jest.clearAllMocks();
