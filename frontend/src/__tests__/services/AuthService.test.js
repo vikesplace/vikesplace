@@ -20,7 +20,10 @@ describe('AuthService', () => {
     authService.login(username, password)
         .catch(catchFn);
 
-    expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'login', {username, password}, {withCredentials});
+    expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'login', 
+      {username, password}, 
+      {withCredentials}
+    );
 
     // simulating a server response
     let responseObj = { status: 200 };
@@ -38,7 +41,10 @@ describe('AuthService', () => {
     const withCredentials = true;
     authService.login(username, password);
 
-    expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'login', {username, password}, {withCredentials});
+    expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'login', 
+      {username, password}, 
+      {withCredentials}
+    );
 
     // simulating an non-axios error response
     const err = new Error('Internal Server Error');
@@ -78,7 +84,9 @@ describe('AuthService', () => {
     const callback = "http://localhost:3000/verify-account/";
     authService.register(email);
 
-    expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'request_account', {email, callback });
+    expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'request_account', 
+      {email, callback}
+    );
 
     // simulating a server response
     let responseObj = { status: 200 };
@@ -116,7 +124,9 @@ describe('AuthService', () => {
     const location = "V9V9V9";
     authService.verify(jwt, username, password, location);
     
-    expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'verify_account', {jwt, username, password, location });
+    expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'verify_account', 
+      {jwt, username, password, location}
+    );
 
     // simulating a server response
     let responseObj = { status: 200 };
@@ -132,7 +142,9 @@ describe('AuthService', () => {
     const location = "V9V9V9";
     authService.verify(jwt, username, password, location);
     
-    expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'verify_account', {jwt, username, password, location });
+    expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'verify_account', 
+      {jwt, username, password, location}
+    );
 
     // simulating an error response
     const err = {
@@ -152,7 +164,9 @@ describe('AuthService', () => {
     const callback = "http://localhost:3000/password-update/";
     authService.requestPasswordChange(email);
     
-    expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'request_reset', {email, callback });
+    expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'request_reset', 
+      {email, callback}
+    );
 
     // simulating a server response
     let responseObj = { status: 200 };
@@ -166,7 +180,9 @@ describe('AuthService', () => {
     const callback = "http://localhost:3000/password-update/";
     authService.requestPasswordChange(email);
     
-    expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'request_reset', {email, callback });
+    expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'request_reset', 
+      {email, callback}
+    );
 
     // simulating an error response
     const err = {
@@ -186,7 +202,9 @@ describe('AuthService', () => {
     const password = "Password1!";
     authService.completePasswordChange(jwt, password);
     
-    expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'verify_reset', {jwt, password });
+    expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'verify_reset', 
+      {jwt, password}
+    );
 
     // simulating a server response
     let responseObj = { status: 200 };
@@ -200,7 +218,9 @@ describe('AuthService', () => {
     const password = "Password1!";
     authService.completePasswordChange(jwt, password);
     
-    expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'verify_reset', {jwt, password });
+    expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'verify_reset', 
+      {jwt, password}
+    );
 
     // simulating an error response
     const err = {
