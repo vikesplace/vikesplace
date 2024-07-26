@@ -1,10 +1,12 @@
 import React from 'react';
-import { render, screen, } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { BrowserRouter as Router } from 'react-router-dom';
 import ManageListings from '../../pages/ManageListings';
 import { SAMPLE_LISTING_LIST } from '../../testSetup/TestData';
-import { SAMPLE_DATA } from '../../utils/SampleRecommenderData';
+import mockAxios from 'jest-mock-axios';
+
+const API_URL = "http://localhost:8080/";
 
 describe('ManageListings page', () => {
   beforeEach(() => {
@@ -15,9 +17,23 @@ describe('ManageListings page', () => {
     );
   });
 
+  afterEach(() => {
+    mockAxios.reset();
+  });
+
   test('renders listing cards', async () => {
-    // TODO mock axios response so this continues to happen
-    const listingCards = screen.getAllByTestId('listing-card');
-    expect(listingCards.length).toBe(SAMPLE_DATA.length); // Based on initialListings length
+    const withCredentials = true;
+    expect(mockAxios.get).toHaveBeenCalledWith(API_URL + 'listings/me', 
+      {withCredentials}
+    );
+
+    // simulating a server response
+    let responseObj = { status: 200, data: SAMPLE_LISTING_LIST };
+    mockAxios.mockResponse(responseObj);
+
+    await waitFor(() => {
+      const listingCards = screen.getAllByTestId('listing-card');
+      expect(listingCards.length).toBe(SAMPLE_LISTING_LIST.length);
+    })
   });
 });
