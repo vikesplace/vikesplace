@@ -24,6 +24,10 @@ describe('CreateListing page', () => {
     );
   });
 
+  afterEach(() => {
+    mockAxios.reset();
+  });
+
   test('renders create listing form', () => {
     expect(screen.getByText('Create a Listing')).toBeInTheDocument();
     expect(screen.getByRole('textbox', { name: /title/i })).toBeInTheDocument();
