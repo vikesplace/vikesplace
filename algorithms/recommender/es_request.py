@@ -58,13 +58,12 @@ class ESRequest:
             most_pop_items = self.MONGORequest.get_top_10_popular()
 
             results = self.get_items(most_pop_items)
-
-            results['hits']['hits'] = [x['_source'] for x in results['hits']['hits']]
-            return results['hits']['hits']
+            
+            return results
 
         else:
             # build "like" part of the query, see readme.md
-            activity = [{"_index": "listings", "_id": f"{i['listing_id']}"} for i in activity]
+            activity = [{"_index": "listings", "_id": f"{i['listing_id']}"} for i in listings]
             must_clauses = []
 
             if listings_ignored is not None:
