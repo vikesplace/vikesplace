@@ -52,12 +52,21 @@ class ESRequest:
         else:
             return None
 
-    def sort_option(self, sort_by, is_descending):
-        return [{
-            f"{sort_by}": {
-                "order": f'{"desc" if is_descending else "asc"}'
-            }
-        }]
+    def sort_option(self, sort_by, user_loc, is_descending):
+        if sort_by == 'lat_long':
+            return [{
+                "_geo_distance": {
+                    "lat_long": {"lat": user_loc[0], "lon": user_loc[1]},
+                    "order": f'{"desc" if is_descending else "asc"}',
+                    "unit": "km"
+                }
+            }]
+        else:
+            return [{
+                f"{sort_by}": {
+                    "order": f'{"desc" if is_descending else "asc"}'
+                }
+            }]
 
     def search(self, query, lat_long, category=None, status=None,
                min_price=None, max_price=None, sort_by=None, is_descending=None):
@@ -112,17 +121,17 @@ class ESRequest:
 
         if sort_by is None:
             results["listings"] = self.es.search(index="listings",
-                                                query=query_listings,
-                                                allow_partial_search_results=True,
-                                                from_=0, size=10_000
-                                                )['hits']['hits']
+                                                 query=query_listings,
+                                                 allow_partial_search_results=True,
+                                                 from_=0, size=10_000
+                                                 )['hits']['hits']
         else:
             results["listings"] = self.es.search(index="listings",
-                                                query=query_listings,
-                                                sort=self.sort_option(sort_by, is_descending),
-                                                allow_partial_search_results=True,
-                                                from_=0, size=10_000
-                                                )['hits']['hits']
+                                                 query=query_listings,
+                                                 sort=self.sort_option(sort_by, lat_long, is_descending),
+                                                 allow_partial_search_results=True,
+                                                 from_=0, size=10_000
+                                                 )['hits']['hits']
 
         results["users"] = self.es.search(index="users",
                                           query=query_users,
