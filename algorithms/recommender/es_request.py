@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from elasticsearch import Elasticsearch
 
 
+
 class ESRequest:
     def __init__(self):
         load_dotenv()
@@ -155,3 +156,35 @@ class ESRequest:
         print(f"recommendation_current_item:>>>>>>>>> {results['hits']['hits']}")
 
         return results['hits']['hits']
+
+
+    def get_items(self, listings):
+        listing_ids = [item['listing_id'] for item in listings]
+
+        results = self.es.search(
+            index="listings",
+            query={
+                "terms": {
+                    "_id": listing_ids
+                }
+            })
+
+        results['hits']['hits'] = [x['_source'] for x in results['hits']['hits']]
+
+        return results['hits']['hits']
+    
+    def get_items_adv(self, listings):
+        listing_ids = [item[0] for item in listings]
+
+        results = self.es.search(
+            index="listings",
+            query={
+                "terms": {
+                    "_id": listing_ids
+                }
+            })
+
+        results['hits']['hits'] = [x['_source'] for x in results['hits']['hits']]
+
+        return results['hits']['hits']
+

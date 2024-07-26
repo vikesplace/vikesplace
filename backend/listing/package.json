@@ -26,7 +26,8 @@
     "geolib": "^3.3.4",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.11.5",
-    "sequelize": "^6.37.3"
+    "sequelize": "^6.37.3",
+    "redis": "^4.6.5"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.24.7",
