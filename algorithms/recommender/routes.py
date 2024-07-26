@@ -109,9 +109,10 @@ async def recommendations(
         results = Neo4jDBRequest.get_items_visited_by_other_users(user_id)
         print(results)
 
+        full_results = ESRequest.get_items_adv(results)
         return JSONResponse(
             status_code=status.HTTP_200_OK,
-            content={"results":results}
+            content={"results":full_results}
         )
     except Exception as e:
         print(f"Error: {e}")
@@ -129,9 +130,10 @@ async def recommendations(
         results = Neo4jDBRequest.get_top_items_within_same_postal_code(user_id)
         print(results)
 
+        full_results = ESRequest.get_items_adv(results)
         return JSONResponse(
             status_code=status.HTTP_200_OK,
-            content={"results":results}
+            content={"results":full_results}
         )
     except Exception as e:
         print(f"Error: {e}")

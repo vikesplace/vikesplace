@@ -137,4 +137,19 @@ class ESRequest:
         results['hits']['hits'] = [x['_source'] for x in results['hits']['hits']]
 
         return results['hits']['hits']
+    
+    def get_items_adv(self, listings):
+        listing_ids = [item[0] for item in listings]
+
+        results = self.es.search(
+            index="listings",
+            query={
+                "terms": {
+                    "_id": listing_ids
+                }
+            })
+
+        results['hits']['hits'] = [x['_source'] for x in results['hits']['hits']]
+
+        return results['hits']['hits']
 
