@@ -1,7 +1,7 @@
 import React from 'react';
-import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { CardActionArea, CardHeader } from '@mui/material';
 import { Link } from 'react-router-dom';
@@ -12,24 +12,28 @@ export default function ListingCard({ id, title, price, location, status, forCha
       <CardActionArea component={Link} to={`/listings/${id}`}>
         <CardHeader title={title} />
         <CardContent>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Box sx={{ display: 'flex', width: 1 / 4, flexDirection: 'column', mx: 2, alignItems: 'start' }}>
-              <Typography variant='h6'>
+        <Grid container spacing={2} justifyContent="center" sx={{ mt: 2 }}>
+          <Grid item xs={12} sm={3}>
+            <Typography variant='body1' sx={{ fontSize: 18, fontWeight: 'bold',  textAlign: 'left' }}>
                 $ {price}
-              </Typography>
-            </Box>
-            <Box sx={{ display: 'flex', width: 1 / 4, flexDirection: 'column', mx: 2, alignItems: 'center' }}>
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <Typography variant='body1' sx={{ fontSize: 16, textAlign: { sm: 'center', xs: 'left' } }}>
               {location}
-            </Box>
-            <Box sx={{ display: 'flex', width: 1 / 4, flexDirection: 'column', mx: 2, alignItems: 'center' }}>
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <Typography variant='body1' sx={{ fontSize: 16, textAlign: { sm: 'center', xs: 'left' } }}>
               {status}
-            </Box>
-            <Box sx={{ display: 'flex', width: 1 / 4, flexDirection: 'column', mx: 2, alignItems: 'end' }}>
-              <Typography variant='body2' color={forCharity ? 'success.main' : 'text.secondary'}>
-                {forCharity ? 'For Charity: Yes' : 'For Charity: No'}
-              </Typography>
-            </Box>
-          </Box>
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <Typography variant='body1' sx={{ fontSize: 16, textAlign: { sm: 'right', xs: 'left' } }} color={forCharity ? 'success.main' : 'text.secondary'}>
+              {forCharity ? 'For Charity: Yes' : 'For Charity: No'}
+            </Typography>
+          </Grid>
+        </Grid>
         </CardContent>
       </CardActionArea>
     </Card>

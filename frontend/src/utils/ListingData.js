@@ -17,5 +17,5 @@ export const categories = [
 
 export const statuses = [
     { value: 'AVAILABLE', label: 'AVAILABLE' },
-    { value: 'SOLD', label: 'SOLD' }
+    { value: 'REMOVED', label: 'REMOVED' }
 ];

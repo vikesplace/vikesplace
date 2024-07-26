@@ -23,8 +23,8 @@ describe("Create Chat Tests", () => {
     };
     await createChat(
       {
-        params: {
-          listingId: "1",
+        body: {
+          listingId: 1,
         },
       },
       mockRes
@@ -49,8 +49,8 @@ describe("Create Chat Tests", () => {
 
     await createChat(
       {
-        params: {
-          listingId: "1",
+        body: {
+          listingId: 1,
         },
       },
       mockRes
@@ -75,8 +75,8 @@ describe("Create Chat Tests", () => {
 
     await createChat(
       {
-        params: {
-          listingId: "1",
+        body: {
+          listingId: 1,
         },
       },
       mockRes

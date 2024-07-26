@@ -14,13 +14,14 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import Pagination from '@mui/lab/Pagination';
+import Pagination from '@mui/material/Pagination'
 import '../App.css';
 import ListingCard from '../components/ListingCard';
 import { Typography } from '@mui/material';
 import DataService from '../services/DataService';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import IconButton from '@mui/material/IconButton';
+import { Store } from 'react-notifications-component';
 import { useSearch } from '../components/searchbar/searchContext';
 
 function ViewListings() {
@@ -51,11 +52,35 @@ function ViewListings() {
     const fetchListings = async () => {
       const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder);
       if (response === undefined) {
-        alert("Connection error, please try again.");
+        Store.addNotification({
+          title: 'Connection Error!',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
       } else if (response.status === 200) {
         setListings(response.data);
       } else {
-        alert("Unable to get listings, please try again.");
+        Store.addNotification({
+          title: 'Unable to Get Listings',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
       }
     };
 
@@ -68,11 +93,35 @@ function ViewListings() {
       const response = await dataService.search(searchQuery)
 
       if (response === undefined) {
-        alert("Connection error, please try again.");
+        Store.addNotification({
+          title: 'Connection Error!',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
       } else if (response.status === 200) {
         setListings(response.data)
       } else {
-        alert("Unable to get listings, please try again.");
+        Store.addNotification({
+          title: 'Unable to Search Listings',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
       }
     }
 
@@ -97,11 +146,35 @@ function ViewListings() {
 
     const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder);
     if (response === undefined) {
-      alert("Connection error, please try again.");
+      Store.addNotification({
+        title: 'Connection Error!',
+        message: 'Please try again',
+        type: 'danger',
+        insert: 'top',
+        container: 'top-right',
+        animationIn: ["animated", "fadeIn"],
+        animationOut: ["animated", "fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: true
+        }
+      });
     } else if (response.status === 200) {
       setListings(response.data);
     } else {
-      alert("Unable to get listings, please try again.");
+      Store.addNotification({
+        title: 'Unable to Get Listings',
+        message: 'Please try again',
+        type: 'danger',
+        insert: 'top',
+        container: 'top-right',
+        animationIn: ["animated", "fadeIn"],
+        animationOut: ["animated", "fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: true
+        }
+      });
     }
   };
 
@@ -111,11 +184,35 @@ function ViewListings() {
 
     const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder);
     if (response === undefined) {
-      alert("Connection error, please try again.");
+      Store.addNotification({
+        title: 'Connection Error!',
+        message: 'Please try again',
+        type: 'danger',
+        insert: 'top',
+        container: 'top-right',
+        animationIn: ["animated", "fadeIn"],
+        animationOut: ["animated", "fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: true
+        }
+      });
     } else if (response.status === 200) {
       setListings(response.data);
     } else {
-      alert("Unable to get listings, please try again.");
+      Store.addNotification({
+        title: 'Unable to Get Listings',
+        message: 'Please try again',
+        type: 'danger',
+        insert: 'top',
+        container: 'top-right',
+        animationIn: ["animated", "fadeIn"],
+        animationOut: ["animated", "fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: true
+        }
+      });
     }
   };
 
@@ -131,11 +228,35 @@ function ViewListings() {
   const applyFilters = async () => {
     const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder);
     if (response === undefined) {
-      alert("Connection error, please try again.");
+      Store.addNotification({
+        title: 'Connection Error!',
+        message: 'Please try again',
+        type: 'danger',
+        insert: 'top',
+        container: 'top-right',
+        animationIn: ["animated", "fadeIn"],
+        animationOut: ["animated", "fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: true
+        }
+      });
     } else if (response.status === 200) {
       setListings(response.data);
     } else {
-      alert("Unable to get listings, please try again.");
+      Store.addNotification({
+        title: 'Unable to Get Listings',
+        message: 'Please try again',
+        type: 'danger',
+        insert: 'top',
+        container: 'top-right',
+        animationIn: ["animated", "fadeIn"],
+        animationOut: ["animated", "fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: true
+        }
+      });
     }
     setOpenFilterDialog(false);
   };
@@ -172,11 +293,35 @@ function ViewListings() {
       const upperPostal = newLocation.toUpperCase();
       const response = await dataService.updateUserData(upperPostal);
       if (response === undefined) {
-        alert("Connection error, please try again.");
+        Store.addNotification({
+          title: 'Connection Error!',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
       } else if (response.status === 200) {
         setLocation(upperPostal);
       } else {
-        alert("Unable to get listings, please try again.");
+        Store.addNotification({
+          title: 'Unable to Update Location',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
       }
       setOpenLocationDialog(false);
     }
