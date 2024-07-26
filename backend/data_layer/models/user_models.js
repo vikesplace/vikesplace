@@ -37,6 +37,11 @@ Users.init(
       allowNull: false,
       defaultValue: DataTypes.NOW,
     },
+    last_updated_at: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
     items_sold: {
       type: DataTypes.INTEGER,
       allowNull: false,

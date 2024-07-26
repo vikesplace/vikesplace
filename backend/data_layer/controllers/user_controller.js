@@ -236,12 +236,8 @@ export const updateUserData = async (req, res) => {
         }
         updateFields.lat_long = coordinate;
 
-        const postalCodeRecord = await PostalCodes.findOne({
-            where: { postal_code: req.body.location },
-        });
-        if (!postalCodeRecord) {
-            return res.status(400).json({ message: "Invalid postal code" });
-        }
+        updateFields.last_updated_at = Date.now();
+        updateFields.location = req.body.location;
         
         await User.update(updateFields, {
           where: {

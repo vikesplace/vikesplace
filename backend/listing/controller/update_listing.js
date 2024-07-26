@@ -9,8 +9,8 @@ export const updateListing = async (req, res) => {
                     status: req.body.status,
                     category: req.body.category,
                     location: req.body.location,
-                    buyer_username: req.body.buyer_username,
-                    for_charity: req.body.for_charity
+                    buyer_username: req.body.buyerUsername,
+                    for_charity: req.body.forCharity
                 });
                 res.json(response.data);
     }
