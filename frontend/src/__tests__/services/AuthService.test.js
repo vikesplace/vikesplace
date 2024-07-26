@@ -47,7 +47,7 @@ describe('AuthService', () => {
     );
 
     // simulating an non-axios error response
-    const err = new Error('Internal Server Error');
+    const err = new Error('Fake Error');
     mockAxios.mockError(err);
   });
 
