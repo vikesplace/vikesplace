@@ -13,7 +13,7 @@ export const updateUserData = async (req, res) => {
             return res.status(geoError.response.status).json({ message: geoError.response.data.message });
         } else { // if internal server error, log error and return message to client
             console.error('Error creating geopoint:', geoError); 
-            return res.status(500).json({ message: 'Failed to create listing' }); 
+            return res.status(500).json({ message: 'Failed to update user' }); 
         }
     }
     try{
