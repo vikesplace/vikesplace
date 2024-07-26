@@ -8,14 +8,14 @@ while [ "$listings" = "null" ] || [ "$users" = "null" ] || [ "$listings" -lt 100
     
     echo "Waiting for data to be loaded into ElasticSearch..."
     
-    sleep 22
+    sleep 5
     
     listings=$( curl -k --silent --cacert ca.crt --user "${ES_USER}:${ELASTIC_PASSWORD}" -XGET "https://${ES_HOST}:${ES_PORT}/listings/_count" | jq -r '.count' )
     users=$( curl -k --silent --cacert ca.crt --user "${ES_USER}:${ELASTIC_PASSWORD}" -XGET "https://${ES_HOST}:${ES_PORT}/users/_count" | jq -r '.count' )
 
 done
 
-sleep 10
+sleep 5
 
 echo "Loading complete..."
 
