@@ -207,8 +207,8 @@ export const updateListing = async (req, res) => {
     }
 
     //transfer funds to charity if listing is sold and for charity
-    if (listing.status!="SOLD" && req.body.status === "SOLD" && req.body.for_charity === true) {
-      console.log("Updating charity table");
+    if (listing.status != "SOLD" && req.body.status === "SOLD" && listing.for_charity == true) {
+
       //find the charity whos end_date - month encapsulates the current date
       const charity = await Charity.findOne({
         where: {
