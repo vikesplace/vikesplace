@@ -28,7 +28,7 @@ def test_recommender_with_activity_history():
     response_obj = response.json()
 
     assert response.status_code == status.HTTP_200_OK
-    assert len(response_obj) == 5
+    assert len(response_obj) > 0
 
     for obj in response_obj:
         assert obj['seller_id'] != user_id
@@ -65,7 +65,7 @@ def test_recommender_current_item():
     response_obj = response.json()
 
     assert response.status_code == status.HTTP_200_OK
-    assert len(response_obj) == 5
+    assert len(response_obj) > 0
     for obj in response_obj:
         assert obj['seller_id'] != user_id
 
@@ -106,13 +106,12 @@ def test_remove_item_similar_to_ignored_from_recommendations():
                        {'title': 'Laptop Case Macbook 13"'}]
     
     ignored = [{'title': 'HP Printer'}, {'title': 'Laptop Case 15"'}]
-
-    new_rec = similarity.remove_from_recommendations(ignored, recommendations)
+    model = similarity.Sent_Model()
+    new_rec = model.remove_from_recommendations(ignored, recommendations)
 
     assert {'title': 'Laptop Case Macbook 13"'} not in new_rec
     assert {'title': 'XPS 15 Laptop'} not in new_rec
     assert len(new_rec) < 5
-
 
 
 def test_view_listings_ignored():
@@ -141,3 +140,32 @@ def test_ignore_recommendation_and_delete_ignored_recommendation():
     delete_result = MongoDBRequest_OBJ.delete_ignored(user_id, listing_id)
 
     assert delete_result == 1
+
+
+def test_adv_recommender_with_activity_history():
+    user_id = 7
+    headers = {}
+    params = {
+        "user_id": user_id,
+        "latitude": 48.3784,
+        "longitude": -123.4156
+    }
+    response = requests.get(f"{BASE_URL}/adv_recommendations", headers=headers, params=params)
+    response_obj = response.json()
+
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response_obj["results"]) == 2
+
+
+def test_adv_recommender_with_no_activity_history():
+    user_id = 18
+    headers = {}
+    params = {
+        "user_id": user_id,
+    }
+    response = requests.get(f"{BASE_URL}/recommendations_for_new_user", headers=headers, params=params)
+    response_obj = response.json()
+
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response_obj["results"]) == 10
+

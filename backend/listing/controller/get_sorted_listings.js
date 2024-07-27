@@ -1,6 +1,7 @@
 import axios from "axios";
 import { calculateDistance } from "../helper/calculate_distance.js";
 import { apiConfig } from "../config/apiConfig.js";
+import redisClient from "../helper/redis_client.js";
 
 export const getSortedListings = async (req, res) => {
   if (Number(req.query.minPrice) > Number(req.query.maxPrice)){
@@ -8,8 +9,25 @@ export const getSortedListings = async (req, res) => {
   }
   try {
     const userId = res.locals.decodedToken.userId;
-    const user = await axios.get(`${apiConfig.DATA_LAYER}user/getUserLatLong/${userId}`);
-    const userCoordinates = user.data.lat_long.coordinates;
+    const userKey = `user:${userId}`;
+    const listingsKey = `listings:${JSON.stringify(req.query)}`;
+
+    // Check if user coordinates are in the cache
+    let userCoordinates;
+    const cachedUserCoordinates = await redisClient.get(userKey);
+    if (cachedUserCoordinates) {
+      userCoordinates = JSON.parse(cachedUserCoordinates);
+    } else {
+      const user = await axios.get(`${apiConfig.DATA_LAYER}user/getUserLatLong/${userId}`);
+      userCoordinates = user.data.lat_long.coordinates;
+      await redisClient.set(userKey, JSON.stringify(userCoordinates), { EX: 900 });
+    }
+
+    // Check if listings data is in the cache
+    const cachedListings = await redisClient.get(listingsKey);
+    if (cachedListings) {
+      return res.json(JSON.parse(cachedListings));
+    }
 
     const response = await axios.get(`${apiConfig.DATA_LAYER}listing`, {
       params: {
@@ -25,13 +43,14 @@ export const getSortedListings = async (req, res) => {
 
     if (response.data.rows) {
       const filteredKm = response.data.rows.filter((listing) => {
-        if (
-          calculateDistance(userCoordinates, listing.lat_long.coordinates) ===
-          true
-        ) {
+        if (calculateDistance(userCoordinates, listing.lat_long.coordinates)) {
           return listing;
         }
       });
+
+      // Cache the filtered listings
+      await redisClient.set(listingsKey, JSON.stringify(filteredKm), { EX: 900 });
+
       res.json(filteredKm);
     } else {
       res.json(response.data.rows);

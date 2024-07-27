@@ -67,7 +67,7 @@ Listings.init(
       type: DataTypes.STRING,
       allowNull: true,
       validate: {
-        isIn: [["ELECTRONICS", "FURNITURE", "CLOTHING", "BOOKS", "OTHER"]],
+        isIn: [["FURNITURE", "OFFICESUPPLIES", "ELECTRONICS", "VEHICLES", "PHONES", "ENTERTAINMENT", "GARDEN", "OUTDOOR", "SPORTS", "KITCHENSUPPLIES", "MUSICALINSTRUMENTS", "APPAREL", "BEAUTY", "HEALTH", "OTHER"]],
       },
     },
     for_charity: {

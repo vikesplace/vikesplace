@@ -6,26 +6,31 @@ import Typography from '@mui/material/Typography';
 import { CardActionArea, CardHeader } from '@mui/material';
 import { Link } from 'react-router-dom';
 
-export default function ListingCard({ id, title, price, location, status }) {
+export default function ListingCard({ id, title, price, location, status, forCharity }) {
   return (
     <Card data-testid="listing-card">
       <CardActionArea component={Link} to={`/listings/${id}`}>
         <CardHeader title={title} />
         <CardContent>
         <Grid container spacing={2} justifyContent="center" sx={{ mt: 2 }}>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={3}>
             <Typography variant='body1' sx={{ fontSize: 18, fontWeight: 'bold',  textAlign: 'left' }}>
                 $ {price}
             </Typography>
           </Grid>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={3}>
             <Typography variant='body1' sx={{ fontSize: 16, textAlign: { sm: 'center', xs: 'left' } }}>
               {location}
             </Typography>
           </Grid>
-          <Grid item xs={12} sm={4}>
-            <Typography variant='body1' sx={{ fontSize: 16, textAlign: { sm: 'right', xs: 'left' } }}>
+          <Grid item xs={12} sm={3}>
+            <Typography variant='body1' sx={{ fontSize: 16, textAlign: { sm: 'center', xs: 'left' } }}>
               {status}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <Typography variant='body1' sx={{ fontSize: 16, textAlign: { sm: 'right', xs: 'left' } }} color={forCharity ? 'success.main' : 'text.secondary'}>
+              {forCharity ? 'For Charity: Yes' : 'For Charity: No'}
             </Typography>
           </Grid>
         </Grid>
