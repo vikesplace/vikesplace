@@ -4,7 +4,7 @@ const DATA_LAYER = process.env.DATA_LAYER;
 
 export const getSearchResults = async (req, res) => {
   try {
-    if (req.query.query == null) {
+    if (req.query.search == null) {
       res.status(500).json({ message: "internal server error" });
     }
 
