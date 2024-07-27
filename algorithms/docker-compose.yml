@@ -74,6 +74,7 @@ services:
       - ./neo4j/conf/init.cypher:/var/lib/neo4j/init.cypher
     depends_on:
       - kafka
+    mem_limit: ${NEO4J_MEM_LIMIT}
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--spider", "http://neo4j:7474"]
       #test: ["CMD-SHELL", "cypher-shell -u neo4j -p neo4j_$3ng499"]
@@ -103,6 +104,7 @@ services:
     volumes:
       - kafkadata:/var/lib/kafka
       - /var/run/docker.sock:/var/run/docker.sock
+    mem_limit: ${KAFKA_MEM_LIMIT}
     healthcheck:
       test: ["CMD", "nc", "-z", "kafka", "9092"]
       interval: 30s
@@ -364,6 +366,7 @@ services:
       - certs:/usr/share/logstash/certs
       - logstashdata:/usr/share/logstash/data
     environment:
+      - log.level=warn
       - xpack.monitoring.enabled=false
       - ELASTIC_USER=elastic
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
@@ -371,6 +374,7 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    mem_limit: ${LS_MEM_LIMIT}
 
   mongodb:
     build:
