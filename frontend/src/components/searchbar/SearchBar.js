@@ -3,7 +3,7 @@ import IconButton from '@mui/material/IconButton';
 import HistoryIcon from '@mui/icons-material/History';
 import SearchIcon from '@mui/icons-material/Search';
 import '../../App.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Paper from '@mui/material/Paper';
 import InputBase from '@mui/material/InputBase';
 import Divider from '@mui/material/Divider';
@@ -14,33 +14,42 @@ function SearchBar() {
 
   const [userInput, setUserInput] = useState('');
   const navigate = useNavigate();
-  const { showSearch, setSearchQuery } = useSearch();
+  const { showSearch, setSearchQuery, } = useSearch();
   const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === '/home') {
+
+      //if user navigates to homepage clear the input in search bar
+      setUserInput('');
+      //if user navigates to homepage clear the searchQuery in search bar context 
+      setSearchQuery('');
+    }
+  }, [location]);
 
   if (!showSearch) {
     return null;
-  }
+  };
 
   const handleUserInput = (event) => {
     setUserInput(event.target.value);
   };
 
-  const handleSearch = async () => {
-    if (userInput) {
+  const handleSearch = () => {
+    if(userInput){
       setSearchQuery(userInput);
-      setUserInput('');
       if (location.pathname === "/home") {
         navigate("/view-listings");
-      }
+      }     
     }
-  }
+  };
 
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
       event.preventDefault();
       handleSearch();
     }
-  }
+  };
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', m: 2 }}>
@@ -57,6 +66,7 @@ function SearchBar() {
           onChange={handleUserInput}
           defaultValue={''}
           onKeyDown={handleKeyDown}
+          value={userInput}
         />
         <IconButton type="button"
           sx={{ p: '10px' }}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import FormControl from '@mui/material/FormControl';
@@ -17,16 +17,18 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import Pagination from '@mui/material/Pagination'
 import '../App.css';
 import ListingCard from '../components/ListingCard';
-import { Card,Typography } from '@mui/material';
+import { Card, Tab, Tabs, Typography } from '@mui/material';
 import DataService from '../services/DataService';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import IconButton from '@mui/material/IconButton';
 import { Store } from 'react-notifications-component';
 import { useSearch } from '../components/searchbar/searchContext';
+import UserCard from '../components/UsersCard';
 
 function ViewListings() {
   const dataService = useMemo(() => new DataService(), []);
   const navigate = useNavigate();
+  const path = useLocation();
 
   const [sortCategory, setSortCategory] = useState("listed_at");
   const [sortOrder, setSortOrder] = useState(false);
@@ -40,12 +42,10 @@ function ViewListings() {
   const [postalCodeError, setPostalCodeError] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-  const { setShowSearch, searchQuery } = useSearch();
-  
+  const { setShowSearch, searchQuery, setSearchQuery, searchListingsResults, searchUsersResults } = useSearch();
+
   const [users, setUsers] = useState([]);
-  const [selectedButton, setSelectedButton] = useState('listings');
-  
-  // TODO: BUTTON COLOURS AREN'T changing 
+  const [value, setValue] = useState('1');
 
   useEffect(() => {
     setShowSearch(true);
@@ -94,6 +94,20 @@ function ViewListings() {
       setLocation(response !== undefined ? response.data.location : "Please Reload");
     };
 
+
+    //if there is a search query run that otherwise just fetchlistings
+
+    if (!searchQuery) {
+      fetchListings();
+    }
+
+    fetchLocation();
+
+  }, [priceRange, statusFilter, sortCategory, sortOrder, searchQuery]);
+
+
+  // Call search endpoint 
+  useEffect(() => {
     const search = async () => {
       const response = await dataService.search(searchQuery, priceRange.min, priceRange.max, sortCategory, sortOrder, statusFilter)
 
@@ -114,7 +128,6 @@ function ViewListings() {
       } else if (response.status === 200) {
         setListings(response.data["listings"]);
         setUsers(response.data["users"]);
-        console.log(response.data['users']);
       } else {
         Store.addNotification({
           title: 'Unable to Search Listings',
@@ -132,106 +145,175 @@ function ViewListings() {
       }
     }
 
-    //if there is a search query run that otherwise just fetchlistings
     if (searchQuery) {
       search();
-    } else {
-      fetchListings();
     }
-
-    fetchLocation();
-
-  }, [dataService, priceRange, statusFilter, sortCategory, sortOrder, searchQuery]);
+  }, [searchQuery, priceRange.min, priceRange.max, sortCategory, sortOrder, statusFilter])
 
   const handleListingClick = (id) => {
     navigate(`/listings/${id}`);
   };
-  const handleUserClick = (id) =>{
+  const handleUserClick = (id) => {
     //TODO: Need to navigate to the users profile 
     console.log(id);
   }
 
-  const handleListingsButton = ()=>{
-    setSelectedButton('listings');
+  const handleTabchange = (event, newValue) => {
+    setValue(newValue);
   }
 
-  const handleUsersButton = () =>{
-    setSelectedButton('users');
-    
-  }
   const handleSortChange = async (event) => {
     const category = event.target.value;
     setSortCategory(category);
 
-    const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder);
-    if (response === undefined) {
-      Store.addNotification({
-        title: 'Connection Error!',
-        message: 'Please try again',
-        type: 'danger',
-        insert: 'top',
-        container: 'top-right',
-        animationIn: ["animated", "fadeIn"],
-        animationOut: ["animated", "fadeOut"],
-        dismiss: {
-          duration: 5000,
-          onScreen: true
-        }
-      });
-    } else if (response.status === 200) {
-      setListings(response.data);
-    } else {
-      Store.addNotification({
-        title: 'Unable to Get Listings',
-        message: 'Please try again',
-        type: 'danger',
-        insert: 'top',
-        container: 'top-right',
-        animationIn: ["animated", "fadeIn"],
-        animationOut: ["animated", "fadeOut"],
-        dismiss: {
-          duration: 5000,
-          onScreen: true
-        }
-      });
+    if (searchQuery) {
+
+      const response = await dataService.search(searchQuery, priceRange.min, priceRange.max, sortCategory, sortOrder, statusFilter)
+      if (response === undefined) {
+        Store.addNotification({
+          title: 'Connection Error!',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
+      } else if (response.status === 200) {
+        setListings(response.data["listings"]);
+        setUsers(response.data["users"]);
+      } else {
+        Store.addNotification({
+          title: 'Unable to Search Listings',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
+      }
+    } else if (!searchQuery) {
+
+      const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder);
+      if (response === undefined) {
+        Store.addNotification({
+          title: 'Connection Error!',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
+      } else if (response.status === 200) {
+        setListings(response.data);
+      } else {
+        Store.addNotification({
+          title: 'Unable to Get Listings',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
+      }
     }
+
+    
   };
 
   const handleSortOrderClick = async () => {
     const currOrder = sortOrder;
     setSortOrder(!currOrder);
 
-    const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder);
-    if (response === undefined) {
-      Store.addNotification({
-        title: 'Connection Error!',
-        message: 'Please try again',
-        type: 'danger',
-        insert: 'top',
-        container: 'top-right',
-        animationIn: ["animated", "fadeIn"],
-        animationOut: ["animated", "fadeOut"],
-        dismiss: {
-          duration: 5000,
-          onScreen: true
-        }
-      });
-    } else if (response.status === 200) {
-      setListings(response.data);
-    } else {
-      Store.addNotification({
-        title: 'Unable to Get Listings',
-        message: 'Please try again',
-        type: 'danger',
-        insert: 'top',
-        container: 'top-right',
-        animationIn: ["animated", "fadeIn"],
-        animationOut: ["animated", "fadeOut"],
-        dismiss: {
-          duration: 5000,
-          onScreen: true
-        }
-      });
+    if (searchQuery) {
+
+      const response = await dataService.search(searchQuery, priceRange.min, priceRange.max, sortCategory, sortOrder, statusFilter)
+
+      if (response === undefined) {
+        Store.addNotification({
+          title: 'Connection Error!',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
+      } else if (response.status === 200) {
+        setListings(response.data["listings"]);
+        setUsers(response.data["users"]);
+      } else {
+        Store.addNotification({
+          title: 'Unable to Search Listings',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
+      }
+    } else if (!searchQuery) {
+
+      const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder);
+      if (response === undefined) {
+        Store.addNotification({
+          title: 'Connection Error!',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
+      } else if (response.status === 200) {
+        setListings(response.data);
+      } else {
+        Store.addNotification({
+          title: 'Unable to Get Listings',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
+      }
     }
   };
 
@@ -245,37 +327,77 @@ function ViewListings() {
   };
 
   const applyFilters = async () => {
-    const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder);
-    if (response === undefined) {
-      Store.addNotification({
-        title: 'Connection Error!',
-        message: 'Please try again',
-        type: 'danger',
-        insert: 'top',
-        container: 'top-right',
-        animationIn: ["animated", "fadeIn"],
-        animationOut: ["animated", "fadeOut"],
-        dismiss: {
-          duration: 5000,
-          onScreen: true
-        }
-      });
-    } else if (response.status === 200) {
-      setListings(response.data);
-    } else {
-      Store.addNotification({
-        title: 'Unable to Get Listings',
-        message: 'Please try again',
-        type: 'danger',
-        insert: 'top',
-        container: 'top-right',
-        animationIn: ["animated", "fadeIn"],
-        animationOut: ["animated", "fadeOut"],
-        dismiss: {
-          duration: 5000,
-          onScreen: true
-        }
-      });
+    if (!searchQuery) {
+      const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder);
+      if (response === undefined) {
+        Store.addNotification({
+          title: 'Connection Error!',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
+      } else if (response.status === 200) {
+        setListings(response.data);
+      } else {
+        Store.addNotification({
+          title: 'Unable to Get Listings',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
+      }
+    }
+    if (searchQuery) {
+
+      const response = await dataService.search(searchQuery, priceRange.min, priceRange.max, sortCategory, sortOrder, statusFilter)
+
+      if (response === undefined) {
+        Store.addNotification({
+          title: 'Connection Error!',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
+      } else if (response.status === 200) {
+        setListings(response.data["listings"]);
+        setUsers(response.data["users"]);
+      } else {
+        Store.addNotification({
+          title: 'Unable to Search Listings',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
+      }
+
     }
     setOpenFilterDialog(false);
   };
@@ -351,7 +473,7 @@ function ViewListings() {
   };
 
   const paginatedListings = listings.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-  const paginatedUsers = users.slice((currentPage - 1) * itemsPerPage, currentPage *itemsPerPage);
+  const paginatedUsers = users.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
     <div className="ViewListings">
@@ -397,8 +519,8 @@ function ViewListings() {
               Change Location
             </Button>
           </Box>
-          <Box  display="flex" alignItems="center" justifyContent={'space-between'}>
-            <Box mr = {1}>
+          <Box display="flex" alignItems="center" justifyContent={'space-between'}>
+            {/* <Box mr = {1}>
             <Button 
             variant='contained'
             onClick={handleListingsButton}
@@ -416,13 +538,16 @@ function ViewListings() {
             
             >
               Users
-            </Button>
-
+            </Button> */}
+            <Tabs value={value} onChange={handleTabchange}>
+              <Tab value="1" label="Listings" />
+              <Tab value="2" label="Users" />
+            </Tabs>
           </Box>
-    
+
         </Box>
         <Pagination
-          count={ selectedButton === 'listings' ? Math.ceil(listings.length / itemsPerPage): Math.ceil(users.length / itemsPerPage)}
+          count={value === '1' ? Math.ceil(listings.length / itemsPerPage) : Math.ceil(users.length / itemsPerPage)}
           page={currentPage}
           onChange={handlePageChange}
           sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}
@@ -433,7 +558,7 @@ function ViewListings() {
               No Listings Meet Criteria
             </Typography>
           }
-          {listings !== undefined && selectedButton === "listings" && paginatedListings.map((listing) => (
+          {listings !== undefined && value === "1" && paginatedListings.map((listing) => (
             <div key={listing.listingId} onClick={() => handleListingClick(listing.listingId)}>
               <ListingCard
                 id={listing.listingId}
@@ -441,20 +566,21 @@ function ViewListings() {
                 price={listing.price}
                 location={listing.location}
                 status={listing.status}
-                forCharity={listing.forCharity} 
+                forCharity={listing.forCharity}
               />
               <br />
             </div>
           ))}
 
-          {users!== undefined && selectedButton === "users" && paginatedUsers.map((user)=>(
-            <div key={user.userId} onClick={()=> handleUserClick(user.userId)}>
-              <Card>{user.username}</Card>
+          {users !== undefined && value === "2" && paginatedUsers.map((user) => (
+            <div key={user.userId} onClick={() => handleUserClick(user.userId)}>
+              <UserCard username={user.username}/>
+              <Box mt={2}/>
             </div>
-          )) }
+          ))}
         </Box>
         <Pagination
-          count={selectedButton === "listings" ? Math.ceil(listings.length / itemsPerPage): Math.ceil(users.length / itemsPerPage)}
+          count={value === "1" ? Math.ceil(listings.length / itemsPerPage) : Math.ceil(users.length / itemsPerPage)}
           page={currentPage}
           onChange={handlePageChange}
           sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}
