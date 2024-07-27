@@ -68,7 +68,7 @@ export default function ManageListing({ listing }) {
 
     const handleStatusChange = (event) => {
         setStatus(event.target.value);
-        if (status !== 'SOLD' && buyer) {
+        if (status !== 'REMOVED' && buyer) {
             setBuyer("");
         }
     };
@@ -122,7 +122,7 @@ export default function ManageListing({ listing }) {
     }
 
     function validateBuyer() {
-        if ( status !== 'SOLD'|| buyer) {
+        if ( status !== 'REMOVED' || buyer) {
             if (buyer.includes(' ')) {
                 setBuyerError(true);
                 return false;
