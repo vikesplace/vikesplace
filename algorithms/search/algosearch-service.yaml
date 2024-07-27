@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: account-service
+  name: algosearch-service
 spec:
   selector:
-    app: account
+    app: algosearch
     type: microservice
   ports:
   - protocol: TCP
     port: 3200
-    targetPort: 3000
+    targetPort: 8000
