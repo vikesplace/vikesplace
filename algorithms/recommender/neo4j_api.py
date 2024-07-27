@@ -17,7 +17,7 @@ class Neo4jDBRequest:
             results = driver.execute_query(
             "MATCH (u:User {id: $user_id})-[:HISTORY]->(l:Listing)<-[:HISTORY]-(otherUser:User)-[:HISTORY]->(otherListing:Listing)"
             "WHERE NOT (u)-[:HISTORY]->(otherListing)"
-            "RETURN DISTINCT otherListing.id AS id, COUNT(otherListing) AS freq",
+            "RETURN DISTINCT otherListing.listing_id AS id, COUNT(otherListing) AS freq",
 
             user_id=user_id, database_="neo4j",
         )
@@ -37,7 +37,7 @@ class Neo4jDBRequest:
             WHERE point.distance(nodePoint, searchPoint) <= radius * 1000
             MATCH (l:Listing)-[:LOCATED_IN]->(p)
             OPTIONAL MATCH (l)<-[h:HISTORY]-()
-            RETURN DISTINCT l.id as id, COUNT(h) AS freq
+            RETURN DISTINCT l.listing_id as id, COUNT(h) AS freq
             ORDER BY freq ASC
             LIMIT 10
             """,
