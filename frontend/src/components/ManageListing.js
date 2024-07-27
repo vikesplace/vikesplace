@@ -293,7 +293,7 @@ export default function ManageListing({ listing }) {
                     </Select>
                   </FormControl>
                 </Grid>
-                {status === 'SOLD' && 
+                {status === 'REMOVED' && 
                 <Grid item xs={12}>
                     <TextField
                         required
