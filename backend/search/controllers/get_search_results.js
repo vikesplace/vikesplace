@@ -13,7 +13,7 @@ export const getSearchResults = async (req, res) => {
     const latLong = await axios.get(url);
 
     const requestParamsObject = {};
-    requestParamsObject.query = req.query.search;
+    requestParamsObject.query = req.query.query;
     const latitude = latLong.data.lat_long.coordinates[0];
     const longitude = latLong.data.lat_long.coordinates[1];
 
