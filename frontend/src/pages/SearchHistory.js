@@ -69,7 +69,7 @@ function SearchHistory() {
             />
           </>
         ) : (
-          <Box>Search History is coming soon!</Box>
+          <Box>No Search History is Available</Box>
         )}
       </Box>
     </Container>
