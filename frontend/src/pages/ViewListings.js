@@ -17,7 +17,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import Pagination from '@mui/material/Pagination'
 import '../App.css';
 import ListingCard from '../components/ListingCard';
-import { Card, Stack, Typography } from '@mui/material';
+import { Card,Typography } from '@mui/material';
 import DataService from '../services/DataService';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import IconButton from '@mui/material/IconButton';
@@ -132,7 +132,7 @@ function ViewListings() {
       }
     }
 
-    //if there is a search querey run that otherwise just fetchlistings
+    //if there is a search query run that otherwise just fetchlistings
     if (searchQuery) {
       search();
     } else {
@@ -441,12 +441,11 @@ function ViewListings() {
                 price={listing.price}
                 location={listing.location}
                 status={listing.status}
+                forCharity={listing.forCharity} 
               />
               <br />
             </div>
           ))}
-          
-          //TODO: Style the Cards that shows the username
 
           {users!== undefined && selectedButton === "users" && paginatedUsers.map((user)=>(
             <div key={user.userId} onClick={()=> handleUserClick(user.userId)}>
