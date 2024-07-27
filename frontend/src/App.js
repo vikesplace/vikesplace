@@ -27,6 +27,7 @@ import PageNotFound from './pages/PageNotFound.js';
 import ViewCharities from './pages/ViewCharities.js';
 import SearchBar from './components/searchbar/SearchBar.js';
 import { SearchProvider } from './components/searchbar/searchContext.js';
+import SellerPage from './pages/SellerPage';
 
 function App() {
 
@@ -54,6 +55,7 @@ function App() {
           <Route path="/create-listing" element={<CreateListing />} />
           <Route path="/manage-listings" element={<ManageListings />} />
           <Route path="/listings/:id" element={<ListingDetailsPage />} />
+          <Route path="/seller" element={<SellerPage />} />
           <Route path="/edit-listing/:id" element={<EditListing />} />
           <Route path="/view-reviews/:id" element={<ViewReviewsPage />} />
           <Route path="/create-review/:id" element={<CreateReview />} />
