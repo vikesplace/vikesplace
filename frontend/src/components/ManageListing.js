@@ -140,7 +140,16 @@ export default function ManageListing({ listing }) {
 
         if (validForm) {
             const upperPostal = postalCode.toUpperCase();
-            let response = await dataService.updateListing(listing.listingId, title, price, upperPostal, status, buyer, forCharity);
+
+            const newTitle = title === listing.title ? undefined : title;
+            const newPrice = price === listing.price ? undefined : price;
+            const newPostal = upperPostal === listing.location ? undefined : upperPostal;
+            const newStatus = status === listing.status ? undefined : status;
+            const newBuyer = buyer === "" ? undefined : buyer;
+            const newCharity = forCharity === listing.forCharity ? undefined : forCharity;
+            
+            let response = await dataService.updateListing(listing.listingId, newTitle, newPrice, newPostal, newStatus, newBuyer, newCharity);
+            
             if (response === undefined) {
                 Store.addNotification({
                     title: 'Connection Error!',
