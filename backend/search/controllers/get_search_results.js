@@ -9,7 +9,7 @@ export const getSearchResults = async (req, res) => {
     }
 
     const userId = res.locals.decodedToken.userId;
-    const url = `${DATA_LAYER}user/getUserLatLong/${userId}`;
+    const url = `${DATA_LAYER}user/getUserLatLong/${userId}`; 
     const latLong = await axios.get(url);
 
     const requestParamsObject = {};
