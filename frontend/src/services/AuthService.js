@@ -24,9 +24,13 @@ class AuthService {
     * Logout
     * Removes authorization cookie
     */
-    logout() {
-        // TODO remove from cookies
-        localStorage.removeItem("user");
+    async logout() {
+        try {
+            return await axios.get(API_URL + 'logout',
+                { withCredentials: true });
+        } catch (error) {
+            return httpErrorHandler(error);
+        }
     }
 
     /*
