@@ -95,7 +95,7 @@ function ViewListings() {
     };
 
     const search = async () => {
-      const response = await dataService.search(searchQuery)
+      const response = await dataService.search(searchQuery, priceRange.min, priceRange.max, sortCategory, sortOrder, statusFilter)
 
       if (response === undefined) {
         Store.addNotification({
