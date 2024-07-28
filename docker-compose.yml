@@ -17,10 +17,6 @@ volumes:
     driver: local
   mongo_key:
     driver: local
-  kafkadata:
-    driver: local
-  zookeeperdata:
-    driver: local
 
 networks:
   default:
@@ -140,26 +136,6 @@ services:
       kibana:
         condition: service_healthy
 
-  zookeeper:
-    extends:
-      file: algorithms/docker-compose.yml
-      service: zookeeper
-
-  kafka:
-    extends:
-      file: algorithms/docker-compose.yml
-      service: kafka
-
-  kafka-connect:
-    extends:
-      file: algorithms/docker-compose.yml
-      service: kafka-connect
-    depends_on:
-      kafka:
-        condition: service_healthy
-      neo4j:
-        condition: service_healthy
-
   logstash:
     extends:
       file: algorithms/docker-compose.yml
@@ -171,16 +147,14 @@ services:
         condition: service_healthy
       kibana:
         condition: service_healthy
-      kafka:
-        condition: service_healthy
+      neo4j-relations:
+        condition: service_completed_successfully
 
-  neo4j-relations-kafka-connect:
+  neo4j-relations:
     extends:
       file: algorithms/docker-compose.yml
-      service: neo4j-relations-kafka-connect
+      service: neo4j-relations
     depends_on:
-      kafka:
-        condition: service_healthy
       neo4j:
         condition: service_healthy
 
@@ -188,9 +162,6 @@ services:
     extends:
       file: algorithms/docker-compose.yml
       service: neo4j
-    depends_on:
-      kafka:
-        condition: service_healthy
 
   mongodb:
     extends:
