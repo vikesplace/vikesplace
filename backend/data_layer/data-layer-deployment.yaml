@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-layer-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: data-layer
+  template:
+    metadata:
+      labels:
+        app: data-layer
+        type: microservice
+    spec:
+      containers:
+      - name: data-layer-container
+        image: palodaman/vikesplace-data_layer:latest
+        ports:
+        - containerPort: 5000

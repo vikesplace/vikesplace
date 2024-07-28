@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: algosearch-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: algosearch
+  template:
+    metadata:
+      labels:
+        app: algosearch
+        type: microservice
+    spec:
+      containers:
+      - name: algosearch-container
+        image: palodaman/vikesplace-algosearch:latest
+        ports:
+        - containerPort: 8000

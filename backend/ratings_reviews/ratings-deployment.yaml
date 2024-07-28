@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ratings-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ratings
+  template:
+    metadata:
+      labels:
+        app: ratings
+        type: microservice
+
+    spec:
+      containers:
+      - name: ratings-container
+        image: palodaman/vikesplace-ratings:latest
+        ports:
+        - containerPort: 3000

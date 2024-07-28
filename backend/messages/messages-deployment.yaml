@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: messages-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: messages
+  template:
+    metadata:
+      labels:
+        app: messages
+        type: microservice
+    spec:
+      containers:
+      - name: messages-container
+        image: palodaman/vikesplace-messages:latest
+        ports:
+        - containerPort: 3000

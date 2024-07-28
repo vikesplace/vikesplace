@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: account-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: account
+  template:
+    metadata:
+      labels:
+        app: account
+        type: microservice
+    spec:
+      containers:
+      - name: account-container
+        image: palodaman/vikesplace-account:latest
+        ports:
+        - containerPort: 5000

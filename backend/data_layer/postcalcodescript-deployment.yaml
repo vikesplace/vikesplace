@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postal-code-script
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postal-code-script
+  template:
+    metadata:
+      labels:
+        app: postal-code-script
+    spec:
+      containers:
+        - name: postal-code-script
+          image: palodaman/vikesplace-postal_code_script  # Replace with your image
+          ports:
+            - containerPort: 5000
+          env:
+            - name: PORT
+              value: "5000"
+            - name: DATA_LAYER
+              value: "http://data_layer:5000/"
+            - name: DB_HOST
+              value: "postgresql"
+            - name: DB_USER
+              value: "postgres"
+            - name: DB_PASSWORD
+              value: "tldbQ0G2P7"
+            - name: DB_DATABASE
+              value: "vikesplace"
+            - name: DB_PORT
+              value: "5432"
+
+
+          command: ["node", "populate_postal_codes.js"]

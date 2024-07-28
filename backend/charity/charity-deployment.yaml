@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: charity-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: charity
+  template:
+    metadata:
+      labels:
+        app: charity
+        type: microservice
+    spec:
+      containers:
+      - name: charity-container
+        image: palodaman/vikesplace-charity:latest
+        ports:
+        - containerPort: 5000

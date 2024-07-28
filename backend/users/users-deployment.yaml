@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: users
+  template:
+    metadata:
+      labels:
+        app: users
+        type: microservice
+    spec:
+      containers:
+      - name: users-container
+        image: palodaman/vikesplace-users:latest
+        ports:
+        - containerPort: 5000
