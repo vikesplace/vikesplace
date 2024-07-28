@@ -1,3 +1,6 @@
+import os
+from dotenv import load_dotenv
+from elasticsearch import AsyncElasticsearch
 import search.es_request as es_request
 import search.mongodb_request as mongodb_request
 from fastapi import FastAPI, Path, Query
@@ -44,7 +47,7 @@ async def search(
     MONGORequest.write_search_activity(user_id, query)
 
     lat_long = (latitude, longitude)
-    results = ESRequest.search(query, lat_long, category, status,
+    results = await ESRequest.search(query, lat_long, category, status,
                                minPrice, maxPrice, sortBy, isDescending)
     return {
         "status": 200,
