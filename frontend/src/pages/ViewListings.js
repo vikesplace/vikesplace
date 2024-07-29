@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import FormControl from '@mui/material/FormControl';
@@ -23,6 +22,9 @@ import IconButton from '@mui/material/IconButton';
 import { Store } from 'react-notifications-component';
 import { useSearch } from '../components/searchbar/searchContext';
 import UserCard from '../components/UsersCard';
+import { useNavigate } from 'react-router';
+import { Tabs, Tab, Typography } from '@mui/material';
+
 
 function ViewListings() {
   const dataService = useMemo(() => new DataService(), []);

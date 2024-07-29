@@ -58,11 +58,12 @@ function SearchBar() {
     <Box sx={{ display: 'flex', alignItems: 'center', m: 2 }}>
       <Box sx={{ display: 'flex', width: 1 / 3, flexDirection: 'column' }} />
 
-      <Paper
+      <Paper 
         component="form"
         sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
       >
         <InputBase
+        name='search-bar'
           sx={{ ml: 1, flex: 1 }}
           placeholder="Search"
           inputProps={{ 'aria-label': 'search vikes place' }}
