@@ -1,5 +1,4 @@
 import axios from "axios"
-import { redirect } from "react-router-dom";
 
 export default function httpErrorHandler(error) {
     if (error === null) throw new Error('Error is null!')
@@ -15,10 +14,10 @@ export default function httpErrorHandler(error) {
                 console.log('Bad request, please try again');
             } else if (statusCode === 401) {
                 console.log('Please login to access this resource');
-                redirect("/login");
+                window.location.replace('/login');
             } else if (statusCode === 403) {
                 console.log('You do not have access to this resource');
-                redirect("/login");
+                window.location.replace('/login');
             } else if (statusCode === 404) {
                 console.log('Requested resource does not exist or has been deleted');                
             } else if (statusCode === 500) {

@@ -183,7 +183,6 @@ class DataService {
     * Error: returns message
     */
     async search(query) {
-        
         try{
          return  await axios.get(API_URL + 'search?query=' + query , 
             {withCredentials: true})
@@ -199,7 +198,6 @@ class DataService {
     * Error: returns message
     */
     async getReviews(listingId) {
-
         try {
             return await axios.get(API_URL + 'review/' + listingId,
                 { withCredentials: true });

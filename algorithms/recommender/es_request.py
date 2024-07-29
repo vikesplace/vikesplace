@@ -4,6 +4,8 @@ import recommender.mongodb_request as mongodb_request
 from dotenv import load_dotenv
 from elasticsearch import Elasticsearch
 
+
+
 class ESRequest:
     def __init__(self):
         load_dotenv()
@@ -23,76 +25,109 @@ class ESRequest:
 
         self.MONGORequest = mongodb_request.MongoDBRequest()
 
-    def recommendation(self, user_id, user_loc):
-        
+    def get_items(self, listings):
+        listing_ids = [item['listing_id'] for item in listings]
 
+        results = self.es.search(
+            index="listings",
+            query={"terms": {"_id": listing_ids}}
+        )
+
+        results['hits']['hits'] = [x['_source'] for x in results['hits']['hits']]
+        return results['hits']['hits']
+
+    def get_user_charity_status(self, user_id):
+        results = self.es.search(
+            from_=0, size=1,
+            source=['see_charity'],
+            index="users",
+            query={"term": {"_id": user_id}}
+        )
+
+        results['hits']['hits'] = [x['_source'] for x in results['hits']['hits']]
+        return results['hits']['hits'][0]['see_charity']
+
+    def recommendation(self, user_id, user_loc):
         # Grab listings viewed by user
         listings = self.MONGORequest.user_activity(user_id)
+
+        # Grab last 5 listings ignored by user
+        listings_ignored = self.MONGORequest.ignored_listings(user_id, 5)
 
         # If user has no browsing history, return most popular items
         if listings is None:
             most_pop_items = self.MONGORequest.get_top_10_popular()
 
-            listing_ids = [item['listing_id'] for item in most_pop_items]
-
-            results = self.es.search(
-                index="listings", 
-                query={
-                    "terms": {
-                        "_id": listing_ids
-                    }
-                })
+            results = self.get_items(most_pop_items)
             
-            results['hits']['hits'] = [x['_source'] for x in results['hits']['hits']]
-            return results['hits']['hits']
+            return results
 
         else:
             # build "like" part of the query, see readme.md
-            activity = []
-            for i in listings:
-                activity.append({"_index": "listings", "_id": f"{i['listing_id']}"})
+            activity = [{"_index": "listings", "_id": f"{i['listing_id']}"} for i in listings]
+            must_clauses = []
 
-            q = {
-                "bool": {
-                    "must": {
-                        "more_like_this": {
-                            "fields": ["title"],
-                            "like": activity,
-                            "min_term_freq": 1,
-                            "max_query_terms": 12
-                        }
-                    },
-                    "must_not": [
-                        {
-                            "term": {
-                                "seller_id": user_id
+            if listings_ignored is not None:
+                activity_ignored = [{"_index": "listings", "_id": f"{i['listing_id']}"} for i in listings_ignored]
+                must_clauses.append({
+                    "boosting": {
+                        "positive": {
+                            "more_like_this": {
+                                "fields": ["title"],
+                                "like": activity,
+                                "min_term_freq": 1,
+                                "max_query_terms": 12
                             }
-                        }
-                    ]
+                        },
+                        "negative": {
+                            "more_like_this": {
+                                "fields": ["title"],
+                                "like": activity_ignored,
+                                "min_term_freq": 1,
+                                "max_query_terms": 12
+                            }
+                        },
+                        "negative_boost": 0
+                    }
+                })
+
+            else:
+                must_clauses.append({
+                    "more_like_this": {
+                        "fields": ["title"],
+                        "like": activity,
+                        "min_term_freq": 1,
+                        "max_query_terms": 12
+                    }
+                })
+
+            sort = [{
+                "_geo_distance": {
+                    "lat_long": {"lat": user_loc[0], "lon": user_loc[1]},
+                    "order": "asc",
+                    "unit": "km"
+                }
+            }]
+
+            must_not_clauses = [{"term": {"seller_id": user_id}}]
+
+            if self.get_user_charity_status(user_id) is False:
+                must_not_clauses.append({"term": {"for_charity": True}})
+
+            query_rec = {
+                "bool": {
+                    "must": must_clauses,
+                    "must_not": must_not_clauses
                 }
             }
-            sort = [
-                {
-                    "_geo_distance": {
-                        "lat_long": {
-                            "lat": user_loc[0],
-                            "lon": user_loc[1]
-                        },
-                        "order": "asc",
-                        "unit": "km"
-                    }
-                }
-            ]
 
-            results = self.es.search(index="listings", query=q, sort=sort, from_=0, size=5)
+            results = self.es.search(index="listings", query=query_rec, sort=sort, from_=0, size=20)
 
             results['hits']['hits'] = [x['_source'] for x in results['hits']['hits']]
             print(f"recommendation:>>>>>>>>> {results['hits']['hits']}")
 
             return results['hits']['hits']
-        
 
-        
     def recommendation_current_item(self, user_id, listing_id):
 
         q = {
@@ -115,7 +150,7 @@ class ESRequest:
             }
         }
 
-        results = self.es.search(index="listings", query=q, from_=0, size=5)
+        results = self.es.search(index="listings", query=q, from_=0, size=20)
 
         results['hits']['hits'] = [x['_source'] for x in results['hits']['hits']]
         print(f"recommendation_current_item:>>>>>>>>> {results['hits']['hits']}")
@@ -125,6 +160,21 @@ class ESRequest:
 
     def get_items(self, listings):
         listing_ids = [item['listing_id'] for item in listings]
+
+        results = self.es.search(
+            index="listings",
+            query={
+                "terms": {
+                    "_id": listing_ids
+                }
+            })
+
+        results['hits']['hits'] = [x['_source'] for x in results['hits']['hits']]
+
+        return results['hits']['hits']
+    
+    def get_items_adv(self, listings):
+        listing_ids = [item[0] for item in listings]
 
         results = self.es.search(
             index="listings",

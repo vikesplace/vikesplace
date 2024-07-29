@@ -37,6 +37,11 @@ Users.init(
       allowNull: false,
       defaultValue: DataTypes.NOW,
     },
+    last_updated_at: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
     items_sold: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -46,6 +51,11 @@ Users.init(
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0,
+    },
+    see_charity: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
     },
   },
   {

@@ -1,5 +1,7 @@
 import recommender.es_request as es_request
 import recommender.mongodb_request as mongodb_request
+import neo4j_api as neo4j_request
+import recommender.similarity as similarity
 from fastapi import FastAPI, Path, Query, status
 from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
@@ -13,8 +15,12 @@ async def lifespan(app: FastAPI):
     # Load the Database connection objects
     global ESRequest
     global MONGORequest
+    global Neo4jDBRequest
+
     ESRequest = es_request.ESRequest()
     MONGORequest = mongodb_request.MongoDBRequest()
+    Neo4jDBRequest = neo4j_request.Neo4jDBRequest()
+    Sent_Model = similarity.Sent_Model()
 
     yield
 
@@ -91,6 +97,48 @@ async def ignore_recommendation(
         "results": results
     }
 
+
+@app.get("/adv_recommendations")
+async def recommendations(
+    user_id: int = Query(None), 
+    latitude: float = 48.437326,
+    longitude: float = -123.329773,
+):
+    location = (latitude, longitude)
+    try:
+        results = Neo4jDBRequest.get_items_visited_by_other_users(user_id)
+        print(results)
+
+        full_results = ESRequest.get_items_adv(results)
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content={"results":full_results}
+        )
+    except Exception as e:
+        print(f"Error: {e}")
+        return JSONResponse(content={"error": "Failed to get recommendations"}, status_code=500)
+
+
+@app.get("/recommendations_for_new_user")
+async def recommendations(
+    user_id: int = Query(None), 
+    # latitude: float = 48.437326,
+    # longitude: float = -123.329773,
+):
+    # location = (latitude, longitude)
+    try:
+        results = Neo4jDBRequest.get_top_items_within_same_postal_code(user_id)
+        print(results)
+
+        full_results = ESRequest.get_items_adv(results)
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content={"results":full_results}
+        )
+    except Exception as e:
+        print(f"Error: {e}")
+        return JSONResponse(content={"error": "Failed to get recommendations"}, status_code=500)
+    
 
 # @app.delete("/users/{user_id}/recommendations/{listing_id}/ignoren't")
 # async def delete_recommendation_ignored(
