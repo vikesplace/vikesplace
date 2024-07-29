@@ -349,7 +349,7 @@ function ViewListings() {
               >
                 <MenuItem value="listed_at"><em>Time</em></MenuItem>
                 <MenuItem value="price">Price</MenuItem>
-                {/* <MenuItem value="location">Distance</MenuItem> */}
+                <MenuItem value="distance">Distance</MenuItem>
               </Select>
             </FormControl>
             <IconButton aria-label="change sorting order" onClick={handleSortOrderClick}>
