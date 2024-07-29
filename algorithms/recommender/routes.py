@@ -2,10 +2,12 @@ import recommender.es_request as es_request
 import recommender.mongodb_request as mongodb_request
 import neo4j_api as neo4j_request
 import recommender.similarity as similarity
-from fastapi import FastAPI, Path, Query, status
+from fastapi import FastAPI, Path, Query, status, Body, HTTPException, Request
 from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 from pydantic import BaseModel
+import logging
+import traceback
 
 class User(BaseModel):
     user_id: int
@@ -16,6 +18,7 @@ async def lifespan(app: FastAPI):
     global ESRequest
     global MONGORequest
     global Neo4jDBRequest
+    global Sent_Model
 
     ESRequest = es_request.ESRequest()
     MONGORequest = mongodb_request.MongoDBRequest()
@@ -26,7 +29,16 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+# Configure logging
+# logging.basicConfig(level=logging.DEBUG)
 
+# @app.exception_handler(Exception)
+# async def all_exception_handler(request: Request, exc: Exception):
+#     logging.error(f"Unhandled error: {str(exc)}\n{traceback.format_exc()}")
+#     return JSONResponse(
+#         status_code=500,
+#         content={"detail": "Internal Server Error"},
+#     )
 
 @app.get("/")
 async def root():
@@ -99,20 +111,39 @@ async def ignore_recommendation(
 
 
 @app.get("/adv_recommendations")
-async def recommendations(
+async def adv_recommendations(
     user_id: int = Query(None), 
-    latitude: float = 48.437326,
-    longitude: float = -123.329773,
 ):
-    location = (latitude, longitude)
     try:
-        results = Neo4jDBRequest.get_items_visited_by_other_users(user_id)
-        print(results)
+        full_results = Neo4jDBRequest.get_items_visited_by_other_users(user_id)
 
-        full_results = ESRequest.get_items_adv(results)
+        if not full_results:
+            return JSONResponse(
+                status_code=status.HTTP_200_OK,
+                content={"results":[]}
+            )
+
+        full_results = list(full_results)
+
+        full_results = [dict(item) for item in full_results]
+
+        ignored_listings = MONGORequest.ignored_listings(user_id)
+
+        if len(ignored_listings) > 10:
+            ignored_listings = ignored_listings[:10]
+
+        ignored_listings_full_data = ESRequest.get_items_adv(ignored_listings)
+
+        if not ignored_listings_full_data:
+            ignored_listings_full_data = []
+
+        full_results_updated = Sent_Model.remove_from_recommendations_sorted(ignored_listings_full_data, full_results)
+
+        full_results_updated = ESRequest.get_items_adv(full_results_updated)
+
         return JSONResponse(
             status_code=status.HTTP_200_OK,
-            content={"results":full_results}
+            content={"results":full_results_updated}
         )
     except Exception as e:
         print(f"Error: {e}")
@@ -120,20 +151,39 @@ async def recommendations(
 
 
 @app.get("/recommendations_for_new_user")
-async def recommendations(
+async def adv_recommendations_new_user(
     user_id: int = Query(None), 
-    # latitude: float = 48.437326,
-    # longitude: float = -123.329773,
 ):
-    # location = (latitude, longitude)
     try:
-        results = Neo4jDBRequest.get_top_items_within_same_postal_code(user_id)
-        print(results)
+        full_results = Neo4jDBRequest.get_top_items_within_same_postal_code(user_id)
 
-        full_results = ESRequest.get_items_adv(results)
+        if not full_results:
+            return JSONResponse(
+                status_code=status.HTTP_200_OK,
+                content={"results":[]}
+            )
+
+        full_results = list(full_results)
+
+        full_results = [dict(item) for item in full_results]
+
+        ignored_listings = MONGORequest.ignored_listings(user_id)
+
+        if len(ignored_listings) > 10:
+            ignored_listings = ignored_listings[:10]
+
+        ignored_listings_full_data = ESRequest.get_items_adv(ignored_listings)
+
+        if not ignored_listings_full_data:
+            ignored_listings_full_data = []
+
+        full_results_updated = Sent_Model.remove_from_recommendations_sorted(ignored_listings_full_data, full_results)
+
+        full_results_updated = ESRequest.get_items_adv(full_results_updated)
+
         return JSONResponse(
             status_code=status.HTTP_200_OK,
-            content={"results":full_results}
+            content={"results":full_results_updated}
         )
     except Exception as e:
         print(f"Error: {e}")

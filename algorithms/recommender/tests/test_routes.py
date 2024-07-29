@@ -154,7 +154,7 @@ def test_adv_recommender_with_activity_history():
     response_obj = response.json()
 
     assert response.status_code == status.HTTP_200_OK
-    assert len(response_obj["results"]) == 2
+    assert len(response_obj["results"]) == 16
 
 
 def test_adv_recommender_with_no_activity_history():
@@ -167,5 +167,5 @@ def test_adv_recommender_with_no_activity_history():
     response_obj = response.json()
 
     assert response.status_code == status.HTTP_200_OK
-    assert len(response_obj["results"]) == 10
+    assert len(response_obj["results"]) == 15
 
