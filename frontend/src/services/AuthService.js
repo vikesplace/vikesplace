@@ -41,7 +41,8 @@ class AuthService {
                 callback: FRONT_URL + "verify-account/"
             });
         } catch (error) {
-            return httpErrorHandler(error);
+            httpErrorHandler(error);
+            return error.response;
         }
     }
 
@@ -59,7 +60,8 @@ class AuthService {
                 location
             });
         } catch (error) {
-            return httpErrorHandler(error);
+            httpErrorHandler(error);
+            return error.response;
         }
     }
 
@@ -75,7 +77,8 @@ class AuthService {
                 callback: FRONT_URL + "password-update/"
             });
         } catch (error) {
-            return httpErrorHandler(error);
+            httpErrorHandler(error);
+            return error.response;
         }
     }
 
@@ -91,7 +94,8 @@ class AuthService {
                 password
             });
         } catch (error) {
-            return httpErrorHandler(error);
+            httpErrorHandler(error);
+            return error.response;
         }
     }
 }
