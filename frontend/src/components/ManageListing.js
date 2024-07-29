@@ -14,8 +14,12 @@ import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import DataService from '../services/DataService.js';
-import { statuses } from '../utils/ListingData.js';
 import { Store } from 'react-notifications-component';
+
+const statuses = [
+    { value: 'AVAILABLE', label: 'AVAILABLE' },
+    { value: 'SOLD', label: 'SOLD' }
+];
 
 export default function ManageListing({ listing }) {
     const dataService = new DataService();
@@ -68,7 +72,7 @@ export default function ManageListing({ listing }) {
 
     const handleStatusChange = (event) => {
         setStatus(event.target.value);
-        if (status !== 'REMOVED' && buyer) {
+        if (status !== 'SOLD' && buyer) {
             setBuyer("");
         }
     };
@@ -122,7 +126,7 @@ export default function ManageListing({ listing }) {
     }
 
     function validateBuyer() {
-        if ( status !== 'REMOVED' || buyer) {
+        if ( status !== 'SOLD' || buyer) {
             if (buyer.includes(' ')) {
                 setBuyerError(true);
                 return false;
@@ -302,7 +306,7 @@ export default function ManageListing({ listing }) {
                     </Select>
                   </FormControl>
                 </Grid>
-                {status === 'REMOVED' && 
+                {status === 'SOLD' && 
                 <Grid item xs={12}>
                     <TextField
                         required
