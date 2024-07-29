@@ -17,7 +17,6 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import Pagination from '@mui/material/Pagination';
 import '../App.css';
 import ListingCard from '../components/ListingCard';
-import { Card, Tab, Tabs, Typography } from '@mui/material';
 import DataService from '../services/DataService';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import IconButton from '@mui/material/IconButton';
@@ -28,7 +27,6 @@ import UserCard from '../components/UsersCard';
 function ViewListings() {
   const dataService = useMemo(() => new DataService(), []);
   const navigate = useNavigate();
-  const path = useLocation();
 
   const [sortCategory, setSortCategory] = useState("listed_at");
   const [sortOrder, setSortOrder] = useState(false);
@@ -42,7 +40,7 @@ function ViewListings() {
   const [postalCodeError, setPostalCodeError] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-  const { setShowSearch, searchQuery, setSearchQuery, searchListingsResults, searchUsersResults } = useSearch();
+  const { setShowSearch, searchQuery} = useSearch();
 
   const [users, setUsers] = useState([]);
   const [value, setValue] = useState('1');
@@ -103,7 +101,7 @@ function ViewListings() {
 
     fetchLocation();
 
-  }, [priceRange, statusFilter, sortCategory, sortOrder, searchQuery]);
+  }, [priceRange, statusFilter, sortCategory, sortOrder, searchQuery, dataService]);
 
 
   // Call search endpoint 
@@ -148,7 +146,7 @@ function ViewListings() {
     if (searchQuery) {
       search();
     }
-  }, [searchQuery, priceRange.min, priceRange.max, sortCategory, sortOrder, statusFilter])
+  }, [searchQuery, priceRange.min, priceRange.max, sortCategory, sortOrder, statusFilter, dataService])
 
   const handleListingClick = (id) => {
     navigate(`/listings/${id}`);
@@ -520,25 +518,6 @@ function ViewListings() {
             </Button>
           </Box>
           <Box display="flex" alignItems="center" justifyContent={'space-between'}>
-            {/* <Box mr = {1}>
-            <Button 
-            variant='contained'
-            onClick={handleListingsButton}
-            style={{ backgroundColor: selectedButton === 'listings' ? 'primary' : 'gray' }}
-            
-            >
-              Listings
-            </Button>
-            </Box>
-
-            <Button 
-            variant='contained'
-            onClick={handleUsersButton}
-            style={{ backgroundColor: selectedButton=== 'users' ? 'primary' : 'gray' }}
-            
-            >
-              Users
-            </Button> */}
             <Tabs value={value} onChange={handleTabchange}>
               <Tab value="1" label="Listings" />
               <Tab value="2" label="Users" />
@@ -571,7 +550,11 @@ function ViewListings() {
               <br />
             </div>
           ))}
-
+            {(users === undefined || users.length === 0) &&
+            <Typography align="center" variant='h6'>
+              No Users Meet Criteria
+            </Typography>
+          }
           {users !== undefined && value === "2" && paginatedUsers.map((user) => (
             <div key={user.userId} onClick={() => handleUserClick(user.userId)}>
               <UserCard username={user.username}/>

@@ -13,7 +13,7 @@ import { useSearch } from './searchContext';
 function SearchBar() {
   const [userInput, setUserInput] = useState('');
   const navigate = useNavigate();
-  const { showSearch, setSearchQuery, } = useSearch();
+  const { showSearch, setSearchQuery} = useSearch();
   const location = useLocation();
 
   useEffect(() => {
@@ -24,7 +24,7 @@ function SearchBar() {
       //if user navigates to homepage clear the searchQuery in search bar context 
       setSearchQuery('');
     }
-  }, [location]);
+  }, [location, setSearchQuery]);
 
   if (!showSearch) {
     return null;

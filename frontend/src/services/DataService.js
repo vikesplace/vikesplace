@@ -186,8 +186,6 @@ class DataService {
         
         let searchParam = new URLSearchParams();
 
-        // if (pullLimit && pullLimit !== "")
-        //     searchParam.append("pullLimit", pullLimit);
         if (query && query !== "")
             searchParam.append("search", query);
         if (minPrice && minPrice !== "")
