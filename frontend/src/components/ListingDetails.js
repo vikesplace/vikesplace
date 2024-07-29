@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
@@ -21,6 +21,7 @@ const ListingDetails = ({ listing }) => {
   const [message, setMessage] = useState('');
   const [userId, setUserId] = useState('');
   const [user, setUser] = useState(undefined);
+  const [chat, setChat] = useState(undefined);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -64,30 +65,13 @@ const ListingDetails = ({ listing }) => {
     try {
       let chatId;
   
-      const chatsResponse = await dataService.getChats();
-      
-      if (chatsResponse && chatsResponse.status === 200) {
-        const chatIds = chatsResponse.data.chats;
-  
-        if (Array.isArray(chatIds)) {
-          const existingChatId = chatIds.find(id => id === listing.listingId);
-  
-          if (existingChatId) {
-            chatId = existingChatId;
-          } else {
-            const newChatResponse = await dataService.createChat(listing.listingId);
-  
-            if (newChatResponse && newChatResponse.status === 200) {
-              chatId = newChatResponse.data.chatId;
-            } else {
-              throw new Error('Chat already exists, go to messages');
-            }
-          }
-        } else {
-          throw new Error('Invalid chat data received');
-        }
+      const newChatResponse = await dataService.createChat(listing.listingId);
+
+      if (newChatResponse && newChatResponse.status === 200) {
+        chatId = newChatResponse.data.chatId;
       } else {
-        throw new Error('Unable to fetch chats');
+        setChat(chatId = newChatResponse?.data?.chatId);
+        throw new Error('Chat already exists, go to messages');
       }
   
       const messageResponse = await dataService.sendMessage(chatId, message);
@@ -111,7 +95,6 @@ const ListingDetails = ({ listing }) => {
           onScreen: true
         }
       });
-      console.error(error);
     }
   };
   
@@ -200,22 +183,32 @@ const ListingDetails = ({ listing }) => {
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
         <DialogTitle>Send Message to Seller</DialogTitle>
         <DialogContent>
+        {chat === undefined && (
+          <div key="newChat">
+            <DialogContentText>
+              Write your message below:
+            </DialogContentText>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="message"
+              label="Message"
+              fullWidth
+              multiline
+              rows={5}
+              variant="outlined"
+              value={message}
+              onChange={handleChangeMessage}
+            />
+          </div>)
+        }
+        {chat !== undefined &&
           <DialogContentText>
-            Write your message below:
+            <Link to={"/message-history/"+chat}>See Chat</Link>
           </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="message"
-            label="Message"
-            fullWidth
-            multiline
-            rows={5}
-            variant="outlined"
-            value={message}
-            onChange={handleChangeMessage}
-          />
-        </DialogContent>
+        }
+      </DialogContent>
+      {chat === undefined && (
         <DialogActions>
           <Button onClick={handleClose} color="primary">
             Cancel
@@ -224,6 +217,7 @@ const ListingDetails = ({ listing }) => {
             Send
           </Button>
         </DialogActions>
+      )}
       </Dialog>
     </div>
   );

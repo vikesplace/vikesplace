@@ -307,7 +307,8 @@ class DataService {
             return await axios.post(API_URL + 'chats/',{listingId}, 
                 { withCredentials: true });
         } catch (error) {
-            return httpErrorHandler(error);
+            httpErrorHandler(error)
+            return error.response;
         }
     }
 
