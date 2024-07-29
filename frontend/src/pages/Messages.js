@@ -7,7 +7,7 @@ import "react-chat-elements/dist/main.css";
 import '../App.css';
 import DataService from '../services/DataService';
 import { Store } from 'react-notifications-component';
-import 'react-notifications-component/dist/theme.css'; // Import notification CSS
+import 'react-notifications-component/dist/theme.css'; 
 
 function Messages() {
   const dataService = useMemo(() => new DataService(), []);
@@ -88,11 +88,15 @@ function Messages() {
     <div className="Messages">
       <Container>
         <Box mt={2}>
-          <ChatList
-            className='chat-list'
-            dataSource={chats} 
-            onClick={handleClick}
-          />
+          {chats.length === 0 ? (
+            <div>No Chats Available</div>
+          ) : (
+            <ChatList
+              className='chat-list'
+              dataSource={chats} 
+              onClick={handleClick}
+            />
+          )}
         </Box>
       </Container>
     </div>

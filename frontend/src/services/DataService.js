@@ -291,7 +291,7 @@ class DataService {
     */
     async getChats() {
         try {
-            return await axios.get(API_URL + 'messages/'+'chats', 
+            return await axios.get(API_URL + 'messages/chats', 
                 { withCredentials: true });
         } catch (error) {
             return httpErrorHandler(error);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import { useParams } from 'react-router-dom';
@@ -16,7 +16,7 @@ function MessageHistory() {
     const [newMessage, setNewMessage] = useState("");
     const [messages, setMessages] = useState([]);
     const [chatInfo, setChatInfo] = useState({});
-    const dataService = new DataService();
+    const dataService = useMemo(() => new DataService(), []);
 
     const fetchMessages = async () => {
         try {
@@ -136,7 +136,7 @@ function MessageHistory() {
                     }}
                 >
                     <Typography component="h1" variant="h5">
-                        Message <b>{chatInfo.title}</b> about <b>{chatInfo.subtitle}</b>
+                        Message Seller
                     </Typography>
                     <Button
                         type="refresh"
