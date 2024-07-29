@@ -132,7 +132,7 @@ function VerifyAccount() {
                   });
             } else if (response.status === 200 || response.status === 201) {
                 navigate('/verified');
-            } else if (response?.data.message === "Username or email already exists") {
+            } else if (response.data?.message === "Username or email already exists") {
                 Store.addNotification({
                     title: 'Issue Creating Account',
                     message: 'Username or email already exists',
