@@ -39,6 +39,7 @@ function ViewListings() {
   const [newLocation, setNewLocation] = useState('');
   const [postalCodeError, setPostalCodeError] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [noListingMessage, setNoListingMessage] = useState("Loading...");
   const itemsPerPage = 10;
   const { setShowSearch, searchQuery } = useSearch();
 
@@ -50,6 +51,7 @@ function ViewListings() {
   useEffect(() => {
 
     const fetchListings = async () => {
+      setNoListingMessage("Loading...");
       const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder);
       if (response === undefined) {
         Store.addNotification({
@@ -82,6 +84,7 @@ function ViewListings() {
           }
         });
       }
+      setNoListingMessage("No Listings Meet Criteria");
     };
 
     const fetchLocation = async () => {
@@ -90,6 +93,7 @@ function ViewListings() {
     };
 
     const search = async () => {
+      setNoListingMessage("Loading...");
       const response = await dataService.search(searchQuery)
 
       if (response === undefined) {
@@ -107,7 +111,7 @@ function ViewListings() {
           }
         });
       } else if (response.status === 200) {
-        setListings(response.data)
+        setListings(response.data);
       } else {
         Store.addNotification({
           title: 'Unable to Search Listings',
@@ -123,6 +127,7 @@ function ViewListings() {
           }
         });
       }
+      setNoListingMessage("No Listings Meet Criteria");
     }
 
     //if there is a search query run that otherwise just fetchlistings
@@ -144,6 +149,7 @@ function ViewListings() {
     const category = event.target.value;
     setSortCategory(category);
 
+    setNoListingMessage("Loading...");
     const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder);
     if (response === undefined) {
       Store.addNotification({
@@ -176,12 +182,14 @@ function ViewListings() {
         }
       });
     }
+    setNoListingMessage("No Listings Meet Criteria");
   };
 
   const handleSortOrderClick = async () => {
     const currOrder = sortOrder;
     setSortOrder(!currOrder);
 
+    setNoListingMessage("Loading...");
     const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder);
     if (response === undefined) {
       Store.addNotification({
@@ -214,6 +222,7 @@ function ViewListings() {
         }
       });
     }
+    setNoListingMessage("No Listings Meet Criteria");
   };
 
   const handlePriceRangeChange = (event) => {
@@ -226,6 +235,7 @@ function ViewListings() {
   };
 
   const applyFilters = async () => {
+    setNoListingMessage("Loading...");
     const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder);
     if (response === undefined) {
       Store.addNotification({
@@ -258,6 +268,7 @@ function ViewListings() {
         }
       });
     }
+    setNoListingMessage("No Listings Meet Criteria");
     setOpenFilterDialog(false);
   };
 
@@ -385,7 +396,7 @@ function ViewListings() {
         <Box mt={2}>
           {(listings === undefined || listings.length === 0) &&
             <Typography align="center" variant='h6'>
-              No Listings Meet Criteria
+              {noListingMessage}
             </Typography>
           }
           {listings !== undefined && paginatedListings.map((listing) => (

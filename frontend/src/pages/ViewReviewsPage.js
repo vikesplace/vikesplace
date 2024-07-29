@@ -20,6 +20,7 @@ const ViewReviewsPage = () => {
 
   const [listing, setListing] = useState(undefined);
   const [reviews, setReviews] = useState([]);
+  const [noListingMessage, setNoListingMessage] = useState("Loading...");
   
   useEffect(() => {
     async function getListing() {
@@ -55,6 +56,7 @@ const ViewReviewsPage = () => {
           }
         });
       }
+      setNoListingMessage("Listing Not Available");
     }
 
     async function getReviews() {
@@ -147,7 +149,7 @@ const ViewReviewsPage = () => {
   if (!listing) {
     return <div>
       <Typography align="center" variant='h6' sx={{mt: 2}}>
-        No Listing Found
+        {noListingMessage}
       </Typography>
     </div>;
   }
