@@ -145,6 +145,7 @@ services:
     environment:
       - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
       - DATA_LAYER=${DATA_LAYER}
+      - CHARITY_TOKEN=${CHARITY_TOKEN}
   
   data_layer:
     container_name: data_layer
