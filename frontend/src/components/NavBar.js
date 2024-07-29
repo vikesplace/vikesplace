@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -12,6 +12,8 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import logo from '../utils/vikesplace_logo_v2.png';
+import AuthService from '../services/AuthService';
+import { Store } from 'react-notifications-component';
 
 const pages = [
   { name: 'View Listings', path: '/view-listings' },
@@ -24,6 +26,9 @@ const settings = ['User Profile', 'Logout'];
 
 
 function NavBar() {
+  const authService = new AuthService();
+  const navigate = useNavigate();
+
   const location = useLocation();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -43,6 +48,27 @@ function NavBar() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  async function handleLogout () {
+    let response = await authService.logout();
+      if(response.status === 200){
+        navigate('/login');
+      }else{
+        Store.addNotification({
+          title: 'Logout Failed',
+          message: 'Please try again',
+          type: 'warning',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
+      }
+  }
 
   const pathWithoutParams = location.pathname.split("/")[1];
   const showButtons = pathWithoutParams === 'home' || pathWithoutParams === 'view-listings' || pathWithoutParams === 'create-listing' ||
@@ -190,7 +216,7 @@ function NavBar() {
             >
               {settings.map((setting) => (
                 setting === 'Logout' ? (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu} component={Link} to="/login">
+                  <MenuItem key={setting} onClick={handleLogout} >
                     <Typography textAlign="center">{setting}</Typography>
                   </MenuItem>
                 ) : 
