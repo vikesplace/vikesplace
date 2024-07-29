@@ -13,23 +13,22 @@ import logo7 from '../logos/spca.png';
 
 const CharityDetails = ({ charity }) => {
   let logo;
-  switch (charity.logoUrl) {
-    case 1:
-      logo = logo1;
-    case 2:
-      logo = logo2;
-    case 3:
-      logo = logo3;
-    case 4:
-      logo = logo4;
-    case 5:
-      logo = logo5;
-    case 6:
-      logo = logo6;
-    case 7:
-      logo = logo7;
-    default:
-      logo = logoDefault;
+  if (charity.logoUrl === "1") {
+    logo = logo1;
+  } else if (charity.logoUrl === "2") {
+    logo = logo2;
+  } else if (charity.logoUrl === "3") {
+    logo = logo3;
+  } else if (charity.logoUrl === "4") {
+    logo = logo4;
+  } else if (charity.logoUrl === "5") {
+    logo = logo5;
+  } else if (charity.logoUrl === "6") {
+    logo = logo6;
+  } else if (charity.logoUrl === "7") {
+    logo = logo7;
+  } else {
+    logo = logoDefault;
   }
 
   return (
@@ -61,7 +60,7 @@ const CharityDetails = ({ charity }) => {
         key="partner-logo"
       >
       <Typography variant="h6">Thanks to our Partner:</Typography>
-      <img src={logo} aria-label='partner organization logo'/>
+      <img src={logo} aria-label='partner organization logo' width="100%"/>
     </Box>
   </div>
   );
