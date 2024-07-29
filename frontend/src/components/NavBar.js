@@ -13,6 +13,7 @@ import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import logo from '../utils/vikesplace_logo_v2.png';
 import AuthService from '../services/AuthService';
+import { Store } from 'react-notifications-component';
 
 const pages = [
   { name: 'View Listings', path: '/view-listings' },
@@ -52,6 +53,20 @@ function NavBar() {
     let response = await authService.logout();
       if(response.status === 200){
         navigate('/login');
+      }else{
+        Store.addNotification({
+          title: 'Logout Failed',
+          message: 'Please try again',
+          type: 'warning',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
       }
   }
 

@@ -26,8 +26,7 @@ class AuthService {
     */
     async logout() {
         try {
-            return await axios.get(API_URL + 'logout',
-                { withCredentials: true });
+            return await axios.get(API_URL + 'logout', { withCredentials: true });
         } catch (error) {
             return httpErrorHandler(error);
         }
