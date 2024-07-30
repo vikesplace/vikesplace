@@ -14,7 +14,6 @@ import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import DataService from '../services/DataService.js';
 import { Store } from 'react-notifications-component';
-import 'react-notifications-component/dist/theme.css';
 
 const ListingDetails = ({ listing }) => {
   const dataService = new DataService();
@@ -22,6 +21,7 @@ const ListingDetails = ({ listing }) => {
   const location = useLocation();
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
+  const [userId, setUserId] = useState('');
   const [user, setUser] = useState(undefined);
 
   useEffect(() => {
@@ -65,20 +65,19 @@ const ListingDetails = ({ listing }) => {
   const handleSendMessage = async () => {
     try {
       let chatId;
-
       const chatsResponse = await dataService.getChats();
-
+      
       if (chatsResponse && chatsResponse.status === 200) {
         const chatIds = chatsResponse.data.chats;
-
+  
         if (Array.isArray(chatIds)) {
           const existingChatId = chatIds.find(id => id === listing.listingId);
-
+  
           if (existingChatId) {
             chatId = existingChatId;
           } else {
-            const newChatResponse = await dataService.createNewChat(listing.listingId);
-
+            const newChatResponse = await dataService.createChat(listing.listingId);
+  
             if (newChatResponse && newChatResponse.status === 200) {
               chatId = newChatResponse.data.chatId;
             } else {
@@ -116,7 +115,7 @@ const ListingDetails = ({ listing }) => {
       console.error(error);
     }
   };
-
+  
   const handleChangeMessage = (event) => {
     setMessage(event.target.value);
   };
