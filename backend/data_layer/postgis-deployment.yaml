@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgis
+spec:
+  serviceName: "postgis"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgis
+  template:
+    metadata:
+      labels:
+        app: postgis
+        type: microservice
+    spec:
+      containers:
+      - name: postgis-container
+        image: postgis/postgis:latest
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_DB
+          value: "vikesplace"
+        - name: POSTGRES_USER
+          value: "postgres"
+        - name: POSTGRES_PASSWORD
+          value: "tldbQ0G2P7"
+        volumeMounts:
+        - mountPath: "/docker-entrypoint-initdb.d"
+          name: local-pv-storage
+      volumes:
+      - name: local-pv-storage
+        persistentVolumeClaim:
+         claimName: local-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgis
+spec:
+  ports:
+  - port: 5432
+    targetPort: 5432
+  selector:
+    app: postgis
+  clusterIP: None
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: local-pvc
+spec:
+  storageClassName: local-path
+  accessModes:
+    - ReadWriteOnce
+  resources:

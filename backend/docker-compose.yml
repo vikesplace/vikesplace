@@ -15,7 +15,7 @@ services:
       - "5432:5432"
     volumes:
       - ./data_layer/data:/docker-entrypoint-initdb.d
-      - psqldata:/var/lib/postgresql/data
+      # - psqldata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 45s

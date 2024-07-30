@@ -18,3 +18,10 @@ spec:
         image: palodaman/vikesplace-account:latest
         ports:
         - containerPort: 5000
+        env:
+        - name: ACCESS_TOKEN_SECRET
+          value: "07867bf07583825145470c4a274aef2ff39873e98ba2f64def8add484bf7a4ec18122138d38a68fe3361b64fb9c3d690e7f1b50a72cae1c44981376642776b9b"
+        - name: EMAIL
+          value: "backend499.3@gmail.com"
+        - name: APP_PASSWORD
+          value: "ejen ntph udjz bbof"

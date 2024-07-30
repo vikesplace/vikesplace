@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: data-layer-deployment
 spec:
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
       app: data-layer
@@ -15,6 +15,17 @@ spec:
     spec:
       containers:
       - name: data-layer-container
-        image: palodaman/vikesplace-data_layer:latest
+        image: palodaman/vikesplace-data-layer:latest
         ports:
         - containerPort: 5000
+        env:
+        - name: DB_HOST
+          value: "postgis-0.postgis"
+        - name: DB_USER
+          value: "postgres"
+        - name: DB_PASSWORD
+          value: "tldbQ0G2P7"
+        - name: DB_DATABASE
+          value: "vikesplace"
+        - name: DB_PORT
+          value: "5432"
