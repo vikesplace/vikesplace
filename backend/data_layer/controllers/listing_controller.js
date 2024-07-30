@@ -32,18 +32,8 @@ export const getSortedListings = async (req, res) => {
   //build order by array
   const order = [];
 
-  if (sortBy && sortBy === "created_on") {
-    order.push([
-      "listed_at",
-      isDescending.toLowerCase() == "true" ? "DESC" : "ASC",
-    ])
-  } else {
-    if (sortBy && sortBy !== "distance") {
-      order.push([
-        sortBy,
-        isDescending.toLowerCase() == "true" ? "DESC" : "ASC",
-      ]); //defaults to ascending
-    }
+  if (sortBy && sortBy !== "distance") {
+    order.push([sortBy, isDescending.toLowerCase() == "true" ? "DESC" : "ASC"]); //defaults to ascending
   }
 
   //build findAndCountAll options object
