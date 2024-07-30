@@ -5,7 +5,6 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import DataService from '../services/DataService.js';
 import { Store } from 'react-notifications-component';
-import 'react-notifications-component/dist/theme.css';
 
 const SellerPage = () => {
     const { id } = useParams();
