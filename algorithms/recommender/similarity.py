@@ -50,9 +50,7 @@ class Sent_Model:
         # Extract the sorted sums and their original indices
         sorted_indices = [index for index, _ in indexed_column_sums]
 
-        partition_index = int(15/25 * len(recommendations))
-
-        recommendations_filtered = [recommendations[i] for i in sorted_indices [:partition_index]]
+        recommendations_filtered = [recommendations[i] for i in sorted_indices [:min(15,len(recommendations))]]
 
         return recommendations_filtered
 

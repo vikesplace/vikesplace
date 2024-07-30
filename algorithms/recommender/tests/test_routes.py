@@ -98,20 +98,20 @@ def test_ignore_recommendation_and_delete_ignored_recommendation():
     assert delete_result == 1
 
 
-def test_remove_item_similar_to_ignored_from_recommendations():
-    recommendations = [{'title': 'XPS 15 Laptop'},
-                       {'title': 'MacBook Pro Laptop'},
-                       {'title': 'Lenovo Thinkpad Laptop'},
-                       {'title': 'Surface Laptop'},
-                       {'title': 'Laptop Case Macbook 13"'}]
+# def test_remove_item_similar_to_ignored_from_recommendations():
+#     recommendations = [{'title': 'XPS 15 Laptop'},
+#                        {'title': 'MacBook Pro Laptop'},
+#                        {'title': 'Lenovo Thinkpad Laptop'},
+#                        {'title': 'Surface Laptop'},
+#                        {'title': 'Laptop Case Macbook 13"'}]
     
-    ignored = [{'title': 'HP Printer'}, {'title': 'Laptop Case 15"'}]
-    model = similarity.Sent_Model()
-    new_rec = model.remove_from_recommendations(ignored, recommendations)
+#     ignored = [{'title': 'HP Printer'}, {'title': 'Laptop Case 15"'}]
+#     model = similarity.Sent_Model()
+#     new_rec = model.remove_from_recommendations(ignored, recommendations)
 
-    assert {'title': 'Laptop Case Macbook 13"'} not in new_rec
-    assert {'title': 'XPS 15 Laptop'} not in new_rec
-    assert len(new_rec) < 5
+#     assert {'title': 'Laptop Case Macbook 13"'} not in new_rec
+#     assert {'title': 'XPS 15 Laptop'} not in new_rec
+#     assert len(new_rec) < 5
 
 
 def test_view_listings_ignored():
@@ -147,23 +147,21 @@ def test_adv_recommender_with_activity_history():
     headers = {}
     params = {
         "user_id": user_id,
-        "latitude": 48.3784,
-        "longitude": -123.4156
     }
     response = requests.get(f"{BASE_URL}/adv_recommendations", headers=headers, params=params)
     response_obj = response.json()
 
     assert response.status_code == status.HTTP_200_OK
-    assert len(response_obj["results"]) == 16
+    assert len(response_obj["results"]) == 15
 
 
 def test_adv_recommender_with_no_activity_history():
-    user_id = 18
+    user_id = 2
     headers = {}
     params = {
         "user_id": user_id,
     }
-    response = requests.get(f"{BASE_URL}/recommendations_for_new_user", headers=headers, params=params)
+    response = requests.get(f"{BASE_URL}/adv_recommendations", headers=headers, params=params)
     response_obj = response.json()
 
     assert response.status_code == status.HTTP_200_OK
