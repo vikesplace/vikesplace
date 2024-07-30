@@ -10,7 +10,6 @@ import { SAMPLE_DATA } from '../utils/SampleRecommenderData.js';
 
 
 
-
 function Home() {
 
   const { setShowSearch } = useSearch();

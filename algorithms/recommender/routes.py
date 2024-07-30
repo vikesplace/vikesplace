@@ -40,7 +40,7 @@ async def recommendations(
     longitude: float = -123.329773,
 ):
     lat_long = (latitude, longitude)
-    results = ESRequest.recommendation(
+    results = await ESRequest.recommendation(
         user_id=user_id,
         user_loc=lat_long)
 
@@ -55,7 +55,7 @@ async def recommendation_current_item(
     user_id: int = Query(None),
     listing_id: int = Query(None)
 ):
-    results = ESRequest.recommendation_current_item(user_id, listing_id)
+    results = await ESRequest.recommendation_current_item(user_id, listing_id)
 
     return JSONResponse(
         status_code=status.HTTP_200_OK,
@@ -67,8 +67,8 @@ async def recommendation_current_item(
 async def recommendations_ignored(
     user_id: str = Path(..., description="The ID of the user")
 ):
-    listings = MONGORequest.ignored_listings(user_id)
-    results = ESRequest.get_items(listings)
+    listings = await MONGORequest.ignored_listings(user_id)
+    results = await ESRequest.get_items(listings)
 
     # add when listing was visited to results
     for i in results:
@@ -88,7 +88,7 @@ async def ignore_recommendation(
     listing_id: int = Path(..., description="The ID of the listing")
 ):
     user_id = user.user_id
-    results = MONGORequest.write_ignored(user_id, listing_id)
+    results = await MONGORequest.write_ignored(user_id, listing_id)
 
     return {
         "status": status.HTTP_200_OK,
@@ -102,7 +102,7 @@ async def adv_recommendations(
     user_id: int = Query(None), 
 ):
     try:
-        full_results = Neo4jDBRequest.get_items_visited_by_other_users(user_id)
+        full_results = await Neo4jDBRequest.get_items_visited_by_other_users(user_id)
 
         if not full_results:
             return JSONResponse(
@@ -114,19 +114,19 @@ async def adv_recommendations(
 
         full_results = [dict(item) for item in full_results]
 
-        ignored_listings = MONGORequest.ignored_listings(user_id)
+        ignored_listings = await MONGORequest.ignored_listings(user_id)
 
         if len(ignored_listings) > 10:
             ignored_listings = ignored_listings[len(ignored_listings)-10:]
 
-        ignored_listings_full_data = ESRequest.get_items_adv(ignored_listings)
+        ignored_listings_full_data = await ESRequest.get_items_adv(ignored_listings)
 
         if not ignored_listings_full_data:
             ignored_listings_full_data = []
 
         full_results_updated = Sent_Model.remove_from_recommendations_sorted(ignored_listings_full_data, full_results)
 
-        full_results_updated = ESRequest.get_items_adv(full_results_updated)
+        full_results_updated = await ESRequest.get_items_adv(full_results_updated)
 
         return JSONResponse(
             status_code=status.HTTP_200_OK,
