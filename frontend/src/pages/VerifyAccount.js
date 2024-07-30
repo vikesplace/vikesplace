@@ -68,8 +68,6 @@ function VerifyAccount() {
         } else if (!format.test(username)) {
             setUsernameError("Must be 6-20 characters (allow: letters, numbers, _, @)");
             return false;
-        } else if (usernameError === "This username has already been chosen") {
-            return false;
         } else {
             setUsernameError("");
             return true;
@@ -117,7 +115,7 @@ function VerifyAccount() {
 
         if (validForm) {
             const upperPostal = postalCode.toUpperCase();
-            let response = authService.verify(jwt, username, password, upperPostal);
+            let response = await authService.verify(jwt, username, password, upperPostal);
             if (response === undefined) {
                 Store.addNotification({
                     title: 'Connection Error!',
