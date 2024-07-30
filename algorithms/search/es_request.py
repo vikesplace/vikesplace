@@ -1,8 +1,7 @@
 import os
 
 from dotenv import load_dotenv
-from elasticsearch import AsyncElasticsearch, Elasticsearch
-from search import mongodb_request
+from elasticsearch import AsyncElasticsearch
 
 
 class ESRequest:
@@ -13,15 +12,11 @@ class ESRequest:
         self.ES_USER = os.getenv("ES_USER")
         self.ES_PASS = os.getenv("ELASTIC_PASSWORD")
         self.ES_CERT_PATH = os.getenv("ES_CERT_PATH")
-        # self.es = Elasticsearch(
-        #     f"https://{self.ES_HOST}:{self.ES_PORT}/",
-        #     ca_certs='./ca.crt',
-        #     basic_auth=(self.ES_USER, self.ES_PASS)
-        # # )
         self.es = AsyncElasticsearch(
             f"https://{self.ES_HOST}:{self.ES_PORT}/",
             ca_certs='./ca.crt',
-            basic_auth=(self.ES_USER, self.ES_PASS)
+            basic_auth=(self.ES_USER, self.ES_PASS),
+            timeout=30
         )
 
     def term_filter(self, term, value):
@@ -74,7 +69,7 @@ class ESRequest:
             }]
 
     async def search(self, query, lat_long, category=None, status=None,
-               min_price=None, max_price=None, sort_by=None, is_descending=None):
+                     min_price=None, max_price=None, sort_by=None, is_descending=None):
 
         must_clauses = [{
             "query_string": {
@@ -126,24 +121,26 @@ class ESRequest:
 
         if sort_by is None:
             results["listings"] = (await self.es.search(index="listings",
-                                                 query=query_listings,
-                                                 allow_partial_search_results=True,
-                                                 from_=0, size=10_000
-                                                 ))['hits']['hits']
+                                                        query=query_listings,
+                                                        allow_partial_search_results=True,
+                                                        from_=0, size=10_000
+                                                        ))['hits']['hits']
         else:
             results["listings"] = (await self.es.search(index="listings",
-                                                 query=query_listings,
-                                                 sort=self.sort_option(sort_by, lat_long, is_descending),
+                                                        query=query_listings,
+                                                        sort=self.sort_option(
+                                                            sort_by, lat_long, is_descending),
+                                                        allow_partial_search_results=True,
+                                                        from_=0, size=10_000
+                                                        ))['hits']['hits']
+
+        results["users"] = (await self.es.search(index="users",
+                                                 query=query_users,
+                                                 source=[
+                                                     "user_id", "username"],
                                                  allow_partial_search_results=True,
                                                  from_=0, size=10_000
                                                  ))['hits']['hits']
-
-        results["users"] = (await self.es.search(index="users",
-                                          query=query_users,
-                                          source=["user_id", "username"],
-                                          allow_partial_search_results=True,
-                                          from_=0, size=10_000
-                                          ))['hits']['hits']
 
         results['listings'] = [x['_source'] for x in results['listings']]
         results['users'] = [x['_source'] for x in results['users']]
@@ -158,7 +155,10 @@ class ESRequest:
         return results  # Return only the hits
 
     async def get_items(self, listings):
-        listing_ids = [item['listing_id'] for item in listings]
+        try:
+            listing_ids = [item['listing_id'] for item in listings]
+        except:
+            return None
 
         results = await self.es.search(
             index="listings",
