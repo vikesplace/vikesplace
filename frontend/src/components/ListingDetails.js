@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import PersonIcon from '@mui/icons-material/Person';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -11,7 +12,6 @@ import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import DataService from '../services/DataService.js';
 import { Store } from 'react-notifications-component';
-import 'react-notifications-component/dist/theme.css';
 
 const ListingDetails = ({ listing }) => {
   const dataService = new DataService();
@@ -19,38 +19,6 @@ const ListingDetails = ({ listing }) => {
   const location = useLocation();
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
-  const [userId, setUserId] = useState('');
-  const [user, setUser] = useState(undefined);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await dataService.getMyUserData();
-        if (response && response.status === 200) {
-          setUser(response.data);
-        } else {
-          throw new Error("Unable to get user");
-        }
-      } catch (error) {
-        Store.addNotification({
-          title: 'Connection Error!',
-          message: 'Please try again',
-          type: 'danger',
-          insert: 'top',
-          container: 'top-right',
-          animationIn: ["animated", "fadeIn"],
-          animationOut: ["animated", "fadeOut"],
-          dismiss: {
-            duration: 5000,
-            onScreen: true
-          }
-        });
-        console.error(error);
-      }
-    };
-
-    fetchUser();
-  }, []);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -63,7 +31,6 @@ const ListingDetails = ({ listing }) => {
   const handleSendMessage = async () => {
     try {
       let chatId;
-  
       const chatsResponse = await dataService.getChats();
       
       if (chatsResponse && chatsResponse.status === 200) {
@@ -89,9 +56,9 @@ const ListingDetails = ({ listing }) => {
       } else {
         throw new Error('Unable to fetch chats');
       }
-  
+
       const messageResponse = await dataService.sendMessage(chatId, message);
-  
+
       if (messageResponse && messageResponse.status === 200) {
         handleClose();
       } else {
@@ -127,6 +94,10 @@ const ListingDetails = ({ listing }) => {
     navigate(`/listings/${listing.listingId}`);
   };
 
+  const handleViewSellerProfile = () => {
+    navigate(`/sellers/${listing.sellerId}`);
+  };
+
   const isReviews = location.pathname.includes('/view-reviews/') || location.pathname.includes('/create-review/');
 
   return (
@@ -156,6 +127,11 @@ const ListingDetails = ({ listing }) => {
           {listing.forCharity ? "Funds to Charity" : ""}
         </Typography>
         <Box display="flex" flexDirection="column" mt={5} width="100%">
+          <Box display="flex" alignItems="center" mb={2}>
+            <Button variant="outlined" startIcon={<PersonIcon />} onClick={handleViewSellerProfile}>
+              View Seller Profile
+            </Button>            
+          </Box>
           {!isReviews && (
             <>
               <Button
@@ -166,8 +142,8 @@ const ListingDetails = ({ listing }) => {
               >
                 Message Seller
               </Button>
-              <Button 
-                variant="contained" 
+              <Button
+                variant="contained"
                 color="secondary"
                 sx={{ mb: 2 }}
                 onClick={() => navigate("/create-review/" + listing.listingId)}
