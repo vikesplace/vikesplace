@@ -15,6 +15,7 @@ function SearchHistory() {
   const [history, setHistory] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [noSearchHistoryMessage, setNoSearchHistoryMessage] = useState("Loading...");
 
   useEffect(() => {
     const fetchHistory = async () => {
@@ -22,6 +23,8 @@ function SearchHistory() {
       const response = await dataService.getUserSearchHistory();
       if (response && response.data && response.data.searches) {
         setHistory(response.data.searches);
+      } else {
+        setNoSearchHistoryMessage("No Search History Available");
       }
     };
 
@@ -69,7 +72,7 @@ function SearchHistory() {
             />
           </>
         ) : (
-          <Box>No Search History is Available</Box>
+          <Box>{noSearchHistoryMessage}</Box>
         )}
       </Box>
     </Container>

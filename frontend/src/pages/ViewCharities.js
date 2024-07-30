@@ -21,6 +21,7 @@ function ViewCharities() {
   const [charities, setCharities] = useState([]);
   const [isViewingCharity, setIsViewingCharity] = useState(false);
   const [viewCharity, setViewCharity] = useState({});
+  const [noCharityMessage, setNoCharityMessage] = useState("Loading...");
   const itemsPerPage = 5;
 
   useEffect(() => {
@@ -58,6 +59,7 @@ function ViewCharities() {
           }
         });
       }
+      setNoCharityMessage("No Charities Available");
     }
 
     getCharities();
@@ -180,7 +182,7 @@ function ViewCharities() {
             sortedCharities.futureEvents.length === 0 &&
             sortedCharities.pastEvents.length === 0) && 
             <Typography align="center" variant='h6'>
-              No Charities Available
+              {noCharityMessage}
             </Typography>
           }
         </Box>
