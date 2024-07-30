@@ -24,9 +24,12 @@ class AuthService {
     * Logout
     * Removes authorization cookie
     */
-    logout() {
-        // TODO remove from cookies
-        localStorage.removeItem("user");
+    async logout() {
+        try {
+            return await axios.get(API_URL + 'logout', { withCredentials: true });
+        } catch (error) {
+            return httpErrorHandler(error);
+        }
     }
 
     /*
@@ -41,7 +44,8 @@ class AuthService {
                 callback: FRONT_URL + "verify-account/"
             });
         } catch (error) {
-            return httpErrorHandler(error);
+            httpErrorHandler(error);
+            return error.response;
         }
     }
 
@@ -59,7 +63,8 @@ class AuthService {
                 location
             });
         } catch (error) {
-            return httpErrorHandler(error);
+            httpErrorHandler(error);
+            return error.response;
         }
     }
 
@@ -75,7 +80,8 @@ class AuthService {
                 callback: FRONT_URL + "password-update/"
             });
         } catch (error) {
-            return httpErrorHandler(error);
+            httpErrorHandler(error);
+            return error.response;
         }
     }
 
@@ -91,7 +97,8 @@ class AuthService {
                 password
             });
         } catch (error) {
-            return httpErrorHandler(error);
+            httpErrorHandler(error);
+            return error.response;
         }
     }
 }
