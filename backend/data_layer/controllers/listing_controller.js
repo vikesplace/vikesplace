@@ -34,7 +34,7 @@ export const getSortedListings = async (req, res) => {
   if (sortBy === "createdOn" || sortBy === "created_on") {
     order.push(["listed_at", isDescending.toLowerCase() == "true" ? "DESC" : "ASC"]);
   }
-  else if (sortBy) {
+  else if (sortBy && sortBy !== "distance") {
     order.push([sortBy, isDescending.toLowerCase() == "true" ? "DESC" : "ASC"]); //defaults to ascending
   }
 
