@@ -87,7 +87,7 @@ class MongoDBRequest:
                 return user_document["ignored"][-num_items:]
             return user_document["ignored"]
         else:
-            return None
+            return []
 
 
     def write_ignored(self, user_id, listing_id):

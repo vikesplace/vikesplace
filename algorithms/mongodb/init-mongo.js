@@ -20,15 +20,8 @@ db.user_activity.insertMany([
   },
   {
     _id: 2,
-    search: [
-      { query: "Smartphone", timestamp: ISODate("2024-06-14T04:00:00.000Z") },
-      { query: "Smartwatch", timestamp: ISODate("2024-06-14T05:00:00.000Z") }
-    ],
-    listings: [
-      { listing_id: 31, timestamp: ISODate("2024-06-14T06:00:00.000Z") },
-      { listing_id: 58, timestamp: ISODate("2024-06-14T07:00:00.000Z") },
-      { listing_id: 43, timestamp: ISODate("2024-06-14T08:00:00.000Z") }
-    ],
+    search: [],
+    listings: [],
     ignored: [
       { listing_id: 3, timestamp: ISODate("2024-06-15T01:00:00.000Z") },
       { listing_id: 8, timestamp: ISODate("2024-06-16T01:00:00.000Z") },
