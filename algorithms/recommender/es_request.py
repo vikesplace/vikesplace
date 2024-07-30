@@ -56,7 +56,7 @@ class ESRequest:
 
         # If user has no browsing history, return most popular items
         if listings is None:
-            most_pop_items = self.MONGORequest.get_top_10_popular()
+            most_pop_items = self.MONGORequest.get_top_popular(num_items=20)
 
             results = self.get_items(most_pop_items)
             
@@ -67,7 +67,7 @@ class ESRequest:
             activity = [{"_index": "listings", "_id": f"{i['listing_id']}"} for i in listings]
             must_clauses = []
 
-            if listings_ignored is not None:
+            if len(listings_ignored) > 0:
                 activity_ignored = [{"_index": "listings", "_id": f"{i['listing_id']}"} for i in listings_ignored]
                 must_clauses.append({
                     "boosting": {

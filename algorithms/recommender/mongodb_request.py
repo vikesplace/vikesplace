@@ -53,8 +53,11 @@ class MongoDBRequest:
             return None
 
 
-    def get_top_10_popular(self):
+    def get_top_popular(self, num_items=None):
         collection = self.db["user_activity"]
+
+        if num_items is None:
+            num_items = 20
 
         pipeline = [
             {"$unwind": "$listings"},
@@ -63,7 +66,7 @@ class MongoDBRequest:
                 "count": {"$sum": 1}
             }},
             {"$sort": {"count": -1}},
-            {"$limit": 10}
+            {"$limit": num_items}
         ]
 
         results = list(collection.aggregate(pipeline))
