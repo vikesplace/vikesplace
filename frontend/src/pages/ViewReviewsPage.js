@@ -19,6 +19,7 @@ const ViewReviewsPage = () => {
   const { id } = useParams();
 
   const [listing, setListing] = useState(undefined);
+  const [ratings, setRatings] = useState([]);
   const [reviews, setReviews] = useState([]);
   
   useEffect(() => {
@@ -58,7 +59,6 @@ const ViewReviewsPage = () => {
     }
 
     async function getReviews() {
-      let displayValues = [];
       const responseRatings = await dataService.getRatings(id);
       if (responseRatings === undefined) {
         Store.addNotification({
@@ -71,8 +71,8 @@ const ViewReviewsPage = () => {
           animationOut: ["animated", "fadeOut"],
           dismiss: {
             duration: 5000,
-            onScreen: true
-          }
+            onScreen: true,
+          },
         });
       } else if (responseRatings.status !== 200) {
         Store.addNotification({
@@ -85,16 +85,11 @@ const ViewReviewsPage = () => {
           animationOut: ["animated", "fadeOut"],
           dismiss: {
             duration: 5000,
-            onScreen: true
-          }
+            onScreen: true,
+          },
         });
       } else {
-        for (let i = 0; i < responseRatings.data.ratings.length; i++) {
-          displayValues.push({
-            rating: responseRatings.data.ratings[i].rating,
-            review: ""
-          })
-        }
+        setRatings(responseRatings.data.ratings);
       }
 
       const responseReviews = await dataService.getReviews(id);
@@ -109,8 +104,8 @@ const ViewReviewsPage = () => {
           animationOut: ["animated", "fadeOut"],
           dismiss: {
             duration: 5000,
-            onScreen: true
-          }
+            onScreen: true,
+          },
         });
       } else if (responseReviews.status !== 200) {
         Store.addNotification({
@@ -123,21 +118,12 @@ const ViewReviewsPage = () => {
           animationOut: ["animated", "fadeOut"],
           dismiss: {
             duration: 5000,
-            onScreen: true
-          }
+            onScreen: true,
+          },
         });
       } else {
-        for (let j = 0; j < responseReviews.data.reviews.length; j++) {
-          displayValues.push({
-            rating: "",
-            review: responseReviews.data.reviews[j].review
-          })          
-        } 
+        setReviews(responseReviews.data.reviews);
       }
-
-      // TODO update after backend changes (eg. include username, createdOn)
-      // try to map username/createdOn so can display ratings and reviews next to each other
-      setReviews(displayValues);
     }
 
     getListing();
@@ -145,11 +131,13 @@ const ViewReviewsPage = () => {
   }, [id, dataService]);
 
   if (!listing) {
-    return <div>
-      <Typography align="center" variant='h6' sx={{mt: 2}}>
-        No Listing Found
-      </Typography>
-    </div>;
+    return (
+      <div>
+        <Typography align="center" variant="h6" sx={{ mt: 2 }}>
+          No Listing Found
+        </Typography>
+      </div>
+    );
   }
 
   return (
@@ -174,36 +162,64 @@ const ViewReviewsPage = () => {
             boxShadow={3}
           >
             <Typography variant="h5" component="h3" gutterBottom>
-              Reviews
+              Ratings & Reviews
             </Typography>
-            <TableContainer component={Paper} sx={{ maxHeight: 300, overflowY: 'auto' }}>
-              <Table stickyHeader>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Rating</TableCell>
-                    <TableCell>Review</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {(reviews !== undefined && reviews !== null && reviews.length !== 0) && 
-                  reviews.map((review, index) => (
-                    <TableRow key={index}>
-                      <TableCell>{review.rating}</TableCell>
-                      <TableCell>{review.review}</TableCell>
-                    </TableRow>
-                  ))}
-                  {(reviews === undefined || reviews === null || reviews.length === 0) &&
-                  <Typography>
-                    <TableRow key={0}>
-                      <TableCell> 
-                        No Reviews or Ratings Available
-                      </TableCell>
-                    </TableRow>
-                  </Typography>
-                  }
-                </TableBody>
-              </Table>
-            </TableContainer>
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <Typography variant="h6" gutterBottom>
+                  Ratings
+                </Typography>
+                <TableContainer component={Paper} sx={{ maxHeight: 300, overflowY: 'auto' }}>
+                  <Table stickyHeader>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Rating</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {ratings.length !== 0 ? (
+                        ratings.map((rating, index) => (
+                          <TableRow key={index}>
+                            <TableCell>{rating.rating}</TableCell>
+                          </TableRow>
+                        ))
+                      ) : (
+                        <TableRow>
+                          <TableCell>No Ratings Available</TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography variant="h6" gutterBottom>
+                  Reviews
+                </Typography>
+                <TableContainer component={Paper} sx={{ maxHeight: 300, overflowY: 'auto' }}>
+                  <Table stickyHeader>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Review</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {reviews.length !== 0 ? (
+                        reviews.map((review, index) => (
+                          <TableRow key={index}>
+                            <TableCell>{review.review}</TableCell>
+                          </TableRow>
+                        ))
+                      ) : (
+                        <TableRow>
+                          <TableCell>No Reviews Available</TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Grid>
+            </Grid>
           </Box>
         </Grid>
       </Grid>

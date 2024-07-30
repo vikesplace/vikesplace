@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { MessageList, Input } from "react-chat-elements";
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -136,7 +136,7 @@ function MessageHistory() {
                     }}
                 >
                     <Typography component="h1" variant="h5">
-                        Message Seller
+                        Message Seller <Link to={"/listings/"+chatInfo.listingId}>(See Listing)</Link>
                     </Typography>
                     <Button
                         type="refresh"

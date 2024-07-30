@@ -21,7 +21,8 @@ class DataService {
                 forCharity
             }, { withCredentials: true });
         } catch (error) {
-            return httpErrorHandler(error);
+            httpErrorHandler(error);
+            return error.response;
         }
     }
 
@@ -42,7 +43,8 @@ class DataService {
                 forCharity
             }, { withCredentials: true });
         } catch (error) {
-            return httpErrorHandler(error);
+            httpErrorHandler(error);
+            return error.response;
         }
     }
 
@@ -56,7 +58,8 @@ class DataService {
             return await axios.delete(API_URL + 'listings/' + id,
                 { withCredentials: true });
         } catch (error) {
-            return httpErrorHandler(error);
+            httpErrorHandler(error);
+            return error.response;
         }
     }
 
@@ -86,7 +89,8 @@ class DataService {
             return await axios.get(API_URL + 'listings?' + searchParam.toString(),
                 { withCredentials: true });
         } catch (error) {
-            return httpErrorHandler(error);
+            httpErrorHandler(error);
+            return error.response;
         }
     }
 
@@ -100,7 +104,8 @@ class DataService {
             return await axios.get(API_URL + 'listings/' + id,
                 { withCredentials: true });
         } catch (error) {
-            return httpErrorHandler(error);
+            httpErrorHandler(error);
+            return error.response;
         }
     }
 
@@ -114,7 +119,8 @@ class DataService {
             return await axios.get(API_URL + 'listings/me',
                 { withCredentials: true });
         } catch (error) {
-            return httpErrorHandler(error);
+            httpErrorHandler(error);
+            return error.response;
         }
     }
 
@@ -129,7 +135,8 @@ class DataService {
                 location
             }, { withCredentials: true });
         } catch (error) {
-            return httpErrorHandler(error);
+            httpErrorHandler(error);
+            return error.response;
         }
     }
 
@@ -144,7 +151,8 @@ class DataService {
             return await axios.get(API_URL + 'users/me',
                 { withCredentials: true });
         } catch (error) {
-            return httpErrorHandler(error);
+            httpErrorHandler(error);
+            return error.response;
         }
     }
 
@@ -159,7 +167,8 @@ class DataService {
             return await axios.get(API_URL + 'users/' + id,
                 { withCredentials: true });
         } catch (error) {
-            return httpErrorHandler(error);
+            httpErrorHandler(error);
+            return error.response;
         }
     }
 
@@ -173,7 +182,8 @@ class DataService {
             return await axios.get(API_URL + 'users/me/searches',
                 { withCredentials: true });
         } catch (error) {
-            return httpErrorHandler(error);
+            httpErrorHandler(error);
+            return error.response;
         }
     }
 
@@ -187,7 +197,8 @@ class DataService {
          return  await axios.get(API_URL + 'search?query=' + query , 
             {withCredentials: true})
         } catch (error){
-            return httpErrorHandler(error);
+            httpErrorHandler(error);
+            return error.response;
         }
     }
 
@@ -202,7 +213,8 @@ class DataService {
             return await axios.get(API_URL + 'review/' + listingId,
                 { withCredentials: true });
         } catch (error) {
-            return httpErrorHandler(error);
+            httpErrorHandler(error);
+            return error.response;
         }
     }
 
@@ -217,7 +229,8 @@ class DataService {
             return await axios.get(API_URL + 'rating/' + listingId,
                 { withCredentials: true });
         } catch (error) {
-            return httpErrorHandler(error);
+            httpErrorHandler(error);
+            return error.response;
         }
     }
 
@@ -233,7 +246,8 @@ class DataService {
                 reviewContent
             }, { withCredentials: true });
         } catch (error) {
-            return httpErrorHandler(error);
+            httpErrorHandler(error);
+            return error.response;
         }
     }
 
@@ -249,7 +263,8 @@ class DataService {
                 ratingValue
             }, { withCredentials: true });
         } catch (error) {
-            return httpErrorHandler(error);
+            httpErrorHandler(error);
+            return error.response;
         }
     }
 
@@ -263,7 +278,8 @@ class DataService {
             return await axios.get(API_URL + 'recommendations',
                 { withCredentials: true });
         } catch (error) {
-            return httpErrorHandler(error);
+            httpErrorHandler(error);
+            return error.response;
         }
     }
 
@@ -278,7 +294,8 @@ class DataService {
                 ignore: true
             }, { withCredentials: true });
         } catch (error) {
-            return httpErrorHandler(error);
+            httpErrorHandler(error);
+            return error.response;
         }
     }
 
@@ -292,7 +309,8 @@ class DataService {
             return await axios.get(API_URL + 'messages/chats', 
                 { withCredentials: true });
         } catch (error) {
-            return httpErrorHandler(error);
+            httpErrorHandler(error);
+            return error.response;
         }
     }
 
@@ -307,7 +325,8 @@ class DataService {
             return await axios.post(API_URL + 'chats/',{listingId}, 
                 { withCredentials: true });
         } catch (error) {
-            return httpErrorHandler(error);
+            httpErrorHandler(error)
+            return error.response;
         }
     }
 
@@ -322,7 +341,8 @@ class DataService {
             return await axios.get(API_URL + 'messages/' + chatId, 
                 { withCredentials: true });
         } catch (error) {
-            return httpErrorHandler(error);
+            httpErrorHandler(error);
+            return error.response;
         }
     }
 
@@ -336,7 +356,8 @@ class DataService {
             return await axios.get(API_URL + 'chats/' + chatId,
                 { withCredentials: true });
         } catch (error) {
-            return httpErrorHandler(error);
+            httpErrorHandler(error);
+            return error.response;
         }
 
     }
@@ -352,7 +373,8 @@ class DataService {
                 content
             }, { withCredentials: true });
         } catch (error) {
-            return httpErrorHandler(error);
+            httpErrorHandler(error);
+            return error.response;
         }
     }
 
@@ -373,7 +395,8 @@ class DataService {
                 num_listings: 0
             }, { withCredentials: true });
         } catch (error) {
-            return httpErrorHandler(error);
+            httpErrorHandler(error);
+            return error.response;
         }
     }
 
@@ -389,7 +412,8 @@ class DataService {
             return await axios.get(API_URL + 'charity', 
                 { withCredentials: true });
         } catch (error) {
-            return httpErrorHandler(error);
+            httpErrorHandler(error);
+            return error.response;
         }
     }
 }
