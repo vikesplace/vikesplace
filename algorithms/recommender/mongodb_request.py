@@ -82,10 +82,13 @@ class MongoDBRequest:
         user_document = collection.find_one({"_id": int(user_id)})
 
         if user_document:
-            if num_items:
-                # return last x items.
-                return user_document["ignored"][-num_items:]
-            return user_document["ignored"]
+            try:
+                if num_items:
+                    # return last x items.
+                    return user_document["ignored"][-num_items:]
+                return user_document["ignored"]
+            except:
+                return None
         else:
             return None
 
