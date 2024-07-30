@@ -11,6 +11,7 @@ jest.mock('react-router-dom', () => {
   return {
     ...originalModule,
     useNavigate: () => jest.fn(),
+    useParams: () => ({ jwt: 'mock-jwt' }) 
   };
 });
 
@@ -22,11 +23,8 @@ describe('CompletePasswordChange Component', () => {
       </Router>
     );
 
-    // Check for the heading
     expect(screen.getByRole('heading', { level: 1, name: /Change Password/i })).toBeInTheDocument();
-    // Check for the password input field
     expect(screen.getByLabelText(/Password/i)).toBeInTheDocument();
-    // Check for the submit button
     expect(screen.getByRole('button', { name: /Submit/i })).toBeInTheDocument();
   });
 
@@ -70,9 +68,10 @@ describe('CompletePasswordChange Component', () => {
 
     const passwordInput = screen.getByLabelText(/Password/i);
     const submitButton = screen.getByRole('button', { name: /Submit/i });
+    const form = screen.getByTestId('password-form'); 
 
     fireEvent.change(passwordInput, { target: { value: 'StrongPassword!1' } });
-    fireEvent.submit(submitButton);
+    fireEvent.click(submitButton);
 
     expect(navigate).toHaveBeenCalledWith('/password-updated');
   });

@@ -1,52 +1,167 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import MessageHistory from '../../pages/MessageHistory';
-import { SAMPLE_CHATS } from '../../utils/SampleRecommenderData';
+import DataService from '../../services/DataService';
+import { Store } from 'react-notifications-component';
 
-const renderWithRouter = (ui, { route = '/' } = {}) => {
-  window.history.pushState({}, 'Test page', route);
-  return render(
-    <MemoryRouter initialEntries={[route]}>
-      <Routes>
-        <Route path="/message-history/:id" element={ui} />
-      </Routes>
-    </MemoryRouter>
-  );
+jest.mock('../../services/DataService');
+jest.mock('react-notifications-component', () => ({
+  Store: {
+    addNotification: jest.fn(),
+  },
+}));
+
+const mockDataService = {
+  getChatMessages: jest.fn(),
+  getChatInformation: jest.fn(),
+  sendMessage: jest.fn(),
 };
 
-describe('MessageHistory Component', () => {
-  test('renders without crashing', () => {
-    renderWithRouter(<MessageHistory />, { route: '/message-history/3' });
+DataService.mockImplementation(() => mockDataService);
+
+describe('MessageHistory', () => {
+  const renderComponent = (id) => {
+    return render(
+      <MemoryRouter initialEntries={[`/message-history/${id}`]}>
+        <Routes>
+          <Route path="/message-history/:id" element={<MessageHistory />} />
+        </Routes>
+      </MemoryRouter>
+    );
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
-  test('displays the correct chat information', () => {
-    renderWithRouter(<MessageHistory />, { route: '/message-history/3' });
+  test('renders without crashing and displays message history', async () => {
+    const chatMessages = [
+      { senderId: 1, messageContent: 'Hello', timestamp: '2024-07-30T12:34:56Z' },
+      { senderId: 2, messageContent: 'Hi', timestamp: '2024-07-30T12:35:56Z' },
+    ];
+    const chatInfo = { userId: 2, title: 'Seller', listingId: 10 };
 
-    expect(screen.getByText(/Message/)).toBeInTheDocument();
-    expect(screen.getByText(/Person's Name/)).toBeInTheDocument();
-    expect(screen.getByText(/about/)).toBeInTheDocument();
-    expect(screen.getByText(/Title of this item I would like to buy/)).toBeInTheDocument();
-    expect(screen.getByText(/I'm interested in buying this item.../)).toBeInTheDocument();
-    expect(screen.getByText(/Could I ask for a \$5 discount\?/)).toBeInTheDocument();
-    expect(screen.getByText(/How long have you had this item\?/)).toBeInTheDocument();
-    expect(screen.getByText(/I've had it for 2 years, and it has been very useful to me. I'm glad you're interested in it.../)).toBeInTheDocument();
-    expect(screen.getByText(/I can give you \$2 off if that works\?/)).toBeInTheDocument();
-    expect(screen.getByText(/Yes that works. Are you comfortable meeting at the library\?/)).toBeInTheDocument();
-    expect(screen.getByText(/Yes! That works for me/)).toBeInTheDocument();
+    mockDataService.getChatMessages.mockResolvedValue({
+      status: 200,
+      data: { messages: chatMessages },
+    });
+    mockDataService.getChatInformation.mockResolvedValue({
+      status: 200,
+      data: chatInfo,
+    });
+
+    renderComponent(1);
+
+    await waitFor(() => {
+      expect(screen.getByText((content, element) => {
+        return content.includes('Message Seller') && element.tagName.toLowerCase() === 'h1';
+      })).toBeInTheDocument();
+      expect(screen.getByText('Hello')).toBeInTheDocument();
+      expect(screen.getByText('Hi')).toBeInTheDocument();
+    });
   });
 
-  test('sends a new message when clicking the send button', () => {
-    jest.spyOn(window, 'alert').mockImplementation(() => {});
-    renderWithRouter(<MessageHistory />, { route: '/message-history/3' });
+  test('displays a notification on failed message fetch', async () => {
+    mockDataService.getChatMessages.mockResolvedValue(undefined);
+    mockDataService.getChatInformation.mockResolvedValue({
+      status: 200,
+      data: { userId: 2, title: 'Seller', listingId: 10 },
+    });
 
-    const inputElement = screen.getByPlaceholderText('Type here...');
+    renderComponent(1);
+
+    await waitFor(() => {
+      expect(Store.addNotification).toHaveBeenCalledWith(expect.objectContaining({
+        title: 'Error',
+        message: 'Failed to fetch messages. Please try again.',
+      }));
+    });
+  });
+
+  test('displays a notification on failed chat info fetch', async () => {
+    mockDataService.getChatMessages.mockResolvedValue({
+      status: 200,
+      data: { messages: [] },
+    });
+    mockDataService.getChatInformation.mockResolvedValue(undefined);
+
+    renderComponent(1);
+
+    await waitFor(() => {
+      expect(Store.addNotification).toHaveBeenCalledWith(expect.objectContaining({
+        title: 'Error',
+        message: 'Failed to fetch chat info. Please try again.',
+      }));
+    });
+  });
+
+  test('handles sending a new message', async () => {
+    const chatMessages = [
+      { senderId: 1, messageContent: 'Hello', timestamp: '2024-07-30T12:34:56Z' },
+    ];
+    const chatInfo = { userId: 2, title: 'Seller', listingId: 10 };
+
+    mockDataService.getChatMessages.mockResolvedValue({
+      status: 200,
+      data: { messages: chatMessages },
+    });
+    mockDataService.getChatInformation.mockResolvedValue({
+      status: 200,
+      data: chatInfo,
+    });
+    mockDataService.sendMessage.mockResolvedValue({
+      status: 200,
+    });
+
+    renderComponent(1);
+
+    await waitFor(() => {
+      expect(screen.getByText('Hello')).toBeInTheDocument();
+    });
+
+    const input = screen.getByPlaceholderText('Type here...');
+    fireEvent.change(input, { target: { value: 'New message' } });
     const sendButton = screen.getByText('Send');
-
-    fireEvent.change(inputElement, { target: { value: 'New message' } });
     fireEvent.click(sendButton);
 
-    expect(window.alert).toHaveBeenCalledWith('Sending... New message');
+    await waitFor(() => {
+      expect(mockDataService.sendMessage).toHaveBeenCalledWith("1", 'New message');
+    });
+  });
+
+  test('displays a notification on failed message send', async () => {
+    const chatMessages = [
+      { senderId: 1, messageContent: 'Hello', timestamp: '2024-07-30T12:34:56Z' },
+    ];
+    const chatInfo = { userId: 2, title: 'Seller', listingId: 10 };
+
+    mockDataService.getChatMessages.mockResolvedValue({
+      status: 200,
+      data: { messages: chatMessages },
+    });
+    mockDataService.getChatInformation.mockResolvedValue({
+      status: 200,
+      data: chatInfo,
+    });
+    mockDataService.sendMessage.mockResolvedValue(undefined);
+
+    renderComponent(1);
+
+    await waitFor(() => {
+      expect(screen.getByText('Hello')).toBeInTheDocument();
+    });
+
+    const input = screen.getByPlaceholderText('Type here...');
+    fireEvent.change(input, { target: { value: 'New message' } });
+    const sendButton = screen.getByText('Send');
+    fireEvent.click(sendButton);
+
+    await waitFor(() => {
+      expect(Store.addNotification).toHaveBeenCalledWith(expect.objectContaining({
+        title: 'Error',
+        message: 'Failed to send message. Please try again.',
+      }));
+    });
   });
 });
