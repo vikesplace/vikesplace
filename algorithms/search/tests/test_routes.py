@@ -1,3 +1,4 @@
+import asyncio
 import pytest
 import requests
 import search.mongodb_request as mongodb_request
@@ -129,11 +130,11 @@ def test_save_search_query_with_existing_history():
     assert response.status_code == status.HTTP_200_OK
     assert response_obj['results'] == 1
 
-
-def test_save_search_query_with_no_existing_history():
+@pytest.mark.asyncio(scope="session")
+async def test_save_search_query_with_no_existing_history():
     user_id = 999
     # clears off search history from previous test iterations
-    MONGORequest.delete_search_document(user_id)
+    await MONGORequest.delete_search_document(user_id)
     response = requests.post(
         f"{BASE_URL}/users/{user_id}/searches", json={"query": "air fryer"})
     response_obj = response.json()
@@ -340,8 +341,8 @@ def test_view_listings_visited():
         assert i['listing_id'] is not None
         assert i['visited_at'] is not None
 
-
-def test_save_listing_view_and_delete_listing_view():
+@pytest.mark.asyncio(scope="session")
+async def test_save_listing_view_and_delete_listing_view():
     user_id = 1
     listing_id = 1
     response = requests.post(
@@ -351,6 +352,6 @@ def test_save_listing_view_and_delete_listing_view():
     assert response.status_code == status.HTTP_200_OK
     assert response_obj['results'] == 1
 
-    delete_result = MONGORequest.delete_user_activity(user_id, listing_id)
+    delete_result = await MONGORequest.delete_user_activity(user_id, listing_id)
 
     assert delete_result == 1

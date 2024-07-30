@@ -31,26 +31,17 @@ export const getSortedListings = async (req, res) => {
 
   //build order by array
   const order = [];
-  if (sortBy) {
+  if (sortBy === "createdOn" || sortBy === "created_on") {
+    order.push(["listed_at", isDescending.toLowerCase() == "true" ? "DESC" : "ASC"]);
+  }
+  else if (sortBy) {
     order.push([sortBy, isDescending.toLowerCase() == "true" ? "DESC" : "ASC"]); //defaults to ascending
   }
 
   //build findAndCountAll options object
   const options = {
     where,
-    order,
-    attributes: [
-      ["seller_id", "sellerId"],
-      ["listing_id", "listingId"],
-      "location",
-      "price",
-      ["listed_at", "listedAt"],
-      "status",
-      "title",
-      "lat_long",
-      ["last_updated_at", "lastUpdatedAt"],
-      ["for_charity", "forCharity"],
-    ],
+    order
   };
 
   //add limit and offset if they exist

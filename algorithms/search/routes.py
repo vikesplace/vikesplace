@@ -1,8 +1,9 @@
+from contextlib import asynccontextmanager
+
 import search.es_request as es_request
 import search.mongodb_request as mongodb_request
 from fastapi import FastAPI, Path, Query
 from pydantic import BaseModel
-from contextlib import asynccontextmanager
 
 
 @asynccontextmanager
@@ -41,10 +42,10 @@ async def search(
     sortBy: str = Query(None),
     isDescending: bool = Query(None)
 ):
-    MONGORequest.write_search_activity(user_id, query)
+    await MONGORequest.write_search_activity(user_id, query)
 
     lat_long = (latitude, longitude)
-    results = ESRequest.search(query, lat_long, category, status,
+    results = await ESRequest.search(query, lat_long, category, status,
                                minPrice, maxPrice, sortBy, isDescending)
     return {
         "status": 200,
@@ -57,9 +58,7 @@ async def search(
 async def search(
     userId: int = Path(..., description="The ID of the user"),
 ):
-    # Assuming es_request.search can handle these parameters
-    results = MONGORequest.search_history(userId)
-    print(results)
+    results = await MONGORequest.search_history(userId)
     return {
         "status": 200,
         "message": "Search history successful",
@@ -70,11 +69,7 @@ async def search(
 @app.post("/users/{userId}/searches")
 async def search(userId: int, item: SearchQuery):
     query = item.query
-
-    results = MONGORequest.write_search_activity(userId, query)
-    print(results)
-    print(type(results))
-
+    results = await MONGORequest.write_search_activity(userId, query)
     return {
         "status": 200,
         "message": "Search query saved",
@@ -87,15 +82,14 @@ async def search(
     userId: int = Path(..., description="The ID of the user"),
 ):
     # Assuming es_request.search can handle these parameters
-    listings = MONGORequest.user_activity(userId)
-    results = ESRequest.get_items(listings)
+    listings = await MONGORequest.user_activity(userId)
+    results = await ESRequest.get_items(listings)
 
     # add when listing was visited to results
     for i in results:
         i['visited_at'] = [x for x in listings if x['listing_id']
                            == i['listing_id']][0]['timestamp']
 
-    print(results)
     return {
         "status": 200,
         "message": "Listings browsing history successful",
@@ -105,7 +99,7 @@ async def search(
 
 @app.post("/users/{userId}/listings/{listingId}")
 async def search(userId: int, listingId: int):
-    results = MONGORequest.write_user_activity(userId, listingId)
+    results = await MONGORequest.write_user_activity(userId, listingId)
 
     return {
         "status": 200,
@@ -116,7 +110,7 @@ async def search(userId: int, listingId: int):
 
 @app.delete("/users/{userId}/listings/{listingId}")
 async def search(userId: int, listingId: int):
-    results = MONGORequest.delete_user_activity(userId, listingId)
+    results = await MONGORequest.delete_user_activity(userId, listingId)
 
     return {
         "status": 200,

@@ -42,11 +42,21 @@ export const getSortedListings = async (req, res) => {
     });
 
     if (response.data.rows) {
-      const filteredKm = response.data.rows.filter((listing) => {
-        if (calculateDistance(userCoordinates, listing.lat_long.coordinates)) {
-          return listing;
-        }
-      });
+      const filteredKm = response.data.rows
+      .filter((listing) => calculateDistance(userCoordinates, listing.lat_long.coordinates))
+      .map((listing) => ({
+        listingId: listing.listing_id,
+        sellerId: listing.seller_id,
+        buyerUsername: listing.buyer_username,
+        title: listing.title,
+        price: listing.price,
+        location: listing.location,
+        status: listing.status,
+        listedAt: listing.listed_at,
+        lastUpdatedAt: listing.last_updated_at,
+        category: listing.category,
+        forCharity: listing.for_charity
+      }));
 
       // Cache the filtered listings
       await redisClient.set(listingsKey, JSON.stringify(filteredKm), { EX: 900 });
