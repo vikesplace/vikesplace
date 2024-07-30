@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import FormControl from '@mui/material/FormControl';
@@ -17,12 +16,15 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import Pagination from '@mui/material/Pagination';
 import '../App.css';
 import ListingCard from '../components/ListingCard';
-import { Typography } from '@mui/material';
 import DataService from '../services/DataService';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import IconButton from '@mui/material/IconButton';
 import { Store } from 'react-notifications-component';
 import { useSearch } from '../components/searchbar/searchContext';
+import UserCard from '../components/UsersCard';
+import { useNavigate } from 'react-router';
+import { Tabs, Tab, Typography } from '@mui/material';
+
 
 function ViewListings() {
   const dataService = useMemo(() => new DataService(), []);
@@ -40,7 +42,10 @@ function ViewListings() {
   const [postalCodeError, setPostalCodeError] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-  const { setShowSearch, searchQuery } = useSearch();
+  const { setShowSearch, searchQuery} = useSearch();
+
+  const [users, setUsers] = useState([]);
+  const [value, setValue] = useState('1');
 
   useEffect(() => {
     setShowSearch(true);
@@ -89,8 +94,22 @@ function ViewListings() {
       setLocation(response !== undefined ? response.data.location : "Please Reload");
     };
 
+
+    //if there is a search query run that otherwise just fetchlistings
+
+    if (!searchQuery) {
+      fetchListings();
+    }
+
+    fetchLocation();
+
+  }, [priceRange, statusFilter, sortCategory, sortOrder, searchQuery, dataService]);
+
+
+  // Call search endpoint 
+  useEffect(() => {
     const search = async () => {
-      const response = await dataService.search(searchQuery)
+      const response = await dataService.search(searchQuery, priceRange.min, priceRange.max, sortCategory, sortOrder, statusFilter)
 
       if (response === undefined) {
         Store.addNotification({
@@ -107,7 +126,8 @@ function ViewListings() {
           }
         });
       } else if (response.status === 200) {
-        setListings(response.data)
+        setListings(response.data["listings"]);
+        setUsers(response.data["users"]);
       } else {
         Store.addNotification({
           title: 'Unable to Search Listings',
@@ -125,94 +145,175 @@ function ViewListings() {
       }
     }
 
-    //if there is a search query run that otherwise just fetchlistings
     if (searchQuery) {
       search();
-    } else {
-      fetchListings();
     }
-
-    fetchLocation();
-
-  }, [dataService, priceRange, statusFilter, sortCategory, sortOrder, searchQuery]);
+  }, [searchQuery, priceRange.min, priceRange.max, sortCategory, sortOrder, statusFilter, dataService])
 
   const handleListingClick = (id) => {
     navigate(`/listings/${id}`);
   };
+  const handleUserClick = (id) => {
+    //TODO: Need to navigate to the users profile 
+    console.log(id);
+  }
+
+  const handleTabchange = (event, newValue) => {
+    setValue(newValue);
+  }
 
   const handleSortChange = async (event) => {
     const category = event.target.value;
     setSortCategory(category);
 
-    const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder);
-    if (response === undefined) {
-      Store.addNotification({
-        title: 'Connection Error!',
-        message: 'Please try again',
-        type: 'danger',
-        insert: 'top',
-        container: 'top-right',
-        animationIn: ["animated", "fadeIn"],
-        animationOut: ["animated", "fadeOut"],
-        dismiss: {
-          duration: 5000,
-          onScreen: true
-        }
-      });
-    } else if (response.status === 200) {
-      setListings(response.data);
-    } else {
-      Store.addNotification({
-        title: 'Unable to Get Listings',
-        message: 'Please try again',
-        type: 'danger',
-        insert: 'top',
-        container: 'top-right',
-        animationIn: ["animated", "fadeIn"],
-        animationOut: ["animated", "fadeOut"],
-        dismiss: {
-          duration: 5000,
-          onScreen: true
-        }
-      });
+    if (searchQuery) {
+
+      const response = await dataService.search(searchQuery, priceRange.min, priceRange.max, sortCategory, sortOrder, statusFilter)
+      if (response === undefined) {
+        Store.addNotification({
+          title: 'Connection Error!',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
+      } else if (response.status === 200) {
+        setListings(response.data["listings"]);
+        setUsers(response.data["users"]);
+      } else {
+        Store.addNotification({
+          title: 'Unable to Search Listings',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
+      }
+    } else if (!searchQuery) {
+
+      const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder);
+      if (response === undefined) {
+        Store.addNotification({
+          title: 'Connection Error!',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
+      } else if (response.status === 200) {
+        setListings(response.data);
+      } else {
+        Store.addNotification({
+          title: 'Unable to Get Listings',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
+      }
     }
+
+    
   };
 
   const handleSortOrderClick = async () => {
     const currOrder = sortOrder;
     setSortOrder(!currOrder);
 
-    const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder);
-    if (response === undefined) {
-      Store.addNotification({
-        title: 'Connection Error!',
-        message: 'Please try again',
-        type: 'danger',
-        insert: 'top',
-        container: 'top-right',
-        animationIn: ["animated", "fadeIn"],
-        animationOut: ["animated", "fadeOut"],
-        dismiss: {
-          duration: 5000,
-          onScreen: true
-        }
-      });
-    } else if (response.status === 200) {
-      setListings(response.data);
-    } else {
-      Store.addNotification({
-        title: 'Unable to Get Listings',
-        message: 'Please try again',
-        type: 'danger',
-        insert: 'top',
-        container: 'top-right',
-        animationIn: ["animated", "fadeIn"],
-        animationOut: ["animated", "fadeOut"],
-        dismiss: {
-          duration: 5000,
-          onScreen: true
-        }
-      });
+    if (searchQuery) {
+
+      const response = await dataService.search(searchQuery, priceRange.min, priceRange.max, sortCategory, sortOrder, statusFilter)
+
+      if (response === undefined) {
+        Store.addNotification({
+          title: 'Connection Error!',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
+      } else if (response.status === 200) {
+        setListings(response.data["listings"]);
+        setUsers(response.data["users"]);
+      } else {
+        Store.addNotification({
+          title: 'Unable to Search Listings',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
+      }
+    } else if (!searchQuery) {
+
+      const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder);
+      if (response === undefined) {
+        Store.addNotification({
+          title: 'Connection Error!',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
+      } else if (response.status === 200) {
+        setListings(response.data);
+      } else {
+        Store.addNotification({
+          title: 'Unable to Get Listings',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
+      }
     }
   };
 
@@ -226,37 +327,77 @@ function ViewListings() {
   };
 
   const applyFilters = async () => {
-    const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder);
-    if (response === undefined) {
-      Store.addNotification({
-        title: 'Connection Error!',
-        message: 'Please try again',
-        type: 'danger',
-        insert: 'top',
-        container: 'top-right',
-        animationIn: ["animated", "fadeIn"],
-        animationOut: ["animated", "fadeOut"],
-        dismiss: {
-          duration: 5000,
-          onScreen: true
-        }
-      });
-    } else if (response.status === 200) {
-      setListings(response.data);
-    } else {
-      Store.addNotification({
-        title: 'Unable to Get Listings',
-        message: 'Please try again',
-        type: 'danger',
-        insert: 'top',
-        container: 'top-right',
-        animationIn: ["animated", "fadeIn"],
-        animationOut: ["animated", "fadeOut"],
-        dismiss: {
-          duration: 5000,
-          onScreen: true
-        }
-      });
+    if (!searchQuery) {
+      const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder);
+      if (response === undefined) {
+        Store.addNotification({
+          title: 'Connection Error!',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
+      } else if (response.status === 200) {
+        setListings(response.data);
+      } else {
+        Store.addNotification({
+          title: 'Unable to Get Listings',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
+      }
+    }
+    if (searchQuery) {
+
+      const response = await dataService.search(searchQuery, priceRange.min, priceRange.max, sortCategory, sortOrder, statusFilter)
+
+      if (response === undefined) {
+        Store.addNotification({
+          title: 'Connection Error!',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
+      } else if (response.status === 200) {
+        setListings(response.data["listings"]);
+        setUsers(response.data["users"]);
+      } else {
+        Store.addNotification({
+          title: 'Unable to Search Listings',
+          message: 'Please try again',
+          type: 'danger',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
+      }
+
     }
     setOpenFilterDialog(false);
   };
@@ -331,7 +472,8 @@ function ViewListings() {
     setCurrentPage(value);
   };
 
-  const paginatedListings = listings.slice((currentPage - 1) * itemsPerPage, (currentPage) * itemsPerPage);
+  const paginatedListings = listings.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const paginatedUsers = users.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
     <div className="ViewListings">
@@ -365,30 +507,39 @@ function ViewListings() {
             Add Filter
           </Button>
         </Box>
-        <Box mt={2} display="flex" alignItems="center">
-          <LocationOnIcon />
-          <Box ml={1} mr={2}>{location}</Box>
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={handleClickOpenLocationDialog}
-          >
-            Change Location
-          </Button>
+        <Box justifyContent="space-between" display="flex" alignItems="center">
+          <Box mt={2} display="flex" alignItems="center">
+            <LocationOnIcon />
+            <Box ml={1} mr={2}>{location}</Box>
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={handleClickOpenLocationDialog}
+            >
+              Change Location
+            </Button>
+          </Box>
+          <Box display="flex" alignItems="center" justifyContent={'space-between'}>
+            <Tabs value={value} onChange={handleTabchange}>
+              <Tab value="1" label="Listings" />
+              <Tab value="2" label="Users" />
+            </Tabs>
+          </Box>
+
         </Box>
         <Pagination
-          count={Math.ceil(listings.length / itemsPerPage)}
+          count={value === '1' ? Math.ceil(listings.length / itemsPerPage) : Math.ceil(users.length / itemsPerPage)}
           page={currentPage}
           onChange={handlePageChange}
           sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}
         />
         <Box mt={2}>
-          {(listings === undefined || listings.length === 0) &&
+          {((listings === undefined || listings.length === 0) && value === "1") &&
             <Typography align="center" variant='h6'>
               No Listings Meet Criteria
             </Typography>
           }
-          {listings !== undefined && paginatedListings.map((listing) => (
+          {listings !== undefined && value === "1" && paginatedListings.map((listing) => (
             <div key={listing.listingId} onClick={() => handleListingClick(listing.listingId)}>
               <ListingCard
                 id={listing.listingId}
@@ -396,14 +547,25 @@ function ViewListings() {
                 price={listing.price}
                 location={listing.location}
                 status={listing.status}
-                forCharity={listing.forCharity} 
+                forCharity={listing.forCharity}
               />
               <br />
             </div>
           ))}
+            {((users === undefined || users.length === 0) && value === "2") &&
+            <Typography align="center" variant='h6'>
+              No Users Meet Criteria
+            </Typography>
+          }
+          {users !== undefined && value === "2" && paginatedUsers.map((user) => (
+            <div key={user.userId} onClick={() => handleUserClick(user.userId)}>
+              <UserCard id={user.userId} username={user.username}/>
+              <Box mt={2}/>
+            </div>
+          ))}
         </Box>
         <Pagination
-          count={Math.ceil(listings.length / itemsPerPage)}
+          count={value === "1" ? Math.ceil(listings.length / itemsPerPage) : Math.ceil(users.length / itemsPerPage)}
           page={currentPage}
           onChange={handlePageChange}
           sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}
