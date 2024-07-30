@@ -27,14 +27,14 @@ export const createCharity = async (req, res) => {
     try {
         const charityResult = await Charity.create({
             name: req.body.name,
-            status: req.body.status,
-            fund: req.body.fund,
+            status: "OPEN",
+            fund: 0,
             logo_url: req.body.logo_url,
-            start_date: req.body.start_date,
+            start_date: new Date(),
             end_date: req.body.end_date,
-            num_listings: req.body.num_listings
+            num_listings: 0
         })
-        res.json(charityResult.dataValues);
+        res.json({});
     } catch (error) {
         if (error.name === 'SequelizeValidationError') {
             console.error(error);

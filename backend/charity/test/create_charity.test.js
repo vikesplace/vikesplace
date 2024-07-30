@@ -5,29 +5,10 @@ jest.mock("axios");
 
 describe("Create Charity Tests", () => {
     it("should create a charity", async () => {
-        const mockOutput = {
-            charity_id: 4,
-            name: "Doctors Without Borders",
-            status: "OPEN",
-            fund: "4000.00",
-            logo_url: "12345",
-            start_date: "2024-02-01T13:00:00.000Z",
-            end_date: "2024-02-01T13:00:00.000Z",
-            num_listings: 0,
-        };
         axios.post.mockImplementation(() =>
             Promise.resolve(
                 {
-                    data: {
-                        charity_id: 4,
-                        name: "Doctors Without Borders",
-                        status: "OPEN",
-                        fund: "4000.00",
-                        logo_url: "12345",
-                        start_date: "2024-02-01T13:00:00.000Z",
-                        end_date: "2024-02-01T13:00:00.000Z",
-                        num_listings: 0,
-                    },
+                    data: {},
                     status: 200,
                 })
         );
@@ -36,7 +17,7 @@ describe("Create Charity Tests", () => {
             json: jest.fn().mockImplementation((result) => {
                 responseObject = result;
             }),
-            status: jest.fn(),
+            status: jest.fn().mockReturnThis(),
         };
 
         await createCharity(
@@ -44,54 +25,47 @@ describe("Create Charity Tests", () => {
                 body: {
                     charity_id: 4,
                     name: "Doctors Without Borders",
-                    status: "OPEN",
-                    fund: "4000.00",
-                    logo_url: "12345",
-                    start_date: "2024-02-01T13:00:00.000Z",
-                    end_date: "2024-02-01T13:00:00.000Z",
-                    num_listings: 0,
+                    logoUrl: "12345",
+                    endDate: "2024-02-01T13:00:00.000Z",
                 },
             },
             mockRes
         );
-        expect(responseObject).toEqual(mockOutput);
+        expect(responseObject).toEqual({});
     });
 
 
     it("should fail to create charity", async () => {
-        const mockOutput = {
-            message: "Failed to create charity",
-        };
+
         axios.post.mockImplementation(() =>
             Promise.resolve(
                 {
-                    data: mockOutput
+                    data: {
+                        message: "Failed to create charity"
+                    },
+                    status: 200
                 })
         );
         let responseObject = {};
         const mockRes = {
+            body: {},
             json: jest.fn().mockImplementation((result) => {
                 responseObject = result;
             }),
-            status: jest.fn(),
+            status: jest.fn(() => mockRes),
         };
-
         await createCharity(
             {
                 body: {
-                    charity_id: 4,
                     name: "Doctors Without Borders",
-                    status: "OPEN",
-                    fund: "4000.00",
-                    logo_url: "12345",
-                    start_date: "2024-02-01T13:00:00.000Z",
-                    end_date: "2024-02-01T13:00:00.000Z",
-                    num_listings: 0,
+                    logoUrl: "12345",
+                    endDate: "2024-02-01T13:00:00.000Z",
                 },
+                params: {}
             },
             mockRes
         );
-        expect(responseObject).toEqual(mockOutput);
+        expect(responseObject).toEqual({message: "Failed to create charity"});
     });
 });
 
