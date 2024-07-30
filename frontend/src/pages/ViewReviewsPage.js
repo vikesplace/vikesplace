@@ -22,6 +22,8 @@ const ViewReviewsPage = () => {
   const [ratings, setRatings] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [noListingMessage, setNoListingMessage] = useState("Loading...");
+  const [noRatingsMessage, setNoRatingsMessage] = useState("Loading...");
+  const [noReviewsMessage, setNoReviewsMessage] = useState("Loading...");
   
   useEffect(() => {
     async function getListing() {
@@ -93,6 +95,7 @@ const ViewReviewsPage = () => {
       } else {
         setRatings(responseRatings.data.ratings);
       }
+      setNoRatingsMessage("No Ratings Available");
 
       const responseReviews = await dataService.getReviews(id);
       if (responseReviews === undefined) {
@@ -126,6 +129,7 @@ const ViewReviewsPage = () => {
       } else {
         setReviews(responseReviews.data.reviews);
       }
+      setNoReviewsMessage("No Reviews Available");
     }
 
     getListing();
@@ -187,7 +191,7 @@ const ViewReviewsPage = () => {
                         ))
                       ) : (
                         <TableRow>
-                          <TableCell>No Ratings Available</TableCell>
+                          <TableCell>{noRatingsMessage}</TableCell>
                         </TableRow>
                       )}
                     </TableBody>
@@ -214,7 +218,7 @@ const ViewReviewsPage = () => {
                         ))
                       ) : (
                         <TableRow>
-                          <TableCell>No Reviews Available</TableCell>
+                          <TableCell>{noReviewsMessage}</TableCell>
                         </TableRow>
                       )}
                     </TableBody>
