@@ -73,7 +73,7 @@ export const getSortedListings = async (req, res) => {
 
         // Cache the filtered listings
         await redisClient.set(listingsKey, JSON.stringify(sortByDistance), {
-          EX: 5,
+          EX: 900,
         });
 
         res.json(sortByDistance);
