@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton'; // Added import
-import Tooltip from '@mui/material/Tooltip'; // Added import
-import PersonIcon from '@mui/icons-material/Person'; // Added import for user icon
+import PersonIcon from '@mui/icons-material/Person';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -21,38 +19,6 @@ const ListingDetails = ({ listing }) => {
   const location = useLocation();
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
-  const [userId, setUserId] = useState('');
-  const [user, setUser] = useState(undefined);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await dataService.getMyUserData();
-        if (response && response.status === 200) {
-          setUser(response.data);
-        } else {
-          throw new Error("Unable to get user");
-        }
-      } catch (error) {
-        Store.addNotification({
-          title: 'Connection Error!',
-          message: 'Please try again',
-          type: 'danger',
-          insert: 'top',
-          container: 'top-right',
-          animationIn: ["animated", "fadeIn"],
-          animationOut: ["animated", "fadeOut"],
-          dismiss: {
-            duration: 5000,
-            onScreen: true
-          }
-        });
-        console.error(error);
-      }
-    };
-
-    fetchUser();
-  }, []);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -129,8 +95,7 @@ const ListingDetails = ({ listing }) => {
   };
 
   const handleViewSellerProfile = () => {
-    // Navigate to SellerPage with listingId in state
-    navigate('/seller', { state: { listingId: listing.listingId } });
+    navigate(`/sellers/${listing.sellerId}`);
   };
 
   const isReviews = location.pathname.includes('/view-reviews/') || location.pathname.includes('/create-review/');
@@ -163,12 +128,9 @@ const ListingDetails = ({ listing }) => {
         </Typography>
         <Box display="flex" flexDirection="column" mt={5} width="100%">
           <Box display="flex" alignItems="center" mb={2}>
-            <Tooltip title="View Seller Profile">
-              <IconButton sx={{ fontSize: 50}} onClick={handleViewSellerProfile} color="primary">
-                <PersonIcon />
-              </IconButton>
-            </Tooltip>
-            <Typography variant="body2" ml={1}sx={{ fontSize: '0.675rem' }}>View Seller Profile</Typography>
+            <Button variant="outlined" startIcon={<PersonIcon />} onClick={handleViewSellerProfile}>
+              View Seller Profile
+            </Button>            
           </Box>
           {!isReviews && (
             <>

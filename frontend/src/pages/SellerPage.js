@@ -1,37 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import DataService from '../services/DataService.js';
 import { Store } from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 
 const SellerPage = () => {
-    const location = useLocation();
-    const dataService = new DataService();
+    const { id } = useParams();
+
     const [seller, setSeller] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
+            const dataService = new DataService();
             try {
-                const listingId = location.state?.listingId;
-                if (!listingId) {
-                    throw new Error("Listing ID is required");
-                }
-
-                // Fetch listing information
-                const listingResponse = await dataService.getListing(listingId);
-                if (listingResponse.status !== 200) {
-                    throw new Error('Failed to fetch listing');
-                }
-                const listing = listingResponse.data;
-
-                // Fetch seller information
-                const sellerId = listing.sellerId;
-                const sellerResponse = await dataService.getUserData(sellerId);
-                if (sellerResponse.status !== 200) {
+                const sellerResponse = await dataService.getUserData(id);
+                if (sellerResponse === undefined || sellerResponse.status !== 200) {
                     throw new Error('Failed to fetch seller');
                 }
                 setSeller(sellerResponse.data);
@@ -56,43 +44,63 @@ const SellerPage = () => {
         };
 
         fetchData();
-    }, [location.state?.listingId]);
+    }, [id]);
 
-    if (loading) return <Typography>Loading...</Typography>;
-    if (error) return <Typography color="error">{error}</Typography>;
+    if (loading) return 
+        (<div>
+            <Typography align="center" variant='h6' sx={{mt: 2}}>
+                Loading...
+            </Typography>
+        </div>);
+    if (error) return 
+        (<div>
+            <Typography align="center" variant='h6' sx={{mt: 2}} color="error">
+                Seller Information Not Available
+            </Typography>
+        </div>);
 
     return (
-        <Box
-            border={1}
-            borderRadius={5}
-            borderColor="grey.300"
-            p={4}
-            textAlign="left"
-            boxShadow={3}
-            mt={2}
-        >
-            {seller ? (
-                <>
-                    <Typography variant="h4" component="h3" gutterBottom>
-                        Seller: {seller.username}
-                    </Typography>
-                    <Typography variant="body1" gutterBottom>
-                        Location: {seller.location}
-                    </Typography>
-                    <Typography variant="body1" gutterBottom>
-                        Joined: {new Date(seller.joiningDate).toLocaleDateString()}
-                    </Typography>
-                    <Typography variant="body1" gutterBottom>
-                        Items Sold: {seller.itemsSold}
-                    </Typography>
-                    <Typography variant="body1" gutterBottom>
-                        Items Purchased: {seller.itemsPurchased}
-                    </Typography>
-                </>
-            ) : (
-                <Typography>No seller information available.</Typography>
-            )}
-        </Box>
+        <Container>
+            <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="flex-start"
+                minHeight="100vh"
+                bgcolor="background.paper"
+            >
+                <Box
+                    border={1}
+                    borderRadius={5}
+                    borderColor="grey.300"
+                    p={4}
+                    textAlign="left"
+                    boxShadow={3}
+                    mt={2}
+                >
+                    {seller ? (
+                        <>
+                            <Typography variant="h4" component="h3" gutterBottom>
+                                Seller: {seller.username}
+                            </Typography>
+                            <Typography variant="body1" gutterBottom>
+                                Location: {seller.location}
+                            </Typography>
+                            <Typography variant="body1" gutterBottom>
+                                Joined: {new Date(seller.joiningDate).toLocaleDateString()}
+                            </Typography>
+                            <Typography variant="body1" gutterBottom>
+                                Items Sold: {seller.itemsSold}
+                            </Typography>
+                            <Typography variant="body1" gutterBottom>
+                                Items Purchased: {seller.itemsPurchased}
+                            </Typography>
+                        </>
+                    ) : (
+                        <Typography>No Seller Information Available</Typography>
+                    )}
+                </Box>
+            </Box>
+        </Container>
     );
 };
 
