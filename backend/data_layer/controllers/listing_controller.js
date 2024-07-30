@@ -31,8 +31,19 @@ export const getSortedListings = async (req, res) => {
 
   //build order by array
   const order = [];
-  if (sortBy) {
-    order.push([sortBy, isDescending.toLowerCase() == "true" ? "DESC" : "ASC"]); //defaults to ascending
+
+  if (sortBy && sortBy === "created_on") {
+    order.push([
+      "listed_at",
+      isDescending.toLowerCase() == "true" ? "DESC" : "ASC",
+    ])
+  } else {
+    if (sortBy && sortBy !== "distance") {
+      order.push([
+        sortBy,
+        isDescending.toLowerCase() == "true" ? "DESC" : "ASC",
+      ]); //defaults to ascending
+    }
   }
 
   //build findAndCountAll options object
@@ -202,11 +213,9 @@ export const updateListing = async (req, res) => {
     if (req.body.location) {
       const location = req.body.location;
       if (!location.match(/^[A-Z0-9]+$/)) {
-        return res
-          .status(400)
-          .json({
-            message: "Location must be uppercase and contain no spaces",
-          });
+        return res.status(400).json({
+          message: "Location must be uppercase and contain no spaces",
+        });
       }
       if (listing.location !== req.body.location) {
         const lat_long = await PostalCodes.findOne({
