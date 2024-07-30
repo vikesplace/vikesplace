@@ -559,7 +559,7 @@ function ViewListings() {
           }
           {users !== undefined && value === "2" && paginatedUsers.map((user) => (
             <div key={user.userId} onClick={() => handleUserClick(user.userId)}>
-              <UserCard username={user.username}/>
+              <UserCard id={user.userId} username={user.username}/>
               <Box mt={2}/>
             </div>
           ))}
