@@ -124,7 +124,7 @@ class ESRequest:
             results = self.es.search(index="listings", query=query_rec, sort=sort, from_=0, size=20)
 
             results['hits']['hits'] = [x['_source'] for x in results['hits']['hits']]
-            print(f"recommendation:>>>>>>>>> {results['hits']['hits']}")
+            #print(f"recommendation:>>>>>>>>> {results['hits']['hits']}")
 
             return results['hits']['hits']
 
@@ -153,7 +153,7 @@ class ESRequest:
         results = self.es.search(index="listings", query=q, from_=0, size=20)
 
         results['hits']['hits'] = [x['_source'] for x in results['hits']['hits']]
-        print(f"recommendation_current_item:>>>>>>>>> {results['hits']['hits']}")
+        #print(f"recommendation_current_item:>>>>>>>>> {results['hits']['hits']}")
 
         return results['hits']['hits']
 
@@ -174,7 +174,10 @@ class ESRequest:
         return results['hits']['hits']
     
     def get_items_adv(self, listings):
-        listing_ids = [item[0] for item in listings]
+        try:
+            listing_ids = [item['id'] for item in listings]
+        except:
+            listing_ids = [item['listing_id'] for item in listings]
 
         results = self.es.search(
             index="listings",
@@ -182,9 +185,29 @@ class ESRequest:
                 "terms": {
                     "_id": listing_ids
                 }
-            })
+            },
+             size = 25)
 
         results['hits']['hits'] = [x['_source'] for x in results['hits']['hits']]
 
         return results['hits']['hits']
+    
+    # def get_items_adv(self, listings):
+    #     #print("esrequest listings values:       ",listings)
+    #     listing_ids = [item[0] for item in listings]
+    #     #print("esrequest listings_ids:       ",listing_ids)
+
+    #     results = self.es.search(
+    #         index="listings",
+    #         query={
+    #             "terms": {
+    #                 "_id": listing_ids
+    #             }
+    #         },
+    #         size = 26)
+
+    #     results['hits']['hits'] = [x['_source'] for x in results['hits']['hits']]
+    #     #print("line 191:  ",results['hits']['hits'])
+
+    #     return results['hits']['hits']
 

@@ -90,7 +90,7 @@ class MongoDBRequest:
             except:
                 return None
         else:
-            return None
+            return []
 
 
     def write_ignored(self, user_id, listing_id):

@@ -1,9 +1,16 @@
 import axios from "axios";
 import { getSortedListings } from "../controller/get_sorted_listings";
 import { calculateDistance } from "../helper/calculate_distance";
+import redisClient from "../helper/redis_client"; // Import the redis client
 
 jest.mock("axios");
 jest.mock("../helper/calculate_distance");
+jest.mock("../helper/redis_client", () => {
+  return {
+    get: jest.fn(),
+    set: jest.fn(),
+  };
+});
 
 describe("Get Sorted Listings Tests", () => {
   beforeEach(() => {
@@ -13,9 +20,9 @@ describe("Get Sorted Listings Tests", () => {
   it("should return all listings for user", async () => {
     const mockUser = {
       data: {
-          lat_long: {
-            coordinates: [1, -1],
-          },
+        lat_long: {
+          coordinates: [1, -1],
+        },
       },
     };
     const mockListings = {
@@ -51,6 +58,9 @@ describe("Get Sorted Listings Tests", () => {
 
     calculateDistance.mockReturnValue(true);
 
+    redisClient.get.mockResolvedValueOnce(null).mockResolvedValueOnce(null);
+    redisClient.set.mockResolvedValue("OK");
+
     let responseObject = {};
     const mockGetRes = {
       json: jest.fn().mockImplementation((result) => {
@@ -67,9 +77,9 @@ describe("Get Sorted Listings Tests", () => {
   it("should return filtered listings based on distance", async () => {
     const mockUser = {
       data: {
-          lat_long: {
-            coordinates: [1, -1],
-          },
+        lat_long: {
+          coordinates: [1, -1],
+        },
       },
     };
     const mockListings = {
@@ -107,6 +117,9 @@ describe("Get Sorted Listings Tests", () => {
       return listingCoords[0] !== 100 && listingCoords[1] !== 100;
     });
 
+    redisClient.get.mockResolvedValueOnce(null).mockResolvedValueOnce(null);
+    redisClient.set.mockResolvedValue("OK");
+
     let responseObject = {};
     const mockGetRes = {
       json: jest.fn().mockImplementation((result) => {
@@ -128,6 +141,8 @@ describe("Get Sorted Listings Tests", () => {
       },
     });
 
+    redisClient.get.mockResolvedValueOnce(null);
+
     let responseObject = {};
     const mockGetRes = {
       json: jest.fn().mockImplementation((result) => {
@@ -144,6 +159,8 @@ describe("Get Sorted Listings Tests", () => {
 
   it("should return internal server error", async () => {
     axios.get.mockRejectedValueOnce(new Error("Internal Server Error"));
+
+    redisClient.get.mockResolvedValueOnce(null);
 
     let responseObject = {};
     const mockGetRes = {
@@ -177,3 +194,4 @@ describe("Get Sorted Listings Tests", () => {
     expect(res.json).toHaveBeenCalledWith({ message: 'Min price cannot be greater than max price' });
   });
 });
+

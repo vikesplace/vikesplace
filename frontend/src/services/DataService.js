@@ -289,7 +289,7 @@ class DataService {
     */
     async getChats() {
         try {
-            return await axios.get(API_URL + 'chats', 
+            return await axios.get(API_URL + 'messages/chats', 
                 { withCredentials: true });
         } catch (error) {
             return httpErrorHandler(error);
@@ -302,9 +302,9 @@ class DataService {
     *   (chatId is for chat between current user and seller of the passed listingId)
     * Error: returns message
     */
-    async createNewChat(listingId) {
+    async createChat(listingId) {
         try {
-            return await axios.post(API_URL + 'chats/' + listingId, 
+            return await axios.post(API_URL + 'chats/',{listingId}, 
                 { withCredentials: true });
         } catch (error) {
             return httpErrorHandler(error);
