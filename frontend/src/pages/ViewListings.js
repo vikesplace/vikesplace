@@ -534,7 +534,7 @@ function ViewListings() {
           sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}
         />
         <Box mt={2}>
-          {(listings === undefined || listings.length === 0) &&
+          {((listings === undefined || listings.length === 0) && value === "1") &&
             <Typography align="center" variant='h6'>
               No Listings Meet Criteria
             </Typography>
@@ -552,7 +552,7 @@ function ViewListings() {
               <br />
             </div>
           ))}
-            {(users === undefined || users.length === 0) &&
+            {((users === undefined || users.length === 0) && value === "2") &&
             <Typography align="center" variant='h6'>
               No Users Meet Criteria
             </Typography>
