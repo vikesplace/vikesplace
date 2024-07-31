@@ -5,9 +5,15 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import ViewListings from '../../pages/ViewListings';
 import { useSearch } from '../../components/searchbar/searchContext'; // Adjust the import path based on your project structure
 import DataService from '../../services/DataService'; // Adjust the import path based on your project structure
+import { Store } from 'react-notifications-component';
 
 jest.mock('../../components/searchbar/searchContext');
 jest.mock('../../services/DataService');
+jest.mock('react-notifications-component', () => ({
+  Store: {
+    addNotification: jest.fn(),
+  },
+}));
 
 const SAMPLE_DATA = [
   { listingId: 1, title: "Item 1", price: "5", location: "Location 1", status: "AVAILABLE", forCharity: false, category: 'Electronics' },
@@ -15,7 +21,6 @@ const SAMPLE_DATA = [
   { listingId: 3, title: "Item 3", price: "8", location: "Location 3", status: "AVAILABLE", forCharity: true, category: 'Sports' },
   { listingId: 4, title: "Item 4", price: "100", location: "Location 4", status: "AVAILABLE", forCharity: false, category: 'Clothing' },
   { listingId: 5, title: "Item 5", price: "200", location: "Location 5", status: "SOLD", forCharity: false, category: 'Books' },
-  // Add more items as needed for testing
 ];
 
 describe('ViewListings Component', () => {
@@ -38,10 +43,6 @@ describe('ViewListings Component', () => {
       </Router>
     );
   });
-
-  afterEach(() => {
-    mockAxios.reset();
-  })
 
   test('renders listing cards', async () => {
     await waitFor(() => {
@@ -78,7 +79,6 @@ describe('ViewListings Component', () => {
     });
   });
 
-
   test('applies status filter', async () => {
     fireEvent.click(screen.getByText('Add Filter'));
 
@@ -99,6 +99,7 @@ describe('ViewListings Component', () => {
       expect(availableListings.length).toBe(numFilteredListings);
     });
   });
+
 
 
   test('changes location', async () => {

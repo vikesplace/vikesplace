@@ -200,7 +200,6 @@ function VerifyAccount() {
                     <TextField
                         required
                         fullWidth
-                        data-testid="password-input"
                         name="password"
                         label="Password"
                         type="password"
@@ -220,11 +219,10 @@ function VerifyAccount() {
                     <TextField
                         required
                         fullWidth
-                        data-testid="confirm-password-input"
-                        name="confirm-password"
+                        name="confirm-pass"
                         label="Confirm Password"
-                        type="confirm-password"
-                        id="confirm-password"
+                        type="confirm-pass"
+                        id="confirm-pass"
                         autoComplete="new-password"
                         value={confirmPass}
                         onChange={handleConfirmPassChange}
