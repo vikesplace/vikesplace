@@ -62,8 +62,8 @@ export const getSortedListings = async (req, res) => {
         distancekm.sort((a, b) => {
           if (isDescending) {
             const result =
-              getDistanceFromUser(userCoordinates, a.lat_long.coordinates) -
-              getDistanceFromUser(userCoordinates, b.lat_long.coordinates);
+              getDistanceFromUser(userCoordinates, b.lat_long.coordinates) -
+              getDistanceFromUser(userCoordinates, a.lat_long.coordinates);
             return result > 0 ? 1 : -1;
           } else {
             const result =
