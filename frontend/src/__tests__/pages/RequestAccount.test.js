@@ -45,10 +45,8 @@ test('shows required email error on empty email input', () => {
   fireEvent.change(emailInput, { target: { value: '' } });
   fireEvent.blur(emailInput);
 
-  // More flexible text matcher to account for potential wrapping
-  expect(screen.queryByText((content, element) => {
-    return content.includes("Email is required");
-  })).toBeInTheDocument();
+
+  expect(screen.getByText(/Must be a valid @uvic.ca email/i)).toBeInTheDocument();
 });
 
 test('navigates to /check-email on successful form submission', () => {

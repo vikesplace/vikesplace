@@ -166,7 +166,8 @@ class ESRequest:
                 "terms": {
                     "_id": listing_ids
                 }
-            })
+            },
+            size=25)
 
         results['hits']['hits'] = [x['_source'] for x in results['hits']['hits']]
 

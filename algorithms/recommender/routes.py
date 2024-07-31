@@ -32,12 +32,10 @@ async def root():
     return {"message": "VikesPlace Recommendation Service"}
 
 
-@app.get("/recommendations")
-async def recommendations(
-    user_id: int = Query(None),
-    # location: Annotated[list[float], Query(min_length=2, max_length=2)] = [48.437326, -123.329773]
-    latitude: float = 48.437326,
-    longitude: float = -123.329773,
+async def recommendations_helper(
+    user_id: int,
+    latitude: float,
+    longitude: float,
 ):
     lat_long = (latitude, longitude)
     results = await ESRequest.recommendation(
@@ -97,18 +95,16 @@ async def ignore_recommendation(
     }
 
 
-@app.get("/adv_recommendations")
+@app.get("/recommendations")
 async def adv_recommendations(
-    user_id: int = Query(None), 
+    user_id: int = Query(None),
+    latitude: float = 48.437326,
+    longitude: float = -123.329773, 
 ):
     try:
         full_results = await Neo4jDBRequest.get_items_visited_by_other_users(user_id)
 
-        if not full_results:
-            return JSONResponse(
-                status_code=status.HTTP_200_OK,
-                content={"results":[]}
-            )
+        assert full_results
 
         full_results = list(full_results)
 
@@ -128,10 +124,12 @@ async def adv_recommendations(
 
         full_results_updated = await ESRequest.get_items_adv(full_results_updated)
 
+        assert len(full_results_updated) <= 15
+
         return JSONResponse(
             status_code=status.HTTP_200_OK,
-            content={"results":full_results_updated}
+            content=full_results_updated
         )
-    except Exception as e:
-        print(f"Error: {e}")
-        return JSONResponse(content={"error": "Failed to get recommendations"}, status_code=500)
+    except:
+        return await recommendations_helper(user_id, latitude, longitude)
+        

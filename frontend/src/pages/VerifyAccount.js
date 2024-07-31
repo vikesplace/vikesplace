@@ -200,6 +200,7 @@ function VerifyAccount() {
                     <TextField
                         required
                         fullWidth
+                        data-testid="password-input"
                         name="password"
                         label="Password"
                         type="password"
@@ -212,15 +213,17 @@ function VerifyAccount() {
                         helperText={
                             passwordError ? "Must be 8+ characters, with at least 1 symbol, number, lowercase letter, and uppercase letter" : ""
                         }
+                        
                     />
                 </Grid>
                 <Grid item xs={12}>
                     <TextField
                         required
                         fullWidth
+                        data-testid="confirm-password-input"
                         name="confirm-password"
                         label="Confirm Password"
-                        type="password"
+                        type="confirm-password"
                         id="confirm-password"
                         autoComplete="new-password"
                         value={confirmPass}
@@ -230,6 +233,7 @@ function VerifyAccount() {
                         helperText={
                             confirmPassError ? "Must match password" : ""
                         }
+                        
                     />
                 </Grid>
                 <Grid item xs={12}>

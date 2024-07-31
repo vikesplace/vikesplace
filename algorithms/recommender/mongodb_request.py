@@ -93,7 +93,7 @@ class MongoDBRequest:
                     return user_document["ignored"][-num_items:]
                 return user_document["ignored"]
             except:
-                return None
+                return []
         else:
             return []
 
