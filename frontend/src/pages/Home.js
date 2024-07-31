@@ -8,11 +8,10 @@ import { SAMPLE_DATA as data } from '../utils/SampleRecommenderData.js';
 import { useSearch } from '../components/searchbar/searchContext.js';
 
 
-
 function Home() {
 
   const {setShowSearch} = useSearch();
-  
+ 
   useEffect(()=>{
     setShowSearch(true);
 

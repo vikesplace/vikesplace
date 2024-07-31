@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from neo4j import GraphDatabase, RoutingControl
+from neo4j import AsyncGraphDatabase, RoutingControl
 import similarity as similarity
 
 class Neo4jDBRequest:
@@ -10,12 +10,12 @@ class Neo4jDBRequest:
         self.NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD")
         self.URI = os.getenv("NEO4J_URI")
         self.AUTH = (self.NEO4J_USER, self.NEO4J_PASSWORD)
-        self.GD_driver = GraphDatabase.driver(self.URI, auth=self.AUTH)
+        self.GD_driver = AsyncGraphDatabase.driver(self.URI, auth=self.AUTH)
 
-    def get_items_visited_by_other_users(self, user_id_raw):
+    async def get_items_visited_by_other_users(self, user_id_raw):
         user_id = "user_"+str(user_id_raw)
-        with self.GD_driver as driver:
-            results = driver.execute_query(
+        async with self.GD_driver as driver:
+            results = await driver.execute_query(
             f"""
             MATCH (u:User {{id: "{user_id}"}})-[:HISTORY]->(l:Listing)<-[:HISTORY]-(otherUser:User)-[:HISTORY]->(otherListing:Listing)
             WHERE NOT (u)-[:HISTORY]->(otherListing)
@@ -26,15 +26,15 @@ class Neo4jDBRequest:
             user_id=user_id, database_="neo4j",
         )
         if len(results.records) < 25:
-            additional_results_records = self.get_top_items_within_same_postal_code(user_id_raw)
+            additional_results_records = await self.get_top_items_within_same_postal_code(user_id_raw)
             #print(results.records)
             results.records.extend(additional_results_records)
         return results.records
 
-    def get_top_items_within_same_postal_code(self, user_id_raw):
+    async def get_top_items_within_same_postal_code(self, user_id_raw):
         user_id = "user_"+str(user_id_raw)
-        with self.GD_driver as driver:
-            results = driver.execute_query(
+        async with self.GD_driver as driver:
+            results = await driver.execute_query(
             f"""
             MATCH (u:User {{id: "{user_id}"}})
             WITH u.lat_long_lat AS lat, u.lat_long_lon AS lon, 5 AS radius

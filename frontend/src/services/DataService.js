@@ -192,9 +192,25 @@ class DataService {
     * Success (200): returns list of listing objects
     * Error: returns message
     */
-    async search(query) {
+    async search(query, minPrice, maxPrice, sortBy, isDescending, status) {
+        
+        let searchParam = new URLSearchParams();
+
+        if (query && query !== "")
+            searchParam.append("search", query);
+        if (minPrice && minPrice !== "")
+            searchParam.append("minPrice", minPrice);
+        if (maxPrice && maxPrice !== "")
+            searchParam.append("maxPrice", maxPrice);
+        if (status && status !== "")
+            searchParam.append("status", status);
+        if (sortBy && sortBy !== "")
+            searchParam.append("sortBy", sortBy);
+        if (isDescending !== undefined && isDescending !== null)
+            searchParam.append("isDescending", isDescending);
+        
         try{
-         return  await axios.get(API_URL + 'search?query=' + query , 
+         return  await axios.get(API_URL + 'search?' + searchParam,
             {withCredentials: true})
         } catch (error){
             httpErrorHandler(error);
