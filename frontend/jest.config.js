@@ -1,5 +1,5 @@
 module.exports = {
-    collectCoverageFrom: ['src/**/*.{js,jsx}'],
+    collectCoverageFrom: ['src/**/*.{js,jsx}', "!**/src/index.js"],
     coverageDirectory: 'coverage',
     testEnvironment: 'jsdom',
     setupFilesAfterEnv: ['<rootDir>/src/testSetup/setupTests.js'],
