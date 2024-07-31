@@ -116,7 +116,7 @@ function ViewListings() {
     const search = async () => {
       setNoListingMessage("Loading...");
       setNoUserMessage("Loading...");
-      const response = await dataService.search(searchQuery, priceRange.min, priceRange.max, sortCategory, sortOrder, statusFilter)
+      const response = await dataService.search(searchQuery)
 
       if (response === undefined) {
         Store.addNotification({
@@ -157,7 +157,7 @@ function ViewListings() {
     if (searchQuery) {
       search();
     }
-  }, [searchQuery, priceRange.min, priceRange.max, sortCategory, sortOrder, statusFilter, dataService])
+  }, [searchQuery, dataService])
 
   const handleListingClick = (id) => {
     navigate(`/listings/${id}`);
