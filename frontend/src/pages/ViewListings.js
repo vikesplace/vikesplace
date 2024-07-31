@@ -41,6 +41,8 @@ function ViewListings() {
   const [newLocation, setNewLocation] = useState('');
   const [postalCodeError, setPostalCodeError] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [noListingMessage, setNoListingMessage] = useState("Loading...");
+  const [noUsersMessage, setNoUserMessage] = useState("Loading...");
   const itemsPerPage = 10;
   const { setShowSearch, searchQuery} = useSearch();
 
@@ -55,6 +57,7 @@ function ViewListings() {
   useEffect(() => {
 
     const fetchListings = async () => {
+      setNoListingMessage("Loading...");
       const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder);
       if (response === undefined) {
         Store.addNotification({
@@ -87,6 +90,8 @@ function ViewListings() {
           }
         });
       }
+      setNoUserMessage("No Users Available");
+      setNoListingMessage("No Listings Available");
     };
 
     const fetchLocation = async () => {
@@ -109,6 +114,8 @@ function ViewListings() {
   // Call search endpoint 
   useEffect(() => {
     const search = async () => {
+      setNoListingMessage("Loading...");
+      setNoUserMessage("Loading...");
       const response = await dataService.search(searchQuery, priceRange.min, priceRange.max, sortCategory, sortOrder, statusFilter)
 
       if (response === undefined) {
@@ -143,6 +150,8 @@ function ViewListings() {
           }
         });
       }
+      setNoUserMessage("No Users Available");
+      setNoListingMessage("No Listings Available");
     }
 
     if (searchQuery) {
@@ -166,8 +175,9 @@ function ViewListings() {
     const category = event.target.value;
     setSortCategory(category);
 
+    setNoListingMessage("Loading...");
     if (searchQuery) {
-
+      setNoUserMessage("Loading...");
       const response = await dataService.search(searchQuery, priceRange.min, priceRange.max, sortCategory, sortOrder, statusFilter)
       if (response === undefined) {
         Store.addNotification({
@@ -201,6 +211,7 @@ function ViewListings() {
           }
         });
       }
+      setNoUserMessage("No Users Available");
     } else if (!searchQuery) {
 
       const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder);
@@ -235,17 +246,17 @@ function ViewListings() {
           }
         });
       }
+      setNoListingMessage("No Listings Available");
     }
-
-    
   };
 
   const handleSortOrderClick = async () => {
     const currOrder = sortOrder;
     setSortOrder(!currOrder);
 
+    setNoListingMessage("Loading...");
     if (searchQuery) {
-
+      setNoUserMessage("Loading...");
       const response = await dataService.search(searchQuery, priceRange.min, priceRange.max, sortCategory, sortOrder, statusFilter)
 
       if (response === undefined) {
@@ -280,8 +291,8 @@ function ViewListings() {
           }
         });
       }
+      setNoUserMessage("No Users Available");
     } else if (!searchQuery) {
-
       const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder);
       if (response === undefined) {
         Store.addNotification({
@@ -315,6 +326,7 @@ function ViewListings() {
         });
       }
     }
+    setNoListingMessage("No Listings Available");
   };
 
   const handlePriceRangeChange = (event) => {
@@ -327,6 +339,7 @@ function ViewListings() {
   };
 
   const applyFilters = async () => {
+    setNoListingMessage("Loading...");
     if (!searchQuery) {
       const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder);
       if (response === undefined) {
@@ -362,7 +375,7 @@ function ViewListings() {
       }
     }
     if (searchQuery) {
-
+      setNoUserMessage("Loading...");
       const response = await dataService.search(searchQuery, priceRange.min, priceRange.max, sortCategory, sortOrder, statusFilter)
 
       if (response === undefined) {
@@ -397,8 +410,9 @@ function ViewListings() {
           }
         });
       }
-
     }
+    setNoUserMessage("No Users Available");
+    setNoListingMessage("No Listings Available");
     setOpenFilterDialog(false);
   };
 
@@ -536,7 +550,7 @@ function ViewListings() {
         <Box mt={2}>
           {((listings === undefined || listings.length === 0) && value === "1") &&
             <Typography align="center" variant='h6'>
-              No Listings Meet Criteria
+              {noListingMessage}
             </Typography>
           }
           {listings !== undefined && value === "1" && paginatedListings.map((listing) => (
@@ -554,7 +568,7 @@ function ViewListings() {
           ))}
             {((users === undefined || users.length === 0) && value === "2") &&
             <Typography align="center" variant='h6'>
-              No Users Meet Criteria
+              {noUsersMessage}
             </Typography>
           }
           {users !== undefined && value === "2" && paginatedUsers.map((user) => (

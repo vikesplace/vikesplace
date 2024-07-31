@@ -11,6 +11,7 @@ import { Store } from 'react-notifications-component';
 function EditListing() {
   const { id } = useParams();
   const [listing, setListing] = useState(undefined);
+  const [noListingMessage, setNoListingMessage] = useState("Loading...");
 
   useEffect(() => {
     async function getMyListings() {
@@ -47,6 +48,7 @@ function EditListing() {
           }
         });
       }
+      setNoListingMessage("No Listing Available");
     }
 
     getMyListings();
@@ -55,7 +57,7 @@ function EditListing() {
   if (listing === undefined) {
     return <div>
       <Typography align="center" variant='h6' sx={{mt: 2}}>
-        No Listing Found
+        {noListingMessage}
       </Typography>
     </div>;
   }
