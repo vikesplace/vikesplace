@@ -60,7 +60,7 @@ describe('ViewReviewsPage', () => {
 
     renderComponent();
     await waitFor(() => {
-      expect(screen.getByText('No Listing Available')).toBeInTheDocument();
+      expect(screen.getByText('Listing Not Available')).toBeInTheDocument();
     });
   });
 
@@ -137,7 +137,9 @@ describe('ViewReviewsPage', () => {
 
     renderComponent();
     await waitFor(() => {
-      expect(screen.getByText('No Reviews or Ratings Available')).toBeInTheDocument();
+      expect(screen.getByText('No Ratings Available')).toBeInTheDocument();
+
+      expect(screen.getByText('No Reviews Available')).toBeInTheDocument();
     });
   });
 });

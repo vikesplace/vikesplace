@@ -1,6 +1,5 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import Login from '../../pages/Login';
 import AuthService from '../../services/AuthService';
@@ -8,10 +7,15 @@ import { Store } from 'react-notifications-component';
 import mockAxios from 'jest-mock-axios';
 
 // Mock useNavigate from react-router-dom
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: jest.fn(),
-}));
+const mockNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => {
+  const originalModule = jest.requireActual('react-router-dom');
+  return {
+    ...originalModule,
+    useNavigate: () => mockNavigate,
+  };
+});
 
 jest.mock('../../services/AuthService');
 jest.mock('react-notifications-component', () => ({
@@ -21,14 +25,15 @@ jest.mock('react-notifications-component', () => ({
 }));
 
 describe('Login Component', () => {
-  let useNavigateMock;
-  let navigate;
-
-  beforeEach(() => {
-    useNavigateMock = require('react-router-dom').useNavigate;
-    navigate = jest.fn();
-    useNavigateMock.mockReturnValue(navigate);
-  });
+  const renderComponent = () => {
+    return render(
+      <MemoryRouter initialEntries={['/']}>
+        <Routes>
+          <Route path="/" element={<Login />} />
+        </Routes>
+      </MemoryRouter>
+    );
+  };
 
   afterEach(() => {
     mockAxios.reset();
@@ -36,11 +41,7 @@ describe('Login Component', () => {
   });
 
   test('renders login form', () => {
-    render(
-      <MemoryRouter>
-        <Login />
-      </MemoryRouter>
-    );
+    renderComponent();
 
     expect(screen.getByText('Welcome to VikesPlace!')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Enter your username')).toBeInTheDocument();
@@ -49,11 +50,7 @@ describe('Login Component', () => {
   });
 
   test('shows username error on blur when username is empty', () => {
-    render(
-      <MemoryRouter>
-        <Login />
-      </MemoryRouter>
-    );
+    renderComponent();
 
     const usernameInput = screen.getByPlaceholderText('Enter your username');
     fireEvent.blur(usernameInput);
@@ -62,11 +59,7 @@ describe('Login Component', () => {
   });
 
   test('shows password error on blur when password is empty', () => {
-    render(
-      <MemoryRouter>
-        <Login />
-      </MemoryRouter>
-    );
+    renderComponent();
 
     const passwordInput = screen.getByPlaceholderText('Enter your password');
     fireEvent.blur(passwordInput);
@@ -75,11 +68,7 @@ describe('Login Component', () => {
   });
 
   test('does not show username error when username is valid', () => {
-    render(
-      <MemoryRouter>
-        <Login />
-      </MemoryRouter>
-    );
+    renderComponent();
 
     const usernameInput = screen.getByPlaceholderText('Enter your username');
     fireEvent.change(usernameInput, { target: { value: 'TestUser' } });
@@ -89,11 +78,7 @@ describe('Login Component', () => {
   });
 
   test('does not show password error when password is valid', () => {
-    render(
-      <MemoryRouter>
-        <Login />
-      </MemoryRouter>
-    );
+    renderComponent();
 
     const passwordInput = screen.getByPlaceholderText('Enter your password');
     fireEvent.change(passwordInput, { target: { value: 'Password1!' } });
@@ -107,23 +92,17 @@ describe('Login Component', () => {
       login: jest.fn().mockResolvedValue({ status: 200 }),
     }));
 
-    render(
-      <MemoryRouter initialEntries={['/']}>
-        <Routes>
-          <Route path="/" element={<Login />} />
-        </Routes>
-      </MemoryRouter>
-    );
+    renderComponent();
 
     const usernameInput = screen.getByPlaceholderText('Enter your username');
     const passwordInput = screen.getByPlaceholderText('Enter your password');
     fireEvent.change(usernameInput, { target: { value: 'TestUser' } });
     fireEvent.change(passwordInput, { target: { value: 'Password1!' } });
 
-    fireEvent.submit(screen.getByTestId('form'));
+    fireEvent.click(screen.getByRole('button', { name: /login/i }));
 
     await waitFor(() => {
-      expect(navigate).toHaveBeenCalledWith('/home');
+      expect(mockNavigate).toHaveBeenCalledWith('/home');
     });
   });
 
@@ -132,20 +111,14 @@ describe('Login Component', () => {
       login: jest.fn().mockResolvedValue({ status: 401 }),
     }));
 
-    render(
-      <MemoryRouter initialEntries={['/']}>
-        <Routes>
-          <Route path="/" element={<Login />} />
-        </Routes>
-      </MemoryRouter>
-    );
+    renderComponent();
 
     const usernameInput = screen.getByPlaceholderText('Enter your username');
     const passwordInput = screen.getByPlaceholderText('Enter your password');
     fireEvent.change(usernameInput, { target: { value: 'TestUser' } });
     fireEvent.change(passwordInput, { target: { value: 'Password1!' } });
 
-    fireEvent.submit(screen.getByTestId('form'));
+    fireEvent.click(screen.getByRole('button', { name: /login/i }));
 
     await waitFor(() => {
       expect(Store.addNotification).toHaveBeenCalledWith(expect.objectContaining({
@@ -154,40 +127,25 @@ describe('Login Component', () => {
       }));
     });
 
-    expect(navigate).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 
   test('does not navigate when form is invalid on submission', async () => {
-    render(
-      <MemoryRouter initialEntries={['/']}>
-        <Routes>
-          <Route path="/" element={<Login />} />
-        </Routes>
-      </MemoryRouter>
-    );
+    renderComponent();
 
-    fireEvent.submit(screen.getByTestId('form'));
+    fireEvent.click(screen.getByRole('button', { name: /login/i }));
 
-    expect(navigate).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 
-  /*
-  TODO
   test('navigates to request account page when "Need an account?" link is clicked', async () => {
-    render(
-      <MemoryRouter initialEntries={['/']}>
-        <Routes>
-          <Route path="/" element={<Login />} />
-        </Routes>
-      </MemoryRouter>
-    );
+    renderComponent();
 
-    fireEvent.click(screen.getByText('Need an account?'));
+    fireEvent.click(screen.getByRole('link', { name: /Need an account\?/i }));
 
     await waitFor(() => {
-      expect(navigate).toHaveBeenCalledWith('/request-account');
+      expect(mockNavigate).toHaveBeenCalledWith('/request-account');
     });
   });
-  */
 
 });
