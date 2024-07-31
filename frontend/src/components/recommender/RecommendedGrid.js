@@ -4,7 +4,7 @@ import 'react-multi-carousel/lib/styles.css';
 import RecommendedItem from "./RecommendedItem";
 import { Container, Grid } from "@mui/material";
 
-function RecommendedGrid({ data }) {
+function RecommendedGrid({ data}) {
 
   return (
     

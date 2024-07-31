@@ -1,4 +1,4 @@
-import * as React from "react";
+import {React, useMemo}from "react";
 
 import Card from "@mui/material/Card";
 import { Store } from "react-notifications-component";
@@ -17,13 +17,30 @@ import DataService from "../../services/DataService";
 function RecommendedItem(props) {
 
 
-  const dataService = new DataService()
+  const dataService = useMemo(() => new DataService(), []); 
 
 
+  async function handleIgnoreItem (id) {
+    console.log(id)
+    let response = await dataService.ignoreRecommendation(id)
 
-  const handleIgnoreItem = async (id) => {
-
-    const response = await dataService.ignoreRecommendation(id)
+    if(response.status === undefined){
+      Store.addNotification({
+        title: 'Connection Error!',
+        message: 'Please try again',
+        type: 'danger',
+        insert: 'top',
+        container: 'top-right',
+        animationIn: ["animated", "fadeIn"],
+        animationOut: ["animated", "fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: true
+        }
+      });
+    }
+    
+    response = await dataService.getRecommendations();
 
     if(response.status === undefined){
       Store.addNotification({
@@ -41,6 +58,7 @@ function RecommendedItem(props) {
       });
     }
 
+
   }
 
   
@@ -49,7 +67,7 @@ function RecommendedItem(props) {
     <div className="card" key={props.id}>
       <Card className="card">
         <CardActionArea component={Link} to={`/listings/${props.id}`}>
-          <CardContent sx={{overflow:'hidden', textOverflow: 'ellipsis', whiteSpace: 'balance', display: ''}}>
+          <CardContent sx={{overflow:'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: ''}}>
             <Typography variant="h5" component="div">
               {props.title}
             </Typography>
@@ -67,7 +85,7 @@ function RecommendedItem(props) {
               <Typography variant="body1">
                 {props.location}
               </Typography>
-              <Button onClick={handleIgnoreItem}> Ignore </Button>
+              <Button onClick={ ()=> handleIgnoreItem(props.id)}> Ignore </Button>
 
             </Box>
       </Card>

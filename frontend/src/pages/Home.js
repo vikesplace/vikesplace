@@ -27,10 +27,12 @@ function Home() {
         setRecommendations(response.data);
       }
     };
-    
+
     fetchRecommendations();
+
     //setRecommendations(SAMPLE_DATA)
   }, [dataService]);
+
 
   
 
@@ -46,7 +48,7 @@ function Home() {
         <Box mt={2}>
           <Typography variant="h5">Top picks for you</Typography>
           <br />
-          <RecommendedGrid data={recommendations} />
+          <RecommendedGrid data={recommendations}/>
           {/* Add your main content here */}
         </Box>
       </Container>
