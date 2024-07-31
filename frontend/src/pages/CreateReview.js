@@ -220,6 +220,7 @@ const CreateReview = () => {
                     name="review"
                     label="Review"
                     id="review"
+                    data-testid="review-input"
                     placeholder="Enter your review"
                     value={review}
                     multiline

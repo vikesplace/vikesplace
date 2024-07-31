@@ -113,7 +113,7 @@ function Login() {
                     <Typography component="h1" variant="h5">
                         Welcome to VikesPlace!
                     </Typography>
-                    <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+                    <Box component="form" data-testid="form"noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                         <Grid container spacing={1}>
                             <Grid item xs={12}>
                                 <TextField
