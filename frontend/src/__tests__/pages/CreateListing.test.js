@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent, screen, within } from '@testing-library/react';
+import { render, fireEvent, screen, within, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { BrowserRouter as Router } from 'react-router-dom';
 import CreateListing from '../../pages/CreateListing';
@@ -7,14 +7,17 @@ import mockAxios from 'jest-mock-axios';
 
 // Mock useNavigate from react-router-dom
 jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    useNavigate: jest.fn(),
-  }));
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: jest.fn(),
+}));
 
 describe('CreateListing page', () => {
-  let useNavigateMock;
+  const useNavigateMock = jest.fn();
 
   beforeEach(() => {
+    const { useNavigate } = require('react-router-dom');
+    useNavigate.mockImplementation(() => useNavigateMock);
+
     render(
       <Router>
         <CreateListing />
@@ -24,6 +27,7 @@ describe('CreateListing page', () => {
 
   afterEach(() => {
     mockAxios.reset();
+    jest.clearAllMocks();
   });
 
   test('renders create listing form', () => {
@@ -88,12 +92,13 @@ describe('CreateListing page', () => {
     expect(screen.queryByText('Please enter a valid postal code with format A1A1A1')).not.toBeInTheDocument();
   });
 
-  // TODO: no validation on empty/valid category yet
-  /* test('validation on an empty category', () => {
+  test('validation on an empty category', () => {
+    const button = screen.getByRole('button', { name: /create/i });
     const categoryInput = screen.getByRole('combobox', { name: /category/i });
     fireEvent.blur(categoryInput);
-    expect(screen.getByText('Category is required')).toBeInTheDocument();
-  }); */
+    fireEvent.submit(button);
+    expect(useNavigateMock).not.toHaveBeenCalledWith('/manage-listings');
+  });
 
   test('should be able to select a category', () => {
     const categoryInput = screen.getByRole('combobox', { name: /category/i });
@@ -104,37 +109,9 @@ describe('CreateListing page', () => {
     fireEvent.click(listbox.getByText(/Furniture/i));
 
     expect(listbox.getByText('Furniture')).toBeInTheDocument();
-
-    // TODO must be able to select an element (may need to switch to native <Select>)
-    // and update to chosen categories
   });
 
-  test('not selecting category prevents saving form', () => {
-    useNavigateMock = require('react-router-dom').useNavigate;
-    useNavigateMock.mockReturnValue(jest.fn());
-
-    const titleInput = screen.getByRole('textbox', { name: /title/i });
-    const priceInput = screen.getByRole('textbox', { name: /price/i });
-    const postalCodeInput = screen.getByRole('textbox', { name: /postal code/i });
-    const categoryInput = screen.getByRole('combobox', { name: /category/i });
-    const button = screen.getByRole('button', { name: /create/i });
-
-    fireEvent.change(titleInput, { target: { value: 'this is a valid title' } });
-    fireEvent.change(priceInput, { target: { value: '6.95' } });
-    fireEvent.change(postalCodeInput, { target: { value: 'V9V9V9' } });
-
-    fireEvent.submit(button);
-    // TODO confirm correct data is saved?
-
-    expect(useNavigateMock).not.toHaveBeenCalledWith('/manage-listings');
-
-    jest.clearAllMocks();
-  });
-
-  test('on success navigate to manage listings', () => {
-    useNavigateMock = require('react-router-dom').useNavigate;
-    useNavigateMock.mockReturnValue(jest.fn());
-
+  test('on success navigate to manage listings', async () => {
     const titleInput = screen.getByRole('textbox', { name: /title/i });
     const priceInput = screen.getByRole('textbox', { name: /price/i });
     const postalCodeInput = screen.getByRole('textbox', { name: /postal code/i });
@@ -142,30 +119,35 @@ describe('CreateListing page', () => {
     const button = screen.getByRole('button', { name: /create/i });
 
     const title = 'this is a valid title';
-    const price = 6.95;
+    const price = '6.95';
     const location = 'V9V9V9';
-    const category = "ELECTRONICS";
+    const category = 'ELECTRONICS';
+    const forCharity = false;
     fireEvent.change(titleInput, { target: { value: title } });
     fireEvent.change(priceInput, { target: { value: price.toString() } });
     fireEvent.change(postalCodeInput, { target: { value: location } });
-    // TODO select a category
+
+    // Simulate selecting a category
+    fireEvent.mouseDown(categoryInput);
+    const listbox = within(screen.getByRole('listbox'));
+    fireEvent.click(listbox.getByText(/ELECTRONICS/i));
 
     fireEvent.submit(button);
-    
-    const status = "AVAILABLE";
+
+    const status = 'AVAILABLE';
     const withCredentials = true;
-    expect(mockAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_BACK_API + 'listings', 
-      {title, price, status, location, category},
-      {withCredentials}
+    expect(mockAxios.post).toHaveBeenCalledWith(
+      process.env.REACT_APP_BACK_API + 'listings',
+      { title, status, location, price, category, forCharity },
+      { withCredentials }
     );
 
-    // simulating a server response
+    // Simulating a server response
     let responseObj = { status: 200 };
     mockAxios.mockResponse(responseObj);
 
-    expect(useNavigateMock);
-
-    jest.clearAllMocks();
+    await waitFor(() => {
+      expect(useNavigateMock).toHaveBeenCalledWith('/manage-listings');
+    });
   });
-
 });
