@@ -6,6 +6,7 @@ module.exports = {
     transformIgnorePatterns: ["node_modules/(?!axios)"],
     moduleNameMapper: {
         '\\.(css|less)$': '<rootDir>/src/testSetup/styleMock.js',
+        "\\.(png)$": '<rootDir>/src/testSetup/fileMock.js',
     },
     collectCoverageFrom: ["./src/**"],
     coverageReporters: ['html'],
