@@ -272,10 +272,14 @@ export const updateListing = async (req, res) => {
 
 export const deleteListing = async (req, res) => {
   try {
-    if (await Listing.update({ status: "REMOVED" }, { where: { listing_id: req.params.listingId } }) == 0) {
+    const listing = await Listing.update(
+      { status: "REMOVED" }, 
+      { where: { listing_id: req.params.listingId } }
+    );
+    if(listing[0] === 0) {
       console.error("Listing not found");
       return res.status(500).send();
-    }
+    } 
     res.json({});
   } catch (error) {
     console.error(error);

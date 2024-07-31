@@ -180,7 +180,8 @@ export const getUserMe = async (req, res) => {
 export const resetPassword = async (req, res) => {
   const { email, password } = req.body;
   try {
-    if (await User.update({ password: password }, { where: { email } }) == 0) {
+    const user = await User.update({ password: password }, { where: { email } });
+    if (user[0] === 0) {
       return res.status(404).json({ message: "User not found" });
     }
     return res.status(200).json({ message: "Password reset successfully" });
