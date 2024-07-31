@@ -12,10 +12,9 @@ export const getUserSearchHistory = async (req, res) => {
       const arrayResults = response.data.results.map((search) => {
         return search.query;
       });
-      res.json({ searches: arrayResults });
-    } else {
-      res.json({ searches: [] });
+      return res.json({ searches: arrayResults });
     }
+    return res.json({ searches: [] });
   } catch (error) {
     if (error.response && error.response.status == 400) {
       // if bad request, return error to client
