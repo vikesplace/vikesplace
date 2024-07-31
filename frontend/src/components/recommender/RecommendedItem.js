@@ -21,7 +21,7 @@ function RecommendedItem(props) {
 
 
   async function handleIgnoreItem (id) {
-    console.log(id)
+   
     let response = await dataService.ignoreRecommendation(id)
 
     if(response.status === undefined){
@@ -39,25 +39,9 @@ function RecommendedItem(props) {
         }
       });
     }
+
+    window.location.reload();
     
-    response = await dataService.getRecommendations();
-
-    if(response.status === undefined){
-      Store.addNotification({
-        title: 'Connection Error!',
-        message: 'Please try again',
-        type: 'danger',
-        insert: 'top',
-        container: 'top-right',
-        animationIn: ["animated", "fadeIn"],
-        animationOut: ["animated", "fadeOut"],
-        dismiss: {
-          duration: 5000,
-          onScreen: true
-        }
-      });
-    }
-
 
   }
 

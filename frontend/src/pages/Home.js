@@ -6,7 +6,6 @@ import RecommendedGrid from "../components/recommender/RecommendedGrid.js";
 import { Typography } from "@mui/material";
 import { useSearch } from "../components/searchbar/searchContext.js";
 import DataService from "../services/DataService.js";
-import { SAMPLE_DATA } from "../utils/SampleRecommenderData.js";
 
 function Home() {
   const { setShowSearch } = useSearch();
@@ -30,11 +29,7 @@ function Home() {
 
     fetchRecommendations();
 
-    //setRecommendations(SAMPLE_DATA)
   }, [dataService]);
-
-
-  
 
   useEffect(() => {
     setShowSearch(true);
