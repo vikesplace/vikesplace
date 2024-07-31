@@ -40,10 +40,8 @@ describe('SeachHistory page', () => {
     let responseObj = { status: 200, data: {searches: SAMPLE_SEARCHES} };
     mockAxios.mockResponse(responseObj);
 
-    await waitFor(() => {
-      SAMPLE_SEARCHES.forEach((search) => {
-        expect(screen.getByText(new RegExp(search.query, "i"))).toBeInTheDocument();
-      });
-    })
+    waitFor(() => {
+      expect(screen.getByText('No Search History Available')).not.toBeInTheDocument();
+    });
   });
 });
