@@ -9,6 +9,7 @@ import mockAxios from 'jest-mock-axios';
 const jwt = 'mock-jwt';
 
 // Mock useNavigate from react-router-dom
+
 jest.mock('react-router-dom', () => {
   const originalModule = jest.requireActual('react-router-dom');
   return {
@@ -76,6 +77,7 @@ describe('CompletePasswordChange Component', () => {
 
     const passwordInput = screen.getByLabelText(/Password/i);
     const submitButton = screen.getByRole('button', { name: /Submit/i });
+    const form = screen.getByTestId('password-form'); 
 
     const password = 'StrongPassword!1';
     fireEvent.change(passwordInput, { target: { value: password } });
