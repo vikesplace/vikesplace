@@ -261,13 +261,13 @@ INSERT INTO "Reviews" (listing_id, user_id, review_content, rating_id, timestamp
 (10, 11, 'Terrible bluetooth speaker, would not rent again.', 10, '2024-02-02 14:00:00');
 
 INSERT INTO "Charity" (name, status, fund, logo_url, start_date, end_date, num_listings) VALUES
-('BC Children''s Hospital', 'CLOSED', 1000.00, '1', '2024-03-01 00:00:00', '2024-03-31 23:59:59', 5),
-('Canadian Red Cross', 'CLOSED', 2000.00, '2', '2024-04-01 00:00:00', '2024-04-30 23:59:59', 12),
-('World Wildlife Fund', 'CLOSED', 3000.00, '3', '2024-05-01 00:00:00', '2024-05-31 23:59:59', 15),
-('Doctors Without Borders', 'CLOSED', 2500.00, '4', '2024-06-01 00:00:00', '2024-06-30 23:59:59', 20),
-('Salvation Army', 'OPEN', 0.00, '5', '2024-07-01 00:00:00', '2024-07-31 23:59:59', 2),
-('Heart and Stroke Foundation of Canada', 'CLOSED', 0.00, '6', '2024-08-01 00:00:00', '2024-08-31 23:59:59', 0),
-('Canadian Cancer Society', 'CLOSED', 0.00, '7', '2024-09-01 00:00:00', '2024-09-30 23:59:59', 0);
+('Salvation Army', 'OPEN', 0.00, '1', '2024-01-01 00:00:00', '2024-01-31 23:59:59', 2),
+('Heart and Stroke Foundation of Canada', 'CLOSED', 0.00, '2', '2024-02-01 00:00:00', '2024-02-29 23:59:59', 0),
+('BC Children''s Hospital', 'CLOSED', 1000.00, '3', '2024-03-01 00:00:00', '2024-03-31 23:59:59', 5),
+('Canadian Red Cross', 'CLOSED', 2000.00, '4', '2024-04-01 00:00:00', '2024-04-30 23:59:59', 12),
+('World Wildlife Fund', 'CLOSED', 3000.00, '5', '2024-05-01 00:00:00', '2024-05-31 23:59:59', 15),
+('Doctors Without Borders', 'CLOSED', 2500.00, '6', '2024-06-01 00:00:00', '2024-06-30 23:59:59', 20),
+('Canadian Cancer Society', 'CLOSED', 0.00, '7', '2024-07-01 00:00:00', '2024-07-31 23:59:59', 0);
 
 -- Insert 4k users
 CREATE TEMP TABLE temp_users (

@@ -10,8 +10,7 @@ export const createCharity = async (req, res) => {
     } else {
       const response = await axios.post(`/charity`, {
         name: req.body.name,
-        logo_url: req.body.logoUrl,
-        end_date: req.body.endDate,
+        status: req.body.status,
       });
       return res.json(response.data);
     }
