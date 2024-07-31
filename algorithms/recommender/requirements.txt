@@ -11,3 +11,6 @@ neo4j
 kafka-python
 confluent-kafka
 numpy==1.24.1
+aiohttp
+motor
+pytest-asyncio

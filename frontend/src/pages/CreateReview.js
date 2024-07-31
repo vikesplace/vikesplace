@@ -25,6 +25,7 @@ const CreateReview = () => {
   const [review, setReview] = React.useState("");
   const [ratingError, setRatingError] = React.useState(false);
   const [reviewError, setReviewError] = React.useState(false);
+  const [noListingMessage, setNoListingMessage] = useState("Loading...");
 
   useEffect(() => {
     async function getMyListings() {
@@ -60,6 +61,7 @@ const CreateReview = () => {
           }
         });
       }
+      setNoListingMessage("No Listing Available");
     }
 
     getMyListings();
@@ -159,7 +161,7 @@ const CreateReview = () => {
   if (listing === undefined) {
     return <div>
       <Typography align="center" variant='h6' sx={{mt: 2}}>
-        No Listing Found
+        {noListingMessage}
       </Typography>
     </div>;
   }

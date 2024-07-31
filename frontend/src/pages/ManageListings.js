@@ -13,11 +13,13 @@ function ManageListings() {
   const navigate = useNavigate();
   const [listings, setListings] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [noListingMessage, setNoListingMessage] = useState(1);
   const itemsPerPage = 10;
 
   useEffect(() => {
     async function getMyListings() {
       const dataService = new DataService();
+      setNoListingMessage("Loading...");
       const response = await dataService.getSellerListings();
       if (response === undefined) {
         Store.addNotification({
@@ -50,6 +52,7 @@ function ManageListings() {
           }
         });
       }
+      setNoListingMessage("No Listings Available");
     }
 
     getMyListings();
@@ -77,7 +80,7 @@ function ManageListings() {
       <Box mt={2}>
         {(listings.length === 0) && 
           <Typography align="center" variant='h6'>
-            No Listings Meet Criteria
+            {noListingMessage}
           </Typography>
         }
         {paginatedListings.map((listing) => (
