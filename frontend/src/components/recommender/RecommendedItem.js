@@ -1,5 +1,4 @@
-import {React, useMemo}from "react";
-
+import React, { useMemo }from "react";
 import Card from "@mui/material/Card";
 import { Store } from "react-notifications-component";
 import CardContent from "@mui/material/CardContent";
@@ -16,9 +15,7 @@ import DataService from "../../services/DataService";
 
 function RecommendedItem(props) {
 
-
   const dataService = useMemo(() => new DataService(), []); 
-
 
   async function handleIgnoreItem (id) {
    
@@ -41,8 +38,6 @@ function RecommendedItem(props) {
     }
 
     window.location.reload();
-    
-
   }
 
   

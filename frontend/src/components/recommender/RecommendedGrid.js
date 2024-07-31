@@ -1,18 +1,15 @@
-import { React } from "react";
+import React from "react";
 import "./RecommendedList.css";
 import 'react-multi-carousel/lib/styles.css';
 import RecommendedItem from "./RecommendedItem";
 import { Container, Grid } from "@mui/material";
 
-function RecommendedGrid({ data}) {
+function RecommendedGrid({ data }) {
 
   return (
-    
-      <Container  >
-
+      <Container>
         <Grid container spacing={3}>
           {data?.map((item) => (
-
             <Grid item xs={12} sm={6} md={6} lg={3} key={item.listingId} >
               <div key={item.listingId} >
               <RecommendedItem
@@ -25,12 +22,9 @@ function RecommendedGrid({ data}) {
               />
               </div>
             </Grid>
-
           ))}
-
         </Grid>
       </Container>
-   
   );
 }
 
