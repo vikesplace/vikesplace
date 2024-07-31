@@ -11,13 +11,16 @@ class AuthService {
     * Error: returns message
     */
     async login(username, password) {
-        const response = await axios
+        try {
+            return await axios
             .post(API_URL + "login", {
                 username,
                 password
-            }, {withCredentials: true})
-            .catch(httpErrorHandler);
-        return response;
+            }, {withCredentials: true});
+        } catch (error) {
+            httpErrorHandler(error)
+            return error.response;
+        }
     }
   
     /*
@@ -28,7 +31,8 @@ class AuthService {
         try {
             return await axios.get(API_URL + 'logout', { withCredentials: true });
         } catch (error) {
-            return httpErrorHandler(error);
+            httpErrorHandler(error)
+            return error.response;
         }
     }
 
