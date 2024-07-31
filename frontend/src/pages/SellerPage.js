@@ -45,18 +45,25 @@ const SellerPage = () => {
         fetchData();
     }, [id]);
 
-    if (loading) return 
-        (<div>
-            <Typography align="center" variant='h6' sx={{mt: 2}}>
-                Loading...
-            </Typography>
-        </div>);
-    if (error) return 
-        (<div>
-            <Typography align="center" variant='h6' sx={{mt: 2}} color="error">
-                Seller Information Not Available
-            </Typography>
-        </div>);
+    if (loading) {
+        return (
+            <div>
+                <Typography align="center" variant='h6' sx={{ mt: 2 }}>
+                    Loading...
+                </Typography>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div>
+                <Typography align="center" variant='h6' sx={{ mt: 2 }} color="error">
+                    Seller Information Not Available
+                </Typography>
+            </div>
+        );
+    }
 
     return (
         <Container>
