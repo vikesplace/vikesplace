@@ -1,13 +1,13 @@
 import * as React from "react";
 
 import Card from "@mui/material/Card";
-
+import { Store } from "react-notifications-component";
 import CardContent from "@mui/material/CardContent";
 import './RecommendedItem.css'
 import Typography from "@mui/material/Typography";
-import { Box, Button, CardActionArea, IconButton, Menu, MenuItem } from "@mui/material";
+import { Box, Button, CardActionArea} from "@mui/material";
 import { Link } from "react-router-dom";
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+
 import DataService from "../../services/DataService";
 
 /* This component is a just a card for the Recommender Items..
@@ -16,27 +16,34 @@ import DataService from "../../services/DataService";
 
 function RecommendedItem(props) {
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
 
   const dataService = new DataService()
 
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  }
-
-  const open = Boolean(anchorEl);
 
   const handleIgnoreItem = async (id) => {
 
     const response = await dataService.ignoreRecommendation(id)
 
-    setAnchorEl(null);
+    if(response.status === undefined){
+      Store.addNotification({
+        title: 'Connection Error!',
+        message: 'Please try again',
+        type: 'danger',
+        insert: 'top',
+        container: 'top-right',
+        animationIn: ["animated", "fadeIn"],
+        animationOut: ["animated", "fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: true
+        }
+      });
+    }
+
   }
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  
 
   return (
     <div className="card" key={props.id}>
@@ -61,24 +68,6 @@ function RecommendedItem(props) {
                 {props.location}
               </Typography>
               <Button onClick={handleIgnoreItem}> Ignore </Button>
-
-              {/* <IconButton aria-label="more"
-                onClick={handleClick}
-                aria-haspopup='true'
-                aria-controls="long-menu"
-              >
-                <MoreHorizIcon />
-              </IconButton>
-              <Menu
-                anchorEl={anchorEl}
-                keepMounted
-                onClose={handleClose}
-                open={open}
-              >
-                <MenuItem key='Ignore Item' onClick={handleIgnoreItem(props.id)}>
-                  Ignore Item
-                </MenuItem>
-              </Menu> */}
 
             </Box>
       </Card>
