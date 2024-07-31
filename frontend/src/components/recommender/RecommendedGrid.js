@@ -22,6 +22,7 @@ function RecommendedGrid({ data}) {
                 price={item.price}
                 status={item.status}
                 location={item.location}
+                forCharity = {item.forCharity}
               />
               </div>
             </Grid>

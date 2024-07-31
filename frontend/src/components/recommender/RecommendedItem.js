@@ -59,8 +59,10 @@ function RecommendedItem(props) {
               {props.status}
             </Typography>
             <Typography variant="body1">
-              {props.price}
+              ${props.price}
               <br />
+             <Box display ='flex'> For Charity:&nbsp;{props.forCharity ===false ? <Typography>  No </Typography> : <Typography> Yes </Typography> }
+             </Box>
             </Typography>
             
           </CardContent>
