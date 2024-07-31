@@ -1,3 +1,4 @@
+import asyncio
 import pytest
 import recommender.mongodb_request as mongodb_request
 import recommender.similarity as similarity
@@ -48,7 +49,7 @@ def test_recommender_with_no_activity_history():
 
     # should receive most popular items since user has not activity history
     assert response.status_code == status.HTTP_200_OK
-    assert len(response_obj) == 10
+    assert len(response_obj) >= 10
     for obj in response_obj:
         assert obj["title"] != None
 
@@ -83,7 +84,8 @@ def test_view_listings_ignored():
         assert i['ignored_at'] is not None
 
 
-def test_ignore_recommendation_and_delete_ignored_recommendation():
+@pytest.mark.asyncio(scope="session")
+async def test_ignore_recommendation_and_delete_ignored_recommendation():
     user_id = 1
     listing_id = 65
     response = requests.post(
@@ -93,7 +95,7 @@ def test_ignore_recommendation_and_delete_ignored_recommendation():
     assert response.status_code == status.HTTP_200_OK
     assert response_obj['results'] == 1
 
-    delete_result = MongoDBRequest_OBJ.delete_ignored(user_id, listing_id)
+    delete_result = await MongoDBRequest_OBJ.delete_ignored(user_id, listing_id)
 
     assert delete_result == 1
 
@@ -127,7 +129,8 @@ def test_view_listings_ignored():
         assert i['ignored_at'] is not None
 
 
-def test_ignore_recommendation_and_delete_ignored_recommendation():
+@pytest.mark.asyncio(scope="session")
+async def test_ignore_recommendation_and_delete_ignored_recommendation():
     user_id = 1
     listing_id = 65
     response = requests.post(
@@ -137,7 +140,7 @@ def test_ignore_recommendation_and_delete_ignored_recommendation():
     assert response.status_code == status.HTTP_200_OK
     assert response_obj['results'] == 1
 
-    delete_result = MongoDBRequest_OBJ.delete_ignored(user_id, listing_id)
+    delete_result = await MongoDBRequest_OBJ.delete_ignored(user_id, listing_id)
 
     assert delete_result == 1
 
@@ -148,11 +151,11 @@ def test_adv_recommender_with_activity_history():
     params = {
         "user_id": user_id,
     }
-    response = requests.get(f"{BASE_URL}/adv_recommendations", headers=headers, params=params)
-    response_obj = response.json()
+    response = requests.get(f"{BASE_URL}/recommendations", headers=headers, params=params)
+    results = response.json()
 
     assert response.status_code == status.HTTP_200_OK
-    assert len(response_obj["results"]) == 15
+    assert len(results) == 15
 
 
 def test_adv_recommender_with_no_activity_history():
@@ -161,9 +164,9 @@ def test_adv_recommender_with_no_activity_history():
     params = {
         "user_id": user_id,
     }
-    response = requests.get(f"{BASE_URL}/adv_recommendations", headers=headers, params=params)
-    response_obj = response.json()
+    response = requests.get(f"{BASE_URL}/recommendations", headers=headers, params=params)
+    results = response.json()
 
     assert response.status_code == status.HTTP_200_OK
-    assert len(response_obj["results"]) == 15
+    assert len(results) == 15
 

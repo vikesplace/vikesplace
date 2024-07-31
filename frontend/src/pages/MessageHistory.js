@@ -18,6 +18,64 @@ function MessageHistory() {
     const [chatInfo, setChatInfo] = useState({});
     const dataService = useMemo(() => new DataService(), []);
 
+    useEffect(() => {
+        const fetchMessages = async () => {
+            try {
+                const response = await dataService.getChatMessages(id);
+                if (response && response.status === 200) {
+                    setMessages(Array.isArray(response.data.messages) ? response.data.messages : []);
+                } else {
+                    throw new Error("Failed to fetch messages");
+                }
+            } catch (error) {
+                Store.addNotification({
+                    title: 'Error',
+                    message: 'Failed to fetch messages. Please try again.',
+                    type: 'danger',
+                    insert: 'top',
+                    container: 'top-right',
+                    animationIn: ["animated", "fadeIn"],
+                    animationOut: ["animated", "fadeOut"],
+                    dismiss: {
+                        duration: 5000,
+                        onScreen: true
+                    }
+                });
+                console.error("An error occurred while fetching messages:", error);
+                setMessages([]); 
+            }
+        };
+    
+        const fetchChatInfo = async () => {
+            try {
+                const response = await dataService.getChatInformation(id);
+                if (response && response.status === 200) {
+                    setChatInfo(response.data);
+                } else {
+                    throw new Error("Failed to fetch chat info");
+                }
+            } catch (error) {
+                Store.addNotification({
+                    title: 'Error',
+                    message: 'Failed to fetch chat info. Please try again.',
+                    type: 'danger',
+                    insert: 'top',
+                    container: 'top-right',
+                    animationIn: ["animated", "fadeIn"],
+                    animationOut: ["animated", "fadeOut"],
+                    dismiss: {
+                        duration: 5000,
+                        onScreen: true
+                    }
+                });
+                console.error("An error occurred while fetching chat info:", error);
+            }
+        };
+
+        fetchChatInfo();
+        fetchMessages();
+    }, [id, dataService]);
+
     const fetchMessages = async () => {
         try {
             const response = await dataService.getChatMessages(id);
@@ -44,37 +102,6 @@ function MessageHistory() {
             setMessages([]); 
         }
     };
-
-    const fetchChatInfo = async () => {
-        try {
-            const response = await dataService.getChatInformation(id);
-            if (response && response.status === 200) {
-                setChatInfo(response.data);
-            } else {
-                throw new Error("Failed to fetch chat info");
-            }
-        } catch (error) {
-            Store.addNotification({
-                title: 'Error',
-                message: 'Failed to fetch chat info. Please try again.',
-                type: 'danger',
-                insert: 'top',
-                container: 'top-right',
-                animationIn: ["animated", "fadeIn"],
-                animationOut: ["animated", "fadeOut"],
-                dismiss: {
-                    duration: 5000,
-                    onScreen: true
-                }
-            });
-            console.error("An error occurred while fetching chat info:", error);
-        }
-    };
-
-    useEffect(() => {
-        fetchChatInfo();
-        fetchMessages();
-    }, [id]);
 
     const handleInputKeys = (event) => {
         setNewMessage(event.target.value);

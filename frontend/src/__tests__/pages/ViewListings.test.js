@@ -39,6 +39,10 @@ describe('ViewListings Component', () => {
     );
   });
 
+  afterEach(() => {
+    mockAxios.reset();
+  })
+
   test('renders listing cards', async () => {
     await waitFor(() => {
       const listingCards = screen.getAllByTestId('listing-card');

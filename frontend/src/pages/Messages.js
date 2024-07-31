@@ -13,6 +13,7 @@ function Messages() {
   const dataService = useMemo(() => new DataService(), []);
   const navigate = useNavigate();
   const [chats, setChats] = useState([]);
+  const [noChatsMessage, setNoChatsMessage] = useState("Loading...");
 
   useEffect(() => {
     const fetchChats = async () => {
@@ -23,7 +24,9 @@ function Messages() {
         let response = await dataService.getChats(); 
         if (response.status === 200 && Array.isArray(response.data.chats)) {
           chatIds = response.data.chats;
+          setNoChatsMessage("No Chats Available");
         } else {
+          setNoChatsMessage("No Chats Available");
           throw new Error('Unable to get chats');
         }
 
@@ -59,6 +62,7 @@ function Messages() {
         }
         setChats(chatObjs);
       } catch (error) {
+        setNoChatsMessage("Error Loading Chats");
         Store.addNotification({
           title: 'Error',
           message: error.message,
@@ -72,7 +76,6 @@ function Messages() {
             onScreen: true
           }
         });
-        console.error(error); 
       }
     };
 
@@ -80,7 +83,6 @@ function Messages() {
   }, [dataService]);
 
   const handleClick = (event) => {
-    console.log(event);
     navigate('/message-history/' + event.id);    
   };
 
@@ -89,7 +91,7 @@ function Messages() {
       <Container>
         <Box mt={2}>
           {chats.length === 0 ? (
-            <div>No Chats Available</div>
+            <div>{noChatsMessage}</div>
           ) : (
             <ChatList
               className='chat-list'

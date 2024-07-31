@@ -1,9 +1,6 @@
 import axios from "axios";
 import httpErrorHandler from "./httpErrorHandler";
 
-const API_URL = "http://localhost:8080/";
-const FRONT_URL = "http://localhost:3000/";
-
 class AuthService {
     /*
     * Account Management: Login Endpoint
@@ -11,13 +8,16 @@ class AuthService {
     * Error: returns message
     */
     async login(username, password) {
-        const response = await axios
-            .post(API_URL + "login", {
+        try {
+            return await axios
+            .post(process.env.REACT_APP_BACK_API + "login", {
                 username,
                 password
-            }, {withCredentials: true})
-            .catch(httpErrorHandler);
-        return response;
+            }, {withCredentials: true});
+        } catch (error) {
+            httpErrorHandler(error)
+            return error.response;
+        }
     }
   
     /*
@@ -26,9 +26,10 @@ class AuthService {
     */
     async logout() {
         try {
-            return await axios.get(API_URL + 'logout', { withCredentials: true });
+            return await axios.get(process.env.REACT_APP_BACK_API + 'logout', { withCredentials: true });
         } catch (error) {
-            return httpErrorHandler(error);
+            httpErrorHandler(error)
+            return error.response;
         }
     }
 
@@ -39,9 +40,9 @@ class AuthService {
     */
     async register(email) {
         try {
-            return await axios.post(API_URL + "request_account", {
+            return await axios.post(process.env.REACT_APP_BACK_API + "request_account", {
                 email,
-                callback: FRONT_URL + "verify-account/"
+                callback: process.env.REACT_APP_FRONT_URL + "verify-account/"
             });
         } catch (error) {
             httpErrorHandler(error);
@@ -56,7 +57,7 @@ class AuthService {
     */
     async verify(jwt, username, password, location) {
         try {
-            return await axios.post(API_URL + "verify_account", {
+            return await axios.post(process.env.REACT_APP_BACK_API + "verify_account", {
                 jwt,
                 username,
                 password,
@@ -75,9 +76,9 @@ class AuthService {
     */
     async requestPasswordChange(email) {
         try {
-            return await axios.post(API_URL + "request_reset", {
+            return await axios.post(process.env.REACT_APP_BACK_API + "request_reset", {
                 email,
-                callback: FRONT_URL + "password-update/"
+                callback: process.env.REACT_APP_FRONT_URL + "password-update/"
             });
         } catch (error) {
             httpErrorHandler(error);
@@ -92,7 +93,7 @@ class AuthService {
     */
     async completePasswordChange(jwt, password) {
         try {
-            return await axios.post(API_URL + "verify_reset", {
+            return await axios.post(process.env.REACT_APP_BACK_API + "verify_reset", {
                 jwt, 
                 password
             });
