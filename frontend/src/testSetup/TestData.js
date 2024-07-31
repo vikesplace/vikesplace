@@ -21,3 +21,8 @@ export const SAMPLE_USER_DATA = {
   location: "V9V9V9",
   joiningDate: "2024-06-20"
 };
+
+export const SAMPLE_SELLER = {
+  username: "user123",
+  id: 123
+};
