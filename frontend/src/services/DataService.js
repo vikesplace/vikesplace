@@ -129,10 +129,10 @@ class DataService {
     * Success (200): returns nothing
     * Error: returns message
     */
-    async updateUserData(location) {
+    async updateUserData(location, seeCharity) {
         try {
             return await axios.patch(API_URL + 'users/me', {
-                location
+                location, seeCharity
             }, { withCredentials: true });
         } catch (error) {
             httpErrorHandler(error);

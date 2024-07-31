@@ -9,6 +9,7 @@ import Button from '@mui/material/Button';
 import DataService from '../services/DataService';
 import '../App.css';
 import { Store } from 'react-notifications-component';
+import Switch from '@mui/material/Switch';
 
 function UserProfile() {
   const dataService = useMemo(() => new DataService(), []);
@@ -16,6 +17,7 @@ function UserProfile() {
   const [isEditing, setIsEditing] = useState(false);
   const [newLocation, setNewLocation] = useState('');
   const [postalCodeError, setPostalCodeError] = useState(false);
+  const [checked, setChecked] = useState(true);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -115,6 +117,52 @@ function UserProfile() {
     }
   };
 
+  const handleSwitch = async (event) => {
+
+    setChecked(event.target.checked);
+   
+    if (event.target.checked === true) {
+      const response = await dataService.updateUserData(newLocation, true)
+
+      if (response.status === undefined) {
+        Store.addNotification({
+          title: 'Unable to set setting',
+          message: 'Please try again',
+          type: 'warning',
+          insert: 'top',
+          container: 'top-right',
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 5000,
+            onScreen: true
+          }
+        });
+      }
+    } else if (event.target.checked === false) {
+  
+        const response = await dataService.updateUserData(newLocation, false)
+        
+        if (response.status === undefined) {
+          Store.addNotification({
+            title: 'Unable to set setting',
+            message: 'Please try again',
+            type: 'warning',
+            insert: 'top',
+            container: 'top-right',
+            animationIn: ["animated", "fadeIn"],
+            animationOut: ["animated", "fadeOut"],
+            dismiss: {
+              duration: 5000,
+              onScreen: true
+            }
+          });
+        }
+
+      }
+    
+  }
+
   if (user === undefined) {
     return (
       <div>
@@ -187,6 +235,10 @@ function UserProfile() {
               {new Date(user.joiningDate).toLocaleDateString('en-us', { year: "numeric", month: "short", day: "numeric" })}
             </Typography>
             <br />
+            <Box display="flex" justifyContent="space-between" alignItems="center">
+              <Typography> See Charity Items </Typography>
+              <Switch onChange={handleSwitch} checked ={checked}></Switch>
+            </Box>
           </Box>
         </Box>
       </Container>
