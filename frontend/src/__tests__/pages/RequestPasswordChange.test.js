@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { BrowserRouter as Router } from 'react-router-dom';
 import RequestPasswordChange from '../../pages/RequestPasswordChange';
+import mockAxios from 'jest-mock-axios';
 
 jest.mock('react-router-dom', () => {
     const originalModule = jest.requireActual('react-router-dom');
@@ -13,6 +14,11 @@ jest.mock('react-router-dom', () => {
 });
 
 describe('RequestPasswordChange Component', () => {
+  afterEach(() => {
+    mockAxios.reset();
+    jest.clearAllMocks();
+  });
+
   test('renders the component correctly', () => {
     render(
       <Router>
@@ -79,9 +85,20 @@ test('navigates to /check-email on successful form submission', async () => {
 
   fireEvent.change(emailInput, { target: { value: 'test@uvic.ca' } });
   fireEvent.click(submitButton);
+  
+  const email = "test@uvic.ca";
+  const callback = process.env.REACT_APP_FRONT_URL + "password-update/";
+
+  expect(mockAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_BACK_API + 'request_reset', 
+    {email, callback}
+  );
+
+  // simulating a server response
+  let responseObj = { status: 200 };
+  mockAxios.mockResponse(responseObj);
 
   await waitFor(() => {
-      expect(navigate).toHaveBeenCalledWith('/check-email'); 
+    expect(navigate).toHaveBeenCalledWith('/check-email'); 
   });
 });
 

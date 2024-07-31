@@ -60,7 +60,7 @@ describe('ViewReviewsPage', () => {
 
     renderComponent();
     await waitFor(() => {
-      expect(screen.getByText('No Listing Found')).toBeInTheDocument();
+      expect(screen.getByText('No Listing Available')).toBeInTheDocument();
     });
   });
 
