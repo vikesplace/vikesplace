@@ -30,7 +30,7 @@ function ViewListings() {
   const dataService = useMemo(() => new DataService(), []);
   const navigate = useNavigate();
 
-  const [sortCategory, setSortCategory] = useState("listed_at");
+  const [sortCategory, setSortCategory] = useState("createdOn");
   const [sortOrder, setSortOrder] = useState(false);
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
   const [statusFilter, setStatusFilter] = useState('');
@@ -548,9 +548,9 @@ function ViewListings() {
                 label="Sort By"
                 onChange={handleSortChange}
               >
-                <MenuItem value="listed_at"><em>Time</em></MenuItem>
+                <MenuItem value="createdOn"><em>Time</em></MenuItem>
                 <MenuItem value="price">Price</MenuItem>
-                {/* <MenuItem value="location">Distance</MenuItem> */}
+                <MenuItem value="distance">Distance</MenuItem>
               </Select>
             </FormControl>
             <IconButton aria-label="change sorting order" onClick={handleSortOrderClick}>
