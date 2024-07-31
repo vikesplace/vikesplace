@@ -1,8 +1,6 @@
 import axios from 'axios';
 import httpErrorHandler from './httpErrorHandler';
 
-const API_URL = 'http://localhost:8080/';
-
 class DataService {
     /*
     * Listings: Create Listing Endpoint
@@ -12,7 +10,7 @@ class DataService {
     */
     async createListing(title, price, location, category, forCharity) {
         try {
-            return await axios.post(API_URL + 'listings', {
+            return await axios.post(process.env.REACT_APP_BACK_API + 'listings', {
                 title,
                 price,
                 location,
@@ -33,7 +31,7 @@ class DataService {
     */
     async updateListing(id, title, price, location, status, buyerUsername, forCharity) {
         try {
-            return await axios.patch(API_URL + 'listings/' + id, {
+            return await axios.patch(process.env.REACT_APP_BACK_API + 'listings/' + id, {
                 title,
                 price,
                 location,
@@ -55,7 +53,7 @@ class DataService {
     */
     async deleteListing(id) {
         try {
-            return await axios.delete(API_URL + 'listings/' + id,
+            return await axios.delete(process.env.REACT_APP_BACK_API + 'listings/' + id,
                 { withCredentials: true });
         } catch (error) {
             httpErrorHandler(error);
@@ -86,7 +84,7 @@ class DataService {
             searchParam.append("isDescending", isDescending);
 
         try {
-            return await axios.get(API_URL + 'listings?' + searchParam.toString(),
+            return await axios.get(process.env.REACT_APP_BACK_API + 'listings?' + searchParam.toString(),
                 { withCredentials: true });
         } catch (error) {
             httpErrorHandler(error);
@@ -101,7 +99,7 @@ class DataService {
     */
     async getListing(id) {
         try {
-            return await axios.get(API_URL + 'listings/' + id,
+            return await axios.get(process.env.REACT_APP_BACK_API + 'listings/' + id,
                 { withCredentials: true });
         } catch (error) {
             httpErrorHandler(error);
@@ -116,7 +114,7 @@ class DataService {
     */
     async getSellerListings() {
         try {
-            return await axios.get(API_URL + 'listings/me',
+            return await axios.get(process.env.REACT_APP_BACK_API + 'listings/me',
                 { withCredentials: true });
         } catch (error) {
             httpErrorHandler(error);
@@ -148,7 +146,7 @@ class DataService {
     */
     async getMyUserData() {
         try {
-            return await axios.get(API_URL + 'users/me',
+            return await axios.get(process.env.REACT_APP_BACK_API + 'users/me',
                 { withCredentials: true });
         } catch (error) {
             httpErrorHandler(error);
@@ -164,7 +162,7 @@ class DataService {
     */
     async getUserData(id) {
         try {
-            return await axios.get(API_URL + 'users/' + id,
+            return await axios.get(process.env.REACT_APP_BACK_API + 'users/' + id,
                 { withCredentials: true });
         } catch (error) {
             httpErrorHandler(error);
@@ -179,7 +177,7 @@ class DataService {
     */
     async getUserSearchHistory() {
         try {
-            return await axios.get(API_URL + 'users/me/searches',
+            return await axios.get(process.env.REACT_APP_BACK_API + 'users/me/searches',
                 { withCredentials: true });
         } catch (error) {
             httpErrorHandler(error);
@@ -210,7 +208,7 @@ class DataService {
             searchParam.append("isDescending", isDescending);
         
         try{
-         return  await axios.get(API_URL + 'search?' + searchParam,
+         return  await axios.get(process.env.REACT_APP_BACK_API + 'search?' + searchParam,
             {withCredentials: true})
         } catch (error){
             httpErrorHandler(error);
@@ -226,7 +224,7 @@ class DataService {
     */
     async getReviews(listingId) {
         try {
-            return await axios.get(API_URL + 'review/' + listingId,
+            return await axios.get(process.env.REACT_APP_BACK_API + 'review/' + listingId,
                 { withCredentials: true });
         } catch (error) {
             httpErrorHandler(error);
@@ -242,7 +240,7 @@ class DataService {
     */
     async getRatings(listingId) {
         try {
-            return await axios.get(API_URL + 'rating/' + listingId,
+            return await axios.get(process.env.REACT_APP_BACK_API + 'rating/' + listingId,
                 { withCredentials: true });
         } catch (error) {
             httpErrorHandler(error);
@@ -258,7 +256,7 @@ class DataService {
     */
     async createReview(listingId, reviewContent) {
         try {
-            return await axios.post(API_URL + 'review/' + listingId, {
+            return await axios.post(process.env.REACT_APP_BACK_API + 'review/' + listingId, {
                 reviewContent
             }, { withCredentials: true });
         } catch (error) {
@@ -275,7 +273,7 @@ class DataService {
     */
     async createRating(listingId, ratingValue) {
         try {
-            return await axios.post(API_URL + 'rating/' + listingId, {
+            return await axios.post(process.env.REACT_APP_BACK_API + 'rating/' + listingId, {
                 ratingValue
             }, { withCredentials: true });
         } catch (error) {
@@ -291,7 +289,7 @@ class DataService {
     */
     async getRecommendations() {
         try {
-            return await axios.get(API_URL + 'recommendations',
+            return await axios.get(process.env.REACT_APP_BACK_API + 'recommendations',
                 { withCredentials: true });
         } catch (error) {
             httpErrorHandler(error);
@@ -306,7 +304,7 @@ class DataService {
     */
     async ignoreRecommendation(listingId) {
         try {
-            return await axios.post(API_URL + 'recommendations/' + listingId + '/ignore', {
+            return await axios.post(process.env.REACT_APP_BACK_API + 'recommendations/' + listingId + '/ignore', {
                 ignore: true
             }, { withCredentials: true });
         } catch (error) {
@@ -322,7 +320,7 @@ class DataService {
     */
     async getChats() {
         try {
-            return await axios.get(API_URL + 'messages/chats', 
+            return await axios.get(process.env.REACT_APP_BACK_API + 'messages/chats', 
                 { withCredentials: true });
         } catch (error) {
             httpErrorHandler(error);
@@ -338,7 +336,7 @@ class DataService {
     */
     async createChat(listingId) {
         try {
-            return await axios.post(API_URL + 'chats/',{listingId}, 
+            return await axios.post(process.env.REACT_APP_BACK_API + 'chats/',{listingId}, 
                 { withCredentials: true });
         } catch (error) {
             httpErrorHandler(error)
@@ -354,7 +352,7 @@ class DataService {
     */
     async getChatMessages(chatId) {
         try {
-            return await axios.get(API_URL + 'messages/' + chatId, 
+            return await axios.get(process.env.REACT_APP_BACK_API + 'messages/' + chatId, 
                 { withCredentials: true });
         } catch (error) {
             httpErrorHandler(error);
@@ -369,7 +367,7 @@ class DataService {
     */
     async getChatInformation(chatId) {
         try {
-            return await axios.get(API_URL + 'chats/' + chatId,
+            return await axios.get(process.env.REACT_APP_BACK_API + 'chats/' + chatId,
                 { withCredentials: true });
         } catch (error) {
             httpErrorHandler(error);
@@ -385,7 +383,7 @@ class DataService {
     */
     async sendMessage(chatId, content) {
         try {
-            return await axios.post(API_URL + 'messages/' + chatId, {
+            return await axios.post(process.env.REACT_APP_BACK_API + 'messages/' + chatId, {
                 content
             }, { withCredentials: true });
         } catch (error) {
@@ -402,7 +400,7 @@ class DataService {
     */
     async createCharity(name, logo_url, end_date) {
         try {
-            return await axios.post(API_URL + 'charity', {
+            return await axios.post(process.env.REACT_APP_BACK_API + 'charity', {
                 name, 
                 status: "OPEN",
                 fund: 0,
@@ -425,7 +423,7 @@ class DataService {
     */
     async getCharities() {
         try {
-            return await axios.get(API_URL + 'charity', 
+            return await axios.get(process.env.REACT_APP_BACK_API + 'charity', 
                 { withCredentials: true });
         } catch (error) {
             httpErrorHandler(error);

@@ -1,10 +1,35 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { MemoryRouter } from 'react-router-dom';
 import VerifyAccount from '../../pages/VerifyAccount';
+import mockAxios from 'jest-mock-axios';
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useLocation: jest.fn(),
+  useNavigate: jest.fn()
+}));
 
 describe('VerifyAccount Component', () => {
+  let useLocationMock;
+
+  beforeEach(() => {
+    jest.spyOn(console, 'log').mockImplementation(() => {});
+
+    useLocationMock = require('react-router-dom').useLocation;
+    useLocationMock.mockReturnValue(jest.fn());
+
+    useNavigateMock = require('react-router-dom').useNavigate;
+    useNavigateMock.mockReturnValue(jest.fn());
+  });
+
+  afterEach(() => {
+    mockAxios.reset();
+    console.log.mockRestore();
+    jest.clearAllMocks();
+  });
+
   test('renders the component', () => {
     render(
       <MemoryRouter>
@@ -103,7 +128,7 @@ describe('VerifyAccount Component', () => {
     expect(screen.queryByText('Please enter a valid postal code with format A1A1A1')).not.toBeInTheDocument();
   });
 
-  test('submits the form with valid data', () => {
+  test('submits the form with valid data', async () => {
     render(
       <MemoryRouter>
         <VerifyAccount />
@@ -116,12 +141,27 @@ describe('VerifyAccount Component', () => {
     const postalCodeInput = screen.getByRole('textbox', { name: /postal code/i });
     const submitButton = screen.getByRole('button', { name: /sign up/i });
 
-    fireEvent.change(usernameInput, { target: { value: 'valid_user' } });
-    fireEvent.change(passwordInput, { target: { value: 'ValidPass1!' } });
-    fireEvent.change(confirmPasswordInput, { target: { value: 'ValidPass1!' } });
-    fireEvent.change(postalCodeInput, { target: { value: 'K1A 0B1' } });
+    const username = "test@uvic.ca";
+    const password = "PassVal123#";
+    const postalCode = "V9V9V9";
+
+    fireEvent.change(usernameInput, { target: { value: username } });
+    fireEvent.change(passwordInput, { target: { value: password } });
+    fireEvent.change(confirmPasswordInput, { target: { value: password } });
+    fireEvent.change(postalCodeInput, { target: { value: postalCode } });
 
     fireEvent.click(submitButton);
+    const jwt = "ThisRepresentsAJWT1234";
+    expect(mockAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_BACK_API + 'verify_account', 
+      {jwt, username, password, location}
+    );
 
+    // simulating a server response
+    let responseObj = { status: 200 };
+    mockAxios.mockResponse(responseObj);
+
+    await waitFor(() => {
+      expect(useNavigateMock).toHaveBeenCalledWith('/verified');
+    });
   });
 });

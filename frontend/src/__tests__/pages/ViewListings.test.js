@@ -3,7 +3,8 @@ import { render, fireEvent, screen, within, waitFor } from '@testing-library/rea
 import '@testing-library/jest-dom/extend-expect';
 import { BrowserRouter as Router } from 'react-router-dom';
 import ViewListings from '../../pages/ViewListings';
-import { SAMPLE_DATA } from '../../utils/SampleRecommenderData';
+import { SAMPLE_LISTING_LIST } from '../../testSetup/TestData';
+import mockAxios from 'jest-mock-axios';
 
 describe('ViewListings Component', () => {
   beforeEach(() => {
@@ -14,13 +15,28 @@ describe('ViewListings Component', () => {
     );
   });
 
+  afterEach(() => {
+    mockAxios.reset();
+  })
+
   test('renders SearchBar component', () => {
     expect(screen.getByLabelText('Search...')).toBeInTheDocument();
   });
 
   test('renders listing cards', () => {
-    const listingCards = screen.getAllByTestId('listing-card');
-    expect(listingCards.length).toBe(SAMPLE_DATA.length); // Based on initialListings length
+    const withCredentials = true;
+    expect(mockAxios.get).toHaveBeenCalledWith(process.env.REACT_APP_BACK_API + 'listings', 
+      {withCredentials}
+    );
+
+    // simulating a server response
+    let responseObj = { status: 200, data: SAMPLE_LISTING_LIST };
+    mockAxios.mockResponse(responseObj);
+
+    waitFor(() => {
+      const listingCards = screen.getAllByTestId('listing-card');
+      expect(listingCards.length).toBe(SAMPLE_LISTING_LIST.length); 
+    })
   });
 
   test('opens and closes the filter dialog', async () => {
@@ -58,7 +74,7 @@ describe('ViewListings Component', () => {
     
     await waitFor(() => {
       const listings = screen.queryAllByTestId('listing-card');
-      const numFilteredListings = SAMPLE_DATA.filter(listing => {
+      const numFilteredListings = SAMPLE_LISTING_LIST.filter(listing => {
         return (parseFloat(listing.price) >= parseFloat('3')) &&
                             (parseFloat(listing.price) <= parseFloat('100'));
       }).length;
@@ -86,7 +102,7 @@ describe('ViewListings Component', () => {
       const availableListings = listingCards.filter(card => {
         return within(card).queryByText(filterValue);
       });
-      const numFilteredListings = SAMPLE_DATA.filter(listing => {
+      const numFilteredListings = SAMPLE_LISTINGS.filter(listing => {
         return listing.status === filterValue;
       }).length;
       expect(availableListings.length).toBe(numFilteredListings); // Adjust based on your expected results
@@ -108,7 +124,7 @@ describe('ViewListings Component', () => {
   
     await waitFor(() => {
       const filteredListings = screen.queryAllByTestId('listing-card');
-      const numFilteredListings = SAMPLE_DATA.filter(listing => {
+      const numFilteredListings = SAMPLE_LISTING_LIST.filter(listing => {
         return listing.category === filterValue;
       }).length;
       expect(filteredListings.length).toBe(numFilteredListings); // Adjust the expected count based on filtered results

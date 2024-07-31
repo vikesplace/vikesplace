@@ -4,11 +4,9 @@ import '@testing-library/jest-dom/extend-expect';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import Home from '../../pages/Home.js';
 import { SAMPLE_DATA as data } from '../../utils/SampleRecommenderData.js';
-import SearchBar from '../../components/SearchBar.js';
-import RecommendedList from '../../components/recommender/RecommendedList.js';
 
 // Mock the imported components
-jest.mock('../../components/SearchBar.js', () => () => <div data-testid="searchbar" />);
+jest.mock('../../components/searchBar/SearchBar.js', () => () => <div data-testid="searchbar" />);
 jest.mock('../../components/recommender/RecommendedList', () => ({ data }) => (
     <div data-testid="recommendedlist">
       {data.map((item) => (

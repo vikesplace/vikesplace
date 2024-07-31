@@ -24,6 +24,7 @@ function Messages() {
         let response = await dataService.getChats(); 
         if (response.status === 200 && Array.isArray(response.data.chats)) {
           chatIds = response.data.chats;
+          setNoChatsMessage("No Chats Available");
         } else {
           setNoChatsMessage("No Chats Available");
           throw new Error('Unable to get chats');

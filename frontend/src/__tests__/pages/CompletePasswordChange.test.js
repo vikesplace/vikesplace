@@ -1,22 +1,29 @@
 // CompletePasswordChange.test.js
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { BrowserRouter as Router } from 'react-router-dom';
 import CompletePasswordChange from '../../pages/CompletePasswordChange';
+import mockAxios from 'jest-mock-axios';
+
+const jwt = 'mock-jwt';
 
 // Mock useNavigate from react-router-dom
-
 jest.mock('react-router-dom', () => {
   const originalModule = jest.requireActual('react-router-dom');
   return {
     ...originalModule,
     useNavigate: () => jest.fn(),
-    useParams: () => ({ jwt: 'mock-jwt' }) 
+    useParams: () => ({ jwt: jwt }) 
   };
 });
 
 describe('CompletePasswordChange Component', () => {
+  afterEach(() => {
+    mockAxios.reset();
+    jest.clearAllMocks();
+  });
+
   test('renders the component correctly', () => {
     render(
       <Router>
@@ -57,7 +64,7 @@ describe('CompletePasswordChange Component', () => {
     expect(screen.getByText(/Must be 8\+ characters, with at least 1 symbol, number, lowercase letter, and uppercase letter/i)).toBeInTheDocument();
   });
 
-  test('submits the form with valid password', () => {
+  test('submits the form with valid password', async () => {
     const navigate = jest.fn();
     jest.spyOn(require('react-router-dom'), 'useNavigate').mockReturnValue(navigate);
 
@@ -69,11 +76,22 @@ describe('CompletePasswordChange Component', () => {
 
     const passwordInput = screen.getByLabelText(/Password/i);
     const submitButton = screen.getByRole('button', { name: /Submit/i });
-    const form = screen.getByTestId('password-form'); 
 
-    fireEvent.change(passwordInput, { target: { value: 'StrongPassword!1' } });
+    const password = 'StrongPassword!1';
+    fireEvent.change(passwordInput, { target: { value: password } });
     fireEvent.click(submitButton);
 
-    expect(navigate).toHaveBeenCalledWith('/password-updated');
+    // Note: usually called with jwt as well, but mocked can't get jwt from cookie automatically
+    expect(mockAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_BACK_API + 'verify_reset', 
+      {jwt, password}
+    );
+
+    // simulating a server response
+    let responseObj = { status: 200 };
+    mockAxios.mockResponse(responseObj);
+
+    await waitFor(() => {
+      expect(navigate).toHaveBeenCalledWith('/password-updated');
+    });
   });
 });
