@@ -78,9 +78,23 @@ function Login() {
                       duration: 5000,
                       onScreen: true
                     }
-                  });
+                });
             } else if (response.status === 200) {
                 navigate('/home');
+            } else if (response.status === 400) {
+                Store.addNotification({
+                    title: 'Unable to Login',
+                    message: 'Username or password is incorrect',
+                    type: 'danger',
+                    insert: 'top',
+                    container: 'top-right',
+                    animationIn: ["animated", "fadeIn"],
+                    animationOut: ["animated", "fadeOut"],
+                    dismiss: {
+                      duration: 5000,
+                      onScreen: true
+                    }
+                });
             } else {
                 Store.addNotification({
                     title: 'Unable to Login',
@@ -94,7 +108,7 @@ function Login() {
                       duration: 5000,
                       onScreen: true
                     }
-                  });
+                });
             }
         }
     }

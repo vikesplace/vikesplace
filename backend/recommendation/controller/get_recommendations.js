@@ -18,6 +18,21 @@ export const getRecommendations = async (req, res) => {
                     longitude: user_location.data.lat_long.coordinates[1]
                 } 
             });
+        //from the reponse.data, change all the keys to camelCase
+        response.data.forEach((listing) => {
+            listing.listingId = listing.listing_id;
+            listing.sellerId = listing.seller_id;
+            listing.buyerUsername = listing.buyer_username;
+            listing.listedAt = listing.listed_at;
+            listing.lastUpdatedAt = listing.last_updated_at;
+            listing.forCharity = listing.for_charity;
+            delete listing.listing_id;
+            delete listing.seller_id;
+            delete listing.buyer_username;
+            delete listing.listed_at;
+            delete listing.last_updated_at;
+            delete listing.for_charity;
+        });
         return res.json(response.data); 
     } catch (error) {
         console.error(error);

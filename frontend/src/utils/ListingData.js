@@ -13,10 +13,5 @@ export const categories = [
     { value: 'APPAREL', label:'Apparel'},
     { value: 'BEAUTY', label:'Beauty'},
     { value: 'HEALTH', label:'Health'},
-    {value:'OTHER', label:'Other'}
-];
-
-export const statuses = [
-    { value: 'AVAILABLE', label: 'AVAILABLE' },
-    { value: 'REMOVED', label: 'REMOVED' }
+    { value: 'OTHER', label:'Other'}
 ];

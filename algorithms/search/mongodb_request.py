@@ -14,6 +14,8 @@ class MongoDBRequest:
         self.MONGO_PASS = os.getenv("MONGO_INITDB_ROOT_PASSWORD")
         self.MONGO_DB = os.getenv("MONGO_INITDB_DATABASE")
         self.MONGO_URI = f"mongodb://{self.MONGO_USER}:{self.MONGO_PASS}@{self.MONGO_HOST}:{self.MONGO_PORT}/{self.MONGO_DB}?replicaSet=rs0"
+        # "mongodb://mongoadmin:secret@localhost:27017/vikesplace?replicaSet=rs0"
+
 
         # Create a connection to the MongoDB server
         self.client = motor.AsyncIOMotorClient(self.MONGO_URI)
@@ -38,17 +40,25 @@ class MongoDBRequest:
 
         # Using 'upsert', updates doc if it exits, otherwise create a new doc.
         result = await collection.update_one(
-            filter={"_id": user_id},
-            update={"$push": {
-                "search": {
-                    "query": query,
-                    "timestamp": datetime.datetime.now()
-                }
-            }},
-            upsert=True
+            filter={"$and":[{"_id": user_id}, {"search.query": query}]},
+            update={"$set": {
+                "search.$.query": query,
+                "search.$.timestamp": datetime.datetime.now()
+            }}
         )
 
-        if result.upserted_id:
+        if result.modified_count == 0:
+            result = await collection.update_one(
+                filter={"_id": user_id},
+                update={"$push": {
+                    "search": {
+                        "query": query,
+                        "timestamp": datetime.datetime.now()
+                    }
+                }},
+                upsert=True
+            )
+
             return result.upserted_id
         else:
             return result.matched_count
