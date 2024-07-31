@@ -145,6 +145,7 @@ function NavBar() {
                   <MenuIcon />
                 </IconButton>
                 <Menu
+                  data-testId="account-dropdown"
                   id="menu-appbar"
                   anchorEl={anchorElNav}
                   anchorOrigin={{
