@@ -14,8 +14,13 @@ import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import DataService from '../services/DataService.js';
-import { statuses } from '../utils/ListingData.js';
 import { Store } from 'react-notifications-component';
+
+const statuses = [
+    { value: 'AVAILABLE', label: 'AVAILABLE' },
+    { value: 'REMOVED', label: 'REMOVED' },
+    { value: 'SOLD', label: 'SOLD' }
+];
 
 export default function ManageListing({ listing }) {
     const dataService = new DataService();
@@ -68,7 +73,7 @@ export default function ManageListing({ listing }) {
 
     const handleStatusChange = (event) => {
         setStatus(event.target.value);
-        if (status !== 'REMOVED' && buyer) {
+        if (status !== 'SOLD' && buyer) {
             setBuyer("");
         }
     };
@@ -122,7 +127,7 @@ export default function ManageListing({ listing }) {
     }
 
     function validateBuyer() {
-        if ( status !== 'REMOVED' || buyer) {
+        if (status !== 'SOLD' || buyer) {
             if (buyer.includes(' ')) {
                 setBuyerError(true);
                 return false;
@@ -134,9 +139,44 @@ export default function ManageListing({ listing }) {
         }
     }
 
+    function validateStatus() {
+        if (currStatus === "REMOVED") {
+            Store.addNotification({
+                title: 'Status Error',
+                message: 'Cannot modify a deleted listing',
+                type: 'warning',
+                insert: 'top',
+                container: 'top-right',
+                animationIn: ["animated", "fadeIn"],
+                animationOut: ["animated", "fadeOut"],
+                dismiss: {
+                  duration: 5000,
+                  onScreen: true
+                }
+            });
+            return false;
+        } else if (status === "REMOVED") {
+            Store.addNotification({
+                title: 'Status Error',
+                message: 'Please use Delete button to remove listing',
+                type: 'warning',
+                insert: 'top',
+                container: 'top-right',
+                animationIn: ["animated", "fadeIn"],
+                animationOut: ["animated", "fadeOut"],
+                dismiss: {
+                  duration: 5000,
+                  onScreen: true
+                }
+            });
+            return false;
+        }
+        return true;
+    }
+
     async function handleSubmit (event) {
         event.preventDefault();
-        var validForm = validateTitle() && validatePrice() && validatePostalCode() && validateBuyer();
+        var validForm = validateTitle() && validatePrice() && validatePostalCode() && validateBuyer() && validateStatus();
 
         if (validForm) {
             const upperPostal = postalCode.toUpperCase();
@@ -302,7 +342,7 @@ export default function ManageListing({ listing }) {
                     </Select>
                   </FormControl>
                 </Grid>
-                {status === 'REMOVED' && 
+                {status === 'SOLD' && 
                 <Grid item xs={12}>
                     <TextField
                         required

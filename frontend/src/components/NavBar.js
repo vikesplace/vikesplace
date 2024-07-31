@@ -51,9 +51,9 @@ function NavBar() {
 
   async function handleLogout () {
     let response = await authService.logout();
-      if(response.status === 200){
+      if(response !== undefined && response.status === 200){
         navigate('/login');
-      }else{
+      } else {
         Store.addNotification({
           title: 'Logout Failed',
           message: 'Please try again',
