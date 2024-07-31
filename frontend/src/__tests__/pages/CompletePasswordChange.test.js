@@ -6,6 +6,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import CompletePasswordChange from '../../pages/CompletePasswordChange';
 
 // Mock useNavigate from react-router-dom
+
 jest.mock('react-router-dom', () => {
   const originalModule = jest.requireActual('react-router-dom');
   return {

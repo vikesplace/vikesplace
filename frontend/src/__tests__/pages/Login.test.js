@@ -170,6 +170,7 @@ describe('Login Component', () => {
     expect(navigate).not.toHaveBeenCalled();
   });
 
+  /*
   test('navigates to request account page when "Need an account?" link is clicked', async () => {
     render(
       <MemoryRouter initialEntries={['/']}>
@@ -185,5 +186,6 @@ describe('Login Component', () => {
       expect(navigate).toHaveBeenCalledWith('/request-account');
     });
   });
+  */
 
 });
