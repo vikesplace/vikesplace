@@ -65,7 +65,7 @@ describe('RequestAccount page', () => {
 
     // More flexible text matcher to account for potential wrapping
     expect(screen.queryByText((content, element) => {
-      return content.includes("Email is required");
+      return content.includes("Must be a valid @uvic.ca email");
     })).toBeInTheDocument();
   });
 

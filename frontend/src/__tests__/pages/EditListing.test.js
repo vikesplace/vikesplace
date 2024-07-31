@@ -17,7 +17,7 @@ describe('EditListing page', () => {
     jest.clearAllMocks();
   });
 
-  test('renders edit listing form with no listing', () => {
+  test('renders edit listing form with no listing', async () => {
     const id = 'invalid';
     jest.spyOn(require('react-router-dom'), 'useParams').mockReturnValue({ id: id });
     render(
@@ -27,7 +27,7 @@ describe('EditListing page', () => {
     );
 
     const withCredentials = true;
-    expect(mockAxios.get).toHaveBeenCalledWith(API_URL + 'listings/' + id, 
+    expect(mockAxios.get).toHaveBeenCalledWith(process.env.REACT_APP_BACK_API + 'listings/' + id, 
       {withCredentials}
     );
 
@@ -35,7 +35,9 @@ describe('EditListing page', () => {
     let responseObj = { status: 200, data: undefined };
     mockAxios.mockResponse(responseObj);
     
-    expect(screen.getByText('No Listing Available')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('No Listing Available')).toBeInTheDocument();
+    });
   });
 
   test('renders edit listing with a listing', async () => {
@@ -60,6 +62,6 @@ describe('EditListing page', () => {
     mockAxios.mockResponse(responseObj);
     await waitFor(() => {
       expect(screen.getByText('Edit Listing')).toBeInTheDocument();
-    })
+    });
   });
 });

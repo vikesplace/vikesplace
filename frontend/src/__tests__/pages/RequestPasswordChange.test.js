@@ -98,7 +98,7 @@ test('navigates to /check-email on successful form submission', async () => {
   mockAxios.mockResponse(responseObj);
 
   await waitFor(() => {
-      expect(navigate).toHaveBeenCalledWith('/check-email'); 
+    expect(navigate).toHaveBeenCalledWith('/check-email'); 
   });
 });
 
