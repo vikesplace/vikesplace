@@ -3,7 +3,6 @@ import React from 'react';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import SearchHistory from '../../pages/SearchHistory';
-import mockAxios from 'jest-mock-axios';
 import DataService from '../../services/DataService';
 
 jest.mock('../../services/DataService');
@@ -51,5 +50,4 @@ describe('SearchHistory Component', () => {
 
     await waitFor(() => expect(screen.getByText('query11')).toBeInTheDocument());
   });
- 
 });
