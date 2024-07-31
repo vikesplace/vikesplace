@@ -31,7 +31,7 @@ services:
   postgresql:
     image: postgis/postgis:latest
     volumes:
-      - ./postgresql:/docker-entrypoint-initdb.d
+      - ../backend/data_layer/data:/docker-entrypoint-initdb.d
       - psqldata:/var/lib/postgresql/data
     restart: always
     environment:
@@ -111,7 +111,7 @@ services:
 
   kafka-connect:
     build: 
-      context: /kafka-connect
+      context: ./kafka-connect
       dockerfile: Dockerfile
     ports:
       - "8083:8083"
@@ -176,7 +176,7 @@ services:
   
   neo4j-relations-kafka-connect:
     build: 
-      context: /neo4j-relations-kafka-connect
+      context: ./neo4j/neo4j-relations-kafka-connect
       dockerfile: Dockerfile
     restart: always
     depends_on:
@@ -438,6 +438,8 @@ services:
         condition: service_healthy
       mongodb:
         condition: service_healthy
+      neo4j:
+        condition: service_healthy
     build: 
       context: ./recommender
     volumes:
@@ -454,29 +456,13 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
       - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
-    entrypoint: 
-      [
-        "/bin/sh", "-c", 
-        "/recommender/wait-for-cert.sh \
-        && /recommender/wait-for-elastic.sh \
-        && fastapi run routes.py --port 8001"
-      ]
-
-  recommender_advanced:
-    depends_on:
-      neo4j:
-        condition: service_healthy
-    build: 
-      context: ./recommender_advanced
-      dockerfile: Dockerfile
-    ports:
-      - "8002:8002"
-    environment:
       - NEO4J_USER=${NEO4J_USER}
       - NEO4J_PASSWORD=${NEO4J_PASSWORD}
       - NEO4J_URI=${NEO4J_URI_DOCKER}
     entrypoint: 
       [
         "/bin/sh", "-c", 
-        "fastapi run routes.py --port 8002"
+        "/recommender/wait-for-cert.sh \
+        && /recommender/wait-for-elastic.sh \
+        && fastapi run routes.py --port 8001"
       ]

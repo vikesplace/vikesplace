@@ -7,6 +7,7 @@ import verifyAccountRouter from "./routes/verify_account.js";
 import jwt from "jsonwebtoken";
 import axiosConfig from "./config/axiosConfig.js";
 import cors from "cors" 
+import logout from "./routes/logout.js";
 
 const PORT = process.env.PORT || 5000;
 const jwtSecret = process.env.ACCESS_TOKEN_SECRET;
@@ -27,6 +28,7 @@ app.use("/request_account", registerRouter);
 app.use("/verify_account", identification, verifyAccountRouter);
 app.use("/request_reset", resetPassword);
 app.use("/verify_reset", identification, verifyPassword);
+app.use("/logout", logout)
 
 function identification(req, res, next) {
   const token = req.body.jwt;

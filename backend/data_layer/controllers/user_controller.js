@@ -12,8 +12,11 @@ const jwtSecret = process.env.ACCESS_TOKEN_SECRET;
 // Validation rules for login
 
 export const createUser = async (req, res) => {
-  const { username, email, password, location, items_sold, items_purchased } =
-    req.body;
+  const { username, email, password, location, items_sold, items_purchased } = req.body;
+
+  if (!location.match(/^[A-Z0-9]+$/)) {
+    return res.status(400).json({ message: 'Location must be uppercase and contain no spaces' });
+  }
 
   try {
     // Fetch coordinates for the provided postal code
@@ -139,6 +142,7 @@ export const getUserMe = async (req, res) => {
         ["joining_date", "joiningDate"],
         ["items_sold", "itemsSold"],
         ["items_purchased", "itemsPurchased"],
+        ["see_charity", "seeCharity"],
       ],
       where: { user_id: req.params.userId },
     });
@@ -166,6 +170,7 @@ export const getUserMe = async (req, res) => {
       joiningDate: user.dataValues.joiningDate,
       itemsSold: itemsSold[0].dataValues.ids || [],
       itemsBought: itemsBought[0].dataValues.ids || [],
+      seeCharity: user.dataValues.seeCharity,
     });
   } catch (err) {
     res.status(500).json({ message: err });
@@ -217,15 +222,28 @@ export const getUserLatLong = async (req, res) => {
 
 export const updateUserData = async (req, res) => {
     try {
-        const coordinate = { type: 'Point', coordinates: [req.body.lat_long.latitude,req.body.lat_long.longitude]}
-        const user = await User.findByPk(req.params.userId);
-        if (!user) {
-            console.error("User not found");
-            return res.status(500).send();
+        const updateFields = {};
+        for (const key in req.body) {
+          if (req.body[key] !== undefined) {
+            updateFields[key] = req.body[key];
+          }
         }
-        user.lat_long = coordinate;
-        user.location = req.body.location,
-        await user.save();
+
+        const coordinate = { type: 'Point', coordinates: [req.body.lat_long.latitude,req.body.lat_long.longitude]}
+        const location = req.body.location;
+        if (!location.match(/^[A-Z0-9]+$/)) {
+          return res.status(400).json({ message: 'Location must be uppercase and contain no spaces' });
+        }
+        updateFields.lat_long = coordinate;
+
+        updateFields.last_updated_at = Date.now();
+        updateFields.location = req.body.location;
+        
+        await User.update(updateFields, {
+          where: {
+            user_id: req.params.userId,
+          }
+        });
         res.json({});
     } catch (error) {
         if (error.name === 'SequelizeValidationError') {

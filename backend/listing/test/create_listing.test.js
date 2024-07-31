@@ -14,7 +14,7 @@ describe("Create Listing Tests", () => {
         listingId: 1,
         title: "test",
         price: 1,
-        location: "V9A1Y2",
+        location: "V8T1B4",
         status: "AVAILABLE",
       }
     };
@@ -42,7 +42,7 @@ describe("Create Listing Tests", () => {
       body: {
         title: "test",
         price: 1,
-        location: "V9A1Y2",
+        location: "V8T1B4",
         category: "ELECTRONICS",
       },
     };
@@ -74,7 +74,7 @@ describe("Create Listing Tests", () => {
       body: {
         title: "test",
         price: 0,
-        location: "V9A1Y2",
+        location: "V8T1B4",
         category: "ELECTRONICS",
       },
     };
@@ -132,7 +132,7 @@ describe("Create Listing Tests", () => {
       body: {
         title: "test",
         price: -1,
-        location: "V9A1Y2",
+        location: "V8T1B4",
         category: "ELECTRONICS",
       },
     };

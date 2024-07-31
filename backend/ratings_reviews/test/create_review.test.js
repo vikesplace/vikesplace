@@ -19,7 +19,6 @@ describe("Create Review Tests", () => {
                         listing_id: 1,
                         timestamp: "2024-07-08T08:08:13.414Z",
                         user_id: 1,
-                        rating_id: 1
                       },
                       status: 200,
                 })
@@ -56,12 +55,11 @@ describe("Create Review Tests", () => {
         axios.post.mockImplementation(() =>
             Promise.resolve({
                 data: {
-                    listing_review_id: 1,
+                    review_id: 1,
                     review_content: "test",
-                    reviewed_listing_id: 1,
-                    timestamp: "2021-04-14T22:04:59.000Z",
-                    review_user_id: 1,
-                    listing_rating_id: 1,
+                    listing_id: 1,
+                    timestamp: "2024-07-08T08:08:13.414Z",
+                    user_id: 1,
                 },
                 status: 200,
             })
@@ -77,8 +75,9 @@ describe("Create Review Tests", () => {
 
         const mockReq = {
             body: {
-                listing_rating_id: 1,
                 review_content: "test",
+                listingReviewId: 1,
+                reviewedListingId: 1,
             },
             params: {
                 listingId: 1,

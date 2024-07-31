@@ -68,8 +68,6 @@ function VerifyAccount() {
         } else if (!format.test(username)) {
             setUsernameError("Must be 6-20 characters (allow: letters, numbers, _, @)");
             return false;
-        } else if (usernameError === "This username has already been chosen") {
-            return false;
         } else {
             setUsernameError("");
             return true;
@@ -117,7 +115,7 @@ function VerifyAccount() {
 
         if (validForm) {
             const upperPostal = postalCode.toUpperCase();
-            let response = authService.verify(jwt, username, password, upperPostal);
+            let response = await authService.verify(jwt, username, password, upperPostal);
             if (response === undefined) {
                 Store.addNotification({
                     title: 'Connection Error!',
@@ -202,6 +200,7 @@ function VerifyAccount() {
                     <TextField
                         required
                         fullWidth
+                        data-testid="password-input"
                         name="password"
                         label="Password"
                         type="password"
@@ -214,15 +213,17 @@ function VerifyAccount() {
                         helperText={
                             passwordError ? "Must be 8+ characters, with at least 1 symbol, number, lowercase letter, and uppercase letter" : ""
                         }
+                        
                     />
                 </Grid>
                 <Grid item xs={12}>
                     <TextField
                         required
                         fullWidth
+                        data-testid="confirm-password-input"
                         name="confirm-password"
                         label="Confirm Password"
-                        type="password"
+                        type="confirm-password"
                         id="confirm-password"
                         autoComplete="new-password"
                         value={confirmPass}
@@ -232,6 +233,7 @@ function VerifyAccount() {
                         helperText={
                             confirmPassError ? "Must match password" : ""
                         }
+                        
                     />
                 </Grid>
                 <Grid item xs={12}>

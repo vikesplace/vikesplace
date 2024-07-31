@@ -8,6 +8,6 @@ const router = express.Router();
 router.get("/:chatId", getChatData);
 
 // create a new chat with seller of a listing
-router.post("/:listingId", createChat);
+router.post("/", createChat);
 
 export default router;
