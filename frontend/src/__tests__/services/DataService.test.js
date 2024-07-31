@@ -2,7 +2,7 @@ import '@testing-library/jest-dom/extend-expect';
 import DataService from '../../services/DataService';
 import mockAxios from 'jest-mock-axios';
 
-const API_URL = "http://localhost:8080/";
+const API_URL = process.env.REACT_APP_BACK_API;
 
 describe('AuthService', () => {
   afterEach(() => {
@@ -422,7 +422,7 @@ describe('AuthService', () => {
     dataService.search(query)
         .catch(catchFn);
 
-    expect(mockAxios.get).toHaveBeenCalledWith(API_URL + 'search?query=' + query,
+    expect(mockAxios.get).toHaveBeenCalledWith(API_URL + 'search?search=' + query,
       {withCredentials}
     );
 
@@ -441,7 +441,7 @@ describe('AuthService', () => {
     const withCredentials = true;
     dataService.search(query);
 
-    expect(mockAxios.get).toHaveBeenCalledWith(API_URL + 'search?query=' + query,
+    expect(mockAxios.get).toHaveBeenCalledWith(API_URL + 'search?search=' + query,
       {withCredentials}
     );
 
@@ -697,7 +697,7 @@ describe('AuthService', () => {
     dataService.getChats()
         .catch(catchFn);
 
-    expect(mockAxios.get).toHaveBeenCalledWith(API_URL + 'chats',
+    expect(mockAxios.get).toHaveBeenCalledWith(API_URL + 'messages/chats',
       {withCredentials}
     );
 
@@ -715,7 +715,7 @@ describe('AuthService', () => {
     const withCredentials = true;
     dataService.getChats();
 
-    expect(mockAxios.get).toHaveBeenCalledWith(API_URL + 'chats',
+    expect(mockAxios.get).toHaveBeenCalledWith(API_URL + 'messages/chats',
       {withCredentials}
     );
 
@@ -729,12 +729,13 @@ describe('AuthService', () => {
 
     let catchFn = jest.fn();
 
-    const id = 21;
+    const listingId = 21;
     const withCredentials = true;
-    dataService.createNewChat(id)
+    dataService.createChat(listingId)
         .catch(catchFn);
 
-    expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'chats/' + id,
+    expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'chats/',
+      {listingId},
       {withCredentials}
     );
 
@@ -749,11 +750,12 @@ describe('AuthService', () => {
   test('create new chat fails', async () => {
     const dataService = new DataService();
 
-    const id = 21;
+    const listingId = 21;
     const withCredentials = true;
-    dataService.createNewChat(id);
+    dataService.createChat(listingId);
 
-    expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'chats/' + id,
+    expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'chats/',
+      {listingId},
       {withCredentials}
     );
 

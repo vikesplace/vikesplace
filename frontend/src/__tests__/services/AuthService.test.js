@@ -2,7 +2,7 @@ import '@testing-library/jest-dom/extend-expect';
 import AuthService from '../../services/AuthService';
 import mockAxios from 'jest-mock-axios';
 
-const API_URL = "http://localhost:8080/";
+const API_URL = process.env.REACT_APP_BACK_API;
 
 describe('AuthService', () => {
   afterEach(() => {
@@ -56,7 +56,9 @@ describe('AuthService', () => {
 
     authService.logout();
     
-    expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'logout', {});
+    const withCredentials = true;
+    expect(mockAxios.get).toHaveBeenCalledWith(API_URL + 'logout', 
+      {withCredentials});
 
     // simulating a server response
     let responseObj = { status: 200 };
@@ -68,7 +70,9 @@ describe('AuthService', () => {
 
     authService.logout();
 
-    expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'logout', {});
+    const withCredentials = true;
+    expect(mockAxios.get).toHaveBeenCalledWith(API_URL + 'logout', 
+      {withCredentials});
 
     // simulating an error response with empty response
     const err = {
