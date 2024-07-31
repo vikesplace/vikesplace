@@ -58,7 +58,7 @@ function ViewListings() {
 
     const fetchListings = async () => {
       setNoListingMessage("Loading...");
-      const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder);
+      const response = await dataService.getSortedListings();
       if (response === undefined) {
         Store.addNotification({
           title: 'Connection Error!',
@@ -102,7 +102,7 @@ function ViewListings() {
     const search = async () => {
       setNoListingMessage("Loading...");
       setNoUserMessage("Loading...");
-      const response = await dataService.search(searchQuery, priceRange.min, priceRange.max, sortCategory, sortOrder, statusFilter)
+      const response = await dataService.search(searchQuery)
 
       if (response === undefined) {
         Store.addNotification({
@@ -160,10 +160,8 @@ function ViewListings() {
     } else {
       search();
     }
-
     fetchLocation();
-
-  }, [priceRange, statusFilter, sortCategory, sortOrder, searchQuery, dataService]);
+  }, [searchQuery, dataService])
 
   const handleListingClick = (id) => {
     navigate(`/listings/${id}`);
