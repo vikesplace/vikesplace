@@ -59,11 +59,12 @@ describe('ViewCharities', () => {
   test('displays charities correctly and handles pagination', async () => {
     const charities = [
       { name: 'Charity 1', numListings: 5, endDate: '2024-12-31', fund: 1000, status: 'OPEN' },
-      { name: 'Charity 2', numListings: 3, endDate: '2024-11-30', fund: 500, status: 'CLOSED' },
+      { name: 'Charity 2', numListings: 3, endDate: '2024-11-30', fund: 500, status: 'OPEN' },
       { name: 'Charity 3', numListings: 4, endDate: '2024-10-15', fund: 800, status: 'OPEN' },
-      { name: 'Charity 4', numListings: 6, endDate: '2024-09-20', fund: 1200, status: 'CLOSED' },
+      { name: 'Charity 4', numListings: 6, endDate: '2024-09-20', fund: 1200, status: 'OPEN' },
       { name: 'Charity 5', numListings: 2, endDate: '2024-08-25', fund: 300, status: 'OPEN' },
-      { name: 'Charity 6', numListings: 7, endDate: '2024-07-18', fund: 1500, status: 'CLOSED' },
+      { name: 'Charity 6', numListings: 7, endDate: '2024-07-18', fund: 1500, status: 'OPEN' },
+      { name: 'Charity 7', numListings: 7, endDate: '2024-07-18', fund: 1500, status: 'OPEN' },
     ];
 
     mockDataService.getCharities.mockResolvedValue({
@@ -80,7 +81,7 @@ describe('ViewCharities', () => {
 
     fireEvent.click(screen.getByText('2'));  
     await waitFor(() => {
-      expect(screen.getByText('Charity 6')).toBeInTheDocument();
+      expect(screen.getByText('Charity 7')).toBeInTheDocument();
     });
   });
 
