@@ -18,9 +18,8 @@ function Home() {
 
     const fetchRecommendations = async () => {
       const response = await dataService.getRecommendations();
-      console.log(response.data);
   
-      if (response.status !== 200) {
+      if ( response === undefined ||response.status !== 200) {
         setRecommendations([]);
       } else if (response.status === 200) {
         setRecommendations(response.data);

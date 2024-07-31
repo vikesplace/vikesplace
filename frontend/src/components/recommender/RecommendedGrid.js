@@ -16,7 +16,6 @@ function RecommendedGrid({ data}) {
             <Grid item xs={12} sm={6} md={6} lg={3} key={item.listingId} >
               <div key={item.listingId} >
               <RecommendedItem
-              // key = {item.id}
                 id={item.listingId}
                 title={item.title}
                 price={item.price}
