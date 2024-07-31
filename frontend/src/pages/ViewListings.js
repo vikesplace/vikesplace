@@ -99,20 +99,6 @@ function ViewListings() {
       setLocation(response !== undefined ? response.data.location : "Please Reload");
     };
 
-
-    //if there is a search query run that otherwise just fetchlistings
-
-    if (!searchQuery) {
-      fetchListings();
-    }
-
-    fetchLocation();
-
-  }, [priceRange, statusFilter, sortCategory, sortOrder, searchQuery, dataService]);
-
-
-  // Call search endpoint 
-  useEffect(() => {
     const search = async () => {
       setNoListingMessage("Loading...");
       setNoUserMessage("Loading...");
@@ -154,17 +140,37 @@ function ViewListings() {
       setNoListingMessage("No Listings Available");
     }
 
-    if (searchQuery) {
+
+    //if there is a search query run that otherwise just fetchlistings
+    Store.addNotification({
+      title: 'Searching...',
+      message: 'Please wait',
+      type: 'info',
+      insert: 'top',
+      container: 'top-right',
+      animationIn: ["animated", "fadeIn"],
+      animationOut: ["animated", "fadeOut"],
+      dismiss: {
+        duration: 5000,
+        onScreen: true
+      }
+    });
+    if (!searchQuery) {
+      fetchListings();
+    } else {
       search();
     }
-  }, [searchQuery, priceRange.min, priceRange.max, sortCategory, sortOrder, statusFilter, dataService])
+
+    fetchLocation();
+
+  }, [priceRange, statusFilter, sortCategory, sortOrder, searchQuery, dataService]);
 
   const handleListingClick = (id) => {
     navigate(`/listings/${id}`);
   };
+
   const handleUserClick = (id) => {
-    //TODO: Need to navigate to the users profile 
-    console.log(id);
+    navigate(`/sellers/${id}`);
   }
 
   const handleTabchange = (event, newValue) => {
@@ -172,6 +178,19 @@ function ViewListings() {
   }
 
   const handleSortChange = async (event) => {
+    Store.addNotification({
+      title: 'Loading...',
+      message: 'Please wait',
+      type: 'info',
+      insert: 'top',
+      container: 'top-right',
+      animationIn: ["animated", "fadeIn"],
+      animationOut: ["animated", "fadeOut"],
+      dismiss: {
+        duration: 5000,
+        onScreen: true
+      }
+    });
     const category = event.target.value;
     setSortCategory(category);
 
@@ -251,6 +270,19 @@ function ViewListings() {
   };
 
   const handleSortOrderClick = async () => {
+    Store.addNotification({
+      title: 'Loading...',
+      message: 'Please wait',
+      type: 'info',
+      insert: 'top',
+      container: 'top-right',
+      animationIn: ["animated", "fadeIn"],
+      animationOut: ["animated", "fadeOut"],
+      dismiss: {
+        duration: 5000,
+        onScreen: true
+      }
+    });
     const currOrder = sortOrder;
     setSortOrder(!currOrder);
 
@@ -339,6 +371,19 @@ function ViewListings() {
   };
 
   const applyFilters = async () => {
+    Store.addNotification({
+      title: 'Loading...',
+      message: 'Please wait',
+      type: 'info',
+      insert: 'top',
+      container: 'top-right',
+      animationIn: ["animated", "fadeIn"],
+      animationOut: ["animated", "fadeOut"],
+      dismiss: {
+        duration: 5000,
+        onScreen: true
+      }
+    });
     setNoListingMessage("Loading...");
     if (!searchQuery) {
       const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder);
@@ -573,7 +618,7 @@ function ViewListings() {
           }
           {users !== undefined && value === "2" && paginatedUsers.map((user) => (
             <div key={user.userId} onClick={() => handleUserClick(user.userId)}>
-              <UserCard id={user.userId} username={user.username}/>
+              <UserCard username={user.username}/>
               <Box mt={2}/>
             </div>
           ))}
