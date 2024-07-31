@@ -11,7 +11,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: jest.fn(),
 }));
 
-describe('ListingCard component', () => {
+describe('UsersCard component', () => {
   let useNavigateMock;
 
   beforeEach(() => {

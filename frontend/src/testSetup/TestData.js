@@ -26,3 +26,11 @@ export const SAMPLE_SELLER = {
   username: "user123",
   id: 123
 };
+
+export const SAMPLE_CHARITY = { 
+  name: 'Charity 1', 
+  numListings: 5, 
+  endDate: '2024-07-15', 
+  funds: 2000, 
+  status: 'ACTIVE' 
+};
