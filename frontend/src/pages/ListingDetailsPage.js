@@ -10,6 +10,7 @@ import { Store } from 'react-notifications-component';
 const ListingDetailsPage = () => {
   const { id } = useParams();
   const [listing, setListing] = useState(undefined);
+  const [noListingMessage, setNoListingMessage] = useState("Loading...");
 
   useEffect(() => {
     async function getMyListings() {
@@ -46,6 +47,7 @@ const ListingDetailsPage = () => {
           }
         });
       }
+      setNoListingMessage("No Listing Available");
     }
 
     getMyListings();
@@ -54,7 +56,7 @@ const ListingDetailsPage = () => {
   if (listing === undefined) {
     return <div>
       <Typography align="center" variant='h6' sx={{mt: 2}}>
-        No Listing Found
+        {noListingMessage}
       </Typography>
     </div>;
   }

@@ -21,6 +21,7 @@ function ViewCharities() {
   const [charities, setCharities] = useState([]);
   const [isViewingCharity, setIsViewingCharity] = useState(false);
   const [viewCharity, setViewCharity] = useState({});
+  const [noCharityMessage, setNoCharityMessage] = useState("Loading...");
   const itemsPerPage = 5;
 
   useEffect(() => {
@@ -58,6 +59,7 @@ function ViewCharities() {
           }
         });
       }
+      setNoCharityMessage("No Charities Available");
     }
 
     getCharities();
@@ -102,13 +104,13 @@ function ViewCharities() {
       <Container>
         <Box mt={2}>
           {sortedCharities.activeEvent && (
-            <>
+            <div key="current-event-section">
               <Typography variant="h6" gutterBottom>
                 Current Event:
               </Typography>
-              <div onClick={() => handleCharityClick(sortedCharities.activeEvent)}>
+              <div  key={sortedCharities.activeEvent.name.replace(" ", "-")}
+                onClick={() => handleCharityClick(sortedCharities.activeEvent)}>
                 <CharityCard
-                  id={sortedCharities.activeEvent.charityId}
                   name={sortedCharities.activeEvent.name}
                   numListings={sortedCharities.activeEvent.numListings}
                   endDate={sortedCharities.activeEvent.endDate.substring(0, 10)}
@@ -119,18 +121,17 @@ function ViewCharities() {
               </div>
               <br />
               <br />
-            </>
+            </div>
           )}
 
           {sortedCharities.futureEvents.length > 0 && (
-            <>
+            <div key="future-events-section">
               <Typography variant="h6" gutterBottom>
                 Future Events:
               </Typography>
               {paginatedFutureCharities.map((charity) => (
-                <div key={charity.charityId} onClick={() => handleCharityClick(charity)}>
+                <div key={charity.name.replace(" ", "-")} onClick={() => handleCharityClick(charity)}>
                   <CharityCard
-                    id={charity.charityId}
                     name={charity.name}
                     numListings={charity.numListings}
                     endDate={charity.endDate.substring(0, 10)}
@@ -146,18 +147,17 @@ function ViewCharities() {
                 onChange={handleFuturePageChange} 
                 sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}
               />
-            </>
+            </div>
           )}
 
           {sortedCharities.pastEvents.length > 0 && (
-            <>
+            <div key="past-events-section">
               <Typography variant="h6" gutterBottom>
                 Past Events:
               </Typography>
               {paginatedPastCharities.map((charity) => (
-                <div key={charity.charityId} onClick={() => handleCharityClick(charity)}>
+                <div key={charity.name.replace(" ", "-")} onClick={() => handleCharityClick(charity)}>
                   <CharityCard
-                    id={charity.charityId}
                     name={charity.name}
                     numListings={charity.numListings}
                     endDate={charity.endDate.substring(0, 10)}
@@ -173,14 +173,14 @@ function ViewCharities() {
                 onChange={handlePastPageChange} 
                 sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}
               />
-            </>
+            </div>
           )}
 
           {(sortedCharities.activeEvent === undefined &&
             sortedCharities.futureEvents.length === 0 &&
             sortedCharities.pastEvents.length === 0) && 
             <Typography align="center" variant='h6'>
-              No Charities Available
+              {noCharityMessage}
             </Typography>
           }
         </Box>
