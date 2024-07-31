@@ -5,6 +5,7 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import Login from '../../pages/Login';
 import AuthService from '../../services/AuthService';
 import { Store } from 'react-notifications-component';
+import mockAxios from 'jest-mock-axios';
 
 // Mock useNavigate from react-router-dom
 jest.mock('react-router-dom', () => ({
@@ -30,6 +31,7 @@ describe('Login Component', () => {
   });
 
   afterEach(() => {
+    mockAxios.reset();
     jest.clearAllMocks();
   });
 
@@ -166,11 +168,11 @@ describe('Login Component', () => {
 
     fireEvent.submit(screen.getByTestId('form'));
 
-
     expect(navigate).not.toHaveBeenCalled();
   });
 
   /*
+  TODO
   test('navigates to request account page when "Need an account?" link is clicked', async () => {
     render(
       <MemoryRouter initialEntries={['/']}>

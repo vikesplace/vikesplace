@@ -2,7 +2,7 @@ import React from 'react';
 import { render, fireEvent, screen, within } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { BrowserRouter as Router } from 'react-router-dom';
-import SearchBar from '../../components/SearchBar';
+import SearchBar from '../../components/searchbar/SearchBar.js';
 
 // Mock useNavigate from react-router-dom
 jest.mock('react-router-dom', () => ({
