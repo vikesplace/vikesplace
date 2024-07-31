@@ -6,8 +6,6 @@ import ManageListings from '../../pages/ManageListings';
 import { SAMPLE_LISTING_LIST } from '../../testSetup/TestData';
 import mockAxios from 'jest-mock-axios';
 
-const API_URL = "http://localhost:8080/";
-
 describe('ManageListings page', () => {
   beforeEach(() => {
     render(
@@ -23,7 +21,7 @@ describe('ManageListings page', () => {
 
   test('renders listing cards', async () => {
     const withCredentials = true;
-    expect(mockAxios.get).toHaveBeenCalledWith(API_URL + 'listings/me', 
+    expect(mockAxios.get).toHaveBeenCalledWith(process.env.REACT_APP_BACK_API + 'listings/me', 
       {withCredentials}
     );
 

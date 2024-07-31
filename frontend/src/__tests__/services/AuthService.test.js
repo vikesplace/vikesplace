@@ -81,7 +81,7 @@ describe('AuthService', () => {
     const authService = new AuthService();
 
     const email = "test@uvic.ca";
-    const callback = "http://localhost:3000/verify-account/";
+    const callback = process.env.REACT_APP_FRONT_URL + "verify-account/";
     authService.register(email);
 
     expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'request_account', 
@@ -97,7 +97,7 @@ describe('AuthService', () => {
     const authService = new AuthService();
 
     const email = "test@uvic.ca";
-    const callback = "http://localhost:3000/verify-account/";
+    const callback = process.env.REACT_APP_FRONT_URL + "verify-account/";
     authService.register(email);
 
     expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'request_account', 
@@ -161,7 +161,7 @@ describe('AuthService', () => {
     const authService = new AuthService();
 
     const email = "test@uvic.ca";
-    const callback = "http://localhost:3000/password-update/";
+    const callback = process.env.REACT_APP_FRONT_URL + "password-update/";
     authService.requestPasswordChange(email);
     
     expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'request_reset', 
@@ -177,7 +177,7 @@ describe('AuthService', () => {
     const authService = new AuthService();
 
     const email = "test@uvic.ca";
-    const callback = "http://localhost:3000/password-update/";
+    const callback = process.env.REACT_APP_FRONT_URL + "password-update/";
     authService.requestPasswordChange(email);
     
     expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'request_reset', 

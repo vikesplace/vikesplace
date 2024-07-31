@@ -6,8 +6,6 @@ import EditListing from '../../pages/EditListing';
 import { SAMPLE_LISTING } from '../../testSetup/TestData';
 import mockAxios from 'jest-mock-axios';
 
-const API_URL = "http://localhost:8080/";
-
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useParams: jest.fn(),
@@ -37,7 +35,7 @@ describe('EditListing page', () => {
     let responseObj = { status: 200, data: undefined };
     mockAxios.mockResponse(responseObj);
     
-    expect(screen.getByText('No Listing Found')).toBeInTheDocument();
+    expect(screen.getByText('No Listing Available')).toBeInTheDocument();
   });
 
   test('renders edit listing with a listing', async () => {
@@ -50,7 +48,7 @@ describe('EditListing page', () => {
     );
 
     const withCredentials = true;
-    expect(mockAxios.get).toHaveBeenCalledWith(API_URL + 'listings/' + id, 
+    expect(mockAxios.get).toHaveBeenCalledWith(process.env.REACT_APP_BACK_API + 'listings/' + id, 
       {withCredentials}
     );
 

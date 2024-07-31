@@ -6,8 +6,6 @@ import SearchHistory from '../../pages/SearchHistory';
 import { SAMPLE_SEARCHES } from '../../testSetup/TestData';
 import mockAxios from 'jest-mock-axios';
 
-const API_URL = "http://localhost:8080/";
-
 describe('SeachHistory page', () => {
   afterEach(() => {
     mockAxios.reset();
@@ -22,7 +20,7 @@ describe('SeachHistory page', () => {
     expect(searchHistoryElement).toBeInTheDocument();
 
     const withCredentials = true;
-    expect(mockAxios.get).toHaveBeenCalledWith(API_URL + 'users/me/searches', 
+    expect(mockAxios.get).toHaveBeenCalledWith(process.env.REACT_APP_BACK_API + 'users/me/searches', 
       {withCredentials}
     );
 

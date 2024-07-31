@@ -6,8 +6,6 @@ import RequestAccount from '../../pages/RequestAccount';
 import { MemoryRouter } from 'react-router-dom';
 import mockAxios from 'jest-mock-axios';
 
-const API_URL = "http://localhost:8080/";
-
 // Mock useNavigate from react-router-dom
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -85,8 +83,8 @@ describe('RequestAccount page', () => {
     fireEvent.change(emailInput, { target: { value: email } });
     fireEvent.click(submitButton);
 
-    const callback = "http://localhost:3000/verify-account/";
-    expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'request_account', 
+    const callback = process.env.REACT_APP_FRONT_URL + "verify-account/";
+    expect(mockAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_BACK_API + 'request_account', 
       {email, callback}
     );
 

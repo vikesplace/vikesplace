@@ -10,5 +10,6 @@ module.exports = {
     },
     collectCoverageFrom: ["./src/**"],
     coverageReporters: ['html'],
-    coverageDirectory: './coverage'
+    coverageDirectory: './coverage',
+    setupFiles: ['dotenv/config']
 }

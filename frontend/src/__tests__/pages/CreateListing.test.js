@@ -5,8 +5,6 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import CreateListing from '../../pages/CreateListing';
 import mockAxios from 'jest-mock-axios';
 
-const API_URL = "http://localhost:8080/";
-
 // Mock useNavigate from react-router-dom
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
@@ -156,7 +154,7 @@ describe('CreateListing page', () => {
     
     const status = "AVAILABLE";
     const withCredentials = true;
-    expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'listings', 
+    expect(mockAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_BACK_API + 'listings', 
       {title, price, status, location, category},
       {withCredentials}
     );

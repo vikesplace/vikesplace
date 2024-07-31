@@ -7,8 +7,6 @@ import AuthService from '../../services/AuthService';
 import { Store } from 'react-notifications-component';
 import mockAxios from 'jest-mock-axios';
 
-const API_URL = "http://localhost:8080/";
-
 // Mock useNavigate from react-router-dom
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -128,7 +126,7 @@ describe('Login Component', () => {
     fireEvent.submit(screen.getByTestId('form'));
 
     const withCredentials = true;
-    expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'login', 
+    expect(mockAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_BACK_API + 'login', 
       {username, password}, 
       {withCredentials}
     );

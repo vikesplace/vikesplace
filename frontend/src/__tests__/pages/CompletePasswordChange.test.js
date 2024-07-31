@@ -6,10 +6,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import CompletePasswordChange from '../../pages/CompletePasswordChange';
 import mockAxios from 'jest-mock-axios';
 
-const API_URL = "http://localhost:8080/";
-
 // Mock useNavigate from react-router-dom
-
 jest.mock('react-router-dom', () => {
   const originalModule = jest.requireActual('react-router-dom');
   return {
@@ -83,7 +80,7 @@ describe('CompletePasswordChange Component', () => {
     fireEvent.click(submitButton);
 
     // Note: usually called with jwt as well, but mocked can't get jwt from cookie automatically
-    expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'verify_reset', 
+    expect(mockAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_BACK_API + 'verify_reset', 
       {password}
     );
 

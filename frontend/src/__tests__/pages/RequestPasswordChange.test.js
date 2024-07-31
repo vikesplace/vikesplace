@@ -5,8 +5,6 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import RequestPasswordChange from '../../pages/RequestPasswordChange';
 import mockAxios from 'jest-mock-axios';
 
-const API_URL = "http://localhost:8080/";
-
 jest.mock('react-router-dom', () => {
     const originalModule = jest.requireActual('react-router-dom');
     return {
@@ -89,9 +87,9 @@ test('navigates to /check-email on successful form submission', async () => {
   fireEvent.click(submitButton);
   
   const email = "test@uvic.ca";
-  const callback = "http://localhost:3000/password-update/";
+  const callback = process.env.REACT_APP_FRONT_URL + "password-update/";
 
-  expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'request_reset', 
+  expect(mockAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_BACK_API + 'request_reset', 
     {email, callback}
   );
 

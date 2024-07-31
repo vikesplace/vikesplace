@@ -4,9 +4,6 @@ import '@testing-library/jest-dom/extend-expect';
 import { MemoryRouter } from 'react-router-dom';
 import VerifyAccount from '../../pages/VerifyAccount';
 import mockAxios from 'jest-mock-axios';
-import { useNavigate } from 'react-router';
-
-const API_URL = "http://localhost:8080/";
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -131,7 +128,7 @@ describe('VerifyAccount Component', () => {
     expect(screen.queryByText('Please enter a valid postal code with format A1A1A1')).not.toBeInTheDocument();
   });
 
-  test('submits the form with valid data', () => {
+  test('submits the form with valid data', async () => {
     render(
       <MemoryRouter>
         <VerifyAccount />
@@ -155,7 +152,7 @@ describe('VerifyAccount Component', () => {
 
     fireEvent.click(submitButton);
     const jwt = "ThisRepresentsAJWT1234";
-    expect(mockAxios.post).toHaveBeenCalledWith(API_URL + 'verify_account', 
+    expect(mockAxios.post).toHaveBeenCalledWith(process.env.REACT_APP_BACK_API + 'verify_account', 
       {jwt, username, password, location}
     );
 

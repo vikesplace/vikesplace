@@ -5,8 +5,6 @@ import UserProfile from '../../pages/UserProfile';
 import { SAMPLE_USER_DATA } from '../../testSetup/TestData';
 import mockAxios from 'jest-mock-axios';
 
-const API_URL = "http://localhost:8080/";
-
 describe('UserProfile Component', () => {
   afterEach(() => {
     mockAxios.reset();
@@ -20,7 +18,7 @@ describe('UserProfile Component', () => {
     render(<UserProfile />);
 
     const withCredentials = true;
-    expect(mockAxios.get).toHaveBeenCalledWith(API_URL + 'users/me',
+    expect(mockAxios.get).toHaveBeenCalledWith(process.env.REACT_APP_BACK_API + 'users/me',
       {withCredentials}
     );
 
