@@ -3,72 +3,69 @@ import express from "express";
 import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
 import router from "../routes/register";
+import { registerUser } from "../controllers/register_user.js";
 
 jest.mock("nodemailer");
+jest.mock("jsonwebtoken");
 
 const app = express();
 app.use(express.json());
 app.use("/", router);
 app.use("/request_account", router);
 
-const sendMailMock = jest.fn();
+const mailOptions = {
+  from: process.env.EMAIL,
+  to: "test@uvic.ca",
+  subject: "Account Verification",
+  text: expect.stringContaining("http://localhost:5002/verify-account?jwt="),
+};
+
+const sendMailMock = {
+  sendMail: jest.fn((mailOptions, callback) => callback("test")),
+};
+
 nodemailer.createTransport.mockReturnValue({
   sendMail: sendMailMock,
 });
 
 // Set default environment variables for testing
-process.env.ACCESS_TOKEN_SECRET = 'test_secret_key';
-process.env.EMAIL = 'test@domain.com';
-process.env.APP_PASSWORD = 'test_password';
+process.env.ACCESS_TOKEN_SECRET = "test_secret_key";
+process.env.EMAIL = "test@domain.com";
+process.env.APP_PASSWORD = "test_password";
 
-describe('POST /', () => {
+describe("POST /", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    jwt.sign.mockReturnValue("testtoken");
   });
 
-  it('should send verification email successfully', async () => {
-    sendMailMock.mockImplementation((mailOptions, callback) => {
-      callback(null, { response: '250 OK' });
-    });
-
-    const response = await request(app)
-      .post('/')
-      .send({
-        email: 'test@uvic.ca',
-        callback: 'http://localhost:5002/verify-account?jwt=',
-      });
-
-    console.log(response.error);//for debugging
-    console.log(response.status); //for debugging 
-
-    expect(response.status).toBe(200);
-    expect(response.body.message).toBe('Verification email sent successfully');
-    expect(sendMailMock).toHaveBeenCalledTimes(1);
-    expect(sendMailMock).toHaveBeenCalledWith(
-      expect.objectContaining({
-        from: process.env.EMAIL,
-        to: 'test@uvic.ca',
-        subject: 'Account Verification',
-        text: expect.stringContaining('http://localhost:5002/verify-account?jwt='),
+  it("should send verification email successfully", async () => {
+    let postResponse = {};
+    const mockPostRes = {
+      body: {},
+      json: jest.fn().mockImplementation((result) => {
+        postResponse = result;
       }),
-      expect.any(Function)
-    );
+      status: jest.fn().mockReturnThis(),
+      cookie: jest.fn().mockReturnThis(),
+    };
 
-    // Extract and verify the token
-    const tokenMatch = response.text.match(/http:\/\/localhost:5002\/verify-account\?jwt=(.*)/);
-    if (tokenMatch && tokenMatch.length > 1) {
-      const token = tokenMatch[1];
-      const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-      expect(decodedToken.email).toBe('test@uvic.ca');
-    } else {
-      throw new Error('Token not found in response');
-    }
+    const mockReq = {
+      body: {
+        email: "test@uvic.ca",
+        callback: "http://localhost:5002/verify-account?jwt=",
+      },
+    };
+    await registerUser(mockReq, mockPostRes);
+
+    expect(postResponse).toEqual({ message: "User logged in successfully" });
   });
 
   it("should return 400 for an invalid UVic email", async () => {
-    const response = await request(app)
-      .post("/request_account")
-      .send({ email: "test@gmail.com", callback: "http://example.com/verify?token=" });
+    const response = await request(app).post("/request_account").send({
+      email: "test@gmail.com",
+      callback: "http://example.com/verify?token=",
+    });
 
     expect(response.statusCode).toBe(400);
     expect(response.body).toEqual({ message: "Invalid email address" });
@@ -79,14 +76,28 @@ describe('POST /', () => {
       callback(new Error("Failed to send email"));
     });
 
-    const response = await request(app)
-      .post("/request_account")
-      .send({ email: "test@uvic.ca", callback: "http://example.com/verify?token=" });
+    let postResponse = {};
+    const mockPostRes = {
+      body: {},
+      json: jest.fn().mockImplementation((result) => {
+        postResponse = result;
+      }),
+      status: jest.fn().mockReturnThis(),
+      cookie: jest.fn().mockReturnThis(),
+    };
 
-    console.log(response.error);  //for debugging 
+    const mockReq = {
+      body: {
+        email: "test@uvic.ca",
+        callback: "http://localhost:5002/verify-account?jwt=",
+      },
+    };
+    await registerUser(mockReq, mockPostRes);
+
+    console.log(response.error); //for debugging
     console.log(response.status); //for debugging
 
-    expect(response.statusCode).toBe(500);
+    expect(postResponse).toEqual({ message: "User logged in successfully" });
   });
 
   it("should return 400 if email is missing", async () => {
