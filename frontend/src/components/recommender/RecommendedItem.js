@@ -21,7 +21,7 @@ function RecommendedItem(props) {
    
     let response = await dataService.ignoreRecommendation(id)
 
-    if(response.status === undefined){
+    if(response === undefined || response.status !== 200){
       Store.addNotification({
         title: 'Connection Error!',
         message: 'Please try again',

@@ -69,7 +69,7 @@ describe('Recommender Component', () => {
     });
 
     const ignoreButton = screen.getByRole('button', { name: /ignore/i });
-    fireEvent.mouseDown(ignoreButton);
+    fireEvent.click(ignoreButton);
 
     waitFor(() => {
       expect(dataServiceMock.ignoreRecommendation).toHaveBeenCalledWith(props.id);
@@ -78,18 +78,42 @@ describe('Recommender Component', () => {
     jest.clearAllMocks();
   });
 
-  test('ignore button calls ignoreRecommendation', async () => {
+  test('ignore button fails ignoreRecommendation', async () => {
+    render(
+      <Router> 
+        <RecommendedItem props={props} />
+      </Router>);
+    dataServiceMock = new DataService();
+    dataServiceMock.ignoreRecommendation.mockResolvedValueOnce({undefined});
+
+    const ignoreButton = screen.getByRole('button', { name: /ignore/i });
+    fireEvent.click(ignoreButton);
+
+    waitFor(() => {
+      expect(dataServiceMock.ignoreRecommendation).toHaveBeenCalledWith(props.id);
+    })
+
+    waitFor(() => {
+      expect(Store.addNotification).toHaveBeenCalledWith(expect.objectContaining({
+        title: 'Connection Error!',
+      }));
+    })
+
+    jest.clearAllMocks();
+  });
+
+  test('ignore button fails ignoreRecommendation', async () => {
     render(
       <Router> 
         <RecommendedItem props={props} />
       </Router>);
     dataServiceMock = new DataService();
     dataServiceMock.ignoreRecommendation.mockResolvedValueOnce({
-      status: undefined
+      status: 500
     });
 
     const ignoreButton = screen.getByRole('button', { name: /ignore/i });
-    fireEvent.mouseDown(ignoreButton);
+    fireEvent.click(ignoreButton);
 
     waitFor(() => {
       expect(dataServiceMock.ignoreRecommendation).toHaveBeenCalledWith(props.id);
