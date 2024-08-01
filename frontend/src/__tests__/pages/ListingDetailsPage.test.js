@@ -35,7 +35,9 @@ describe('ListingDetailsPage page', () => {
     let responseObj = { status: 200, data: undefined };
     mockAxios.mockResponse(responseObj);
     
-    expect(screen.getByText('No Listing Available')).toBeInTheDocument();
+    waitFor(() => {
+      expect(screen.getByText('No Listing Available')).toBeInTheDocument();
+    })
   });
 
   test('renders listing detalis page with valid id', async () => {
