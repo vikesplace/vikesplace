@@ -42,12 +42,12 @@ describe("Get all Messages", () => {
       },
       mockRes
     );
-    expect(responseObject).toEqual(mockOutput);
+    expect(responseObject).toEqual({messages: mockOutput});
   });
 
   it("it should fail to return all messages", async () => {
     axios.get.mockImplementation(() =>
-      Promise.resolve({ data: { message: "Chat id not found" } })
+      Promise.resolve({ data: {} })
     );
     let responseObject = {};
     const mockRes = {
@@ -65,6 +65,6 @@ describe("Get all Messages", () => {
       },
       mockRes
     );
-    expect(responseObject).toEqual({ message: "Chat id not found" });
+    expect(responseObject).toEqual({messages: {}});
   });
 });

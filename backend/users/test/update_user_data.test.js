@@ -13,15 +13,21 @@ describe("Update User Data Tests", () => {
             json: jest.fn().mockImplementation((result) => {
                 responseObject = result;
             }),
-            status: jest.fn(),
+            status: jest.fn().mockReturnThis(),
+            locals: {
+                decodedToken: {
+                    userId: "1",
+                },
+            },
         };
         await updateUserData(
             {
                 body: {
                     location: "V8P5C2",
+                    see_charity: true,
                 },
                 params: {
-                    user_id: "1",
+                    userId: "1",
                 },
             },
             mockRes
@@ -30,7 +36,7 @@ describe("Update User Data Tests", () => {
     });
 
     it("it should fail to update", async () => {
-        axios.patch.mockImplementation(() => Promise.resolve({ data: { message: "Unable to update user with id: 1" } }));
+        axios.patch.mockImplementation(() => Promise.resolve({ data: { message: "Failed to update user data" } }));
         let responseObject = {};
         const mockRes = {
             body: {},
@@ -38,18 +44,24 @@ describe("Update User Data Tests", () => {
                 responseObject = result;
             }),
             status: jest.fn(),
+            locals: {
+                decodedToken: {
+                    userId: "1",
+                },
+            },
         };
         await updateUserData(
             {
                 body: {
                     location: "V8P5C2",
+                    see_charity: true,
                 },
                 params: {
-                    user_id: "1",
+                    userId: "1",
                 },
             },
             mockRes
         );
-        expect(responseObject).toEqual({ message: "Unable to update user with id: 1" });
+        expect(responseObject).toEqual({ message: "Failed to update user data" });
     });
 });

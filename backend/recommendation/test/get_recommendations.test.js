@@ -29,35 +29,68 @@ describe("Get Recommendations", () => {
             }};
 
         axios.get.mockImplementation((url) => {
-            return Promise.resolve({data: getFromAlgoResult})
-            });
-        let statueValue = {};
-        const req = {
-            params: {
-                user_id: 1,
-                latitude: 1,
-                longitude: 2,
-            },
-        }
-        axios.get.mockImplementation((url) => {
-            return Promise.resolve({data: getFromDataLayerResult})
-            });
+            
+            if (url.includes("getUserLatLong")) {
+                return Promise.resolve(getFromDataLayerResult);
+            } else {
+                return Promise.resolve(getFromAlgoResult);
+            }
+        });
+
+        let responseObject = {};
         const mockRes = {
             body: {},
-            json: jest.fn(),
-            status: jest.fn().mockImplementation((status) => {
-                statueValue = status;
-                return mockRes;
+            json: jest.fn().mockImplementation((result) => {
+                responseObject = result;
             }),
+            status: jest.fn().mockReturnThis(),
             locals: {
                 decodedToken: {
-                    userId: 1,
+                    userId: "1",
                 },
             },
         };
-        
-        await getRecommendations(req, mockRes);
-        expect(mockRes.json).toHaveBeenCalledWith(getFromAlgoResult.data);
+
+        await getRecommendations({}, mockRes);
+        expect(responseObject).toEqual(getFromAlgoResult.data);
+    });
+
+    it("should fail to return recommendations", async () => {
+        const getFromAlgoResult = {
+            data: {
+                message: "Failed to get recommendations",
+            },
+          };
+        const getFromDataLayerResult = {
+            data: {
+                message: "Failed to get latitude and longitude",
+            }};
+
+        axios.get.mockImplementation((url) => {
+            
+            if (url.includes("getUserLatLong")) {
+                return Promise.resolve(getFromDataLayerResult);
+            } else {
+                return Promise.resolve(getFromAlgoResult);
+            }
+        });
+
+        let responseObject = {};
+        const mockRes = {
+            body: {},
+            json: jest.fn().mockImplementation((result) => {
+                responseObject = result;
+            }),
+            status: jest.fn().mockReturnThis(),
+            locals: {
+                decodedToken: {
+                    userId: "1",
+                },
+            },
+        };
+
+        await getRecommendations({}, mockRes);
+        expect(responseObject).toEqual({ message: "Failed to get recommendations" });
     });
 
        

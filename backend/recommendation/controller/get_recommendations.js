@@ -7,7 +7,6 @@ export const getRecommendations = async (req, res) => {
 
         //get latitude and longitude from datalayer
         const user_location = await axios.get(`${apiConfig.DATA_LAYER}user/getUserLatLong/${userId}`);
-        console.log(user_location.data);
 
         //get recommended listings from alg recommendation
         const response = await axios.get(`${apiConfig.ALG_RECOMMENDATION}recommendations` , 

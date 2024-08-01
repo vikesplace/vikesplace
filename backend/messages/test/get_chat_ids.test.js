@@ -6,32 +6,18 @@ jest.mock("axios");
 describe("Get Chat Ids", () => {
   it("it should return all chat ids", async () => {
     const mockOutput = [
-      {
-        chat_id: 1,
-        listing_id: 1,
-        user_id_one: 1,
-        user_id_two: 2,
-        timestamp: "2024-06-17T06:25:41.995Z",
-        last_message_time: "2024-06-17T06:25:41.995Z",
-      },
-      {
-        chat_id: 2,
-        listing_id: 2,
-        user_id_one: 3,
-        user_id_two: 4,
-        timestamp: "2024-06-17T06:25:41.995Z",
-        last_message_time: "2024-06-17T06:25:41.995Z",
-      },
+      { chatId: 1 },
+      { chatId: 2 },
     ];
 
-    const mockDecodedToken = { userId: 1 };
-
-    axios.get.mockResolvedValue({ data: mockOutput, status: 200 });
+    axios.get.mockImplementation(() =>
+      Promise.resolve({
+        data: mockOutput
+      })
+    );
 
     let responseObject = {};
-
     const mockRes = {
-      locals: { decodedToken: mockDecodedToken },
       json: jest.fn().mockImplementation((result) => {
         responseObject = result;
       }),
@@ -39,32 +25,31 @@ describe("Get Chat Ids", () => {
       locals: { decodedToken: { userId: 1 } },
     };
 
-    await getChatIds({}, mockRes);
+    await getChatIds(
+      {},
+      mockRes
+    );
 
-    expect(responseObject).toEqual(mockOutput);
+    expect(responseObject).toEqual({chats: [1, 2]});
   });
 
   it("it should fail to return all chat ids", async () => {
     axios.get.mockImplementation(() =>
-      Promise.resolve({ data: { message: "User id not found" } })
+      Promise.resolve({ data: { message: "Failed to get chats" } })
     );
     let responseObject = {};
     const mockRes = {
-      body: {},
       json: jest.fn().mockImplementation((result) => {
         responseObject = result;
       }),
-      status: 200,
-      locals: { decodedToken: { userId: 1 } }
+      status: jest.fn().mockReturnThis(),
+      locals: { decodedToken: { userId: 1 } },
     };
+
     await getChatIds(
-      {
-        params: {
-          userId: "1",
-        },
-      },
+      {},
       mockRes
     );
-    expect(responseObject).toEqual({ message: "User id not found" });
+    expect(responseObject).toEqual({ message: "Failed to get chats" });
   });
 });
