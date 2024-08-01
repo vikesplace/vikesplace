@@ -17,7 +17,7 @@ function UserProfile() {
   const [isEditing, setIsEditing] = useState(false);
   const [newLocation, setNewLocation] = useState('');
   const [postalCodeError, setPostalCodeError] = useState(false);
-  const [checked, setChecked] = useState();
+  const [checked, setChecked] = useState(undefined);
 
   useEffect(() => {
     const fetchUser = async () => {
