@@ -59,39 +59,6 @@ describe("POST /", () => {
     await registerUser(mockReq, mockPostRes);
 
     expect(postResponse).toEqual({ message: "User logged in successfully" });
-
-    // const response = await request(app)
-    //   .post('/request_account')
-    //   .send({
-    //     email: 'test@uvic.ca',
-    //     callback: 'http://localhost:5002/verify-account?jwt=',
-    //   });
-
-    // console.log(response.error);//for debugging
-    // console.log(response.status); //for debugging
-
-    // expect(response.status).toBe(200);
-    // expect(response.body.message).toBe('Verification email sent successfully');
-    // expect(sendMailMock).toHaveBeenCalledTimes(1);
-    // expect(sendMailMock).toHaveBeenCalledWith(
-    //   expect.objectContaining({
-    //     from: process.env.EMAIL,
-    //     to: 'test@uvic.ca',
-    //     subject: 'Account Verification',
-    //     text: expect.stringContaining('http://localhost:5002/verify-account?jwt='),
-    //   }),
-    //   expect.any(Function)
-    // );
-
-    // // Extract and verify the token
-    // const tokenMatch = response.text.match(/http:\/\/localhost:5002\/verify-account\?jwt=(.*)/);
-    // if (tokenMatch && tokenMatch.length > 1) {
-    //   const token = tokenMatch[1];
-    //   const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-    //   expect(decodedToken.email).toBe('test@uvic.ca');
-    // } else {
-    //   throw new Error('Token not found in response');
-    // }
   });
 
   it("should return 400 for an invalid UVic email", async () => {
@@ -108,10 +75,6 @@ describe("POST /", () => {
     sendMailMock.mockImplementationOnce((mailOptions, callback) => {
       callback(new Error("Failed to send email"));
     });
-
-    // const response = await request(app).post("/request_account").send({
-    //   email: "test@uvic.ca",
-    //   callback: "http://example.com/verify?token=",
 
     let postResponse = {};
     const mockPostRes = {
