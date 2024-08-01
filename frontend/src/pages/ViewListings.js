@@ -30,7 +30,7 @@ function ViewListings() {
   const dataService = useMemo(() => new DataService(), []);
   const navigate = useNavigate();
 
-  const [sortCategory, setSortCategory] = useState("createdOn");
+  const [sortCategory, setSortCategory] = useState("created_on");
   const [sortOrder, setSortOrder] = useState(false);
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
   const [statusFilter, setStatusFilter] = useState('');
@@ -189,13 +189,13 @@ function ViewListings() {
         onScreen: true
       }
     });
-    const category = event.target.value;
-    setSortCategory(category);
+    
+    setSortCategory(event.target.value);
 
     setNoListingMessage("Loading...");
     if (searchQuery) {
       setNoUserMessage("Loading...");
-      const response = await dataService.search(searchQuery, priceRange.min, priceRange.max, sortCategory, sortOrder, statusFilter)
+      const response = await dataService.search(searchQuery, priceRange.min, priceRange.max, event.target.value, sortOrder, statusFilter)
       if (response === undefined) {
         Store.addNotification({
           title: 'Connection Error!',
@@ -231,7 +231,7 @@ function ViewListings() {
       setNoUserMessage("No Users Available");
     } else if (!searchQuery) {
 
-      const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, sortCategory, sortOrder);
+      const response = await dataService.getSortedListings(priceRange.min, priceRange.max, statusFilter, event.target.value, sortOrder);
       if (response === undefined) {
         Store.addNotification({
           title: 'Connection Error!',
@@ -546,7 +546,7 @@ function ViewListings() {
                 label="Sort By"
                 onChange={handleSortChange}
               >
-                <MenuItem value="createdOn"><em>Time</em></MenuItem>
+                <MenuItem value="created_on"><em>Time</em></MenuItem>
                 <MenuItem value="price">Price</MenuItem>
                 <MenuItem value="distance">Distance</MenuItem>
               </Select>
