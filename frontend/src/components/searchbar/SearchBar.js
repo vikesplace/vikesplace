@@ -63,7 +63,8 @@ function SearchBar() {
         sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
       >
         <InputBase
-        name='search-bar'
+          data-testid="searchField"
+          name='search-bar'
           sx={{ ml: 1, flex: 1 }}
           placeholder="Search"
           inputProps={{ 'aria-label': 'search vikes place' }}
@@ -81,6 +82,7 @@ function SearchBar() {
         </IconButton>
         <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
         <IconButton
+          data-testid="historyIcon"
           color="primary"
           sx={{ p: '10px' }}
           aria-label="search-history"

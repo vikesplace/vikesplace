@@ -136,12 +136,10 @@ describe('ListingDetails Component', () => {
     const sendButton = screen.getByRole('button', { name: /send/i });
     fireEvent.click(sendButton);
 
-
-    //currently fails here, but may work after axios api calls?
     await waitFor(() => {
-      //expect(dataServiceMock.createChat).toHaveBeenCalledWith(SAMPLE_LISTING.listingId);
-      //expect(dataServiceMock.sendMessage).toHaveBeenCalledWith('chat123', 'Hello!');
-      //expect(screen.queryByText('Send Message to Seller')).not.toBeInTheDocument();
+      // expect(dataServiceMock.createChat).toHaveBeenCalledWith(SAMPLE_LISTING.listingId);
+      // expect(dataServiceMock.sendMessage).toHaveBeenCalledWith('chat123', 'Hello!');
+      // expect(screen.queryByText('Send Message to Seller')).not.toBeInTheDocument();
     });
   });
 

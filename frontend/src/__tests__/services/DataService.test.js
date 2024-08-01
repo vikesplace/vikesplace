@@ -418,11 +418,17 @@ describe('AuthService', () => {
     let catchFn = jest.fn();
 
     const query = "laptop";
+    const minPrice = 1;
+    const maxPrice = 100; 
+    const status = "AVAILABLE";
+    const sortBy = "price";
+    const isDescending = false; 
     const withCredentials = true;
-    dataService.search(query)
+    dataService.search(query, minPrice, maxPrice, sortBy, isDescending, status)
         .catch(catchFn);
 
-    expect(mockAxios.get).toHaveBeenCalledWith(API_URL + 'search?search=' + query,
+    expect(mockAxios.get).toHaveBeenCalledWith(API_URL + 'search?search=' + query + '&minPrice=' + 
+      minPrice + '&maxPrice=' + maxPrice + '&status=' + status + '&sortBy=' + sortBy + '&isDescending=' + isDescending,
       {withCredentials}
     );
 

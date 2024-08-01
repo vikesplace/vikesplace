@@ -50,5 +50,4 @@ describe('SearchHistory Component', () => {
 
     await waitFor(() => expect(screen.getByText('query11')).toBeInTheDocument());
   });
-
 });
