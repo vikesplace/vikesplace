@@ -129,7 +129,7 @@ class DataService {
     */
     async updateUserData(location, seeCharity) {
         try {
-            return await axios.patch(API_URL + 'users/me', {
+            return await axios.patch(process.env.REACT_APP_BACK_API + 'users/me', {
                 location, seeCharity
             }, { withCredentials: true });
         } catch (error) {
