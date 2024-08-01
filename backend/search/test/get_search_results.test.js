@@ -100,7 +100,7 @@ describe("Get Search Results Tests", () => {
       json: jest.fn().mockImplementation((result) => {
         responseObject = result;
       }),
-      status: jest.fn(),
+      status: jest.fn().mockReturnThis(),
       locals: { decodedToken: { userId: 1 } }
     };
     await getSearchResults(req, mockRes);
@@ -131,7 +131,7 @@ describe("Get Search Results Tests", () => {
       json: jest.fn().mockImplementation((result) => {
         responseObject = result;
       }),
-      status: jest.fn(),
+      status: jest.fn().mockReturnThis(),
       locals: { decodedToken: { userId: 1 } }
     };
     await getSearchResults(req, mockRes);
