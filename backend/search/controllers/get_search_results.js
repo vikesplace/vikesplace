@@ -28,6 +28,8 @@ export const getSearchResults = async (req, res) => {
 
     if (req.query.sortBy == "distance") {
       requestParamsObject.sortBy = "lat_long";
+    }else if (req.query.sortBy == "created_on") {
+      requestParamsObject.sortBy = "listed_at";
     }else if (req.query.sortBy) {
       requestParamsObject.sortBy = req.query.sortBy;
     }
