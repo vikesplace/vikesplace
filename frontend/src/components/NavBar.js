@@ -51,23 +51,23 @@ function NavBar() {
 
   async function handleLogout () {
     let response = await authService.logout();
-      if(response !== undefined && response.status === 200){
-        navigate('/login');
-      } else {
-        Store.addNotification({
-          title: 'Logout Failed',
-          message: 'Please try again',
-          type: 'warning',
-          insert: 'top',
-          container: 'top-right',
-          animationIn: ["animated", "fadeIn"],
-          animationOut: ["animated", "fadeOut"],
-          dismiss: {
-            duration: 5000,
-            onScreen: true
-          }
-        });
-      }
+    if(response !== undefined && response.status === 200){
+      navigate('/login');
+    } else {
+      Store.addNotification({
+        title: 'Logout Failed',
+        message: 'Please try again',
+        type: 'warning',
+        insert: 'top',
+        container: 'top-right',
+        animationIn: ["animated", "fadeIn"],
+        animationOut: ["animated", "fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: true
+        }
+      });
+    }
   }
 
   const pathWithoutParams = location.pathname.split("/")[1];
@@ -145,6 +145,7 @@ function NavBar() {
                   <MenuIcon />
                 </IconButton>
                 <Menu
+                  data-testid="account-dropdown"
                   id="menu-appbar"
                   anchorEl={anchorElNav}
                   anchorOrigin={{
@@ -216,12 +217,12 @@ function NavBar() {
             >
               {settings.map((setting) => (
                 setting === 'Logout' ? (
-                  <MenuItem key={setting} onClick={handleLogout} >
+                  <MenuItem key={setting} onClick={handleLogout} data-testid="logout">
                     <Typography textAlign="center">{setting}</Typography>
                   </MenuItem>
                 ) : 
                 setting === 'User Profile' ? (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu} component={Link} to="/user-profile">
+                  <MenuItem key={setting} onClick={handleCloseUserMenu} component={Link} to="/user-profile" data-testid="user-profile">
                     <Typography textAlign="center">{setting}</Typography>
                   </MenuItem>
                 ) :

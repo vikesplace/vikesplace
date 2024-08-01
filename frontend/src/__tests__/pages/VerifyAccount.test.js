@@ -72,9 +72,6 @@ describe('VerifyAccount Component', () => {
     fireEvent.change(passwordInput, { target: { value: 'ValidPass1!' } });
     fireEvent.blur(passwordInput);
     expect(screen.queryByText(/Must be 8+ characters/i)).not.toBeInTheDocument();
-
-
-
   });
 
   test('validates the confirm password field correctly', () => {

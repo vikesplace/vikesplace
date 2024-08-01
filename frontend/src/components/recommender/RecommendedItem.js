@@ -1,5 +1,4 @@
-import {React, useMemo}from "react";
-
+import React, { useMemo }from "react";
 import Card from "@mui/material/Card";
 import { Store } from "react-notifications-component";
 import CardContent from "@mui/material/CardContent";
@@ -16,15 +15,13 @@ import DataService from "../../services/DataService";
 
 function RecommendedItem(props) {
 
-
   const dataService = useMemo(() => new DataService(), []); 
-
 
   async function handleIgnoreItem (id) {
    
     let response = await dataService.ignoreRecommendation(id)
 
-    if(response.status === undefined){
+    if(response === undefined || response.status !== 200){
       Store.addNotification({
         title: 'Connection Error!',
         message: 'Please try again',
@@ -41,8 +38,6 @@ function RecommendedItem(props) {
     }
 
     window.location.reload();
-    
-
   }
 
   
@@ -60,20 +55,20 @@ function RecommendedItem(props) {
             </Typography>
             <Typography variant="body1">
               ${props.price}
-              <br />
-             <Box display ='flex'> For Charity:&nbsp;{props.forCharity ===false ? <Typography>  No </Typography> : <Typography> Yes </Typography> }
-             </Box>
             </Typography>
+            <br />
+            <Box display ='flex'> For Charity:&nbsp;{props.forCharity ===false ? 
+              <Typography>  No </Typography> : <Typography> Yes </Typography> }
+            </Box>
             
           </CardContent>
         </CardActionArea>
         <Box ml ={2}justifyContent='space-between' display='flex' alignItems='center'>
-              <Typography variant="body1">
-                {props.location}
-              </Typography>
-              <Button onClick={ ()=> handleIgnoreItem(props.id)}> Ignore </Button>
-
-            </Box>
+          <Typography variant="body1">
+            {props.location}
+          </Typography>
+          <Button onClick={ ()=> handleIgnoreItem(props.id)}> Ignore </Button>
+        </Box>
       </Card>
     </div>
   );

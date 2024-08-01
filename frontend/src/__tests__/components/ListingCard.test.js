@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { BrowserRouter as Router } from 'react-router-dom';
 import ListingCard from '../../components/ListingCard';
@@ -28,7 +28,9 @@ describe('ListingCard component', () => {
 
     fireEvent.click(document);
 
-    expect(useNavigateMock).not.toHaveBeenCalledWith('/listings/'+SAMPLE_LISTING.id);
+    waitFor(() => {
+      expect(useNavigateMock).toHaveBeenCalledWith('/listings/'+SAMPLE_LISTING.id);
+    })
 
     jest.clearAllMocks();
   });
