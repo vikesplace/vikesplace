@@ -8,3 +8,7 @@ export const calculateDistance = (user_location, listing_location) => {
     return false;
   }
 };
+
+export const getDistanceFromUser = (user_location, listing_location) => {
+  return geolib.getDistance(user_location, listing_location);
+};

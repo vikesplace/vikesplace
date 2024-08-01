@@ -1,11 +1,16 @@
 import axios from "axios";
-import { calculateDistance } from "../helper/calculate_distance.js";
+import {
+  calculateDistance,
+  getDistanceFromUser,
+} from "../helper/calculate_distance.js";
 import { apiConfig } from "../config/apiConfig.js";
 import redisClient from "../helper/redis_client.js";
 
 export const getSortedListings = async (req, res) => {
-  if (Number(req.query.minPrice) > Number(req.query.maxPrice)){
-    return res.status(400).json({ message: "Min price cannot be greater than max price" });
+  if (Number(req.query.minPrice) > Number(req.query.maxPrice)) {
+    return res
+      .status(400)
+      .json({ message: "Min price cannot be greater than max price" });
   }
   try {
     const userId = res.locals.decodedToken.userId;
@@ -18,9 +23,13 @@ export const getSortedListings = async (req, res) => {
     if (cachedUserCoordinates) {
       userCoordinates = JSON.parse(cachedUserCoordinates);
     } else {
-      const user = await axios.get(`${apiConfig.DATA_LAYER}user/getUserLatLong/${userId}`);
+      const user = await axios.get(
+        `${apiConfig.DATA_LAYER}user/getUserLatLong/${userId}`
+      );
       userCoordinates = user.data.lat_long.coordinates;
-      await redisClient.set(userKey, JSON.stringify(userCoordinates), { EX: 900 });
+      await redisClient.set(userKey, JSON.stringify(userCoordinates), {
+        EX: 900,
+      });
     }
 
     // Check if listings data is in the cache
@@ -42,26 +51,75 @@ export const getSortedListings = async (req, res) => {
     });
 
     if (response.data.rows) {
-      const filteredKm = response.data.rows
-      .filter((listing) => calculateDistance(userCoordinates, listing.lat_long.coordinates))
-      .map((listing) => ({
-        listingId: listing.listing_id,
-        sellerId: listing.seller_id,
-        buyerUsername: listing.buyer_username,
-        title: listing.title,
-        price: listing.price,
-        location: listing.location,
-        status: listing.status,
-        listedAt: listing.listed_at,
-        lastUpdatedAt: listing.last_updated_at,
-        category: listing.category,
-        forCharity: listing.for_charity
-      }));
+      if (req.query.sortBy === "distance") {
+        //WillSort
+        const isDescending = req.query.isDescending;
 
-      // Cache the filtered listings
-      await redisClient.set(listingsKey, JSON.stringify(filteredKm), { EX: 900 });
+        const distancekm = response.data.rows.filter((listing) =>
+          calculateDistance(userCoordinates, listing.lat_long.coordinates)
+        );
 
-      res.json(filteredKm);
+        distancekm.sort((a, b) => {
+          if (isDescending) {
+            const result =
+              getDistanceFromUser(userCoordinates, b.lat_long.coordinates) -
+              getDistanceFromUser(userCoordinates, a.lat_long.coordinates);
+            return result > 0 ? 1 : -1;
+          } else {
+            const result =
+              getDistanceFromUser(userCoordinates, a.lat_long.coordinates) -
+              getDistanceFromUser(userCoordinates, b.lat_long.coordinates);
+            return result > 0 ? 1 : -1;
+          }
+        });
+
+        const filteredKm = distancekm.map((listing) => {
+          return {
+            listingId: listing.listing_id,
+            sellerId: listing.seller_id,
+            buyerUsername: listing.buyer_username,
+            title: listing.title,
+            price: listing.price,
+            location: listing.location,
+            status: listing.status,
+            listedAt: listing.listed_at,
+            lastUpdatedAt: listing.last_updated_at,
+            category: listing.category,
+            forCharity: listing.for_charity,
+          };
+        });
+
+        // Cache the filtered listings
+        await redisClient.set(listingsKey, JSON.stringify(filteredKm), {
+          EX: 900,
+        });
+
+        res.json(filteredKm);
+      } else {
+        const filteredKm = response.data.rows
+          .filter((listing) =>
+            calculateDistance(userCoordinates, listing.lat_long.coordinates)
+          )
+          .map((listing) => ({
+            listingId: listing.listing_id,
+            sellerId: listing.seller_id,
+            buyerUsername: listing.buyer_username,
+            title: listing.title,
+            price: listing.price,
+            location: listing.location,
+            status: listing.status,
+            listedAt: listing.listed_at,
+            lastUpdatedAt: listing.last_updated_at,
+            category: listing.category,
+            forCharity: listing.for_charity,
+          }));
+        // Cache the filtered listings
+        await redisClient.set(listingsKey, JSON.stringify(filteredKm), {
+          EX: 900,
+        });
+
+        res.json(filteredKm);
+      }
     } else {
       res.json(response.data.rows);
     }
