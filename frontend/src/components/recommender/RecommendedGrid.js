@@ -12,14 +12,14 @@ function RecommendedGrid({ data }) {
           {data?.map((item) => (
             <Grid item xs={12} sm={6} md={6} lg={3} key={item.listingId} >
               <div key={item.listingId} >
-              <RecommendedItem
-                id={item.listingId}
-                title={item.title}
-                price={item.price}
-                status={item.status}
-                location={item.location}
-                forCharity = {item.forCharity}
-              />
+                <RecommendedItem
+                  id={item.listingId}
+                  title={item.title}
+                  price={item.price}
+                  status={item.status}
+                  location={item.location}
+                  forCharity = {item.forCharity}
+                />
               </div>
             </Grid>
           ))}
