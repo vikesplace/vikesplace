@@ -125,7 +125,7 @@ function UserProfile() {
     if (event.target.checked === true) {
       const response = await dataService.updateUserData(newLocation, true)
 
-      if (response.status === undefined) {
+      if (response === undefined || response.status !== 200) {
         Store.addNotification({
           title: 'Unable to set setting',
           message: 'Please try again',
@@ -144,7 +144,7 @@ function UserProfile() {
   
         const response = await dataService.updateUserData(newLocation, false)
         
-        if (response.status === undefined) {
+        if (response === undefined || response.status !== 200) {
           Store.addNotification({
             title: 'Unable to set setting',
             message: 'Please try again',
