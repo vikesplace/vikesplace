@@ -1,4 +1,4 @@
-import { React, useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import "../App.css";
@@ -19,7 +19,7 @@ function Home() {
     const fetchRecommendations = async () => {
       const response = await dataService.getRecommendations();
   
-      if ( response === undefined ||response.status !== 200) {
+      if (response === undefined ||response.status !== 200) {
         setRecommendations([]);
       } else if (response.status === 200) {
         setRecommendations(response.data);
