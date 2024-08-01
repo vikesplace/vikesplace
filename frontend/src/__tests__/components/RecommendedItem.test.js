@@ -4,6 +4,8 @@ import '@testing-library/jest-dom/extend-expect';
 import { BrowserRouter as Router } from 'react-router-dom';
 import RecommendedItem from '../../components/recommender/RecommendedItem.js';
 import DataService from '../../services/DataService.js';
+import { Store } from 'react-notifications-component';
+
 
 // Mock useNavigate from react-router-dom
 jest.mock('react-router-dom', () => ({
@@ -19,6 +21,12 @@ jest.mock('../../services/DataService', () => {
     };
   });
 });
+
+jest.mock('react-notifications-component', () => ({
+  Store: {
+    addNotification: jest.fn(),
+  },
+}));
 
 describe('Recommender Component', () => {
   const props = {
@@ -65,6 +73,32 @@ describe('Recommender Component', () => {
 
     waitFor(() => {
       expect(dataServiceMock.ignoreRecommendation).toHaveBeenCalledWith(props.id);
+    })
+
+    jest.clearAllMocks();
+  });
+
+  test('ignore button calls ignoreRecommendation', async () => {
+    render(
+      <Router> 
+        <RecommendedItem props={props} />
+      </Router>);
+    dataServiceMock = new DataService();
+    dataServiceMock.ignoreRecommendation.mockResolvedValueOnce({
+      status: undefined
+    });
+
+    const ignoreButton = screen.getByRole('button', { name: /ignore/i });
+    fireEvent.mouseDown(ignoreButton);
+
+    waitFor(() => {
+      expect(dataServiceMock.ignoreRecommendation).toHaveBeenCalledWith(props.id);
+    })
+
+    waitFor(() => {
+      expect(Store.addNotification).toHaveBeenCalledWith(expect.objectContaining({
+        title: 'Connection Error!',
+      }));
     })
 
     jest.clearAllMocks();
