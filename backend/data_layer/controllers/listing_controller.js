@@ -263,13 +263,14 @@ export const updateListing = async (req, res) => {
 
 export const deleteListing = async (req, res) => {
   try {
-    const listing = await Listing.findByPk(req.params.listingId);
-    if (!listing) {
+    const listing = await Listing.update(
+      { status: "REMOVED" }, 
+      { where: { listing_id: req.params.listingId } }
+    );
+    if(listing[0] === 0) {
       console.error("Listing not found");
       return res.status(500).send();
-    }
-    listing.status = "REMOVED";
-    await listing.save();
+    } 
     res.json({});
   } catch (error) {
     console.error(error);
