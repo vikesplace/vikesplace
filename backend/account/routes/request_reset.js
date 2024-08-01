@@ -45,7 +45,6 @@ router.post('/', (req, res) => {
     text: `Please reset your password by clicking the following link: ${resetLink}`
   };
 
-  console.log('1');
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       console.log(error);

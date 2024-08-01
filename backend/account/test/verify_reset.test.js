@@ -15,7 +15,7 @@ app.use("/", router);
 
 describe("POST /", () => {
   beforeEach(() => {
-    process.env.ACCESS_TOKEN_SECRET = "test_secret";
+    jest.resetModules();
   });
 
   afterEach(() => {
