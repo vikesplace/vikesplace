@@ -17,7 +17,7 @@ function UserProfile() {
   const [isEditing, setIsEditing] = useState(false);
   const [newLocation, setNewLocation] = useState('');
   const [postalCodeError, setPostalCodeError] = useState(false);
-  const [checked, setChecked] = useState(true);
+  const [checked, setChecked] = useState();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -39,6 +39,7 @@ function UserProfile() {
       } else if (response.status === 200) {
         setUser(response.data);
         setNewLocation(response.data.location);
+        setChecked(response.data.seeCharity);
       } else {
         Store.addNotification({
           title: 'Unable to Get User',
